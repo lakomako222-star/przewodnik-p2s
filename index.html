@@ -354,6 +354,26 @@ h2{letter-spacing:-.2px}
 .err{border-left:4px solid #c0392b;background:color-mix(in srgb,#c0392b 9%,var(--bg));
  border-radius:0 12px 12px 0;padding:11px 13px;font-size:.9rem;margin:8px 0}
 
+
+/* ===== Doradca grupy + Analiza modelu (wynik) ===== */
+.agrp{font-size:.76rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);
+ margin:14px 2px 8px;padding:0 2px}
+.agrp:first-child{margin-top:4px}
+.ahd{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:2px 0 12px}
+.ahd-c{min-width:0;display:flex;flex-direction:column;justify-content:space-between;
+ background:var(--zeb);border:1px solid var(--line);border-radius:14px;padding:12px 12px 10px;box-shadow:var(--shadow2,none)}
+.ahd-l{font-size:.72rem;font-weight:700;color:var(--mut);letter-spacing:.06em;text-transform:uppercase}
+.ahd-v{margin-top:4px;font-size:clamp(1.35rem,6vw,1.85rem);font-weight:800;line-height:1.1;color:var(--ink);letter-spacing:-.02em}
+.ahd-c.accent{border-color:color-mix(in srgb,var(--g) 45%,var(--line));background:color-mix(in srgb,var(--g) 10%,var(--bg))}
+.ahd-c.accent .ahd-v{color:var(--g)}
+.gnote{border:1px solid var(--line);border-left:4px solid var(--line);border-radius:14px;padding:12px 13px;margin:0 0 9px;background:var(--card)}
+.gnote-t{font-weight:700;font-size:.92rem;margin:0 0 4px;color:var(--ink)}
+.gnote-d{margin:0;font-size:.86rem;color:var(--mut);line-height:1.45}
+.gnote.warn{border-left-color:#c8860d;background:color-mix(in srgb,#c8860d 8%,var(--bg))}
+.gnote.ok{border-left-color:var(--g);background:color-mix(in srgb,var(--g) 8%,var(--bg))}
+.gnote.info{border-left-color:#2c6faf;background:color-mix(in srgb,#2c6faf 8%,var(--bg))}
+@media(max-width:420px){.ahd{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -1770,7 +1790,7 @@ h2{letter-spacing:-.2px}
 <div id="sheet">
   <div class="card">
     <h3>Ustawienia asystenta</h3>
-    <p class="sub">Klucz zostaje wyłącznie w pamięci tego urządzenia. Nie wysyłam go nigdzie poza OpenRouter.<br><span style="opacity:.8">Wersja aplikacji: 4.0.6 (analiza modelu)</span></p>
+    <p class="sub">Klucz zostaje wyłącznie w pamięci tego urządzenia. Nie wysyłam go nigdzie poza OpenRouter.<br><span style="opacity:.8">Wersja aplikacji: 4.0.7 (doradca + analiza UI)</span></p>
 
     <div class="fld">
       <label for="setKey">Klucz OpenRouter</label>
@@ -2024,6 +2044,7 @@ window.__goGuide = goGuide;
 var T = {
 
   _menu: [
+    ['_h',   'Coś poszło źle'],
     ['adh',  'Model nie trzyma się płyty'],
     ['off',  'Model trzyma się za mocno, nie mogę zdjąć'],
     ['warp', 'Rogi się podnoszą, model się wypacza'],
@@ -2033,7 +2054,19 @@ var T = {
     ['top',  'Dziury i poduszki na górnej powierzchni'],
     ['ams',  'AMS nie ładuje albo nie cofa filamentu'],
     ['tpu',  'Problem z TPU'],
-    ['chg',  'Chcę zmienić filament na inny materiał']
+    ['chg',  'Chcę zmienić filament na inny materiał'],
+
+    ['_h',   'Jak to zrobić'],
+    ['fit',            'Wydruk nie pasuje do elementu, który mam'],
+    ['mierz',          'Jak zmierzyć wydrukowane gniazdo'],
+    ['ktoryprofil',    'Nie wiem, który profil filamentu wybrać'],
+    ['czyprofildziala','Zrobiłem kalibrację, ale nie wiem, czy działa'],
+    ['cudzeustawienia','Ściągnięty model drukuje się z cudzymi ustawieniami'],
+    ['startdruku',     'Co ustawić w oknie startu druku'],
+    ['klocki',         'Nie umiem odczytać klocków kalibracyjnych'],
+    ['wilgoc',         'AMS pokazuje taką samą wilgotność co pokój'],
+    ['dlugo',          'Druk trwa za długo'],
+    ['plik3mf',        'Studio nie wczytuje pliku 3MF']
   ],
 
   adh: {
@@ -2237,6 +2270,78 @@ var T = {
     t: 'Zmiana materiału',
     b: 'Przejdź do zakładki <b>Narzędzia</b> i użyj kreatora „Zmiana filamentu”. Wybierasz, z czego na co przechodzisz, i dostajesz dokładne kroki wraz z temperaturami.',
     ok: 'KONIEC', no: 'KONIEC'
+  },
+
+  /* ---------- „Jak to zrobić” - odpowiedzi od razu, bez przepytywania ---------- */
+
+  fit: {
+    t: 'Wydruk nie pasuje do elementu',
+    b: '<b>Wymiar z nazwy to zwykle światło wewnętrzne, a nie wymiar zewnętrzny.</b> Przy rurach i kanałach wentylacyjnych liczba z opisu mówi, ile jest w środku.<br><br>Kanał opisany jako 110 × 55 ma na zewnątrz około <b>114,4 × 59,5 mm</b>, bo dochodzą dwie ścianki. Dlatego model, w którym „110 × 55” potraktowano jako wymiar zewnętrzny, nie wejdzie w gniazdo o świetle 110,6 × 55,6 mm.<br><br><b>Zmierz suwmiarką rzeczywisty przedmiot</b>, zanim cokolwiek zaprojektujesz albo przeskalujesz. Opis produktu nie zastąpi pomiaru.',
+    ref: ['Podrozdział 14.7 - dopasowanie do przedmiotu', 'r-14-projektowanie-pod-druk-fdm-14-7-dopasowanie-do-istniejacego-przedmiotu'],
+    ok: 'KONIEC', no: 'KONIEC'
+  },
+
+  mierz: {
+    t: 'Jak zmierzyć wydrukowane gniazdo',
+    b: '<b>Mierz na osi symetrii, nie przy krawędzi.</b> Narożniki są zaokrąglone i pomiar przesunięty o 2 cm od osi potrafi dać wynik mniejszy o 5 mm.<br><br>Mierz kilka razy, w dwóch prostopadłych kierunkach. Do pasowania wsuwanego zakładaj luz około <b>0,5 mm na stronę</b>.<br><br><b>Grubość ścianki dobieraj jako całkowitą wielokrotność szerokości linii.</b> Przy dyszy 0,4 mm trzy pętle to 0,42 + 0,45 + 0,42 = <b>1,29 mm</b>. Ścianka spoza tej siatki zmusza slicer do dopychania wypełnienia w wąską szczelinę.',
+    ref: ['Podrozdział 14.2 - tolerancje i pasowania', 'r-14-projektowanie-pod-druk-fdm-14-2-tolerancje-i-pasowania'],
+    ok: 'KONIEC', no: 'KONIEC'
+  },
+
+  ktoryprofil: {
+    t: 'Który profil filamentu wybrać',
+    b: '<b>Zaczynaj zawsze od profilu fabrycznego danego materiału</b>, nigdy od profilu ze społeczności z dopiskiem „custom”.<br><br>Profile fabryczne nie zawierają klucza <code>pressure_advance</code>, więc nie nadpiszą Twojej kalibracji K zapisanej w drukarce. Profile „custom” zwykle mają <code>enable_pressure_advance = 1</code> i cudze K, które po cichu skasuje Twój wynik.<br><br>Bywają w nich też ustawienia niepasujące do Twojej płyty - na przykład stół 70°C zamiast 60°C i wentylator 30/60 zamiast 10/30.',
+    ref: ['Podrozdział 5.16 - cudze profile ze społeczności', 'r-5-filament-innej-marki-od-a-do-z-sunlu-5-16-cudze-profile-ze-spolecznosci-jak-ich-uzywac-bezpiecznie'],
+    ok: 'KONIEC', no: 'KONIEC'
+  },
+
+  czyprofildziala: {
+    t: 'Czy kalibracja naprawdę działa',
+    b: '<b>Sprawdź w dwóch miejscach, bo te wyniki leżą osobno.</b><br><br><b>Przepływ:</b> Filament -&gt; Natężenie przepływu. Powinna tam stać Twoja wartość.<br><b>K:</b> Kalibracja -&gt; Dynamika przepływu -&gt; Zarządzanie wynikami. Powinien tam być wpis z Twoją wartością.<br><br>Kolumna „Filament” w tej tabeli pokazuje <b>etykietę slotu AMS</b>, a nie profil użyty do testu. Jeśli widnieje tam Generic PETG, popraw wpis slotu w Zarządzaniu filamentem, a nie profil.',
+    ref: ['Podrozdział 6.2 - gdzie mieszka przepływ, a gdzie K', 'r-6-kalibracje-krok-po-kroku-6-2-gdzie-mieszka-przeplyw-a-gdzie-k'],
+    ok: 'KONIEC', no: 'KONIEC'
+  },
+
+  cudzeustawienia: {
+    t: 'Cudze ustawienia w ściągniętym modelu',
+    b: 'Po otwarciu cudzego projektu przełącz filament na swój profil. Studio zapyta „Użyj zmodyfikowanej wartości ustawień filamentu” i da trzy przyciski:<ul><li><b>Zapisz</b> - wpisuje cudze wartości <b>na stałe</b> do Twojego profilu. Nigdy tego nie klikaj.</li><li><b>Pozostaw poprzednią wartość</b> - odrzuca modyfikacje autora i bierze czyste wartości Twojego profilu. <b>To jest właściwy wybór przy cudzym pliku.</b></li><li><b>Użyj zmodyfikowanej wartości</b> - przenosi modyfikacje na nowy profil. Wybieraj tylko wtedy, gdy to Ty je tam wpisałeś.</li></ul>Przełączenie filamentu podmienia <b>tylko ustawienia filamentu</b>. Warstwa, ściany, wypełnienie, podpory i prędkości zostają takie, jak ustawił autor - te sprawdzasz osobno.',
+    ref: ['Podrozdział 5.16 - cudze profile ze społeczności', 'r-5-filament-innej-marki-od-a-do-z-sunlu-5-16-cudze-profile-ze-spolecznosci-jak-ich-uzywac-bezpiecznie'],
+    ok: 'KONIEC', no: 'KONIEC'
+  },
+
+  startdruku: {
+    t: 'Co ustawić w oknie startu druku',
+    b: 'Pozycja „Kalibracja dynamiki przepływu” ma trzy stany:<ul><li><b>Auto</b> - pomija pomiar, jeśli filament był ostatnio kalibrowany, czyli używa zapisu z drukarki. To ustawienie domyślne na co dzień.</li><li><b>Wł.</b> - mierzy K od nowa i nadpisuje zapis. Tylko dla nowej, nieskalibrowanej szpuli.</li><li><b>Wył.</b> - nie kalibruje wcale. Tylko wtedy, gdy K jest wymuszone wewnątrz pliku projektu.</li></ul><b>Wył. nie znaczy „użyj zapisanego”.</b> Zapisanego używa dopiero Auto.',
+    ref: ['Podrozdział 6.8 - przełącznik przy starcie druku', 'r-6-kalibracje-krok-po-kroku-6-8-przelacznik-kalibracji-przy-starcie-druku'],
+    ok: 'KONIEC', no: 'KONIEC'
+  },
+
+  klocki: {
+    t: 'Jak odczytać klocki kalibracyjne',
+    b: '<b>Poczekaj na pełne ostygnięcie.</b> Ciepły PETG jest błyszczący i miękki, a ocena na gorąco jest bezwartościowa.<br><br><b>Oceniaj dotykiem, nie wzrokiem.</b> Przeciągnij sztywną płaską krawędzią - kluczykiem albo linijką - w poprzek linii, po środku pola.<ul><li>Wałki i przeskakiwanie narzędzia to za dużo materiału.</li><li>Rowki i wpadanie między linie to za mało.</li><li>Gładko i cicho to wartość prawidłowa.</li></ul>Widoczne linie same w sobie nie są wadą - przy warstwie 0,24 mm żaden klocek nie będzie lustrzany. Nie oceniaj ze zdjęć: ciemny błyszczący filament daje sprzeczne odczyty przy każdym ujęciu.',
+    ref: ['Podrozdział 6.5 - jak odczytać klocki', 'r-6-kalibracje-krok-po-kroku-6-5-jak-odczytac-klocki-metoda'],
+    ok: 'KONIEC', no: 'KONIEC'
+  },
+
+  wilgoc: {
+    t: 'AMS pokazuje tyle samo wilgoci co pokój',
+    b: 'Sprawny pochłaniacz trzyma w komorze wyraźnie mniej niż na zewnątrz. Jeśli odczyty są równe, wkład jest nasycony albo komora nie trzyma szczelności.<br><br>Dla PETG: poniżej 20 procent jest komfortowo, 20-30 w porządku, 30-40 zobaczysz nitki, powyżej 40 susz przed drukiem.<br><br><b>Zanim uruchomisz suszenie, wyjmij PLA z sąsiednich slotów.</b> AMS 2 Pro grzeje całą komorę, a PLA mięknie od 54°C - szpula potrafi się odkształcić albo skleić zwoje.<br><br>Jeśli po suszeniu odczyt wraca w ciągu doby, wkład jest do wymiany. Jeśli nie zszedł w ogóle, sprawdź uszczelkę pokrywy.',
+    ref: ['Podrozdział 26.7 - desykant i wilgotność', 'r-26-praktyka-i-znane-pulapki-czego-nie-ma-w-instrukcji-26-7-desykant-i-wilgotnosc-jak-to-dziala-naprawde'],
+    ok: 'KONIEC', no: 'KONIEC'
+  },
+
+  dlugo: {
+    t: 'Druk trwa za długo',
+    b: '<b>Najpierw ustal, co go ogranicza</b>, bo inaczej kręcisz gałkami bez efektu. Możliwości są trzy:<ul><li>minimalny czas warstwy, czyli drukarka czeka na ostygnięcie,</li><li>maksymalny przepływ dyszy,</li><li>prędkość głowicy.</li></ul>Przy pierwszej podnoszenie prędkości nie da <b>nic</b>. Działa wyłącznie zmniejszenie liczby warstw, czyli wyższa warstwa albo taka orientacja modelu, żeby był niższy.<br><br>Wczytaj plik w narzędziu <b>Analiza modelu</b> w zakładce Narzędzia. Wskaże wąskie gardło i liczbę minut do urwania na każdej zmianie.',
+    ref: ['Rozdział 13 - jak skracać czas', 'r-13-jak-skracac-czas-bez-psucia-wydruku'],
+    ok: 'KONIEC', no: 'KONIEC'
+  },
+
+  plik3mf: {
+    t: 'Studio nie wczytuje pliku 3MF',
+    b: 'Komunikat „plik nie zawiera danych geometrycznych” zwykle nie oznacza braku modelu, tylko <b>uszkodzony XML</b> w środku archiwum.<br><br>Najczęstsza przyczyna to znak specjalny w nazwie obiektu - pojedynczy <code>&lt;</code> w nazwie psuje cały plik.<br><br>Jeśli plik pochodzi z generatora albo skryptu, sprawdź nazwy obiektów. Jeśli to plik ściągnięty, poproś autora o ponowny eksport albo wczytaj sam model jako STL.',
+    ref: ['Podrozdział 3.1 - pliki STL, 3MF i STEP', 'r-3-pelny-przebieg-pracy-od-pliku-do-gotowego-wydruku-3-1-pliki-stl-3mf-i-step'],
+    ok: 'KONIEC', no: 'KONIEC'
   }
 };
 
@@ -2246,6 +2351,7 @@ var box = document.getElementById('adv-body');
 function menu() {
   var h = '<div class="acard"><div class="aq">Z czym masz problem?</div>';
   h += T._menu.map(function (m) {
+    if (m[0] === '_h') return '<div class="agrp">' + m[1] + '</div>';
     return '<button class="aopt" data-go="' + m[0] + '">' + m[1] + '</button>';
   }).join('');
   h += '</div>';
@@ -2900,7 +3006,8 @@ function aEsc(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').r
 
 async function aRun(file) {
   var out = document.getElementById('aOut');
-  out.innerHTML = '<p class="busy">Liczę… przy dużych modelach potrwa kilka sekund.</p>';
+  out.innerHTML = '<div class="abusy"><span class="aspin" aria-hidden="true"></span>'
+    + '<span>Liczę geometrię…</span></div>';
   await new Promise(function (r) { setTimeout(r, 30); });
   try {
     var buf = await file.arrayBuffer();
@@ -2941,8 +3048,21 @@ async function aRun(file) {
     A_LAST = { objs: objs, slice: slice, src: src, file: file.name };
     aRender();
   } catch (e) {
-    out.innerHTML = '<p class="err"><b>Nie dam rady odczytać tego pliku.</b><br>' + aEsc(e.message) + '</p>';
+    out.innerHTML = '<div class="aerr"><div class="eyb">Nie udało się</div>'
+      + '<div class="aerr-t">Nie dam rady odczytać tego pliku.</div>'
+      + '<p class="aerr-d">' + aEsc(e.message) + '</p>'
+      + '<p class="aerr-h">Sprawdź, czy plik nie jest uszkodzony. Pliki 3MF zapisane starszym '
+      + 'oprogramowaniem bywają nieczytelne \u2014 wtedy wyeksportuj model jako STL.</p></div>';
   }
+}
+
+function aFmtRich(sec) {
+  var u = function (x) { return '<span class="ahd-u">' + x + '</span>'; };
+  var h = Math.floor(sec / 3600), m = Math.round((sec % 3600) / 60);
+  return h ? h + u('h') + ' ' + (m < 10 ? '0' : '') + m + u('min') : m + u('min');
+}
+function aChip(label, value) {
+  return '<span class="achip">' + label + ' <b>' + value + '</b></span>';
 }
 
 function aRender() {
@@ -2959,27 +3079,42 @@ function aRender() {
   }, { x: 0, y: 0, z: 0 });
 
   var h = '';
-  h += '<div class="kv"><span>Plik</span><b>' + aEsc(A_LAST.src) + '</b></div>';
-  h += '<div class="kv"><span>Obiektów na płycie</span><b>' + objs.length + '</b></div>';
-  h += '<div class="kv"><span>Gabaryt</span><b>' + box.x.toFixed(0) + ' x ' + box.y.toFixed(0) + ' x ' + box.z.toFixed(0) + ' mm</b></div>';
-  h += '<div class="kv"><span>Objętość materiału</span><b>' + (tot / 1000).toFixed(1) + ' cm&sup3;</b></div>';
-  h += '<div class="kv"><span>Warstw</span><b>' + r.e0.layers + '</b></div>';
-  h += '<div class="kv"><span>Szacowany czas</span><b>' + aFmt(r.base0) + '</b></div>';
-  h += '<div class="kv"><span>Szacowana masa</span><b>' + r.e0.grams.toFixed(0) + ' g</b></div>';
+  h += '<div class="ahd">'
+    +  '<div class="ahd-c"><div class="ahd-l">Szacowany czas</div>'
+    +  '<div class="ahd-v">' + aFmtRich(r.base0) + '</div></div>'
+    +  '<div class="ahd-c"><div class="ahd-l">Szacowana masa</div>'
+    +  '<div class="ahd-v">' + r.e0.grams.toFixed(0) + '<span class="ahd-u">g</span></div></div>'
+    +  '</div>';
+
+  h += '<div class="achips">'
+    +  aChip('Warstw', r.e0.layers)
+    +  aChip('Gabaryt', box.x.toFixed(0) + ' × ' + box.y.toFixed(0) + ' × ' + box.z.toFixed(0) + ' mm')
+    +  aChip('Objętość materiału', (tot / 1000).toFixed(1).replace('.', ',') + ' cm&sup3;')
+    +  aChip('Obiektów na płycie', objs.length)
+    +  aChip('Plik', aEsc(A_LAST.src))
+    +  '</div>';
+
   h += '<p class="tnote">' + (r.anchored
       ? 'Czas wzięty z pociętego projektu, więc jest dokładny. Różnice poniżej policzone tym samym modelem.'
       : 'Szacunek własny, nie ze slicera. Na sprawdzonym wydruku trafił w 7% czasu i 4% masy, ale traktuj go jako widełki. '
       + '<b>Różnice</b> poniżej są pewniejsze niż wartość bezwzględna, bo błąd modelu w nich się skraca.') + '</p>';
 
-  h += '<div class="bn"><h4>Wąskie gardło: ' + aEsc(bt.t) + '</h4><p>' + aEsc(bt.d) + '</p></div>';
+  h += '<div class="abn"><div class="eyb">Wąskie gardło</div>'
+    +  '<div class="abn-t">' + aEsc(bt.t) + '</div>'
+    +  '<p class="abn-d">' + aEsc(bt.d) + '</p></div>';
 
   if (r.tips.length) {
-    h += '<h4 style="margin:14px 0 2px;font-size:.95rem">Co da się urwać</h4>';
-    r.tips.forEach(function (t) {
-      h += '<div class="gain"><span class="g1">' + aEsc(t.label) + '</span>'
-        +  '<span class="g2">&minus;' + Math.round(t.delta / 60) + ' min</span>'
-        +  '<span class="g3">' + aEsc(t.note) + ' <b>Ryzyko:</b> ' + aEsc(t.risk)
-        +  ' Zostanie ' + aFmt(t.newTime) + '.</span></div>';
+    var top = 0;
+    r.tips.forEach(function (t) { if (t.pct > top) top = t.pct; });
+    h += '<div class="asec">Co da się urwać</div>';
+    r.tips.forEach(function (t, i) {
+      var w = top > 0 ? Math.max(4, Math.round(t.pct / top * 100)) : 0;
+      h += '<div class="gcard' + (i === 0 ? ' top' : '') + '">'
+        +  '<div class="gtop"><span class="gname">' + aEsc(t.label) + '</span>'
+        +  '<span class="gval">&minus;' + Math.round(t.delta / 60) + ' min</span></div>'
+        +  '<div class="gbar"><i style="width:' + w + '%"></i></div>'
+        +  '<p class="gtxt">' + aEsc(t.note) + ' <b>Ryzyko:</b> ' + aEsc(t.risk)
+        +  ' Zostanie ' + aFmt(t.newTime) + '.</p></div>';
     });
   } else {
     h += '<p class="tnote">Przy tych ustawieniach nie widzę zmiany, która urwałaby więcej niż minutę. '
@@ -2987,16 +3122,18 @@ function aRender() {
   }
 
   if (geo.length) {
-    h += '<h4 style="margin:16px 0 2px;font-size:.95rem">Uwagi do modelu</h4>';
+    var lab = { stop: 'Błąd', warn: 'Uwaga', tip: 'Wskazówka', info: 'Informacja' };
+    h += '<div class="asec">Uwagi do modelu</div>';
     geo.forEach(function (g) {
-      h += '<div class="bn" style="border-left-color:'
-        + (g.kind === 'stop' ? '#c0392b' : g.kind === 'warn' ? '#c8860d' : g.kind === 'tip' ? 'var(--g)' : '#2c6faf')
-        + '"><h4 style="color:inherit">' + aEsc(g.t) + '</h4><p>' + aEsc(g.d) + '</p></div>';
+      var k = lab[g.kind] ? g.kind : 'info';
+      h += '<div class="gnote k-' + k + '"><div class="eyb">' + lab[k] + '</div>'
+        +  '<div class="gnote-t">' + aEsc(g.t) + '</div>'
+        +  '<p class="gnote-d">' + aEsc(g.d) + '</p></div>';
     });
   }
 
   h += '<p class="tnote"><b>Czego to narzędzie nie wie:</b> do czego ta część służy. '
-    +  'Zdjęcie ściany z uchwytu na kable jest darmowe, z elementu nośnego \u2014 nie. '
+    +  'Zdjęcie ściany z uchwytu na kable jest darmowe, z elementu nośnego — nie. '
     +  'Decyzję podejmujesz Ty, ja pokazuję tylko koszt każdej opcji.</p>';
 
   document.getElementById('aOut').innerHTML = h;
@@ -3004,13 +3141,64 @@ function aRender() {
 
 (function () {
   var f = document.getElementById('aFile');
-  if (!f) return;
-  f.addEventListener('change', function () {
-    if (!f.files || !f.files[0]) return;
-    document.getElementById('aName').textContent = f.files[0].name
-      + '  (' + (f.files[0].size / 1048576).toFixed(1) + ' MB)';
-    aRun(f.files[0]);
+  var zone = document.getElementById('aZone');
+  if (!f || !zone) return;
+  var drop = document.getElementById('aDrop');
+  var pick = document.getElementById('aPick');
+
+  function take(file) {
+    if (!file) return;
+    document.getElementById('aName').textContent = file.name;
+    document.getElementById('aSize').textContent =
+      (file.size / 1048576).toFixed(1).replace('.', ',') + ' MB';
+    drop.hidden = true;
+    pick.hidden = false;
+    aRun(file);
+    f.value = '';   // zeby ten sam plik dalo sie wybrac ponownie
+  }
+
+  drop.addEventListener('click', function () { f.click(); });
+  drop.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); f.click(); }
   });
+  document.getElementById('aChange').addEventListener('click', function () { f.click(); });
+  f.addEventListener('change', function () {
+    if (f.files && f.files[0]) take(f.files[0]);
+  });
+
+  function hasFiles(e) {
+    var d = e.dataTransfer;
+    if (!d) return false;
+    if (d.types) for (var i = 0; i < d.types.length; i++) if (d.types[i] === 'Files') return true;
+    return false;
+  }
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    zone.addEventListener(ev, function (e) {
+      if (!hasFiles(e)) return;
+      e.preventDefault(); e.stopPropagation();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
+      zone.classList.add('over');
+    });
+  });
+  ['dragleave', 'dragend'].forEach(function (ev) {
+    zone.addEventListener(ev, function (e) {
+      if (e.relatedTarget && zone.contains(e.relatedTarget)) return;
+      zone.classList.remove('over');
+    });
+  });
+  zone.addEventListener('drop', function (e) {
+    e.preventDefault(); e.stopPropagation();
+    zone.classList.remove('over');
+    var d = e.dataTransfer;
+    if (d && d.files && d.files[0]) take(d.files[0]);
+  });
+  // plik upuszczony obok strefy nie ma otwierac sie w przegladarce
+  ['dragover', 'drop'].forEach(function (ev) {
+    document.addEventListener(ev, function (e) {
+      if (hasFiles(e) && !zone.contains(e.target)) e.preventDefault();
+    });
+  });
+
   ['aLayer','aWalls','aInfill','aMvs','aMinT','aDens','aSup'].forEach(function (id) {
     var e = document.getElementById(id);
     if (e) e.addEventListener('change', function () { if (A_LAST) aRender(); });
