@@ -1401,7 +1401,7 @@ table.tt tr.sum td{border-bottom:0;padding-top:10px}
 <div id="sheet">
   <div class="card">
     <h3>Ustawienia asystenta</h3>
-    <p class="sub">Klucz zostaje wyłącznie w pamięci tego urządzenia. Nie wysyłam go nigdzie poza OpenRouter.<br><span style="opacity:.8">Wersja aplikacji: 4.0.1 (uzupełnienia)</span></p>
+    <p class="sub">Klucz zostaje wyłącznie w pamięci tego urządzenia. Nie wysyłam go nigdzie poza OpenRouter.<br><span style="opacity:.8">Wersja aplikacji: 4.0.2 (aktualizator APK)</span></p>
 
     <div class="fld">
       <label for="setKey">Klucz OpenRouter</label>
@@ -1454,6 +1454,14 @@ table.tt tr.sum td{border-bottom:0;padding-top:10px}
         <button type="button" class="btn" id="suppImport">Importuj</button>
       </div>
       <input id="suppFile" type="file" accept="application/json,.json" style="display:none">
+    </div>
+
+    <div class="fld" id="apkUpdateBox" style="display:none">
+      <label>Aktualizacja aplikacji</label>
+      <p class="fhint" id="apkVerHint">Wersja zainstalowana: —</p>
+      <div class="btnrow" style="margin-top:8px">
+        <button type="button" class="btn pri" id="apkCheckUpdate">Sprawdź aktualizację</button>
+      </div>
     </div>
 
     <div class="btnrow">
@@ -2745,6 +2753,26 @@ function importSuppsFile(file) {
   fr.readAsText(file);
 }
 
+function showApkUpdateUi() {
+  var box = $('apkUpdateBox');
+  if (!box) return;
+  var native = window.P2SNative;
+  if (!native || typeof native.checkUpdate !== 'function') {
+    box.style.display = 'none';
+    return;
+  }
+  box.style.display = 'block';
+  var hint = $('apkVerHint');
+  try {
+    var vn = (typeof native.versionName === 'function') ? native.versionName() : (window.P2S_VER_NAME || '');
+    var vc = (typeof native.versionCode === 'function') ? native.versionCode() : (window.P2S_VER_CODE || '');
+    if (hint) hint.textContent = 'Wersja zainstalowana: ' + vn + (vc ? ' (kod ' + vc + ')' : '');
+  } catch (e) {
+    if (hint) hint.textContent = 'Wersja zainstalowana: ' + (window.P2S_VER_NAME || 'APK');
+  }
+}
+window.P2S_onApkReady = showApkUpdateUi;
+
 function openSheet() {
   $('setKey').value    = get(STORE.key, '');
   $('setNote').value   = get(STORE.note, '');
@@ -2754,6 +2782,7 @@ function openSheet() {
   $('setCustom').value = '';
   $('keyStat').textContent = ''; $('keyStat').className = 'kstat';
   renderSuppList();
+  showApkUpdateUi();
   sheet.classList.add('on');
   loadModels();
 }
@@ -2769,6 +2798,19 @@ $('suppFile').addEventListener('change', function () {
   $('suppFile').value = '';
   if (f) importSuppsFile(f);
 });
+if ($('apkCheckUpdate')) {
+  $('apkCheckUpdate').onclick = function () {
+    try {
+      if (window.P2SNative && typeof window.P2SNative.checkUpdate === 'function') {
+        window.P2SNative.checkUpdate();
+      } else {
+        alert('Aktualizacja z poziomu aplikacji działa tylko w APK na telefonie.');
+      }
+    } catch (e) {
+      alert('Nie udało się uruchomić sprawdzania aktualizacji.');
+    }
+  };
+}
 $('suppList').addEventListener('click', function (e) {
   var b = e.target.closest('button[data-supp-del]');
   if (!b) return;
