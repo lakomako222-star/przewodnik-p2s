@@ -253,6 +253,21 @@ table.tt tr.sum td{border-bottom:0;padding-top:10px}
 .kstat{font-size:.8rem;margin-top:8px;color:var(--mut)}
 .kstat.ok{color:var(--g);font-weight:600}
 .kstat.bad{color:#d9534a;font-weight:600}
+.supprop{margin-top:12px;padding:12px;border:1px dashed var(--g);border-radius:12px;background:color-mix(in srgb,var(--g) 7%,var(--bg))}
+.supprop-h{font-size:.72rem;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--g);margin:0 0 6px}
+.supprop-t{font-weight:700;font-size:.95rem;margin:0 0 6px;color:var(--ink)}
+.supprop-b{font-size:.88rem;color:var(--mut);line-height:1.5;margin:0 0 10px;white-space:pre-wrap}
+.supprop .btnrow{margin-top:0}
+.supprop .btn{padding:10px 8px;font-size:.88rem}
+.supplist{display:flex;flex-direction:column;gap:8px;margin:8px 0}
+.supitem{border:1px solid var(--line);border-radius:10px;padding:10px 11px;background:var(--card)}
+.supitem b{display:block;font-size:.9rem;margin:0 0 3px}
+.supitem p{margin:0;font-size:.8rem;color:var(--mut);line-height:1.45}
+.supitem .supact{display:flex;gap:8px;margin-top:8px}
+.supitem .supact button{flex:1;padding:8px;font-size:.8rem;font-weight:650;border-radius:9px;
+ border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.supitem .supact button.dngr{color:#c0392b;border-color:#c0392b}
+.webnote{font-size:.75rem;color:var(--mut);margin:0 0 8px}
 </style>
 </head>
 <body>
@@ -1359,7 +1374,7 @@ table.tt tr.sum td{border-bottom:0;padding-top:10px}
   <div class="aitop">
     <div class="vhead">
       <h1 class="vtitle">Asystent</h1>
-      <p class="vsub">Pyta się jak człowieka. Zna cały przewodnik, ocenia zdjęcia wydruku i w razie potrzeby sprawdza sieć.</p>
+      <p class="vsub">Najpierw szuka w przewodniku. Gdy brakuje treści — sprawdza sieć i proponuje lokalne uzupełnienie.</p>
     </div>
     <button id="aiNew" title="Nowa rozmowa" aria-label="Nowa rozmowa">✎</button>
     <button id="aiCog" title="Ustawienia" aria-label="Ustawienia">⚙</button>
@@ -1428,6 +1443,17 @@ table.tt tr.sum td{border-bottom:0;padding-top:10px}
     <div class="fld">
       <label class="tgl"><input type="checkbox" id="setCtx" checked> Podpowiadaj asystentowi fragmentami przewodnika</label>
       <p class="fhint">Zostaw włączone. Dzięki temu odpowiedzi trzymają się Twojej drukarki, a nie ogólników z internetu.</p>
+    </div>
+
+    <div class="fld">
+      <label>Moje uzupełnienia</label>
+      <p class="fhint">Wpisy, które zatwierdzasz po propozycji asystenta. Zostają tylko na tym urządzeniu — nie zmieniają publicznego poradnika. Eksport / import przenosi je między telefonem a PC.</p>
+      <div id="suppList" class="supplist"></div>
+      <div class="btnrow" style="margin-top:8px">
+        <button type="button" class="btn" id="suppExport">Eksportuj</button>
+        <button type="button" class="btn" id="suppImport">Importuj</button>
+      </div>
+      <input id="suppFile" type="file" accept="application/json,.json" style="display:none">
     </div>
 
     <div class="btnrow">
@@ -1968,7 +1994,7 @@ var API   = 'https://openrouter.ai/api/v1';
 var STORE = {
   key:  'p2s.ai.key',   model: 'p2s.ai.model', web:  'p2s.ai.web',
   webn: 'p2s.ai.webn',  ctx:   'p2s.ai.ctx',   note: 'p2s.ai.note',
-  chat: 'p2s.ai.chat'
+  chat: 'p2s.ai.chat',  supps: 'p2s.ai.supps'
 };
 /* Kolejnosc preferencji. Pierwszy model, ktory naprawde istnieje na OpenRouter, zostaje domyslny. */
 var WANTED = ['anthropic/claude-sonnet-4.5','anthropic/claude-sonnet-4','openai/gpt-4.1',
@@ -1998,21 +2024,46 @@ if (window.MutationObserver && aiView) {
 }
 syncComposer();
 
-/* ---------- indeks przewodnika ---------- */
+/* ---------- indeks przewodnika + lokalne uzupelnienia ---------- */
 function norm(s) {
   return String(s).toLowerCase()
     .replace(/ą/g,'a').replace(/ć/g,'c').replace(/ę/g,'e').replace(/ł/g,'l').replace(/ń/g,'n')
     .replace(/ó/g,'o').replace(/ś/g,'s').replace(/ź/g,'z').replace(/ż/g,'z');
 }
 var G = window.__GUIDE__ || [];
-var GN = null, GH = null;
+var SUPPS = [];
+var GN = null, GH = null, DOCS = null, indexVer = -1, suppVer = 0;
+function loadSupps() {
+  try {
+    var a = JSON.parse(get(STORE.supps, '[]'));
+    SUPPS = Array.isArray(a) ? a.filter(function (x) { return x && x.id && x.body; }) : [];
+  } catch (e) { SUPPS = []; }
+  return SUPPS;
+}
+function saveSupps() {
+  set(STORE.supps, JSON.stringify(SUPPS));
+  suppVer++;
+  GN = null; DOCS = null;
+}
+function docs() {
+  if (DOCS && indexVer === suppVer) return DOCS;
+  loadSupps();
+  DOCS = G.slice();
+  for (var i = 0; i < SUPPS.length; i++) {
+    var s = SUPPS[i];
+    DOCS.push(['u-' + s.id, 'Moje uzupełnienia', s.title || '', String(s.body || '')]);
+  }
+  indexVer = suppVer;
+  return DOCS;
+}
 function index() {
-  if (!GN) {
-    GN = new Array(G.length); GH = new Array(G.length);
-    for (var i = 0; i < G.length; i++) {
-      var head = norm(G[i][1] + ' ' + G[i][2]);
+  var D = docs();
+  if (!GN || GN.length !== D.length) {
+    GN = new Array(D.length); GH = new Array(D.length);
+    for (var i = 0; i < D.length; i++) {
+      var head = norm(D[i][1] + ' ' + D[i][2]);
       GH[i] = head.length;
-      GN[i] = head + ' ' + norm(G[i][3]);
+      GN[i] = head + ' ' + norm(D[i][3]);
     }
   }
 }
@@ -2035,38 +2086,54 @@ function forms(t) {
 }
 function retrieve(query, limit) {
   index();
+  var D = docs();
   var terms = norm(query).split(/[^a-z0-9]+/).filter(function (t) { return t.length > 2; });
-  if (!terms.length) return [];
-  var hits = [], i, j, k;
+  if (!terms.length) return { chunks: [], best: 0, hitTerms: 0, terms: 0 };
+  var hits = [], i, j, k, hitTermsMax = 0;
   for (i = 0; i < GN.length; i++) {
-    var txt = GN[i], score = 0;
+    var txt = GN[i], score = 0, hitT = 0;
     for (j = 0; j < terms.length; j++) {
       var f = forms(terms[j]), pos = -1;
       for (k = 0; k < f.length && pos < 0; k++) pos = txt.indexOf(f[k]);
       if (pos < 0) continue;
+      hitT++;
       score += (pos < GH[i]) ? 3 : 1;
     }
-    if (score > 0) hits.push([score / (1 + Math.log(1 + G[i][3].length / 400)), i]);
+    if (score > 0) {
+      if (hitT > hitTermsMax) hitTermsMax = hitT;
+      hits.push([score / (1 + Math.log(1 + D[i][3].length / 400)), i, hitT]);
+    }
   }
   hits.sort(function (a, b) { return b[0] - a[0]; });
-  var out = [], chars = 0, used = {};
+  var out = [], chars = 0, used = {}, best = hits.length ? hits[0][0] : 0;
   for (i = 0; i < hits.length && out.length < (limit || 10); i++) {
-    var r = G[hits[i][1]], sig = r[0] + '|' + r[3].slice(0, 40);
+    var r = D[hits[i][1]], sig = r[0] + '|' + r[3].slice(0, 40);
     if (used[sig]) continue;
     used[sig] = 1;
     if (chars + r[3].length > 6000) continue;
     chars += r[3].length;
     out.push(r);
   }
-  return out;
+  return { chunks: out, best: best, hitTerms: hitTermsMax, terms: terms.length };
+}
+function guideThin(ret) {
+  if (!ret || !ret.chunks || !ret.chunks.length) return true;
+  if (ret.best < 1.2) return true;
+  if (ret.terms >= 3 && ret.hitTerms < 2) return true;
+  if (ret.chunks.length < 2 && ret.best < 2) return true;
+  return false;
 }
 
 /* ---------- prompt systemowy ---------- */
-function systemPrompt(chunks) {
+function systemPrompt(chunks, thin) {
   var s =
 'Jesteś spokojnym, konkretnym doradcą technicznym przy drukarce 3D. Sprzęt użytkownika: Bambu Lab P2S Combo, ' +
 'AMS 2 Pro, płyta BIQU Panda CryoGrip Pro Frostbite. Odpowiadasz WYŁĄCZNIE po polsku, prostym językiem. ' +
 'Każde pojęcie techniczne, którego używasz, tłumaczysz w nawiasie przy pierwszym użyciu.\n\n' +
+'KOLEJNOŚĆ ŹRÓDEŁ (obowiązkowa):\n' +
+'A. Najpierw sprawdź FRAGMENTY PRZEWODNIKA i „Moje uzupełnienia”. Jeśli odpowiedź tam jest — opieraj się wyłącznie na nich.\n' +
+'B. Jeśli w przewodniku brakuje tematu albo jest niepełny — dopiero wtedy korzystaj z wyników wyszukiwania w sieci.\n' +
+'C. Nie przepisuj publicznego poradnika. Gdy coś uzupełniasz z sieci, zaproponuj lokalny wpis (patrz punkt 11).\n\n' +
 'ZASADY ODPOWIADANIA:\n' +
 '1. Zacznij od jednego zdania z diagnozą: co najprawdopodobniej jest przyczyną.\n' +
 '2. Potem krótka lista kroków, od najtańszego i najprostszego do najbardziej pracochłonnego.\n' +
@@ -2079,17 +2146,35 @@ function systemPrompt(chunks) {
 '7. Ostrzegaj wyraźnie, gdy czynność grozi uszkodzeniem sprzętu albo poparzeniem.\n' +
 '8. Bez wstępów w rodzaju "świetne pytanie". Od razu do rzeczy. Odpowiedź ma się zmieścić na ekranie telefonu.\n' +
 '9. Przy zdjęciu najpierw opisz, co widzisz na wydruku, dopiero potem diagnozuj.\n' +
-'10. Jeżeli korzystasz z wyników z sieci, podaj źródła jako linki markdown.\n';
+'10. Jeżeli korzystasz z wyników z sieci, podaj źródła jako linki markdown.\n' +
+'11. Gdy tematu NIE MA w przewodniku (albo jest wyraźnie niepełny) i korzystasz z sieci, na końcu odpowiedzi ' +
+'dodaj blok propozycji dokładnie w tym formacie (bez żadnych innych znaczników):\n' +
+'<<<UZUPEŁNIENIE\n' +
+'TYTUŁ: krótki tytuł wpisu\n' +
+'TEMAT: jednozdaniowy temat\n' +
+'TREŚĆ:\n' +
+'2–6 zdań albo krótka lista faktów gotowych do wklejenia do poradnika\n' +
+'ŹRÓDŁA:\n' +
+'- https://...\n' +
+'>>>\n' +
+'Nie dodawaj bloku UZUPEŁNIENIE, gdy odpowiedź w pełni wynika z przewodnika.\n';
+  if (thin) {
+    s += '\nUWAGA: dopasowanie w przewodniku wygląda na słabe. Traktuj temat jako potencjalnie brakujący. ' +
+         'Jeśli masz wyniki z sieci — użyj ich i zaproponuj blok UZUPEŁNIENIE. ' +
+         'Jeśli nie masz wyników z sieci — napisz, że w przewodniku tego nie ma i zaproponuj włączenie „Szukaj w sieci”.\n';
+  }
   var note = get(STORE.note, '').trim();
   if (note) s += '\nSPRZĘT I WARUNKI ZGŁOSZONE PRZEZ UŻYTKOWNIKA (traktuj jako fakt):\n' + note + '\n';
   if (chunks && chunks.length) {
     s += '\nROZDZIAŁY PRZEWODNIKA (dla orientacji, o czym w ogóle jest mowa):\n' + chapters() + '\n';
-    s += '\nFRAGMENTY PRZEWODNIKA PASUJĄCE DO PYTANIA:\n';
+    s += '\nFRAGMENTY PRZEWODNIKA I UZUPEŁNIEŃ PASUJĄCE DO PYTANIA:\n';
     for (var i = 0; i < chunks.length; i++) {
       var c = chunks[i];
       s += '\n[#' + c[0] + '] ' + c[1] + (c[2] ? ' > ' + c[2] : '') + '\n' + c[3] + '\n';
     }
     s += '\nTe fragmenty są ważniejsze niż Twoja ogólna wiedza o drukarkach. Jeżeli się różnią, trzymaj się przewodnika.\n';
+  } else {
+    s += '\nBrak trafnych fragmentów przewodnika dla tego pytania — uznaj temat za brakujący w poradniku.\n';
   }
   return s;
 }
@@ -2142,10 +2227,12 @@ function md(text) {
 
 /* ---------- skok do rozdzialu przewodnika ---------- */
 function chapterName(a) {
+  if (String(a).indexOf('u-') === 0) return 'Moje uzupełnienia';
   for (var i = 0; i < G.length; i++) if (G[i][0] === a) return G[i][1];
   return null;
 }
 function jumpTo(a) {
+  if (String(a).indexOf('u-') === 0) { openSheet(); return; }
   var tabs = $('tabs'), gb = tabs && tabs.querySelector('[data-v="guide"]');
   if (gb) gb.click();
   setTimeout(function () {
@@ -2154,6 +2241,70 @@ function jumpTo(a) {
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     el.classList.remove('hit'); void el.offsetWidth; el.classList.add('hit');
   }, 90);
+}
+
+/* ---------- propozycje uzupelnien ---------- */
+var pendingProp = null;
+function extractProposal(text) {
+  var raw = String(text || '');
+  var m = raw.match(/<<<UZUPE[ŁL]?NIENIE\s*([\s\S]*?)>>>/i);
+  if (!m) return { text: raw, prop: null };
+  var block = m[1];
+  function field(names) {
+    for (var i = 0; i < names.length; i++) {
+      var re = new RegExp('(?:^|\\n)\\s*' + names[i] + '\\s*:\\s*([^\\n]+)', 'i');
+      var hit = block.match(re);
+      if (hit) return hit[1].trim();
+    }
+    return '';
+  }
+  var title = field(['TYTUŁ', 'TYTUL', 'TITLE']);
+  var topic = field(['TEMAT', 'TOPIC']);
+  var body = '';
+  var bm = block.match(/(?:^|\n)\s*TRE[ŚS][ĆC]\s*:\s*([\s\S]*?)(?=(?:\n\s*ŹR[ÓO]D[ŁL]A\s*:)|(?:\n\s*ZRODLA\s*:)|$)/i);
+  if (bm) body = bm[1].trim();
+  var sources = [];
+  var sm = block.match(/(?:^|\n)\s*(?:ŹR[ÓO]D[ŁL]A|ZRODLA)\s*:\s*([\s\S]*)$/i);
+  if (sm) {
+    sm[1].split(/\n/).forEach(function (line) {
+      var u = line.replace(/^[-*•\s]+/, '').trim();
+      if (/^https?:\/\//i.test(u)) sources.push(u);
+    });
+  }
+  if (!title && !body) return { text: raw, prop: null };
+  if (!title) title = topic || 'Uzupełnienie z asystenta';
+  if (!body) body = topic || title;
+  return {
+    text: (raw.slice(0, m.index) + raw.slice(m.index + m[0].length)).replace(/\n{3,}/g, '\n\n').trim(),
+    prop: { title: title, topic: topic, body: body, sources: sources }
+  };
+}
+function propCard(prop) {
+  if (!prop) return '';
+  pendingProp = prop;
+  return '<div class="supprop">' +
+    '<div class="supprop-h">Propozycja do Moich uzupełnień</div>' +
+    '<div class="supprop-t">' + esc(prop.title) + '</div>' +
+    '<div class="supprop-b">' + esc(prop.body) + '</div>' +
+    '<div class="btnrow">' +
+    '<button type="button" class="btn pri" data-supp-ok="1">Zapisz u siebie</button>' +
+    '<button type="button" class="btn" data-supp-no="1">Odrzuć</button>' +
+    '</div></div>';
+}
+function addSupp(prop) {
+  loadSupps();
+  var id = String(Date.now()) + '-' + Math.floor(Math.random() * 1e4);
+  SUPPS.unshift({
+    id: id,
+    title: prop.title,
+    topic: prop.topic || '',
+    body: prop.body,
+    sources: prop.sources || [],
+    created: new Date().toISOString()
+  });
+  saveSupps();
+  renderSuppList();
+  return id;
 }
 
 /* ---------- dymki rozmowy ---------- */
@@ -2175,8 +2326,9 @@ function bubbleAI() {
   feed.appendChild(d);
   return d;
 }
-function fillAI(node, text, sources, cost, extraAnchors) {
-  var r = md(text || '(pusta odpowiedź)');
+function fillAI(node, text, sources, cost, extraAnchors, prop) {
+  var parsed = prop ? { text: text, prop: prop } : extractProposal(text || '');
+  var r = md(parsed.text || '(pusta odpowiedź)');
   var an = r.anchors.concat(extraAnchors || []);   /* najpierw to, co wskazał model */
   var foot = '', seen = {}, shown = 0;
   an.forEach(function (a) {
@@ -2192,7 +2344,8 @@ function fillAI(node, text, sources, cost, extraAnchors) {
     foot += '<a class="srcl" href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(host) + '</a>';
   });
   if (cost) foot += '<span class="cost">koszt ' + esc(cost) + '</span>';
-  node.querySelector('.bub').innerHTML = r.html + (foot ? '<div class="mfoot">' + foot + '</div>' : '');
+  node.querySelector('.bub').innerHTML =
+    r.html + (foot ? '<div class="mfoot">' + foot + '</div>' : '') + propCard(parsed.prop);
 }
 function showError(title, msg) {
   var d = document.createElement('div');
@@ -2234,7 +2387,7 @@ function welcome() {
   }
   feed.innerHTML = fileWarn() +
     '<div class="aihint">Opisz, co się dzieje przy drukarce, albo zrób zdjęcie nieudanego wydruku. ' +
-    'Odpowiem na podstawie Twojego przewodnika, a gdy trzeba — sprawdzę w sieci.</div>' +
+    'Najpierw sprawdzę przewodnik. Gdy tematu brakuje — poszukam w sieci i zaproponuję lokalne uzupełnienie (zatwierdzasz Ty).</div>' +
     '<div class="qchips">' + CHIPS.map(function (c) {
       return '<button data-q="' + esc(c) + '">' + esc(c) + '</button>';
     }).join('') + '</div>';
@@ -2245,6 +2398,22 @@ feed.addEventListener('click', function (e) {
   var b = e.target.closest('button[data-q]');
   if (b) { inp.value = b.dataset.q; send(); return; }
   if (e.target.closest('button[data-open]')) openSheet();
+  var ok = e.target.closest('button[data-supp-ok]');
+  if (ok) {
+    var card = ok.closest('.supprop');
+    if (pendingProp) {
+      addSupp(pendingProp);
+      pendingProp = null;
+      if (card) card.innerHTML = '<div class="supprop-h">Zapisano</div><div class="supprop-b">Wpis jest w „Moje uzupełnienia” (koło zębate). Eksportuj go, żeby przenieść na drugi sprzęt.</div>';
+    }
+    return;
+  }
+  var no = e.target.closest('button[data-supp-no]');
+  if (no) {
+    pendingProp = null;
+    var card2 = no.closest('.supprop');
+    if (card2) card2.parentNode.removeChild(card2);
+  }
 });
 
 /* ---------- zdjecia ---------- */
@@ -2309,9 +2478,9 @@ function loadChat() {
 /* ---------- wysylka ---------- */
 function modelId() { return get(STORE.model, '') || FALLBACK_MODEL; }
 
-function bodyFor(msgs) {
-  var b = { model: modelId(), messages: msgs, stream: true, max_tokens: 1600, usage: { include: true } };
-  if (webChk.checked) b.plugins = [{ id: 'web', max_results: parseInt(get(STORE.webn, '3'), 10) || 3 }];
+function bodyFor(msgs, useWeb) {
+  var b = { model: modelId(), messages: msgs, stream: true, max_tokens: 1800, usage: { include: true } };
+  if (useWeb) b.plugins = [{ id: 'web', max_results: parseInt(get(STORE.webn, '3'), 10) || 3 }];
   return b;
 }
 function money(u) {
@@ -2356,13 +2525,23 @@ function send() {
   } else content = text;
   talk.push({ role: 'user', content: content });
 
-  var chunks = get(STORE.ctx, '1') === '1' ? retrieve(text || 'wada wydruku jakość powierzchni', 14) : [];
+  var q = text || 'wada wydruku jakość powierzchni';
+  var ret = get(STORE.ctx, '1') === '1' ? retrieve(q, 14) : { chunks: [], best: 0, hitTerms: 0, terms: 0 };
+  var chunks = ret.chunks || [];
+  var thin = guideThin(ret);
+  var useWeb = webChk.checked || thin;
+  if (thin && !webChk.checked) {
+    var note = document.createElement('div');
+    note.className = 'webnote';
+    note.textContent = 'W przewodniku mało trafień — dla tego pytania włączam wyszukiwanie w sieci. Zapis do poradnika tylko po Twojej zgodzie.';
+    feed.appendChild(note);
+  }
   var anchors = chunks.slice(0, 3).map(function (c) { return c[0]; });
-  var msgs = [{ role: 'system', content: systemPrompt(chunks) }].concat(trimTalk(talk));
+  var msgs = [{ role: 'system', content: systemPrompt(chunks, thin) }].concat(trimTalk(talk));
 
   var node = bubbleAI();
   scrollDown();
-  stream(msgs, node, anchors);
+  stream(msgs, node, anchors, useWeb);
 }
 
 /* rozmowa wysylana modelowi: ostatnie 10 wiadomosci, zdjecia tylko w ostatniej */
@@ -2382,7 +2561,7 @@ function setBusy(on) {
   sendBtn.title = on ? 'Przerwij' : 'Wyślij';
 }
 
-function stream(msgs, node, anchors) {
+function stream(msgs, node, anchors, useWeb) {
   var ctrl = new AbortController();
   busy = ctrl; setBusy(true);
   var acc = '', sources = [], usage = null, painted = 0;
@@ -2398,11 +2577,13 @@ function stream(msgs, node, anchors) {
     var now = Date.now();
     if (!force && now - painted < 90) return;
     painted = now;
-    node.querySelector('.bub').innerHTML = md(acc).html;
+    var live = extractProposal(acc);
+    node.querySelector('.bub').innerHTML = md(live.text).html;
   }
   function finish() {
     busy = null; setBusy(false);
-    fillAI(node, acc, sources, money(usage), anchors);
+    var parsed = extractProposal(acc);
+    fillAI(node, parsed.text, sources, money(usage), anchors, parsed.prop);
     talk.push({ role: 'assistant', content: acc });
     saveChat();
     scrollDown();
@@ -2421,7 +2602,7 @@ function stream(msgs, node, anchors) {
       'Content-Type': 'application/json',
       'X-Title': 'Przewodnik P2S'
     },
-    body: JSON.stringify(bodyFor(msgs))
+    body: JSON.stringify(bodyFor(msgs, useWeb))
   }).then(function (res) {
     if (!res.ok) {
       return res.text().then(function (t) {
@@ -2494,6 +2675,76 @@ $('aiNew').onclick = function () {
 webChk.addEventListener('change', function () { set(STORE.web, webChk.checked ? '1' : '0'); });
 
 /* ---------- ustawienia ---------- */
+function renderSuppList() {
+  var box = $('suppList');
+  if (!box) return;
+  loadSupps();
+  if (!SUPPS.length) {
+    box.innerHTML = '<p class="fhint" style="margin:0">Brak zapisanych uzupełnień.</p>';
+    return;
+  }
+  box.innerHTML = SUPPS.map(function (s) {
+    var prev = String(s.body || '').slice(0, 120);
+    return '<div class="supitem" data-id="' + esc(s.id) + '">' +
+      '<b>' + esc(s.title || 'Bez tytułu') + '</b>' +
+      '<p>' + esc(prev) + (s.body && s.body.length > 120 ? '…' : '') + '</p>' +
+      '<div class="supact"><button type="button" class="dngr" data-supp-del="' + esc(s.id) + '">Usuń</button></div>' +
+      '</div>';
+  }).join('');
+}
+function exportSupps() {
+  loadSupps();
+  var payload = {
+    v: 1,
+    app: 'przewodnik-p2s',
+    exported: new Date().toISOString(),
+    items: SUPPS
+  };
+  var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'p2s-moje-uzupelnienia.json';
+  a.click();
+  setTimeout(function () { URL.revokeObjectURL(a.href); }, 1500);
+}
+function importSuppsFile(file) {
+  var fr = new FileReader();
+  fr.onload = function () {
+    try {
+      var j = JSON.parse(String(fr.result || ''));
+      var items = Array.isArray(j) ? j : (j && j.items);
+      if (!Array.isArray(items) || !items.length) throw new Error('empty');
+      loadSupps();
+      var byId = {};
+      SUPPS.forEach(function (s) { byId[s.id] = s; });
+      var added = 0;
+      items.forEach(function (it) {
+        if (!it || !it.body) return;
+        var id = it.id || (String(Date.now()) + '-' + Math.floor(Math.random() * 1e4));
+        if (!byId[id]) {
+          byId[id] = {
+            id: id,
+            title: it.title || 'Uzupełnienie',
+            topic: it.topic || '',
+            body: String(it.body),
+            sources: Array.isArray(it.sources) ? it.sources : [],
+            created: it.created || new Date().toISOString()
+          };
+          added++;
+        }
+      });
+      SUPPS = Object.keys(byId).map(function (k) { return byId[k]; })
+        .sort(function (a, b) { return String(b.created).localeCompare(String(a.created)); });
+      saveSupps();
+      renderSuppList();
+      alert(added ? ('Dodano ' + added + ' uzupełnień.') : 'Nic nowego — te wpisy już masz.');
+    } catch (e) {
+      alert('Nie udało się wczytać pliku. Potrzebny jest eksport z tej aplikacji (JSON).');
+    }
+  };
+  fr.readAsText(file);
+}
+
 function openSheet() {
   $('setKey').value    = get(STORE.key, '');
   $('setNote').value   = get(STORE.note, '');
@@ -2502,6 +2753,7 @@ function openSheet() {
   $('setWebN').value   = get(STORE.webn, '3');
   $('setCustom').value = '';
   $('keyStat').textContent = ''; $('keyStat').className = 'kstat';
+  renderSuppList();
   sheet.classList.add('on');
   loadModels();
 }
@@ -2510,6 +2762,23 @@ $('aiCog').onclick = openSheet;
 $('setClose').onclick = closeSheet;
 sheet.addEventListener('click', function (e) { if (e.target === sheet) closeSheet(); });
 $('setShow').addEventListener('change', function () { $('setKey').type = this.checked ? 'text' : 'password'; });
+$('suppExport').onclick = exportSupps;
+$('suppImport').onclick = function () { $('suppFile').click(); };
+$('suppFile').addEventListener('change', function () {
+  var f = ($('suppFile').files || [])[0];
+  $('suppFile').value = '';
+  if (f) importSuppsFile(f);
+});
+$('suppList').addEventListener('click', function (e) {
+  var b = e.target.closest('button[data-supp-del]');
+  if (!b) return;
+  var id = b.getAttribute('data-supp-del');
+  if (!confirm('Usunąć to uzupełnienie z tego urządzenia?')) return;
+  loadSupps();
+  SUPPS = SUPPS.filter(function (s) { return s.id !== id; });
+  saveSupps();
+  renderSuppList();
+});
 
 function price(m) {
   var p = m.pricing || {}, i = parseFloat(p.prompt), o = parseFloat(p.completion);
@@ -2600,8 +2869,11 @@ $('setSave').onclick = function () {
   if (!talk.length) welcome();
 };
 $('setWipe').onclick = function () {
-  if (!confirm('Usunąć klucz, ustawienia i zapisane rozmowy z tego urządzenia?')) return;
-  Object.keys(STORE).forEach(function (k) { del(STORE[k]); });
+  if (!confirm('Usunąć klucz, ustawienia i zapisane rozmowy z tego urządzenia?\n\n„Moje uzupełnienia” zostaną (usuwasz je osobno na liście).')) return;
+  Object.keys(STORE).forEach(function (k) {
+    if (k === 'supps') return;
+    del(STORE[k]);
+  });
   talk = []; pending = []; drawThumbs(); modelsLoaded = false;
   showModel(); closeSheet(); welcome();
 };
@@ -2613,6 +2885,7 @@ function showModel() {
 modelLbl.onclick = openSheet;
 
 /* ---------- start ---------- */
+loadSupps();
 webChk.checked = get(STORE.web, '0') === '1';
 showModel();
 loadChat();

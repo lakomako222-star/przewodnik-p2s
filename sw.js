@@ -1,6 +1,6 @@
 // Service worker - tryb offline dla przewodnika P2S.
 // Wersja 4.0: przewodnik dziala bez sieci, asystent AI korzysta z sieci na biezaco.
-const CACHE = 'p2s-guide-v4-ai';
+const CACHE = 'p2s-guide-v4-ai-supps';
 const FILES = ['./', './index.html', './manifest.webmanifest',
   './icon-192.png', './icon-512.png', './icon-512-maskable.png',
   './apple-touch-icon.png', './favicon-32.png'];
