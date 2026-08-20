@@ -1401,7 +1401,7 @@ table.tt tr.sum td{border-bottom:0;padding-top:10px}
 <div id="sheet">
   <div class="card">
     <h3>Ustawienia asystenta</h3>
-    <p class="sub">Klucz zostaje wyłącznie w pamięci tego urządzenia. Nie wysyłam go nigdzie poza OpenRouter.</p>
+    <p class="sub">Klucz zostaje wyłącznie w pamięci tego urządzenia. Nie wysyłam go nigdzie poza OpenRouter.<br><span style="opacity:.8">Wersja aplikacji: 4.0.1 (uzupełnienia)</span></p>
 
     <div class="fld">
       <label for="setKey">Klucz OpenRouter</label>
@@ -2895,7 +2895,16 @@ loadChat();
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('sw.js').catch(function () {});
+    navigator.serviceWorker.register('sw.js').then(function (reg) {
+      try { reg.update(); } catch (e) {}
+      setInterval(function () { try { reg.update(); } catch (e) {} }, 30 * 60 * 1000);
+    }).catch(function () {});
+    var refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (refreshing) return;
+      refreshing = true;
+      location.reload();
+    });
   });
 }
 </script>

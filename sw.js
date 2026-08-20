@@ -1,6 +1,6 @@
 // Service worker - tryb offline dla przewodnika P2S.
-// Wersja 4.0: przewodnik dziala bez sieci, asystent AI korzysta z sieci na biezaco.
-const CACHE = 'p2s-guide-v4-ai-supps';
+// bump CACHE przy kazdej publikacji, zeby telefon zrzucil stara pamiec.
+const CACHE = 'p2s-guide-v4-ai-supps2';
 const FILES = ['./', './index.html', './manifest.webmanifest',
   './icon-192.png', './icon-512.png', './icon-512-maskable.png',
   './apple-touch-icon.png', './favicon-32.png'];
@@ -16,12 +16,35 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  if (e.request.method !== 'GET') return;                       // zapytania do modelu ida prosto do sieci
+  if (e.request.method !== 'GET') return;
 
   let url;
   try { url = new URL(e.request.url); } catch (err) { return; }
-  if (url.origin !== self.location.origin) return;              // openrouter.ai nigdy nie trafia do pamieci
+  if (url.origin !== self.location.origin) return;
 
+  const path = url.pathname;
+  const isHtml = e.request.mode === 'navigate' ||
+    path.endsWith('/') ||
+    path.endsWith('/index.html') ||
+    path.endsWith('index.html');
+
+  // HTML: najpierw siec, zeby zainstalowana PWA nie zostala na starej wersji.
+  if (isHtml) {
+    e.respondWith(
+      fetch(e.request).then(res => {
+        const copy = res.clone();
+        caches.open(CACHE).then(c => {
+          c.put(e.request, copy);
+          c.put('./index.html', copy.clone()).catch(() => {});
+        }).catch(() => {});
+        return res;
+      }).catch(() => caches.match(e.request)
+        .then(hit => hit || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  // Ikony / manifest: cache, potem siec.
   e.respondWith(
     caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
       const copy = res.clone();
