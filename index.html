@@ -158,8 +158,8 @@ table.tt td:nth-child(3){text-align:right;font-weight:600}
 table.tt tr.sum td{border-bottom:0;padding-top:10px}
 #tabs{position:fixed;left:0;right:0;bottom:0;z-index:42;display:flex;background:var(--bg);
  border-top:1px solid var(--line);padding:0 0 env(safe-area-inset-bottom)}
-.tab{flex:1;padding:12px 4px 13px;border:0;background:transparent;color:var(--mut);
- font-size:.8rem;font-weight:650;cursor:pointer;border-top:2px solid transparent}
+.tab{flex:1;padding:10px 2px 12px;border:0;background:transparent;color:var(--mut);
+ font-size:.68rem;font-weight:650;cursor:pointer;border-top:2px solid transparent;line-height:1.15}
 .tab.on{color:var(--g);border-top-color:var(--g)}
 .chips{display:flex;gap:7px;overflow-x:auto;padding:2px 0 4px;margin:0 0 6px;-webkit-overflow-scrolling:touch}
 .chips a{flex:0 0 auto;font-size:.79rem;text-decoration:none;background:var(--chip);color:var(--t);
@@ -1401,7 +1401,7 @@ table.tt tr.sum td{border-bottom:0;padding-top:10px}
 <div id="sheet">
   <div class="card">
     <h3>Ustawienia asystenta</h3>
-    <p class="sub">Klucz zostaje wyłącznie w pamięci tego urządzenia. Nie wysyłam go nigdzie poza OpenRouter.<br><span style="opacity:.8">Wersja aplikacji: 4.0.2 (aktualizator APK)</span></p>
+    <p class="sub">Klucz zostaje wyłącznie w pamięci tego urządzenia. Nie wysyłam go nigdzie poza OpenRouter.<br><span style="opacity:.8">Wersja aplikacji: 4.0.3 (sync GitHub)</span></p>
 
     <div class="fld">
       <label for="setKey">Klucz OpenRouter</label>
@@ -1447,21 +1447,23 @@ table.tt tr.sum td{border-bottom:0;padding-top:10px}
 
     <div class="fld">
       <label>Moje uzupełnienia</label>
-      <p class="fhint">Wpisy, które zatwierdzasz po propozycji asystenta. Zostają tylko na tym urządzeniu — nie zmieniają publicznego poradnika. Eksport / import przenosi je między telefonem a PC.</p>
+      <p class="fhint">Wpisy zatwierdzone przez Ciebie. Synchronizacja tel↔PC jest w zakładce <b>Aktualizuj</b> (GitHub).</p>
       <div id="suppList" class="supplist"></div>
-      <div class="btnrow" style="margin-top:8px">
-        <button type="button" class="btn" id="suppExport">Eksportuj</button>
-        <button type="button" class="btn" id="suppImport">Importuj</button>
-      </div>
-      <input id="suppFile" type="file" accept="application/json,.json" style="display:none">
+    </div>
+
+    <div class="fld">
+      <label for="setGh">Token GitHub (do wysyłania bazy)</label>
+      <input id="setGh" type="password" autocomplete="off" spellcheck="false" placeholder="ghp_… albo fine-grained">
+      <p class="fhint">
+        <label class="tgl" style="display:inline-flex;margin-top:6px"><input type="checkbox" id="setGhShow"> pokaż token</label><br>
+        Potrzebny tylko do <b>wysyłania</b> uzupełnień. Zakładasz na github.com/settings/tokens (uprawnienie Contents do repo przewodnik-p2s). Zostaje wyłącznie na tym urządzeniu.
+      </p>
     </div>
 
     <div class="fld" id="apkUpdateBox" style="display:none">
-      <label>Aktualizacja aplikacji</label>
+      <label>Aktualizacja aplikacji (APK)</label>
       <p class="fhint" id="apkVerHint">Wersja zainstalowana: —</p>
-      <div class="btnrow" style="margin-top:8px">
-        <button type="button" class="btn pri" id="apkCheckUpdate">Sprawdź aktualizację</button>
-      </div>
+      <p class="fhint">Albo użyj zakładki <b>Aktualizuj</b>.</p>
     </div>
 
     <div class="btnrow">
@@ -1477,11 +1479,41 @@ table.tt tr.sum td{border-bottom:0;padding-top:10px}
   </div>
 </div>
 
+
+<section id="view-sync" class="view">
+  <div class="vhead">
+    <h1 class="vtitle">Aktualizuj</h1>
+    <p class="vsub">Baza uzupełnień na GitHubie albo nowa wersja poradnika w aplikacji.</p>
+  </div>
+
+  <div class="tool">
+    <h3>Aktualizuj bazę</h3>
+    <p class="th">„Moje uzupełnienia” — synchronizacja telefon ↔ komputer przez GitHub. Nie rusza oficjalnego poradnika.</p>
+    <p class="fhint" id="syncBaseStat">Lokalnie: —</p>
+    <div class="btnrow" style="margin-top:10px">
+      <button type="button" class="btn pri" id="syncPush">Wyślij na GitHub</button>
+      <button type="button" class="btn" id="syncPull">Pobierz z GitHub</button>
+    </div>
+    <p class="tnote">Do wysyłania wklej token w Asystent → koło zębate. Pobieranie działa też bez tokenu (publiczne repo).</p>
+  </div>
+
+  <div class="tool">
+    <h3>Aktualizuj poradnik</h3>
+    <p class="th">Nowa wersja całej aplikacji (treść przewodnika + asystent). Na telefonie z APK instaluje się na wierzchu starej.</p>
+    <p class="fhint" id="syncGuideVer">Wersja: —</p>
+    <div class="btnrow" style="margin-top:10px">
+      <button type="button" class="btn pri" id="syncGuideBtn">Sprawdź i zaktualizuj</button>
+    </div>
+    <p class="tnote" id="syncGuideHint">W APK pobiera instalator. W przeglądarce odświeża stronę z hostingu.</p>
+  </div>
+</section>
+
 <nav id="tabs">
   <button class="tab on" data-v="guide">Przewodnik</button>
   <button class="tab" data-v="advisor">Doradca</button>
   <button class="tab" data-v="tools">Narzędzia</button>
   <button class="tab" data-v="ai">Asystent</button>
+  <button class="tab" data-v="sync">Aktualizuj</button>
 </nav>
 
 
@@ -1586,7 +1618,8 @@ var views = {
   guide: document.querySelector('main'),
   advisor: document.getElementById('view-advisor'),
   tools: document.getElementById('view-tools'),
-  ai: document.getElementById('view-ai')
+  ai: document.getElementById('view-ai'),
+  sync: document.getElementById('view-sync')
 };
 var tabs = document.getElementById('tabs');
 var current = 'guide';
@@ -2002,7 +2035,14 @@ var API   = 'https://openrouter.ai/api/v1';
 var STORE = {
   key:  'p2s.ai.key',   model: 'p2s.ai.model', web:  'p2s.ai.web',
   webn: 'p2s.ai.webn',  ctx:   'p2s.ai.ctx',   note: 'p2s.ai.note',
-  chat: 'p2s.ai.chat',  supps: 'p2s.ai.supps'
+  chat: 'p2s.ai.chat',  supps: 'p2s.ai.supps', gh: 'p2s.ai.gh'
+};
+/* Baza uzupelnien na publicznym repo (pull bez tokenu, push z tokenem). */
+var GH_SYNC = {
+  owner: 'lakomako222-star',
+  repo: 'przewodnik-p2s',
+  path: 'userdata/moje-uzupelnienia.json',
+  api: 'https://api.github.com'
 };
 /* Kolejnosc preferencji. Pierwszy model, ktory naprawde istnieje na OpenRouter, zostaje domyslny. */
 var WANTED = ['anthropic/claude-sonnet-4.5','anthropic/claude-sonnet-4','openai/gpt-4.1',
@@ -2700,57 +2740,171 @@ function renderSuppList() {
       '</div>';
   }).join('');
 }
-function exportSupps() {
+function b64encodeUtf8(str) {
+  var bytes = new TextEncoder().encode(str);
+  var bin = '';
+  for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin);
+}
+function b64decodeUtf8(b64) {
+  var bin = atob(b64);
+  var bytes = new Uint8Array(bin.length);
+  for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+function ghHeaders(token) {
+  var h = {
+    'Accept': 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28'
+  };
+  if (token) h['Authorization'] = 'Bearer ' + token;
+  return h;
+}
+function ghContentsUrl() {
+  return GH_SYNC.api + '/repos/' + GH_SYNC.owner + '/' + GH_SYNC.repo + '/contents/' + GH_SYNC.path;
+}
+function mergeSuppItems(items) {
   loadSupps();
-  var payload = {
+  var byId = {};
+  SUPPS.forEach(function (s) { byId[s.id] = s; });
+  var added = 0, updated = 0;
+  (items || []).forEach(function (it) {
+    if (!it || !it.body) return;
+    var id = it.id || (String(Date.now()) + '-' + Math.floor(Math.random() * 1e4));
+    var row = {
+      id: id,
+      title: it.title || 'Uzupełnienie',
+      topic: it.topic || '',
+      body: String(it.body),
+      sources: Array.isArray(it.sources) ? it.sources : [],
+      created: it.created || new Date().toISOString()
+    };
+    if (byId[id]) {
+      if (JSON.stringify(byId[id]) !== JSON.stringify(row)) updated++;
+      byId[id] = row;
+    } else {
+      byId[id] = row;
+      added++;
+    }
+  });
+  SUPPS = Object.keys(byId).map(function (k) { return byId[k]; })
+    .sort(function (a, b) { return String(b.created).localeCompare(String(a.created)); });
+  saveSupps();
+  renderSuppList();
+  refreshSyncStats();
+  return { added: added, updated: updated, total: SUPPS.length };
+}
+function buildSuppPayload() {
+  loadSupps();
+  return {
     v: 1,
     app: 'przewodnik-p2s',
     exported: new Date().toISOString(),
     items: SUPPS
   };
-  var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'p2s-moje-uzupelnienia.json';
-  a.click();
-  setTimeout(function () { URL.revokeObjectURL(a.href); }, 1500);
 }
-function importSuppsFile(file) {
-  var fr = new FileReader();
-  fr.onload = function () {
+function setSyncStat(msg, ok) {
+  var el = $('syncBaseStat');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = ok === false ? '#d9534a' : (ok === true ? 'var(--g)' : '');
+}
+function refreshSyncStats() {
+  loadSupps();
+  var el = $('syncBaseStat');
+  if (el) el.textContent = 'Lokalnie: ' + SUPPS.length + ' uzupełnień.';
+  var gv = $('syncGuideVer');
+  if (gv) {
+    var vn = window.P2S_VER_NAME || '';
     try {
-      var j = JSON.parse(String(fr.result || ''));
-      var items = Array.isArray(j) ? j : (j && j.items);
-      if (!Array.isArray(items) || !items.length) throw new Error('empty');
-      loadSupps();
-      var byId = {};
-      SUPPS.forEach(function (s) { byId[s.id] = s; });
-      var added = 0;
-      items.forEach(function (it) {
-        if (!it || !it.body) return;
-        var id = it.id || (String(Date.now()) + '-' + Math.floor(Math.random() * 1e4));
-        if (!byId[id]) {
-          byId[id] = {
-            id: id,
-            title: it.title || 'Uzupełnienie',
-            topic: it.topic || '',
-            body: String(it.body),
-            sources: Array.isArray(it.sources) ? it.sources : [],
-            created: it.created || new Date().toISOString()
-          };
-          added++;
-        }
+      if (window.P2SNative && typeof window.P2SNative.versionName === 'function') vn = window.P2SNative.versionName();
+    } catch (e) {}
+    gv.textContent = vn ? ('Wersja aplikacji: ' + vn) : 'Wersja: strona WWW / PWA';
+  }
+  var hint = $('syncGuideHint');
+  if (hint) {
+    hint.textContent = (window.P2SNative && typeof window.P2SNative.checkUpdate === 'function')
+      ? 'W APK pobiera instalator i proponuje instalację na wierzchu.'
+      : 'W przeglądarce odświeża poradnik z hostingu GitHub Pages.';
+  }
+}
+function pushSuppsToGitHub() {
+  var token = get(STORE.gh, '').trim();
+  if (!token) {
+    setSyncStat('Brak tokenu GitHub — wklej go w Asystent → koło zębate.', false);
+    openSheet();
+    return;
+  }
+  setSyncStat('Wysyłam na GitHub…');
+  var payload = JSON.stringify(buildSuppPayload(), null, 2);
+  var url = ghContentsUrl();
+  fetch(url, { headers: ghHeaders(token) })
+    .then(function (r) {
+      if (r.status === 404) return null;
+      if (!r.ok) throw new Error('GET ' + r.status);
+      return r.json();
+    })
+    .then(function (meta) {
+      var body = {
+        message: 'Aktualizacja bazy uzupełnień P2S',
+        content: b64encodeUtf8(payload),
+        branch: 'main'
+      };
+      if (meta && meta.sha) body.sha = meta.sha;
+      return fetch(url, {
+        method: 'PUT',
+        headers: Object.assign({ 'Content-Type': 'application/json' }, ghHeaders(token)),
+        body: JSON.stringify(body)
       });
-      SUPPS = Object.keys(byId).map(function (k) { return byId[k]; })
-        .sort(function (a, b) { return String(b.created).localeCompare(String(a.created)); });
-      saveSupps();
-      renderSuppList();
-      alert(added ? ('Dodano ' + added + ' uzupełnień.') : 'Nic nowego — te wpisy już masz.');
-    } catch (e) {
-      alert('Nie udało się wczytać pliku. Potrzebny jest eksport z tej aplikacji (JSON).');
+    })
+    .then(function (r) {
+      if (!r.ok) {
+        return r.json().catch(function () { return {}; }).then(function (j) {
+          throw new Error((j && j.message) || ('HTTP ' + r.status));
+        });
+      }
+      setSyncStat('Wysłano ' + SUPPS.length + ' uzupełnień na GitHub.', true);
+    })
+    .catch(function (e) {
+      setSyncStat('Nie udało się wysłać: ' + (e && e.message ? e.message : e), false);
+    });
+}
+function pullSuppsFromGitHub() {
+  setSyncStat('Pobieram z GitHub…');
+  var token = get(STORE.gh, '').trim();
+  fetch(ghContentsUrl() + '?ref=main', { headers: ghHeaders(token || null) })
+    .then(function (r) {
+      if (r.status === 404) throw new Error('Na GitHubie jeszcze nie ma bazy — najpierw Wyślij z któregoś urządzenia.');
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function (meta) {
+      if (!meta || !meta.content) throw new Error('Pusty plik na GitHubie');
+      var raw = b64decodeUtf8(String(meta.content).replace(/\n/g, ''));
+      var j = JSON.parse(raw);
+      var items = Array.isArray(j) ? j : (j && j.items);
+      if (!Array.isArray(items)) throw new Error('Zły format pliku');
+      var m = mergeSuppItems(items);
+      setSyncStat('Pobrano. Nowe: ' + m.added + ', zaktualizowane: ' + m.updated + ', łącznie lokalnie: ' + m.total + '.', true);
+    })
+    .catch(function (e) {
+      setSyncStat('Nie udało się pobrać: ' + (e && e.message ? e.message : e), false);
+    });
+}
+function updateGuide() {
+  try {
+    if (window.P2SNative && typeof window.P2SNative.checkUpdate === 'function') {
+      window.P2SNative.checkUpdate();
+      return;
     }
-  };
-  fr.readAsText(file);
+  } catch (e) {}
+  setSyncStat('Odświeżam poradnik z hostingu…');
+  var u = 'https://lakomako222-star.github.io/przewodnik-p2s/?t=' + Date.now();
+  if (location.protocol === 'http:' || location.protocol === 'https:') {
+    location.reload();
+  } else {
+    location.href = u;
+  }
 }
 
 function showApkUpdateUi() {
@@ -2775,6 +2929,7 @@ window.P2S_onApkReady = showApkUpdateUi;
 
 function openSheet() {
   $('setKey').value    = get(STORE.key, '');
+  if ($('setGh')) $('setGh').value = get(STORE.gh, '');
   $('setNote').value   = get(STORE.note, '');
   $('setWeb').checked  = get(STORE.web, '0') === '1';
   $('setCtx').checked  = get(STORE.ctx, '1') === '1';
@@ -2791,25 +2946,21 @@ $('aiCog').onclick = openSheet;
 $('setClose').onclick = closeSheet;
 sheet.addEventListener('click', function (e) { if (e.target === sheet) closeSheet(); });
 $('setShow').addEventListener('change', function () { $('setKey').type = this.checked ? 'text' : 'password'; });
-$('suppExport').onclick = exportSupps;
-$('suppImport').onclick = function () { $('suppFile').click(); };
-$('suppFile').addEventListener('change', function () {
-  var f = ($('suppFile').files || [])[0];
-  $('suppFile').value = '';
-  if (f) importSuppsFile(f);
-});
-if ($('apkCheckUpdate')) {
-  $('apkCheckUpdate').onclick = function () {
-    try {
-      if (window.P2SNative && typeof window.P2SNative.checkUpdate === 'function') {
-        window.P2SNative.checkUpdate();
-      } else {
-        alert('Aktualizacja z poziomu aplikacji działa tylko w APK na telefonie.');
-      }
-    } catch (e) {
-      alert('Nie udało się uruchomić sprawdzania aktualizacji.');
-    }
-  };
+if ($('setGhShow')) {
+  $('setGhShow').addEventListener('change', function () {
+    if ($('setGh')) $('setGh').type = this.checked ? 'text' : 'password';
+  });
+}
+if ($('syncPush')) $('syncPush').onclick = pushSuppsToGitHub;
+if ($('syncPull')) $('syncPull').onclick = pullSuppsFromGitHub;
+if ($('syncGuideBtn')) $('syncGuideBtn').onclick = updateGuide;
+refreshSyncStats();
+var _tabs = document.getElementById('tabs');
+if (_tabs) {
+  _tabs.addEventListener('click', function (e) {
+    var b = e.target.closest('.tab');
+    if (b && b.dataset.v === 'sync') refreshSyncStats();
+  });
 }
 $('suppList').addEventListener('click', function (e) {
   var b = e.target.closest('button[data-supp-del]');
@@ -2899,6 +3050,10 @@ $('setTest').onclick = function () {
 $('setSave').onclick = function () {
   var k = $('setKey').value.trim();
   if (k) set(STORE.key, k); else del(STORE.key);
+  if ($('setGh')) {
+    var g = $('setGh').value.trim();
+    if (g) set(STORE.gh, g); else del(STORE.gh);
+  }
   var custom = $('setCustom').value.trim();
   set(STORE.model, custom || $('setModel').value || FALLBACK_MODEL);
   set(STORE.note, $('setNote').value.trim());
@@ -2913,7 +3068,7 @@ $('setSave').onclick = function () {
 $('setWipe').onclick = function () {
   if (!confirm('Usunąć klucz, ustawienia i zapisane rozmowy z tego urządzenia?\n\n„Moje uzupełnienia” zostaną (usuwasz je osobno na liście).')) return;
   Object.keys(STORE).forEach(function (k) {
-    if (k === 'supps') return;
+    if (k === 'supps' || k === 'gh') return;
     del(STORE[k]);
   });
   talk = []; pending = []; drawThumbs(); modelsLoaded = false;
