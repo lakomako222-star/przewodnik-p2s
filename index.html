@@ -327,6 +327,33 @@ h2{letter-spacing:-.2px}
  *{transition:none!important;animation:none!important}
 }
 
+
+/* ===== Analiza modelu ===== */
+.filebtn{display:inline-block;padding:12px 16px;border-radius:12px;background:var(--g);color:#fff;
+ font-weight:700;font-size:.95rem;cursor:pointer;border:0}
+.filebtn input{display:none}
+.fname{font-size:.82rem;color:var(--mut);margin:8px 0 10px;word-break:break-all}
+.chk{display:flex!important;flex-direction:row!important;align-items:center;gap:8px!important;
+ font-size:.82rem;color:var(--mut);margin:8px 0}
+.chk input{width:auto!important;flex:0 0 auto;accent-color:var(--g)}
+#aOpt{margin:8px 0 12px;border:1px solid var(--line);border-radius:12px;padding:0 12px 8px;background:var(--zeb)}
+#aOpt summary{font-size:.85rem;font-weight:700;color:var(--mut);cursor:pointer;padding:10px 0;list-style:none}
+#aOpt summary::-webkit-details-marker{display:none}
+#aOpt[open] summary{color:var(--g)}
+.busy{font-size:.88rem;color:var(--mut);padding:8px 0}
+.bn{border-left:4px solid var(--g);background:color-mix(in srgb,var(--g) 10%,var(--bg));
+ border-radius:0 12px 12px 0;padding:12px 14px;margin:0 0 12px;font-size:.95rem;line-height:1.5}
+.bn b{color:var(--g)}
+.g1,.g2,.g3{border-radius:12px;padding:10px 12px;margin:0 0 8px;font-size:.9rem}
+.g1{background:color-mix(in srgb,#0f7b5a 12%,var(--bg));border:1px solid color-mix(in srgb,#0f7b5a 35%,var(--line))}
+.g2{background:color-mix(in srgb,#17627e 12%,var(--bg));border:1px solid color-mix(in srgb,#17627e 35%,var(--line))}
+.g3{background:var(--chip);border:1px solid var(--line)}
+.gain{color:var(--g);font-weight:700;white-space:nowrap}
+.kv{display:flex;flex-wrap:wrap;gap:8px 14px;margin:0 0 12px;font-size:.86rem;color:var(--mut)}
+.kv span{color:var(--ink);font-weight:650}
+.err{border-left:4px solid #c0392b;background:color-mix(in srgb,#c0392b 9%,var(--bg));
+ border-radius:0 12px 12px 0;padding:11px 13px;font-size:.9rem;margin:8px 0}
+
 </style>
 </head>
 <body>
@@ -1679,6 +1706,37 @@ h2{letter-spacing:-.2px}
     </div>
     <div id="kOut" class="tout"></div>
   </div>
+
+  <div class="tool" id="tAnal">
+    <h3>Analiza modelu</h3>
+    <p class="th">Wrzuć plik STL albo 3MF. Policzę geometrię, wskażę wąskie gardło i powiem, ile minut da się urwać.</p>
+    <label class="filebtn">Wybierz plik
+      <input id="aFile" type="file" accept=".stl,.3mf,.STL,.3MF" hidden>
+    </label>
+    <div id="aName" class="fname"></div>
+
+    <details id="aOpt">
+      <summary>Ustawienia druku</summary>
+      <p class="th">Z 3MF wczytają się same. Dla STL podaj je tutaj.</p>
+      <div class="row">
+        <label>Wysokość warstwy (mm)<select id="aLayer">
+          <option>0,12</option><option>0,16</option><option>0,20</option>
+          <option selected>0,24</option><option>0,28</option></select></label>
+        <label>Ściany (pętle)<input id="aWalls" type="number" inputmode="numeric" value="3" min="1" max="8"></label>
+      </div>
+      <div class="row">
+        <label>Wypełnienie (%)<input id="aInfill" type="number" inputmode="numeric" value="15" min="0" max="100"></label>
+        <label>MVS (mm&sup3;/s)<input id="aMvs" type="number" inputmode="decimal" value="14" min="1" max="40"></label>
+      </div>
+      <div class="row">
+        <label>Min. czas warstwy (s)<input id="aMinT" type="number" inputmode="numeric" value="12" min="0" max="60"></label>
+        <label>Gęstość (g/cm&sup3;)<input id="aDens" type="number" inputmode="decimal" value="1,25"></label>
+      </div>
+      <label class="chk"><input id="aSup" type="checkbox"> podpory włączone</label>
+    </details>
+
+    <div id="aOut" class="tout"></div>
+  </div>
 </section>
 
 <section id="view-ai" class="view">
@@ -1712,7 +1770,7 @@ h2{letter-spacing:-.2px}
 <div id="sheet">
   <div class="card">
     <h3>Ustawienia asystenta</h3>
-    <p class="sub">Klucz zostaje wyłącznie w pamięci tego urządzenia. Nie wysyłam go nigdzie poza OpenRouter.<br><span style="opacity:.8">Wersja aplikacji: 4.0.5 (SVG + UX)</span></p>
+    <p class="sub">Klucz zostaje wyłącznie w pamięci tego urządzenia. Nie wysyłam go nigdzie poza OpenRouter.<br><span style="opacity:.8">Wersja aplikacji: 4.0.6 (analiza modelu)</span></p>
 
     <div class="fld">
       <label for="setKey">Klucz OpenRouter</label>
@@ -2329,6 +2387,635 @@ function renderScale() {
 }
 ['kScale','kMass'].forEach(function (id) { document.getElementById(id).addEventListener('input', renderScale); });
 renderScale();
+
+
+/* ===== ANALIZA MODELU (STL/3MF) — offline ===== */
+/* ---------- ZIP: tylko odczyt, DecompressionStream do deflate ---------- */
+async function unzipEntries(buf) {
+  const dv = new DataView(buf);
+  const u8 = new Uint8Array(buf);
+  // szukamy End Of Central Directory od konca
+  let eocd = -1;
+  for (let i = u8.length - 22; i >= 0 && i > u8.length - 66000; i--) {
+    if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  }
+  if (eocd < 0) throw new Error('To nie jest plik ZIP ani 3MF.');
+  const n = dv.getUint16(eocd + 10, true);
+  let p = dv.getUint32(eocd + 16, true);
+  const out = {};
+  for (let k = 0; k < n; k++) {
+    if (dv.getUint32(p, true) !== 0x02014b50) break;
+    const method = dv.getUint16(p + 10, true);
+    const csize = dv.getUint32(p + 20, true);
+    const nameLen = dv.getUint16(p + 28, true);
+    const extraLen = dv.getUint16(p + 30, true);
+    const cmtLen = dv.getUint16(p + 32, true);
+    const lho = dv.getUint32(p + 42, true);
+    const name = new TextDecoder().decode(u8.subarray(p + 46, p + 46 + nameLen));
+    // lokalny naglowek: dlugosci pol moga sie roznic od tych w katalogu
+    const lNameLen = dv.getUint16(lho + 26, true);
+    const lExtraLen = dv.getUint16(lho + 28, true);
+    const start = lho + 30 + lNameLen + lExtraLen;
+    const raw = u8.subarray(start, start + csize);
+    out[name] = { method, raw };
+    p += 46 + nameLen + extraLen + cmtLen;
+  }
+  return out;
+}
+
+async function entryBytes(e) {
+  if (e.method === 0) return e.raw;
+  if (e.method !== 8) throw new Error('Nieobsługiwana kompresja w ZIP (metoda ' + e.method + ').');
+  if (typeof DecompressionStream === 'undefined')
+    throw new Error('Ta przeglądarka nie umie rozpakować 3MF. Wgraj plik STL.');
+  const ds = new DecompressionStream('deflate-raw');
+  const stream = new Blob([e.raw]).stream().pipeThrough(ds);
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+
+/* ---------- STL ---------- */
+function parseSTL(buf) {
+  const u8 = new Uint8Array(buf);
+  const dv = new DataView(buf);
+  // binarny? 84 + 50*n powinno pasowac do dlugosci
+  let binary = false;
+  if (buf.byteLength >= 84) {
+    const n = dv.getUint32(80, true);
+    if (84 + n * 50 === buf.byteLength) binary = true;
+  }
+  const tri = [];
+  if (binary) {
+    const n = dv.getUint32(80, true);
+    let o = 84;
+    for (let i = 0; i < n; i++) {
+      o += 12; // normalna - liczymy wlasna
+      for (let k = 0; k < 3; k++) {
+        tri.push(dv.getFloat32(o, true), dv.getFloat32(o + 4, true), dv.getFloat32(o + 8, true));
+        o += 12;
+      }
+      o += 2;
+    }
+  } else {
+    const txt = new TextDecoder().decode(u8);
+    const re = /vertex\s+(-?[\d.eE+-]+)\s+(-?[\d.eE+-]+)\s+(-?[\d.eE+-]+)/g;
+    let m;
+    while ((m = re.exec(txt)) !== null) tri.push(+m[1], +m[2], +m[3]);
+  }
+  if (tri.length < 9) throw new Error('Nie znalazłem trójkątów w tym pliku STL.');
+  return weld(new Float64Array(tri));
+}
+
+/* sklejanie powtorzonych wierzcholkow - potrzebne do topologii */
+function weld(flat) {
+  const map = new Map();
+  const V = [];
+  const F = new Uint32Array(flat.length / 3);
+  const q = 1e5; // 0,00001 mm
+  for (let i = 0, j = 0; i < flat.length; i += 3, j++) {
+    const x = flat[i], y = flat[i + 1], z = flat[i + 2];
+    const key = Math.round(x * q) + ',' + Math.round(y * q) + ',' + Math.round(z * q);
+    let id = map.get(key);
+    if (id === undefined) { id = V.length / 3; map.set(key, id); V.push(x, y, z); }
+    F[j] = id;
+  }
+  return { V: new Float64Array(V), F };
+}
+
+/* ---------- 3MF ---------- */
+/* Uwaga: realne pliki z MakerWorld trzymaja siatki w 3D/Objects/*.model
+   i odwoluja sie do nich przez <component p:path="...">. Trzeba za tym pojsc. */
+function meshesFromDoc(doc, srcName) {
+  const out = new Map();          // id -> {V,F,name}
+  const comps = new Map();        // id -> [{objectid, path, transform}]
+  for (const o of doc.getElementsByTagName('object')) {
+    const id = o.getAttribute('id');
+    const vs = o.getElementsByTagName('vertex');
+    const ts = o.getElementsByTagName('triangle');
+    if (vs.length && ts.length) {
+      const V = new Float64Array(vs.length * 3);
+      for (let i = 0; i < vs.length; i++) {
+        V[i*3]   = +vs[i].getAttribute('x');
+        V[i*3+1] = +vs[i].getAttribute('y');
+        V[i*3+2] = +vs[i].getAttribute('z');
+      }
+      const F = new Uint32Array(ts.length * 3);
+      for (let i = 0; i < ts.length; i++) {
+        F[i*3]   = +ts[i].getAttribute('v1');
+        F[i*3+1] = +ts[i].getAttribute('v2');
+        F[i*3+2] = +ts[i].getAttribute('v3');
+      }
+      out.set(id, { V, F, name: o.getAttribute('name') || ('obiekt ' + id) });
+    }
+    const cs = o.getElementsByTagName('component');
+    if (cs.length) {
+      const list = [];
+      for (const c of cs) list.push({
+        objectid: c.getAttribute('objectid'),
+        path: c.getAttribute('p:path') || c.getAttributeNS('*', 'path') || null,
+        transform: c.getAttribute('transform'),
+        name: o.getAttribute('name') || ('obiekt ' + id),
+      });
+      comps.set(id, list);
+    }
+  }
+  return { out, comps, srcName };
+}
+
+function applyTransform(V, tstr) {
+  if (!tstr) return V;
+  const m = tstr.trim().split(/\s+/).map(Number);
+  if (m.length !== 12 || m.some(x => !isFinite(x))) return V;
+  const W = new Float64Array(V.length);
+  for (let i = 0; i < V.length; i += 3) {
+    const x = V[i], y = V[i+1], z = V[i+2];
+    W[i]   = m[0]*x + m[3]*y + m[6]*z + m[9];
+    W[i+1] = m[1]*x + m[4]*y + m[7]*z + m[10];
+    W[i+2] = m[2]*x + m[5]*y + m[8]*z + m[11];
+  }
+  return W;
+}
+
+async function parse3MF(buf) {
+  const entries = await unzipEntries(buf);
+  const rootName = Object.keys(entries).find(k => /^3D\/3dmodel\.model$/i.test(k))
+                || Object.keys(entries).find(k => /3dmodel\.model$/i.test(k));
+  if (!rootName) throw new Error('W 3MF nie ma pliku 3D/3dmodel.model.');
+
+  const parseXml = async (name) => {
+    const e = entries[name] || entries[name.replace(/^\//, '')];
+    if (!e) return null;
+    const xml = new TextDecoder().decode(await entryBytes(e));
+    const d = new DOMParser().parseFromString(xml, 'application/xml');
+    return d.querySelector('parsererror') ? null : d;
+  };
+
+  const rootDoc = await parseXml(rootName);
+  if (!rootDoc) throw new Error('Uszkodzony XML w 3MF.');
+  const root = meshesFromDoc(rootDoc, rootName);
+
+  // dociagnij pliki, do ktorych odwoluja sie komponenty
+  const extra = new Map();
+  const wanted = new Set();
+  for (const list of root.comps.values())
+    for (const c of list) if (c.path) wanted.add(c.path.replace(/^\//, ''));
+  for (const w of wanted) {
+    const d = await parseXml(w);
+    if (d) extra.set(w, meshesFromDoc(d, w));
+  }
+
+  const parts = [];
+  const pushMesh = (mesh, name, transform) => {
+    if (!mesh) return;
+    parts.push({ name, V: applyTransform(mesh.V, transform), F: mesh.F });
+  };
+  // obiekty najwyzszego poziomu: albo wlasna siatka, albo komponenty
+  for (const [id, mesh] of root.out) pushMesh(mesh, mesh.name, null);
+  for (const [id, list] of root.comps) {
+    for (const c of list) {
+      const src = c.path ? extra.get(c.path.replace(/^\//, '')) : root;
+      if (!src) continue;
+      pushMesh(src.out.get(c.objectid), c.name, c.transform);
+    }
+  }
+  if (!parts.length) throw new Error('3MF nie zawiera danych geometrycznych.');
+
+  const readText = async (rx) => {
+    const n = Object.keys(entries).find(k => rx.test(k));
+    if (!n) return null;
+    try { return new TextDecoder().decode(await entryBytes(entries[n])); } catch (e) { return null; }
+  };
+  let cfg = null;
+  const cfgTxt = await readText(/project_settings\.config$/i);
+  if (cfgTxt) { try { cfg = JSON.parse(cfgTxt); } catch (e) {} }
+
+  // pociety projekt niesie gotowy czas i mase - to najlepsza mozliwa kotwica
+  let slice = null;
+  const sliceTxt = await readText(/slice_info\.config$/i);
+  if (sliceTxt) {
+    const g = (k) => { const m = sliceTxt.match(new RegExp('key="' + k + '"\\s+value="([^"]*)"')); return m ? m[1] : null; };
+    const pred = parseFloat(g('prediction'));
+    const wt = parseFloat(g('weight'));
+    if (isFinite(pred) || isFinite(wt)) slice = { seconds: isFinite(pred) ? pred : null, grams: isFinite(wt) ? wt : null };
+  }
+  return { parts, cfg, slice, sliced: !!slice };
+}
+
+/* ---------- geometria ---------- */
+function analyze(V, F) {
+  const nt = F.length / 3;
+  let minx = 1e9, miny = 1e9, minz = 1e9, maxx = -1e9, maxy = -1e9, maxz = -1e9;
+  for (let i = 0; i < V.length; i += 3) {
+    if (V[i] < minx) minx = V[i]; if (V[i] > maxx) maxx = V[i];
+    if (V[i + 1] < miny) miny = V[i + 1]; if (V[i + 1] > maxy) maxy = V[i + 1];
+    if (V[i + 2] < minz) minz = V[i + 2]; if (V[i + 2] > maxz) maxz = V[i + 2];
+  }
+  let vol6 = 0, area = 0, bed = 0;
+  let overhangArea = 0, steepest = 0;
+  const BEDTOL = 0.05;
+  const edge = new Map();
+  let boundary = 0, nonmanifold = 0;
+
+  for (let t = 0; t < nt; t++) {
+    const a = F[t * 3] * 3, b = F[t * 3 + 1] * 3, c = F[t * 3 + 2] * 3;
+    const ax = V[a], ay = V[a + 1], az = V[a + 2];
+    const bx = V[b], by = V[b + 1], bz = V[b + 2];
+    const cx = V[c], cy = V[c + 1], cz = V[c + 2];
+    // objetosc: suma znakowanych czworoscianow
+    vol6 += ax * (by * cz - bz * cy) - ay * (bx * cz - bz * cx) + az * (bx * cy - by * cx);
+    // normalna i pole
+    const ux = bx - ax, uy = by - ay, uz = bz - az;
+    const vx = cx - ax, vy = cy - ay, vz = cz - az;
+    const nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+    const L = Math.hypot(nx, ny, nz);
+    if (L === 0) continue;
+    const A = L / 2;
+    area += A;
+    const dn = nz / L;                       // cos kata od pionu
+    if (dn < -0.999 && Math.abs((az + bz + cz) / 3 - minz) < BEDTOL) bed += A;
+    else if (dn < 0) {
+      // sciana zwrocona w dol - kat od pionu
+      const ang = Math.acos(Math.min(1, -dn)) * 180 / Math.PI;   // 0 = plasko pod spodem
+      const fromVert = 90 - ang;                                  // 90 = plaski nawis
+      if (fromVert > 45) { overhangArea += A; if (fromVert > steepest) steepest = fromVert; }
+    }
+    // krawedzie
+    const ids = [F[t * 3], F[t * 3 + 1], F[t * 3 + 2]];
+    for (let k = 0; k < 3; k++) {
+      const p = ids[k], q = ids[(k + 1) % 3];
+      const key = p < q ? p + '_' + q : q + '_' + p;
+      edge.set(key, (edge.get(key) || 0) + 1);
+    }
+  }
+  for (const c of edge.values()) { if (c === 1) boundary++; else if (c > 2) nonmanifold++; }
+  const Vn = V.length / 3, E = edge.size, Fn = nt;
+  const chi = Vn - E + Fn;
+  const genus = (2 - chi) / 2;
+
+  return {
+    tri: nt, vert: Vn,
+    dx: maxx - minx, dy: maxy - miny, dz: maxz - minz,
+    minz, maxz,
+    vol: Math.abs(vol6) / 6,        // mm3
+    area, bed, overhangArea, steepest,
+    boundary, nonmanifold, genus, watertight: boundary === 0 && nonmanifold === 0,
+  };
+}
+
+/* przekroje: obwod i pole w N poziomach z */
+function sections(V, F, minz, maxz, N) {
+  const nt = F.length / 3;
+  const res = [];
+  for (let s = 0; s < N; s++) {
+    const z = minz + (maxz - minz) * (s + 0.5) / N;
+    let per = 0, cross = 0;
+    for (let t = 0; t < nt; t++) {
+      const ia = F[t * 3] * 3, ib = F[t * 3 + 1] * 3, ic = F[t * 3 + 2] * 3;
+      const za = V[ia + 2], zb = V[ib + 2], zc = V[ic + 2];
+      const mn = Math.min(za, zb, zc), mx = Math.max(za, zb, zc);
+      if (z < mn || z > mx) continue;
+      const P = [];
+      const seg = (i1, z1, i2, z2) => {
+        if ((z1 < z) !== (z2 < z)) {
+          const f = (z - z1) / (z2 - z1);
+          P.push(V[i1] + f * (V[i2] - V[i1]), V[i1 + 1] + f * (V[i2 + 1] - V[i1 + 1]));
+        }
+      };
+      seg(ia, za, ib, zb); seg(ib, zb, ic, zc); seg(ic, zc, ia, za);
+      if (P.length >= 4) {
+        const dx = P[2] - P[0], dy = P[3] - P[1];
+        per += Math.hypot(dx, dy);
+        cross += (P[0] * P[3] - P[2] * P[1]) / 2;   // wklad do pola przez wzor Gaussa
+      }
+    }
+    res.push({ z, per, cross: Math.abs(cross) });
+  }
+  return res;
+}
+
+/* ---------- szacunek czasu i materialu ---------- */
+/* Model powierzchniowy: dla kazdej warstwy bierzemy POLE PRZEKROJU, nie obwod.
+   Pole zajete przez petle scianek  = min(przekroj, obwod * szer_linii * petle)
+   Reszta idzie na wypelnienie z jego gestoscia.
+   Czas warstwy = najwieksze z trzech ograniczen: przeplyw, predkosc, minimalny czas warstwy.
+
+   OVERHEAD skalibrowany na realnym wydruku:
+   redukcja 110x55, 0,24 mm, 3 petle, 0% wypelnienia, MVS 14, min. czas warstwy 12 s
+   -> Studio: 609 warstw, 2h28m (8880 s), 86,96 g.
+   Model bez narzutu dawal 7308 s, czyli narzut = 1,21. */
+const OVERHEAD = 1.21;
+
+function estimate(secs, o) {
+  const { layer, walls, lineW, mvs, maxSpeed, minLayerTime, infill, density, flow } = o;
+  const layers = Math.max(1, Math.round(o.height / layer));
+  let time = 0, vol = 0, nTime = 0, nFlow = 0, nSpeed = 0;
+  for (const s of secs) {
+    const wallCap = s.per * lineW * walls;
+    const wallArea = Math.min(s.cross, wallCap);
+    const restArea = Math.max(0, s.cross - wallCap);
+    const matArea = wallArea + restArea * (infill / 100);
+    const v = matArea * layer;                    // mm3 na warstwe
+    const len = matArea / lineW;                  // mm sciezki
+    const tFlow = v / mvs;
+    const tSpeed = len / maxSpeed;
+    const t = Math.max(tFlow, tSpeed, minLayerTime);
+    if (t === minLayerTime) nTime++; else if (tFlow >= tSpeed) nFlow++; else nSpeed++;
+    time += t; vol += v;
+  }
+  const k = layers / Math.max(1, secs.length);
+  const n = secs.length || 1;
+  return {
+    seconds: time * k * OVERHEAD,
+    grams: vol * k * (flow || 1) * density / 1000,
+    mm3: vol * k,
+    layers,
+    limTime: nTime / n, limFlow: nFlow / n, limSpeed: nSpeed / n,
+  };
+}
+
+/* Plyta z kilkoma obiektami drukuje sie ROWNOCZESNIE, warstwa po warstwie.
+   Trzeba zsumowac przekroje po wspolnej siatce z, inaczej czas wychodzi
+   tyle, ile suma osobnych wydrukow - a tak nie jest. */
+function mergeSections(objs, layer) {
+  const zmin = Math.min(...objs.map(o => o.minz));
+  const zmax = Math.max(...objs.map(o => o.maxz));
+  const N = Math.max(8, Math.min(120, Math.round((zmax - zmin) / layer)));
+  const grid = [];
+  for (let i = 0; i < N; i++) {
+    const z = zmin + (zmax - zmin) * (i + 0.5) / N;
+    let per = 0, cross = 0;
+    for (const o of objs) {
+      if (z < o.minz || z > o.maxz) continue;
+      // najblizszy policzony przekroj tego obiektu
+      const f = (z - o.minz) / Math.max(1e-9, o.maxz - o.minz);
+      const k = Math.min(o.secs.length - 1, Math.max(0, Math.round(f * o.secs.length - 0.5)));
+      per += o.secs[k].per; cross += o.secs[k].cross;
+    }
+    grid.push({ z, per, cross });
+  }
+  return { secs: grid, height: zmax - zmin };
+}
+
+/* Co napedza czas - od tego zaleza sensowne zalecenia. */
+function bottleneck(e) {
+  if (e.limTime >= 0.5) return 'time';    // minimalny czas warstwy (chlodzenie)
+  if (e.limFlow >= 0.5) return 'flow';    // maksymalny przeplyw dyszy
+  return 'speed';                          // predkosc glowicy
+}
+
+/* ---------- zalecenia ---------- */
+/* Kazde zalecenie przeliczamy tym samym modelem i podajemy ROZNICE.
+   Roznica jest wiarygodniejsza niz wartosc bezwzgledna, bo blad modelu
+   w duzej czesci sie skraca. */
+
+function fmtT(sec) {
+  const h = Math.floor(sec / 3600), m = Math.round((sec % 3600) / 60);
+  return h ? h + ' h ' + String(m).padStart(2, '0') + ' min' : m + ' min';
+}
+
+function advise(objs, base, anchorSeconds) {
+  const run = (over) => {
+    const o = Object.assign({}, base, over);
+    const m = mergeSections(objs, o.layer);
+    return estimate(m.secs, Object.assign({ height: m.height }, o));
+  };
+  const e0 = run({});
+  const bn = bottleneck(e0);
+  // jesli plik byl pociety, kotwiczymy na liczbie ze slicera i skalujemy roznice
+  const k = anchorSeconds ? anchorSeconds / e0.seconds : 1;
+  const T = (e) => e.seconds * k;
+  const base0 = T(e0);
+
+  const tips = [];
+  const add = (t) => { if (t) tips.push(t); };
+
+  const cand = (label, over, note, risk) => {
+    const e = run(over);
+    const d = base0 - T(e);
+    if (d < 60) return null;                       // ponizej minuty nie warto
+    return { label, delta: d, pct: d / base0, newTime: T(e), grams: e.grams, note, risk };
+  };
+
+  // 1. wysokosc warstwy
+  for (const L of [0.28, 0.24, 0.2]) {
+    if (L <= base.layer) continue;
+    add(cand('Warstwa ' + String(base.layer).replace('.', ',') + ' \u2192 ' + String(L).replace('.', ',') + ' mm', { layer: L },
+      'Mniej warstw to mniej przejazdów i mniej minimalnych czasów warstwy.',
+      'Widoczne prążki na skosach. Przy dyszy 0,4 mm nie przekraczaj 0,28.'));
+  }
+  // 2. sciany
+  if (base.walls > 2) add(cand('Ściany ' + base.walls + ' \u2192 ' + (base.walls - 1), { walls: base.walls - 1 },
+    'Każda pętla mniej to mniej materiału na każdej warstwie.',
+    'Słabsza część. Nie schodź poniżej 3 pętli w czymś nośnym ani w rurze ciśnieniowej.'));
+  // 3. wypelnienie
+  if (base.infill > 10) add(cand('Wypełnienie ' + base.infill + '% \u2192 10%', { infill: 10 },
+    'Wypełnienie powyżej 15% rzadko cokolwiek daje wytrzymałościowo.',
+    'Słabszy wierzch nad wypełnieniem. Dodaj warstwę górną, jeśli zacznie się zapadać.'));
+  // 4. minimalny czas warstwy - dziala tylko gdy to on jest wąskim gardlem
+  if (bn === 'time' && base.minLayerTime > 6)
+    add(cand('Minimalny czas warstwy ' + base.minLayerTime + ' s \u2192 6 s', { minLayerTime: 6 },
+      'Drukarka czeka, żeby warstwa zdążyła ostygnąć. Przy małym przekroju to czekanie dominuje.',
+      'Małe przekroje mogą się nie zdążyć schłodzić i będą się odkształcać. Zmieniaj tylko przy dobrym chłodzeniu.'));
+
+  tips.sort((a, b) => b.delta - a.delta);
+  return { e0, bn, base0, tips, anchored: !!anchorSeconds };
+}
+
+/* Zalecenia z samej geometrii - nie wymagaja przeliczania czasu. */
+function geoAdvice(objs, base, bedSize) {
+  const out = [];
+  for (const o of objs) {
+    const a = o.a, nm = o.name || 'model';
+    if (!a.watertight) out.push({ kind: 'stop', t: nm + ': model nieszczelny',
+      d: 'Otwartych krawędzi: ' + a.boundary + ', niemanifold: ' + a.nonmanifold + '. '
+       + 'Slicer sam to "naprawi" po swojemu i wynik bywa nieprzewidywalny. Napraw model przed drukiem.' });
+    if (a.steepest <= 45.5 && base.support)
+      out.push({ kind: 'tip', t: nm + ': podpory są niepotrzebne',
+        d: 'Najstromszy nawis ma ' + a.steepest.toFixed(0) + ' stopni od pionu, czyli mieści się w granicy 45 stopni, '
+         + 'którą P2S drukuje bez podparcia. Wyłącz podpory: mniej czasu, mniej materiału i żadnego czyszczenia.' });
+    if (a.steepest > 60 && !base.support)
+      out.push({ kind: 'warn', t: nm + ': są nawisy, a podpory wyłączone',
+        d: 'Najstromszy nawis ' + a.steepest.toFixed(0) + ' stopni, na ' + (a.overhangArea/a.area*100).toFixed(0)
+         + '% powierzchni. Albo włącz podpory, albo obróć model.' });
+    if (a.bed < 300) out.push({ kind: 'warn', t: nm + ': mały styk ze stołem',
+      d: 'Powierzchnia przylegania to około ' + a.bed.toFixed(0) + ' mm². Dodaj brim, inaczej model może się oderwać.' });
+    if (bedSize && (a.dx > bedSize || a.dy > bedSize || a.dz > bedSize))
+      out.push({ kind: 'stop', t: nm + ': nie mieści się na stole',
+        d: 'Gabaryt ' + a.dx.toFixed(0) + ' x ' + a.dy.toFixed(0) + ' x ' + a.dz.toFixed(0)
+         + ' mm przy obszarze ' + bedSize + ' mm. Przetnij model albo przeskaluj.' });
+    // orientacja: czy polozenie na boku obniza model
+    const h = [a.dx, a.dy, a.dz];
+    const lowest = Math.min(h[0], h[1], h[2]);
+    if (a.dz > lowest * 1.25) {
+      const gain = 1 - lowest / a.dz;
+      out.push({ kind: 'info', t: nm + ': inna orientacja obniża model o ' + Math.round(gain * 100) + '%',
+        d: 'Teraz wysokość to ' + a.dz.toFixed(0) + ' mm. Położony najniższym bokiem do góry miałby ' + lowest.toFixed(0) + ' mm, '
+         + 'czyli o ' + Math.round(gain * 100) + '% mniej warstw. Przy druku ograniczonym czasem warstwy czas skraca się mniej więcej tak samo. '
+         + 'ALE: sprawdź nawisy i to, która ściana ma być gładka — obrót zmienia jedno i drugie.' });
+    }
+  }
+  return out;
+}
+
+/* zdanie o wąskim gardle - najwazniejszy pojedynczy wniosek */
+function bottleneckText(bn, e) {
+  if (bn === 'time') return {
+    t: 'Minimalny czas warstwy',
+    d: 'Na ' + Math.round(e.limTime * 100) + '% warstw drukarka CZEKA, żeby warstwa zdążyła ostygnąć. '
+     + 'Podnoszenie prędkości nic nie da. Działa tylko zmniejszenie LICZBY warstw: wyższa warstwa albo niższa orientacja.' };
+  if (bn === 'flow') return {
+    t: 'Maksymalny przepływ dyszy',
+    d: 'Na ' + Math.round(e.limFlow * 100) + '% warstw ogranicza Cię to, ile materiału dysza zdąży stopić. '
+     + 'Prędkość już nic nie da. Pomoże mniej materiału (rzadsze wypełnienie, mniej ścian) albo dysza 0,6 mm.' };
+  return {
+    t: 'Prędkość głowicy',
+    d: 'Ogranicza Cię ruch głowicy, nie przepływ ani chłodzenie. Tu podnoszenie prędkości faktycznie skraca druk.' };
+}
+
+if (typeof module !== 'undefined') module.exports = { parseSTL, parse3MF, analyze, sections, estimate, bottleneck, mergeSections, advise, bottleneckText, fmtT, geoAdvice, unzipEntries, entryBytes, weld };
+
+/* ---------- narzędzie: analiza modelu ---------- */
+var A_LAST = null;
+var A_FLOW = 1;
+
+function aNum(id, d) {
+  var el = document.getElementById(id); if (!el) return d;
+  var v = parseFloat(String(el.value).replace(',', '.'));
+  return isFinite(v) ? v : d;
+}
+function aOpts() {
+  return {
+    layer: aNum('aLayer', 0.24), walls: Math.round(aNum('aWalls', 3)), lineW: 0.42,
+    infill: aNum('aInfill', 15), mvs: aNum('aMvs', 14), maxSpeed: 300,
+    minLayerTime: aNum('aMinT', 12), density: aNum('aDens', 1.25), flow: A_FLOW,
+    support: document.getElementById('aSup').checked,
+  };
+}
+function aSet(id, v) { var e = document.getElementById(id); if (e) e.value = String(v).replace('.', ','); }
+
+function aFmt(sec) {
+  var h = Math.floor(sec / 3600), m = Math.round((sec % 3600) / 60);
+  return h ? h + ' h ' + (m < 10 ? '0' : '') + m + ' min' : m + ' min';
+}
+function aEsc(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function aRun(file) {
+  var out = document.getElementById('aOut');
+  out.innerHTML = '<p class="busy">Liczę… przy dużych modelach potrwa kilka sekund.</p>';
+  await new Promise(function (r) { setTimeout(r, 30); });
+  try {
+    var buf = await file.arrayBuffer();
+    var parts, cfg = null, slice = null, src = '';
+    if (/\.3mf$/i.test(file.name)) {
+      A_FLOW = 1;
+      var m = await parse3MF(buf);
+      parts = m.parts; cfg = m.cfg; slice = m.slice;
+      src = m.sliced ? 'pocięty projekt 3MF' : 'projekt 3MF';
+    } else {
+      parts = [{ name: file.name.replace(/\.stl$/i, ''), V: parseSTL(buf).V, F: parseSTL(buf).F }];
+      src = 'plik STL';
+    }
+    // ustawienia z projektu nadpisują pola formularza
+    if (cfg) {
+      var g = function (k, d) { var v = cfg[k]; if (Array.isArray(v)) v = v[0];
+        var n = parseFloat(v); return isFinite(n) ? n : d; };
+      aSet('aLayer', g('layer_height', 0.24).toFixed(2));
+      aSet('aWalls', g('wall_loops', 3));
+      aSet('aInfill', g('sparse_infill_density', 15));
+      aSet('aMvs', g('filament_max_volumetric_speed', 14));
+      aSet('aMinT', g('slow_down_layer_time', 12));
+      aSet('aDens', g('filament_density', 1.25));
+      A_FLOW = g('filament_flow_ratio', 1);
+      document.getElementById('aSup').checked = String(g('enable_support', 0)) === '1';
+      var L = g('layer_height', 0.24).toFixed(2).replace('.', ',');
+      var sel = document.getElementById('aLayer');
+      if (!Array.prototype.some.call(sel.options, function (o) { return o.text === L; })) {
+        var o = document.createElement('option'); o.text = L; sel.add(o, 0);
+      }
+      sel.value = L;
+    }
+    var objs = parts.map(function (p) {
+      var a = analyze(p.V, p.F);
+      return { name: p.name, a: a, minz: a.minz, maxz: a.maxz,
+               secs: sections(p.V, p.F, a.minz, a.maxz, 50) };
+    });
+    A_LAST = { objs: objs, slice: slice, src: src, file: file.name };
+    aRender();
+  } catch (e) {
+    out.innerHTML = '<p class="err"><b>Nie dam rady odczytać tego pliku.</b><br>' + aEsc(e.message) + '</p>';
+  }
+}
+
+function aRender() {
+  if (!A_LAST) return;
+  var objs = A_LAST.objs, base = aOpts();
+  var anchor = A_LAST.slice && A_LAST.slice.seconds ? A_LAST.slice.seconds : null;
+  var r = advise(objs, base, anchor);
+  var bt = bottleneckText(r.bn, r.e0);
+  var geo = geoAdvice(objs, base, 256);
+
+  var tot = objs.reduce(function (s, o) { return s + o.a.vol; }, 0);
+  var box = objs.reduce(function (s, o) {
+    return { x: Math.max(s.x, o.a.dx), y: Math.max(s.y, o.a.dy), z: Math.max(s.z, o.a.dz) };
+  }, { x: 0, y: 0, z: 0 });
+
+  var h = '';
+  h += '<div class="kv"><span>Plik</span><b>' + aEsc(A_LAST.src) + '</b></div>';
+  h += '<div class="kv"><span>Obiektów na płycie</span><b>' + objs.length + '</b></div>';
+  h += '<div class="kv"><span>Gabaryt</span><b>' + box.x.toFixed(0) + ' x ' + box.y.toFixed(0) + ' x ' + box.z.toFixed(0) + ' mm</b></div>';
+  h += '<div class="kv"><span>Objętość materiału</span><b>' + (tot / 1000).toFixed(1) + ' cm&sup3;</b></div>';
+  h += '<div class="kv"><span>Warstw</span><b>' + r.e0.layers + '</b></div>';
+  h += '<div class="kv"><span>Szacowany czas</span><b>' + aFmt(r.base0) + '</b></div>';
+  h += '<div class="kv"><span>Szacowana masa</span><b>' + r.e0.grams.toFixed(0) + ' g</b></div>';
+  h += '<p class="tnote">' + (r.anchored
+      ? 'Czas wzięty z pociętego projektu, więc jest dokładny. Różnice poniżej policzone tym samym modelem.'
+      : 'Szacunek własny, nie ze slicera. Na sprawdzonym wydruku trafił w 7% czasu i 4% masy, ale traktuj go jako widełki. '
+      + '<b>Różnice</b> poniżej są pewniejsze niż wartość bezwzględna, bo błąd modelu w nich się skraca.') + '</p>';
+
+  h += '<div class="bn"><h4>Wąskie gardło: ' + aEsc(bt.t) + '</h4><p>' + aEsc(bt.d) + '</p></div>';
+
+  if (r.tips.length) {
+    h += '<h4 style="margin:14px 0 2px;font-size:.95rem">Co da się urwać</h4>';
+    r.tips.forEach(function (t) {
+      h += '<div class="gain"><span class="g1">' + aEsc(t.label) + '</span>'
+        +  '<span class="g2">&minus;' + Math.round(t.delta / 60) + ' min</span>'
+        +  '<span class="g3">' + aEsc(t.note) + ' <b>Ryzyko:</b> ' + aEsc(t.risk)
+        +  ' Zostanie ' + aFmt(t.newTime) + '.</span></div>';
+    });
+  } else {
+    h += '<p class="tnote">Przy tych ustawieniach nie widzę zmiany, która urwałaby więcej niż minutę. '
+      +  'Zostaje orientacja modelu i to, czy wszystkie części muszą być drukowane razem.</p>';
+  }
+
+  if (geo.length) {
+    h += '<h4 style="margin:16px 0 2px;font-size:.95rem">Uwagi do modelu</h4>';
+    geo.forEach(function (g) {
+      h += '<div class="bn" style="border-left-color:'
+        + (g.kind === 'stop' ? '#c0392b' : g.kind === 'warn' ? '#c8860d' : g.kind === 'tip' ? 'var(--g)' : '#2c6faf')
+        + '"><h4 style="color:inherit">' + aEsc(g.t) + '</h4><p>' + aEsc(g.d) + '</p></div>';
+    });
+  }
+
+  h += '<p class="tnote"><b>Czego to narzędzie nie wie:</b> do czego ta część służy. '
+    +  'Zdjęcie ściany z uchwytu na kable jest darmowe, z elementu nośnego \u2014 nie. '
+    +  'Decyzję podejmujesz Ty, ja pokazuję tylko koszt każdej opcji.</p>';
+
+  document.getElementById('aOut').innerHTML = h;
+}
+
+(function () {
+  var f = document.getElementById('aFile');
+  if (!f) return;
+  f.addEventListener('change', function () {
+    if (!f.files || !f.files[0]) return;
+    document.getElementById('aName').textContent = f.files[0].name
+      + '  (' + (f.files[0].size / 1048576).toFixed(1) + ' MB)';
+    aRun(f.files[0]);
+  });
+  ['aLayer','aWalls','aInfill','aMvs','aMinT','aDens','aSup'].forEach(function (id) {
+    var e = document.getElementById(id);
+    if (e) e.addEventListener('change', function () { if (A_LAST) aRender(); });
+  });
+})();
 
 })();
 
