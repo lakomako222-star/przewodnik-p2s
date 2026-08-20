@@ -1,6 +1,38 @@
 {
   "v": 1,
   "app": "przewodnik-p2s",
-  "exported": "2026-08-20T20:56:43.160Z",
-  "items": []
+  "exported": "2026-08-20T20:57:31.147Z",
+  "items": [
+    {
+      "id": "1787259087425-149",
+      "title": "PETG zbyt mocno przywiera do złotej płyty Textured PEI",
+      "topic": "Bezpieczne zdejmowanie PETG z oryginalnej teksturowanej płyty Bambu.",
+      "body": "- Przed zdejmowaniem PETG wyjmij całą płytę i poczekaj, aż ostygnie poniżej 30°C.\n- Delikatnie wygnij płytę w kilku kierunkach; nie używaj metalowego skrobaka.\n- Jeśli model nadal nie puszcza, schłodź płytę przez około 10 minut w lodówce.\n- Dla następnego testu ustaw temperaturę Textured PEI Plate na 60°C, a jeśli przyczepność nadal będzie nadmierna — na 55°C.",
+      "sources": [
+        "https://ca.store.bambulab.com/products/bambu-textured-pei-plate/",
+        "https://cdn1.bambulab.com/filament/FilamentGuide-EN-2.pdf"
+      ],
+      "created": "2026-08-20T20:51:27.425Z"
+    },
+    {
+      "id": "1787259063664-2883",
+      "title": "Widoczne linie w kalibracji przepływu",
+      "topic": "Jak oceniać próbki, gdy na każdej widać ścieżki filamentu.",
+      "body": "- Same widoczne linie nie oznaczają błędnego wyniku.\n- Oceniaj przede wszystkim gładkość środkowej części pola oraz brak szczelin.\n- Wypukłe ścieżki wyczuwalne paznokciem wskazują na zbyt duży przepływ.\n- Po wybraniu 0 w Etapie 1, Etap 2 sprawdza zakres od 0 do -9, więc obejmuje również -5.",
+      "sources": [
+        "https://github.com/OrcaSlicer/OrcaSlicer/wiki/flow_ratio_calib"
+      ],
+      "created": "2026-08-20T20:51:03.664Z"
+    },
+    {
+      "id": "1787226250747-4383",
+      "title": "Sprawdzenie wyniku kalibracji przepływu",
+      "topic": "Jak potwierdzić, że zapisany wynik kalibracji przepływu jest prawidłowy.",
+      "body": "- Po Etapie 1 wykonaj dokładniejszy Etap 2 i zapisz wynik w profilu filamentu.\n- Następnie wydrukuj mały model kontrolny z płaską górną powierzchnią.\n- Jeśli nadal widać szczeliny albo nadmiar materiału, powtórz tylko Etap 2.\n- Nie zmieniaj równocześnie temperatury ani innych ustawień.",
+      "sources": [
+        "https://wiki.bambulab.com/en/software/bambu-studio/calibration_flow_rate"
+      ],
+      "created": "2026-08-20T11:44:10.747Z"
+    }
+  ]
 }
