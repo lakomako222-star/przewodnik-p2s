@@ -23,7 +23,7 @@
  --bg:#12171a; --card:#181f23; --line:#2a343a; --zeb:#1c2429; --chip:#1e2a2c;}}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth;scroll-padding-top:74px}
-body{margin:0;background:var(--bg);color:var(--ink);
+body{margin:0;overflow-x:hidden;background:var(--bg);color:var(--ink);
  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
  overflow-wrap:anywhere}
 header{position:fixed;inset:0 0 auto 0;z-index:40;background:var(--bg);
@@ -158,8 +158,9 @@ table.tt td:nth-child(3){text-align:right;font-weight:600}
 table.tt tr.sum td{border-bottom:0;padding-top:10px}
 #tabs{position:fixed;left:0;right:0;bottom:0;z-index:42;display:flex;background:var(--bg);
  border-top:1px solid var(--line);padding:0 0 env(safe-area-inset-bottom)}
-.tab{flex:1;padding:10px 2px 12px;border:0;background:transparent;color:var(--mut);
- font-size:.68rem;font-weight:650;cursor:pointer;border-top:2px solid transparent;line-height:1.15}
+.tab{flex:1;min-width:0;padding:9px 1px 11px;border:0;background:transparent;color:var(--mut);
+ font-size:.72rem;font-weight:650;cursor:pointer;border-top:2px solid transparent;line-height:1.2}
+.tab{white-space:normal}
 .tab.on{color:var(--g);border-top-color:var(--g)}
 .chips{display:flex;gap:7px;overflow-x:auto;padding:2px 0 4px;margin:0 0 6px;-webkit-overflow-scrolling:touch}
 .chips a{flex:0 0 auto;font-size:.79rem;text-decoration:none;background:var(--chip);color:var(--t);
@@ -268,6 +269,14 @@ table.tt tr.sum td{border-bottom:0;padding-top:10px}
  border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
 .supitem .supact button.dngr{color:#c0392b;border-color:#c0392b}
 .webnote{font-size:.75rem;color:var(--mut);margin:0 0 8px}
+
+/* Rysunki z poradnika 3.3 — bez tego wielkie PNG rozjezdzaja layout i menu */
+.fig{margin:16px 0 18px;text-align:center}
+.fig img{max-width:100%;height:auto;border-radius:10px;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.14)}
+.fig figcaption,main figcaption{margin-top:7px;font-size:.86em;font-style:italic;color:var(--mut);line-height:1.4;padding:0 6px}
+@media (prefers-color-scheme:dark){
+ .fig img{background:#1c2429;box-shadow:0 1px 6px rgba(0,0,0,.45)}
+}
 </style>
 </head>
 <body>
@@ -1639,7 +1648,7 @@ table.tt tr.sum td{border-bottom:0;padding-top:10px}
   <button class="tab" data-v="advisor">Doradca</button>
   <button class="tab" data-v="tools">Narzędzia</button>
   <button class="tab" data-v="ai">Asystent</button>
-  <button class="tab" data-v="sync">Aktualizuj</button>
+  <button class="tab" data-v="sync">Sync</button>
 </nav>
 
 
