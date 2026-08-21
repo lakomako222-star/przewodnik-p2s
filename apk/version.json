@@ -1,6 +1,7 @@
 {
-  "versionCode": 213,
+  "versionCode": 40013014,
   "versionName": "4.0.13",
   "apkUrl": "https://raw.githubusercontent.com/lakomako222-star/przewodnik-p2s/main/apk/PrzewodnikP2S-latest.apk",
-  "notes": "Doradca z grupami + bogatszy wynik Analizy modelu"
+  "sha256": "ab83e19738f522a0323bf9b0ded684866b1cef12a4bfa6559d4024b418885c79",
+  "notes": "Final 4.0.13: UX, 2288 fragments, trusted APK URL + SHA-256"
 }
