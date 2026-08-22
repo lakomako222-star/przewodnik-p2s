@@ -1,0 +1,102 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["spec_version", "nazwa", "material", "bryly", "cechy", "pytania", "uwagi_do_druku"],
+  "properties": {
+    "spec_version": { "type": "string", "enum": ["1.0"] },
+    "nazwa": { "type": "string" },
+    "material": { "type": "string", "enum": ["PLA", "PETG", "ABS", "TPU"] },
+    "opis_slowny": { "type": "string" },
+    "orientacja_druku": {
+      "type": "object", "additionalProperties": false,
+      "required": ["obrot_xyz_deg", "uzasadnienie"],
+      "properties": {
+        "obrot_xyz_deg": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+        "uzasadnienie": { "type": "string" }
+      }
+    },
+    "bryly": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "operacja", "ksztalt", "pozycja_mm", "obrot_deg", "srodkowanie"],
+        "properties": {
+          "id": { "type": "string" },
+          "operacja": { "type": "string", "enum": ["dodaj", "odejmij", "przetnij"] },
+          "pozycja_mm": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+          "obrot_deg": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+          "srodkowanie": { "type": "string", "enum": ["brak", "xy", "xyz"] },
+          "ksztalt": {
+            "type": "object",
+            "required": ["typ"],
+            "properties": {
+              "typ": { "type": "string",
+                "enum": ["prostopadloscian","walec","kula","rura","graniastoslup","wyciagniecie","obrot"] },
+              "x_mm": { "type": "number" }, "y_mm": { "type": "number" }, "z_mm": { "type": "number" },
+              "srednica_mm": { "type": "number" },
+              "srednica_dolna_mm": { "type": "number" }, "srednica_gorna_mm": { "type": "number" },
+              "srednica_zewn_mm": { "type": "number" }, "srednica_wewn_mm": { "type": "number" },
+              "wysokosc_mm": { "type": "number" },
+              "liczba_bokow": { "type": "integer", "minimum": 3, "maximum": 64 },
+              "srednica_opisana_mm": { "type": "number" },
+              "kontur": { "type": "array", "items": {
+                "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 } },
+              "otwory": { "type": "array", "items": {
+                "type": "array", "items": {
+                  "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 } } },
+              "profil": { "type": "array", "items": {
+                "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 } },
+              "zwezenie_gora": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+              "skret_deg": { "type": "number" },
+              "kat_deg": { "type": "number" }
+            }
+          }
+        }
+      }
+    },
+    "cechy": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["typ"],
+        "properties": {
+          "typ": { "type": "string",
+            "enum": ["otwor","otwor_pod_wkladke","poglebienie","poglebienie_stozkowe",
+                     "kieszen","zebro","zaokraglenie_pionowe","faza_gorna","faza_dolna","zatrzask"] },
+          "punkt_mm": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+          "os": { "type": "string", "enum": ["x","-x","y","-y","z","-z"] },
+          "przez": { "type": "boolean" },
+          "srednica_mm": { "type": "number" },
+          "glebokosc_mm": { "type": "number" },
+          "rola": { "type": "string", "enum": ["pasowanie","swobodny","gwint"] },
+          "element_nominalny_mm": { "type": "number" },
+          "pasowanie": { "type": "string", "enum": ["ciasne","przesuwne","luzne","zatrzask"] },
+          "gwint": { "type": "string", "enum": ["M1.6","M2","M2.5","M3","M4","M5","M6","M8","M10"] },
+          "dlugosc_wkladki_mm": { "type": "number" },
+          "srednica_otworu_mm": { "type": "number" },
+          "srednica_gniazda_mm": { "type": "number" },
+          "glebokosc_gniazda_mm": { "type": "number" },
+          "srednica_lba_mm": { "type": "number" },
+          "kat_lba_deg": { "type": "number" },
+          "x_mm": { "type": "number" }, "y_mm": { "type": "number" },
+          "promien_naroza_mm": { "type": "number" },
+          "od_mm": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+          "do_mm": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+          "grubosc_mm": { "type": "number" }, "wysokosc_mm": { "type": "number" },
+          "kat_podparcia_deg": { "type": "number" },
+          "promien_mm": { "type": "number" },
+          "krawedzie": { "type": "string", "enum": ["wszystkie"] },
+          "szerokosc_mm": { "type": "number" },
+          "kierunek": { "type": "string", "enum": ["x","-x","y","-y"] },
+          "dlugosc_ramienia_mm": { "type": "number" },
+          "grubosc_ramienia_mm": { "type": "number" },
+          "szerokosc_ramienia_mm": { "type": "number" },
+          "wysokosc_zaczepu_mm": { "type": "number" },
+          "ugiecie_montazowe_mm": { "type": "number" }
+        }
+      }
+    },
+    "pytania": { "type": "array", "items": { "type": "string" } },
+    "uwagi_do_druku": { "type": "string" }
+  }
+}
