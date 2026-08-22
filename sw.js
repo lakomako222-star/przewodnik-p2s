@@ -1,7 +1,7 @@
 // Service worker - HTML najpierw z sieci (online-first).
 // CACHE wypełnia build_pwa.py z SHA-256 index.html. Nie wpisuj ręcznie.
 // Doradca, diagnostyka i checklisty są w index.html i w cache — działają bez sieci.
-const CACHE = 'p2s-guide-v4.0.17-37cfa9a9';
+const CACHE = 'p2s-guide-v4.0.17-d42b94b6';
 const FILES = ['./', './index.html', './manifest.webmanifest',
   './icon-192.png', './icon-512.png', './icon-512-maskable.png',
   './apple-touch-icon.png', './favicon-32.png', './fflate.min.js'];
