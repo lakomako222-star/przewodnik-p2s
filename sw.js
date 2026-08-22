@@ -1,9 +1,10 @@
-// Service worker - tryb offline dla przewodnika P2S.
-// bump CACHE przy kazdej publikacji, zeby telefon zrzucil stara pamiec.
-const CACHE = 'p2s-guide-v4.0.14-asst';
+// Service worker - HTML najpierw z sieci (online-first).
+// CACHE wypełnia build_pwa.py z SHA-256 index.html. Nie wpisuj ręcznie.
+// Doradca, diagnostyka i checklisty są w index.html i w cache — działają bez sieci.
+const CACHE = 'p2s-guide-v4.0.17-37cfa9a9';
 const FILES = ['./', './index.html', './manifest.webmanifest',
   './icon-192.png', './icon-512.png', './icon-512-maskable.png',
-  './apple-touch-icon.png', './favicon-32.png'];
+  './apple-touch-icon.png', './favicon-32.png', './fflate.min.js'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
