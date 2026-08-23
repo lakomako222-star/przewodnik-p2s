@@ -1,0 +1,1251 @@
+/**
+ * Przeróbka 4.2 — detektor / operacje / bramka w przeglądarce (ten sam kod co Node).
+ * Manifold z window.P2S.initEngine(), fflate.unzipSync, P2S.luzMm.
+ */
+(function () {
+'use strict';
+const unzipSync = (...a) => {
+  const z = globalThis.fflate;
+  if (!z || typeof z.unzipSync !== 'function') throw new Error('brak fflate.unzipSync');
+  return z.unzipSync(...a);
+};
+const luzMm = (...a) => {
+  if (!window.P2S || typeof window.P2S.luzMm !== 'function')
+    throw new Error('brak P2S.luzMm');
+  return window.P2S.luzMm(...a);
+};
+/**
+ * Przeróbka 4.2 — detektor cech walcowych, operacje, bramka.
+ * Manifold liczy geometrię. LLM nie podaje średnic z siebie.
+ * Rezerwa (bez kodu): szczelina, kieszen_prostokatna, grubosc_scianki, czop, wymiar_gabarytowy.
+ */
+
+const KOM_USZKODZONY =
+  'Ten plik nie jest zamkniętą bryłą i nie da się go bezpiecznie przerobić. ' +
+  'Otwórz go w Bambu Studio albo w Meshmixerze, użyj naprawy modelu, zapisz i wróć tutaj. ' +
+  'Nie naprawiam plików sam, bo naprawa zmienia geometrię, a wtedy wymiary, które ci podam, nie byłyby twoje.';
+
+const RODZAJE_V1 = ['gniazdo_walcowe', 'wzor_otworow', 'czop_walcowy'];
+const RODZAJE_REZERWA = ['szczelina', 'kieszen_prostokatna', 'grubosc_scianki', 'czop', 'wymiar_gabarytowy'];
+
+const OSIE = { x: [0, 1, 2], y: [1, 2, 0], z: [2, 0, 1] };
+const SCIANKA_MIN = 0.8;
+const klamra = (v, a, b) => Math.min(b, Math.max(a, v));
+const usun = arr => { for (const o of arr || []) { try { o.delete(); } catch {} } };
+
+let Manifold = null;
+
+function progiZGabarytu(bb) {
+  const D = Math.hypot(bb.max[0] - bb.min[0], bb.max[1] - bb.min[1], bb.max[2] - bb.min[2]);
+  return {
+    D,
+    // EKSPERYMENTALNE — dobrane na tutucu1 (D≈117 mm), potem sprawdzone na kilku plikach z dysku.
+    zgrzew_mm: klamra(D * 1e-5, 1e-4, 1e-2),
+    tol_r_mm: klamra(D * 0.0015, 0.05, 0.50),
+    r_min_mm: klamra(D * 0.008, 0.50, 5.00),
+    r_max_mm: D * 0.75,
+    krok_skanu_mm: klamra(D * 0.02, 0.5, 3.0),
+    tol_osi: 0.06,
+    // 0.985 = cos≈10°. Promień inlierów liczony z mediany i progu 0.99 (stożki odrzucane przy pomiarze).
+    celowanie: 0.985,
+    min_kat_deg: 40,
+    stopien_mm: 0.6
+  };
+}
+
+async function initPrzerobka() {
+  if (Manifold) return Manifold;
+  if (!window.P2S || typeof window.P2S.initEngine !== 'function')
+    throw new Error('brak silnika Manifold');
+  const eng = await window.P2S.initEngine();
+  Manifold = eng.Manifold;
+  try { eng.wasm.setCircularSegments(192); } catch (e) {}
+  return Manifold;
+}
+
+function getManifold() {
+  if (!Manifold) throw new Error('initPrzerobka() najpierw');
+  return Manifold;
+}
+
+function zgrzej(Vsrc, Fsrc, tol) {
+  const mapa = new Map(), V = [], F = new Uint32Array(Fsrc.length);
+  const q = 1 / tol;
+  for (let i = 0; i < Fsrc.length; i++) {
+    const vi = Fsrc[i] * 3;
+    const x = Vsrc[vi], y = Vsrc[vi + 1], z = Vsrc[vi + 2];
+    const key = `${Math.round(x * q)},${Math.round(y * q)},${Math.round(z * q)}`;
+    let id = mapa.get(key);
+    if (id === undefined) { id = V.length / 3; mapa.set(key, id); V.push(x, y, z); }
+    F[i] = id;
+  }
+  return { V: new Float32Array(V), F };
+}
+
+function czytajSTL(buf, tol = 1e-3) {
+  const u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
+  const dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
+  let binary = false, nTri = 0;
+  if (u8.byteLength >= 84) {
+    nTri = dv.getUint32(80, true);
+    if (84 + nTri * 50 === u8.byteLength) binary = true;
+  }
+  const mapa = new Map(), V = [], F = [];
+  const q = 1 / tol;
+  const dodaj = (x, y, z) => {
+    const key = `${Math.round(x * q)},${Math.round(y * q)},${Math.round(z * q)}`;
+    let i = mapa.get(key);
+    if (i === undefined) { i = V.length / 3; mapa.set(key, i); V.push(x, y, z); }
+    F.push(i);
+  };
+  if (binary) {
+    let off = 84;
+    for (let t = 0; t < nTri; t++) {
+      off += 12;
+      for (let k = 0; k < 3; k++) {
+        dodaj(dv.getFloat32(off, true), dv.getFloat32(off + 4, true), dv.getFloat32(off + 8, true));
+        off += 12;
+      }
+      off += 2;
+    }
+  } else {
+    const txt = new TextDecoder().decode(u8);
+    const re = /vertex\s+(-?[\d.eE+-]+)\s+(-?[\d.eE+-]+)\s+(-?[\d.eE+-]+)/g;
+    let m, acc = [];
+    while ((m = re.exec(txt))) {
+      acc.push(+m[1], +m[2], +m[3]);
+      if (acc.length === 9) {
+        dodaj(acc[0], acc[1], acc[2]); dodaj(acc[3], acc[4], acc[5]); dodaj(acc[6], acc[7], acc[8]);
+        acc = [];
+      }
+    }
+  }
+  return { V: new Float32Array(V), F: new Uint32Array(F), nTri: F.length / 3 };
+}
+
+function parsujModel3mf(xml) {
+  const obiekty = [];
+  const objRe = /<object\b([^>]*)>([\s\S]*?)<\/object>/gi;
+  let om;
+  while ((om = objRe.exec(xml))) {
+    const attrs = om[1], body = om[2];
+    const name = (attrs.match(/\bname="([^"]+)"/) || [])[1] || 'obiekt';
+    const verts = [], faces = [];
+    const vRe = /<vertex\b([^>]*)\/?\s*>/gi;
+    let vm;
+    while ((vm = vRe.exec(body))) {
+      const a = vm[1];
+      verts.push(+(a.match(/\bx="([^"]+)"/) || [])[1], +(a.match(/\by="([^"]+)"/) || [])[1], +(a.match(/\bz="([^"]+)"/) || [])[1]);
+    }
+    const tRe = /<triangle\b([^>]*)\/?\s*>/gi;
+    let tm;
+    while ((tm = tRe.exec(body))) {
+      const a = tm[1];
+      faces.push(+(a.match(/\bv1="([^"]+)"/) || [])[1], +(a.match(/\bv2="([^"]+)"/) || [])[1], +(a.match(/\bv3="([^"]+)"/) || [])[1]);
+    }
+    if (verts.length && faces.length) obiekty.push({ name, V: verts, F: faces });
+  }
+  return obiekty;
+}
+
+function czytaj3MF(buf, tol = 1e-3) {
+  const u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
+  const files = unzipSync(u8);
+  const xmls = [];
+  for (const [name, data] of Object.entries(files)) {
+    if (/\.model$/i.test(name)) xmls.push(new TextDecoder().decode(data));
+  }
+  if (!xmls.length) throw new Error('W 3MF nie ma siatki (.model).');
+  const wszystkie = [];
+  for (const xml of xmls) wszystkie.push(...parsujModel3mf(xml));
+  if (!wszystkie.length) throw new Error('W 3MF nie znalazłem wierzchołków.');
+  const best = wszystkie.sort((a, b) => b.F.length - a.F.length)[0];
+  const z = zgrzej(best.V, best.F, tol);
+  return { V: z.V, F: z.F, nTri: z.F.length / 3, nazwa: best.name };
+}
+
+function wczytajPlik() {
+  throw new Error('w przeglądarce użyj rozpoznajZBufora');
+}
+
+function brylaZSiatki(V, F) {
+  try {
+    return Manifold.ofMesh({ numProp: 3, vertProperties: V, triVerts: F });
+  } catch (e) {
+    const err = new Error(KOM_USZKODZONY);
+    err.kod = 'USZKODZONY';
+    err.przyczyna = String(e && e.message || e);
+    throw err;
+  }
+}
+
+function elementyWalca(V, F, os, P) {
+  const [A, U, W] = OSIE[os];
+  const el = [];
+  for (let t = 0; t < F.length; t += 3) {
+    const a = F[t] * 3, b = F[t + 1] * 3, c = F[t + 2] * 3;
+    const e1 = [V[b] - V[a], V[b + 1] - V[a + 1], V[b + 2] - V[a + 2]];
+    const e2 = [V[c] - V[a], V[c + 1] - V[a + 1], V[c + 2] - V[a + 2]];
+    const n = [e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2], e1[0] * e2[1] - e1[1] * e2[0]];
+    const ln = Math.hypot(n[0], n[1], n[2]); if (ln < 1e-10) continue;
+    n[0] /= ln; n[1] /= ln; n[2] /= ln;
+    if (Math.abs(n[A]) > P.tol_osi) continue;
+    const cu = (V[a + U] + V[b + U] + V[c + U]) / 3, cw = (V[a + W] + V[b + W] + V[c + W]) / 3;
+    const nu = n[U], nw = n[W], l2 = Math.hypot(nu, nw); if (l2 < 0.9) continue;
+    el.push([cu, cw, nu / l2, nw / l2, ln / 2, (V[a + A] + V[b + A] + V[c + A]) / 3]);
+  }
+  return el;
+}
+
+function przeciecie(p, q) {
+  const det = p[2] * (-q[3]) - p[3] * (-q[2]);
+  if (Math.abs(det) < 0.15) return null;
+  const dx = q[0] - p[0], dy = q[1] - p[1];
+  const s = (dx * (-q[3]) - dy * (-q[2])) / det;
+  return [p[0] + s * p[2], p[1] + s * p[3]];
+}
+
+function mediana(arr) {
+  if (!arr.length) return NaN;
+  const s = arr.slice().sort((a, b) => a - b);
+  const m = Math.floor(s.length / 2);
+  return s.length % 2 ? s[m] : 0.5 * (s[m - 1] + s[m]);
+}
+
+
+
+
+
+function dopasujOkreg(pts) {
+  if (!pts || pts.length < 8) return null;
+  const n = pts.length;
+  let mx = 0, my = 0;
+  for (const p of pts) { mx += p[0]; my += p[1]; }
+  mx /= n; my /= n;
+  let suu = 0, svv = 0, suv = 0, suuu = 0, svvv = 0, suvv = 0, svuu = 0;
+  for (const p of pts) {
+    const u = p[0] - mx, v = p[1] - my;
+    const uu = u * u, vv = v * v;
+    suu += uu; svv += vv; suv += u * v;
+    suuu += uu * u; svvv += vv * v; suvv += u * vv; svuu += v * uu;
+  }
+  const den = 2 * (suu * svv - suv * suv);
+  if (Math.abs(den) < 1e-18) return null;
+  const uc = (svv * (suuu + suvv) - suv * (svvv + svuu)) / den;
+  const vc = (suu * (svvv + svuu) - suv * (suuu + suvv)) / den;
+  const cx = mx + uc, cy = my + vc;
+  if (!Number.isFinite(cx) || !Number.isFinite(cy)) return null;
+  const rs = pts.map(p => Math.hypot(p[0] - cx, p[1] - cy)).filter(r => r > 1e-9);
+  if (rs.length < 8) return null;
+  const r = mediana(rs);
+  if (!Number.isFinite(r) || r < 1e-6) return null;
+  return { cx, cy, r };
+}
+
+
+
+function walceZNormalnych(V, F, os, P) {
+  const el = elementyWalca(V, F, os, P);
+  if (el.length < 30) return [];
+  let poz = el.slice(), out = [];
+  const probeN = Math.min(800, poz.length);
+  for (let runda = 0; runda < 8 && poz.length >= 30; runda++) {
+    let best = null;
+    const nIt = Math.min(20000, 80 * poz.length);
+    for (let it = 0; it < nIt; it++) {
+      const i = (it * 7919 + runda * 13) % poz.length;
+      const j = (it * 104729 + 17 + runda) % poz.length;
+      if (i === j) continue;
+      const s = przeciecie(poz[i], poz[j]); if (!s) continue;
+      const r = Math.hypot(poz[i][0] - s[0], poz[i][1] - s[1]);
+      if (r < P.r_min_mm || r > P.r_max_mm) continue;
+      let n = 0, pole = 0;
+      const krok = Math.max(1, Math.floor(poz.length / probeN));
+      for (let k = 0; k < poz.length; k += krok) {
+        const e = poz[k];
+        const dx = e[0] - s[0], dy = e[1] - s[1], d = Math.hypot(dx, dy);
+        if (Math.abs(d - r) > P.tol_r_mm) continue;
+        if (Math.abs((dx * e[2] + dy * e[3]) / d) < P.celowanie) continue;
+        n++; pole += e[4];
+      }
+      if (!best || pole > best.pole) best = { cu: s[0], cw: s[1], r, n, pole };
+    }
+    if (!best || best.n < 8) break;
+    const celOstre = Math.max(P.celowanie, 0.99);
+    const kand = [];
+    for (const e of poz) {
+      const dx = e[0] - best.cu, dy = e[1] - best.cw, d = Math.hypot(dx, dy);
+      if (d < 1e-9) continue;
+      const aim = Math.abs((dx * e[2] + dy * e[3]) / d);
+      if (Math.abs(d - best.r) > P.tol_r_mm || aim < P.celowanie) continue;
+      kand.push({ e, d, aim, dx, dy });
+    }
+    let uzyte = kand.filter(k => k.aim >= celOstre);
+    if (uzyte.length < 12) uzyte = kand;
+    const rMed = mediana(uzyte.map(k => k.d));
+    const uzyte2 = uzyte.filter(k => Math.abs(k.d - rMed) <= P.tol_r_mm);
+    if (uzyte2.length >= 12) uzyte = uzyte2;
+    const xs = [], ys = [];
+    for (let i = 0; i < uzyte.length; i += Math.max(1, Math.floor(uzyte.length / 40))) {
+      const j = (i + Math.floor(uzyte.length / 3)) % uzyte.length;
+      const s2 = przeciecie(uzyte[i].e, uzyte[j].e);
+      if (s2) { xs.push(s2[0]); ys.push(s2[1]); }
+    }
+    const fitC0 = dopasujOkreg(uzyte.map(k => [k.e[0], k.e[1]]));
+    const fitC = (fitC0
+      && Math.hypot(fitC0.cx - best.cu, fitC0.cy - best.cw) <= 2
+      && Math.abs(fitC0.r - rMed) <= 1.5) ? fitC0 : null;
+    const cu2 = fitC ? fitC.cx : (xs.length >= 5 ? mediana(xs) : best.cu);
+    const cw2 = fitC ? fitC.cy : (ys.length >= 5 ? mediana(ys) : best.cw);
+    const rFin = mediana(uzyte.map(k => Math.hypot(k.e[0] - cu2, k.e[1] - cw2)));
+    let doSrodka = 0, katy = new Set(), nPelne = 0, polePelne = 0, odch = 0, zmin = Infinity, zmax = -Infinity;
+    for (const k of uzyte) {
+      const rr = Math.hypot(k.e[0] - cu2, k.e[1] - cw2);
+      nPelne++; polePelne += k.e[4]; odch += Math.abs(rr - rFin);
+      if ((k.dx * k.e[2] + k.dy * k.e[3]) < 0) doSrodka++;
+      katy.add(Math.round(Math.atan2(k.dy, k.dx) * 180 / Math.PI / 5));
+      if (k.e[5] < zmin) zmin = k.e[5];
+      if (k.e[5] > zmax) zmax = k.e[5];
+    }
+    const pokrycie = katy.size * 5;
+    if (pokrycie >= P.min_kat_deg && nPelne >= 12) {
+      out.push({
+        os, r: rFin, srednica_mm: +(rFin * 2).toFixed(3),
+        srodek: [+cu2.toFixed(3), +cw2.toFixed(3)],
+        pokrycie_kata_deg: pokrycie, trojkatow: nPelne, pole_mm2: +polePelne.toFixed(0),
+        odchylenie_promienia_mm: +(odch / Math.max(1, nPelne)).toFixed(3),
+        rodzaj: doSrodka > nPelne / 2 ? 'otwor/gniazdo' : 'czop/walek',
+        z_od: zmin, z_do: zmax
+      });
+    }
+    poz = poz.filter(e => {
+      const dx = e[0] - best.cu, dy = e[1] - best.cw, d = Math.hypot(dx, dy);
+      return !(Math.abs(d - best.r) <= P.tol_r_mm && Math.abs((dx * e[2] + dy * e[3]) / d) >= P.celowanie);
+    });
+  }
+  return out;
+}
+
+
+
+
+
+
+function wSrodku(kon, x, y) {
+  let c = false;
+  for (const P of kon) {
+    for (let i = 0, j = P.length - 1; i < P.length; j = i++) {
+      const xi = P[i][0], yi = P[i][1], xj = P[j][0], yj = P[j][1];
+      if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) c = !c;
+    }
+  }
+  return c;
+}
+
+function rInBinarny(kon, cx, cy, kier, rMin, rMax) {
+  let hit = null;
+  for (let r = rMin; r <= rMax; r += 0.1) {
+    if (wSrodku(kon, cx + kier[0] * r, cy + kier[1] * r)) { hit = r; break; }
+  }
+  if (hit == null) return null;
+  let lo = Math.max(rMin, hit - 0.1), hi = hit;
+  for (let i = 0; i < 10; i++) {
+    const mid = (lo + hi) / 2;
+    if (wSrodku(kon, cx + kier[0] * mid, cy + kier[1] * mid)) hi = mid;
+    else lo = mid;
+  }
+  return lo;
+}
+
+
+
+
+
+function przytnijRdzen(seg) {
+  if (seg.length < 3) return seg;
+  const med = mediana(seg.map(s => s.r));
+  const flag = seg.map(s => Math.abs(s.r - med) <= 0.12);
+  let bestA = 0, bestB = 0, a = 0;
+  while (a < flag.length) {
+    while (a < flag.length && !flag[a]) a++;
+    let b = a;
+    while (b < flag.length && flag[b]) b++;
+    if (b - a > bestB - bestA) { bestA = a; bestB = b; }
+    a = b + 1;
+  }
+  const rdzen = seg.slice(bestA, bestB);
+  return rdzen.length >= 2 ? rdzen : seg;
+}
+
+
+
+
+
+function rInWielokier(kon, cx, cy, rMin, rMax) {
+  const rs = [];
+  for (let a = 0; a < 360; a += 45) {
+    const rad = a * Math.PI / 180;
+    const r = rInBinarny(kon, cx, cy, [Math.cos(rad), Math.sin(rad)], rMin, rMax);
+    if (r != null) rs.push(r);
+  }
+  if (!rs.length) return null;
+  const mn = Math.min(...rs);
+  const sciana = rs.filter(r => r <= mn + 1.2);
+  return mediana(sciana);
+}
+
+
+
+
+function polygonsOf(cs) {
+  if (!cs) return [];
+  if (typeof cs.toPolygons === 'function') return cs.toPolygons();
+  if (typeof cs.toPolygons === 'function') return cs.toPolygons();
+  return [];
+}
+
+function naZ(m, os) {
+  if (os === 'z') return { s: m, wlasny: false };
+  if (os === 'y') return { s: m.rotate(-90, 0, 0), wlasny: true };
+  if (os === 'x') return { s: m.rotate(0, 90, 0), wlasny: true };
+  return { s: m, wlasny: false };
+}
+
+/** RANSAC srodek is [U, W] in the original plane. After naZ, XY is (W, U). */
+function xyPoObrocie(os, srodek) {
+  if (os === 'z') return [srodek[0], srodek[1]];
+  return [srodek[1], srodek[0]];
+}
+
+function zZ(s, os) {
+  if (os === 'z') return s;
+  if (os === 'y') return s.rotate(90, 0, 0);
+  if (os === 'x') return s.rotate(0, -90, 0);
+  return s;
+}
+
+function gardziel(kon, cx, cy, r) {
+  const zaj = [];
+  for (let a = 0; a < 360; a += 5) {
+    const rad = a * Math.PI / 180;
+    zaj.push(wSrodku(kon, cx + Math.cos(rad) * r, cy + Math.sin(rad) * r) ? 1 : 0);
+  }
+  let best = 0, bestOd = 0, run = 0, runOd = 0;
+  const n = zaj.length;
+  for (let i = 0; i < n * 2; i++) {
+    if (!zaj[i % n]) {
+      if (run === 0) runOd = (i % n) * 5;
+      run++;
+      if (run > best) { best = run; bestOd = runOd; }
+    } else run = 0;
+  }
+  return { len: best * 5, od: bestOd };
+}
+
+function skanPromieniowy(m, os, srodek, P) {
+  const { s: rot, wlasny } = naZ(m, os);
+  const bb = rot.boundingBox();
+  const [CX, CY] = xyPoObrocie(os, srodek);
+  const z0 = bb.min[2], z1 = bb.max[2];
+  const krok = P.krok_skanu_mm;
+  const rMax = Math.max(bb.max[0] - bb.min[0], bb.max[1] - bb.min[1]) * 0.55;
+  let kier = [0, 1];
+  {
+    const s0 = rot.slice((z0 + z1) / 2);
+    const kon0 = polygonsOf(s0); s0.delete();
+    let bestR = null;
+    const dirs = [];
+    for (let a = 0; a < 360; a += 45) {
+      const rad = a * Math.PI / 180;
+      dirs.push([Math.cos(rad), Math.sin(rad)]);
+    }
+    for (const k of dirs) {
+      const rIn = rInBinarny(kon0, CX, CY, k, P.r_min_mm, rMax);
+      if (rIn != null && (bestR == null || rIn < bestR)) { bestR = rIn; kier = k; }
+    }
+  }
+  const probki = [];
+  for (let z = z0 + krok; z <= z1 - krok; z += krok) {
+    const s = rot.slice(z);
+    const kon = polygonsOf(s);
+    s.delete();
+    if (!kon.length) continue;
+    const rIn = rInWielokier(kon, CX, CY, Math.max(0.4, P.r_min_mm * 0.4), rMax);
+    if (rIn == null) continue;
+    const g = gardziel(kon, CX, CY, rIn + 1.5);
+    probki.push({ t: z - z0, r: rIn, g });
+  }
+  const stopnie = [];
+  let start = 0;
+  for (let i = 1; i <= probki.length; i++) {
+    const granica = i === probki.length
+      || Math.abs(probki[i].r - probki[i - 1].r) > P.stopien_mm;
+    if (granica) {
+      const surowy = probki.slice(start, i);
+      const seg = przytnijRdzen(surowy);
+      if (seg.length >= 2) {
+        const sr = mediana(seg.map(b => b.r));
+        const odch = Math.sqrt(seg.reduce((a, b) => a + (b.r - sr) ** 2, 0) / seg.length);
+        const gsr = seg.reduce((a, b) => a + b.g.len, 0) / seg.length;
+        stopnie.push({
+          os, srodek: [CX, CY], r: sr, srednica_mm: +(sr * 2).toFixed(3),
+          od_mm: +seg[0].t.toFixed(2), do_mm: +seg[seg.length - 1].t.toFixed(2),
+          z0, zgodnych_przekrojow: seg.length, odchylenie_promienia_mm: +odch.toFixed(3),
+          gardziel_deg: +gsr.toFixed(0), gardziel_od_deg: +seg[Math.floor(seg.length / 2)].g.od.toFixed(0)
+        });
+      }
+      start = i;
+    }
+  }
+  if (wlasny) rot.delete();
+  return { stopnie, z0, cx: CX, cy: CY };
+}
+
+
+
+
+
+
+function kolko(poly) {
+  if (poly.length < 6) return null;
+  let sx = 0, sy = 0;
+  for (const p of poly) { sx += p[0]; sy += p[1]; }
+  const cx = sx / poly.length, cy = sy / poly.length;
+  let rmin = Infinity, rmax = 0, sr = 0;
+  for (const p of poly) {
+    const r = Math.hypot(p[0] - cx, p[1] - cy);
+    if (r < rmin) rmin = r;
+    if (r > rmax) rmax = r;
+    sr += r;
+  }
+  return { cx, cy, r: sr / poly.length, kol: rmax - rmin };
+}
+
+function wzoryOtworow(m, os, P) {
+  const { s: rot, wlasny } = naZ(m, os);
+  const bb = rot.boundingBox();
+  const z0 = bb.min[2], z1 = bb.max[2], N = 9;
+  const fracs = [];
+  for (let i = 1; i <= N; i++) fracs.push((i - 0.5) / N);
+  fracs.push(0.02, 0.98);
+  const dziury = [];
+  for (const f of fracs) {
+    const z = z0 + f * (z1 - z0);
+    const s = rot.slice(z);
+    const kon = polygonsOf(s);
+    s.delete();
+    for (const poly of kon) {
+      const k = kolko(poly);
+      if (!k || k.kol >= 0.25) continue;
+      if (k.r < 0.6 || k.r > 8) continue;
+      dziury.push(k);
+    }
+  }
+  const grupy = [];
+  for (const d of dziury) {
+    let g = grupy.find(x => Math.abs(x.r - d.r) < 0.2);
+    if (!g) { g = { r: d.r, os, pts: [] }; grupy.push(g); }
+    g.pts.push(d);
+  }
+  const wzory = [];
+  for (const g of grupy) {
+    const klastry = [];
+    for (const p of g.pts) {
+      let c = klastry.find(k => Math.hypot(k.cx - p.cx, k.cy - p.cy) < 1.2);
+      if (!c) { c = { cx: p.cx, cy: p.cy, n: 0, r: 0, kol: 0 }; klastry.push(c); }
+      const n = c.n + 1;
+      c.cx = (c.cx * c.n + p.cx) / n;
+      c.cy = (c.cy * c.n + p.cy) / n;
+      c.r = (c.r * c.n + p.r) / n;
+      c.kol = (c.kol * c.n + p.kol) / n;
+      c.n = n;
+    }
+    const xsAll = [...new Set(klastry.map(p => +p.cx.toFixed(0)))];
+    const ysAll = [...new Set(klastry.map(p => +p.cy.toFixed(0)))];
+    const siatka = xsAll.length >= 2 && ysAll.length >= 2 && klastry.length >= 4;
+    const sredKol = klastry.reduce((a, b) => a + b.kol, 0) / Math.max(1, klastry.length);
+    const dobre = klastry.filter(c => siatka && sredKol <= 0.12 ? c.n >= 1 : c.n >= 2);
+    if (dobre.length < 2) continue;
+    const xs = [...new Set(dobre.map(p => +p.cx.toFixed(1)))].sort((a, b) => a - b);
+    const ys = [...new Set(dobre.map(p => +p.cy.toFixed(1)))].sort((a, b) => a - b);
+    wzory.push({
+      os, srednica_mm: +(g.r * 2).toFixed(3), sztuk: dobre.length,
+      rozstaw_mm: [
+        xs.length >= 2 ? +(xs[xs.length - 1] - xs[0]).toFixed(2) : 0,
+        ys.length >= 2 ? +(ys[ys.length - 1] - ys[0]).toFixed(2) : 0
+      ],
+      srodki: dobre.map(p => [+p.cx.toFixed(2), +p.cy.toFixed(2)]),
+      kolistosc_mm: +(dobre.reduce((a, b) => a + b.kol, 0) / dobre.length).toFixed(3),
+      zgodnych_przekrojow: Math.min(...dobre.map(p => p.n))
+    });
+  }
+  if (wlasny) rot.delete();
+  return wzory;
+}
+
+function pasmo(d) {
+  const pok = d.pokrycie_kata_deg ?? 0, prz = d.zgodnych_przekrojow ?? 0, odch = d.odchylenie_promienia_mm ?? 99;
+  if (pok >= 120 && prz >= 3 && odch <= 0.05) return 'wysoka';
+  if (pok >= 60 && prz >= 2 && odch <= 0.15) return 'srednia';
+  return 'niska';
+}
+
+
+
+
+
+
+function tNaOsAbs(os, z0, t) {
+  const zRot = z0 + t;
+  return os === 'z' ? zRot : -zRot;
+}
+
+
+
+
+
+function srednicaZWierzcholkow(V, os, srodekUW, zLo, zHi, r0) {
+  const [A, U, W] = OSIE[os];
+  const rs = [];
+  for (let i = 0; i < V.length; i += 3) {
+    const z = V[i + A];
+    if (z < zLo || z > zHi) continue;
+    const r = Math.hypot(V[i + U] - srodekUW[0], V[i + W] - srodekUW[1]);
+    if (Math.abs(r - r0) <= 1.2) rs.push(r);
+  }
+  if (rs.length < 8) return { d: r0 * 2, n: rs.length };
+  return { d: mediana(rs) * 2, n: rs.length };
+}
+
+function srednicaSprawdzianem(model, os, cx, cy, z0, od, doMm, d0) {
+  if (!Manifold || !Number.isFinite(d0) || doMm - od < 1) return d0;
+  const { s: aln, wlasny } = naZ(model, os);
+  const h = Math.max(1.2, Math.min(4, (doMm - od) * 0.3));
+  const z = z0 + od + (doMm - od) * 0.5 - h / 2;
+  const obj = (d) => {
+    const c = Manifold.cylinder(h, d / 2, d / 2, 192).translate(cx, cy, z);
+    const k = c.intersect(aln);
+    const v = k.volume();
+    c.delete(); k.delete();
+    return v;
+  };
+  let lo = Math.max(1, d0 - 1.2), hi = d0 + 1.2, out = d0;
+  try {
+    while (obj(hi) <= 1 && hi < d0 + 4) hi += 0.25;
+    while (obj(lo) > 1 && lo > 1) lo -= 0.25;
+    for (let i = 0; i < 12; i++) {
+      const mid = (lo + hi) / 2;
+      if (obj(mid) <= 1) lo = mid; else hi = mid;
+    }
+    out = lo;
+  } catch {}
+  if (wlasny) aln.delete();
+  return out;
+}
+
+
+
+
+
+function srednicaWPasmie(V, F, os, srodekUW, zLo, zHi, r0, P) {
+  const [A, U, W] = OSIE[os];
+  const rs = [];
+  const pts = [];
+  const cel = Math.max(P.celowanie, 0.99);
+  const win = Math.max(0.4, P.tol_r_mm);
+  for (let t = 0; t < F.length; t += 3) {
+    const ia = F[t] * 3, ib = F[t + 1] * 3, ic = F[t + 2] * 3;
+    const z = (V[ia + A] + V[ib + A] + V[ic + A]) / 3;
+    if (z < zLo - 0.05 || z > zHi + 0.05) continue;
+    const e1 = [V[ib] - V[ia], V[ib + 1] - V[ia + 1], V[ib + 2] - V[ia + 2]];
+    const e2 = [V[ic] - V[ia], V[ic + 1] - V[ia + 1], V[ic + 2] - V[ia + 2]];
+    const n = [e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2], e1[0] * e2[1] - e1[1] * e2[0]];
+    const ln = Math.hypot(n[0], n[1], n[2]); if (ln < 1e-10) continue;
+    n[0] /= ln; n[1] /= ln; n[2] /= ln;
+    if (Math.abs(n[A]) > P.tol_osi) continue;
+    const cu = (V[ia + U] + V[ib + U] + V[ic + U]) / 3;
+    const cw = (V[ia + W] + V[ib + W] + V[ic + W]) / 3;
+    const dx = cu - srodekUW[0], dy = cw - srodekUW[1];
+    const r = Math.hypot(dx, dy);
+    if (Math.abs(r - r0) > win) continue;
+    const nu = n[U], nw = n[W], l2 = Math.hypot(nu, nw); if (l2 < 0.9) continue;
+    if (r < 1e-9) continue;
+    const aim = Math.abs((dx * nu + dy * nw) / (r * l2));
+    if (aim < cel) continue;
+    rs.push(r);
+    for (const i of [ia, ib, ic]) pts.push([V[i + U], V[i + W]]);
+  }
+  if (rs.length < 8) return { d: r0 * 2, n: rs.length };
+  const fit = dopasujOkreg(pts);
+  if (fit && Math.abs(fit.r - r0) < Math.max(0.8, win * 4)) {
+    return { d: fit.r * 2, n: rs.length, cx: fit.cx, cy: fit.cy };
+  }
+  return { d: mediana(rs) * 2, n: rs.length };
+}
+
+
+
+
+function katalogZCech(m, V, F, P) {
+  const bb = m.boundingBox();
+  const gab = [
+    +(bb.max[0] - bb.min[0]).toFixed(2),
+    +(bb.max[1] - bb.min[1]).toFixed(2),
+    +(bb.max[2] - bb.min[2]).toFixed(2)
+  ];
+  const walce = [];
+  for (const os of ['x', 'y', 'z']) walce.push(...walceZNormalnych(V, F, os, P));
+  walce.sort((a, b) => b.pole_mm2 - a.pole_mm2);
+  const gniazdaW = walce.filter(w => w.rodzaj === 'otwor/gniazdo' && w.srednica_mm > 8);
+  const osGl = gniazdaW[0]?.os || walce[0]?.os || 'y';
+  const srGl = gniazdaW[0]?.srodek || walce[0]?.srodek || [0, 0];
+  const skan = skanPromieniowy(m, osGl, srGl, P);
+  const wzory = [];
+  for (const os of ['x', 'y', 'z']) wzory.push(...wzoryOtworow(m, os, P));
+
+  const cechy = [];
+  let id = 1;
+  const stopnie = skan.stopnie.filter(s => s.srednica_mm > 8 && (s.do_mm - s.od_mm) >= P.krok_skanu_mm);
+  let nrStopnia = 0;
+  for (const st of stopnie) {
+    const zA = tNaOsAbs(st.os, st.z0, st.od_mm);
+    const zB = tNaOsAbs(st.os, st.z0, st.do_mm);
+    const zLo = Math.min(zA, zB), zHi = Math.max(zA, zB);
+    const overlap = (w) => Math.min(w.z_do, zHi) - Math.max(w.z_od, zLo);
+    const w = gniazdaW.find(x => x.os === st.os && Math.abs(x.srednica_mm - st.srednica_mm) < 2.5 && overlap(x) > 2)
+      || gniazdaW.find(x => x.os === st.os && Math.abs(x.srednica_mm - st.srednica_mm) < 1.5);
+    if (!w || !w.trojkatow) continue;
+    const zLo2 = zLo + Math.min(1.2, (zHi - zLo) * 0.15);
+    const zHi2 = zHi - Math.min(1.2, (zHi - zLo) * 0.15);
+    const pas = srednicaWPasmie(V, F, st.os, w.srodek, zLo2, zHi2, w.r, P);
+    const d = +(pas.n >= 8 ? pas.d : (Math.abs(w.srednica_mm - st.srednica_mm) < 0.8 ? w.srednica_mm : st.srednica_mm)).toFixed(3);
+    const dowody = {
+      pokrycie_kata_deg: w.pokrycie_kata_deg,
+      trojkatow: w.trojkatow,
+      udzial_pola: walce[0] ? +(w.pole_mm2 / walce[0].pole_mm2).toFixed(3) : 0,
+      zgodnych_przekrojow: st.zgodnych_przekrojow,
+      odchylenie_promienia_mm: st.odchylenie_promienia_mm
+    };
+    const pewnosc = pasmo(dowody);
+    const czopy = walce.filter(x => x.os === st.os && x.rodzaj === 'czop/walek');
+    nrStopnia++;
+    cechy.push({
+      id: id++, rodzaj: 'gniazdo_walcowe', opis: `gniazdo walcowe, stopień ${nrStopnia}`,
+      os: st.os, srednica_mm: d, r: d / 2, od_mm: st.od_mm, do_mm: st.do_mm,
+      z0: st.z0, cx: st.srodek[0], cy: st.srodek[1],
+      gardziel_deg: st.gardziel_deg, gardziel_od_deg: st.gardziel_od_deg,
+      r_zewnetrzny: Math.max(...czopy.map(x => x.r), d / 2 + 6),
+      dowody, pewnosc, edytowalna: pewnosc !== 'niska'
+    });
+  }
+  for (const w of walce.filter(x => x.rodzaj === 'czop/walek' && x.srednica_mm > 10)) {
+    if (!w.trojkatow) continue;
+    const dowody = {
+      pokrycie_kata_deg: w.pokrycie_kata_deg, trojkatow: w.trojkatow,
+      udzial_pola: walce[0] ? +(w.pole_mm2 / walce[0].pole_mm2).toFixed(3) : 0,
+      zgodnych_przekrojow: w.pokrycie_kata_deg >= 120 ? 3 : 1,
+      odchylenie_promienia_mm: w.odchylenie_promienia_mm
+    };
+    const pewnosc = pasmo(dowody);
+    cechy.push({
+      id: id++, rodzaj: 'czop_walcowy', opis: `czop/wałek Ø${w.srednica_mm.toFixed(2)}`,
+      os: w.os, srednica_mm: w.srednica_mm, r: w.r, srodek: w.srodek,
+      zakres_nd: true, od_mm: null, do_mm: null,
+      dowody, pewnosc, edytowalna: pewnosc !== 'niska'
+    });
+  }
+  for (const wz of wzory) {
+    const siatka = wz.sztuk >= 4 && wz.rozstaw_mm?.[0] > 5 && wz.rozstaw_mm?.[1] > 5;
+    const pewnosc = (wz.kolistosc_mm <= 0.05 && (wz.zgodnych_przekrojow >= 3 || siatka)) ? 'wysoka'
+      : (wz.kolistosc_mm <= 0.15 && (wz.zgodnych_przekrojow >= 2 || siatka)) ? 'srednia' : 'niska';
+    cechy.push({
+      id: id++, rodzaj: 'wzor_otworow', opis: `${wz.sztuk} otwory montażowe`,
+      os: wz.os, srednica_mm: wz.srednica_mm, sztuk: wz.sztuk, rozstaw_mm: wz.rozstaw_mm,
+      srodki: wz.srodki, zakres_nd: true, od_mm: null, do_mm: null,
+      dowody: { kolistosc_mm: wz.kolistosc_mm, zgodnych_przekrojow: wz.zgodnych_przekrojow },
+      pewnosc, edytowalna: pewnosc !== 'niska'
+    });
+  }
+  let nKomp = 1;
+  try { const d = m.decompose(); nKomp = d.length; usun(d); } catch {}
+  return {
+    gabaryt_mm: gab, bbox: { min: bb.min.slice(), max: bb.max.slice() },
+    objetosc_cm3: +(m.volume() / 1000).toFixed(2), objetosc_mm3: +m.volume().toFixed(2),
+    szczelny: true, komponentow: nKomp, os_skanu: osGl, z0_skanu: skan.z0,
+    P, walce, cechy, rodzaje_rezerwa: RODZAJE_REZERWA
+  };
+}
+
+
+
+
+
+
+function rozpoznaj(sciezkaLubMesh) {
+  const t0 = Date.now();
+  let V, F, m, nTri;
+  if (typeof sciezkaLubMesh === 'string') {
+    const siatka = wczytajPlik(sciezkaLubMesh, 1e-3);
+    let tmp;
+    try {
+      tmp = Manifold.ofMesh({ numProp: 3, vertProperties: siatka.V, triVerts: siatka.F });
+    } catch (e) {
+      const err = new Error(KOM_USZKODZONY);
+      err.kod = 'USZKODZONY';
+      err.przyczyna = String(e && e.message || e);
+      throw err;
+    }
+    const P0 = progiZGabarytu(tmp.boundingBox());
+    tmp.delete();
+    const z = zgrzej(siatka.V, siatka.F, P0.zgrzew_mm);
+    V = z.V; F = z.F; nTri = F.length / 3;
+    m = brylaZSiatki(V, F);
+  } else {
+    m = sciezkaLubMesh;
+    const mesh = m.getMesh();
+    V = mesh.vertProperties; F = mesh.triVerts; nTri = F.length / 3;
+  }
+  const P = progiZGabarytu(m.boundingBox());
+  const kat = katalogZCech(m, V, F, P);
+  kat.trojkatow = nTri;
+  kat.czas_ms = Date.now() - t0;
+  kat._solid = m;
+  return kat;
+}
+
+function rozpoznajZBufora(buf, nazwa) {
+  const n = String(nazwa || '').toLowerCase();
+  const u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
+  const siatka = n.endsWith('.3mf') ? czytaj3MF(u8) : czytajSTL(u8);
+  let tmp;
+  try {
+    tmp = Manifold.ofMesh({ numProp: 3, vertProperties: siatka.V, triVerts: siatka.F });
+  } catch (e) {
+    const err = new Error(KOM_USZKODZONY);
+    err.kod = 'USZKODZONY';
+    err.przyczyna = String(e && e.message || e);
+    throw err;
+  }
+  const P0 = progiZGabarytu(tmp.boundingBox());
+  tmp.delete();
+  const z = zgrzej(siatka.V, siatka.F, P0.zgrzew_mm);
+  const m = brylaZSiatki(z.V, z.F);
+  return rozpoznaj(m);
+}
+
+function luzGniazda(nominal, pasowanie = 'przesuwne', material = 'PETG') {
+  return luzMm(nominal, pasowanie, material);
+}
+
+function interpretujZdanie(zdanie, katalog, opts = {}) {
+  const t = String(zdanie || '').toLowerCase().replace(',', '.');
+  const m = t.match(/(\d+(?:\.\d+)?)\s*mm/);
+  const wymiar = m ? +m[1] : null;
+  const gniazda = (katalog.cechy || []).filter(c => c.rodzaj === 'gniazdo_walcowe');
+  const rura = /rur[aayę]/.test(t) || /pasowa[cć]/.test(t);
+  const gniazdoMa = /gniazd/.test(t) && /ma[cć] mieć|ma miec|na\s+\d/.test(t) && !rura;
+  const material = opts.material || 'PETG';
+  const pasowanie = opts.pasowanie || 'przesuwne';
+  if (wymiar == null) return { ok: false, kod: 'BRAK_WYMIARU', pytanie: 'Jaki wymiar docelowy?', wykonaj: false };
+
+  const celZ = (w) => {
+    if (rura && !gniazdoMa) {
+      const luz = luzGniazda(w, pasowanie, material);
+      return {
+        wymiar: +(w + luz).toFixed(3), rura: true,
+        deklaracjaLuzu: { nominal: w, luz_mm: +luz.toFixed(3), wzor: `(0,20 + 0,003 × ${w}) × 1,2`, pasowanie, material, cel: +(w + luz).toFixed(3) }
+      };
+    }
+    return { wymiar: +w.toFixed(3), rura: false, deklaracjaLuzu: { nominal: w, luz_mm: 0, cel: +w.toFixed(3) } };
+  };
+
+  if (opts.cecha_id != null) {
+    const c = katalog.cechy.find(x => x.id === opts.cecha_id);
+    if (!c) return { ok: false, kod: 'CECHA_POZA_KATALOGIEM', cecha_id: opts.cecha_id, wykonaj: false };
+    if (c.pewnosc === 'niska' && !opts.klik) {
+      return { ok: false, kod: 'NISKIE_PEWNOSC', cecha_id: c.id, pytanie: 'Cecha o niskiej pewności — wskaż ją kliknięciem.', wykonaj: false };
+    }
+    return { ok: true, cecha_id: c.id, wykonaj: true, ...celZ(wymiar) };
+  }
+
+  if (gniazda.length > 1 && !/stopie[nń]|pierwsz|drug|trzeci/.test(t)) {
+    const lista = gniazda.map((c, i) => ({
+      litera: String.fromCharCode(65 + i), id: c.id,
+      opis: `Ø${c.srednica_mm.toFixed(2)} mm — od ${c.od_mm} do ${c.do_mm} mm długości`
+    }));
+    const hint = lista.slice().sort((a, b) => {
+      const ca = gniazda.find(x => x.id === a.id), cb = gniazda.find(x => x.id === b.id);
+      return Math.abs(ca.srednica_mm - wymiar) - Math.abs(cb.srednica_mm - wymiar);
+    })[0];
+    return { ok: false, kod: 'NIEJEDNOZNACZNE', pytanie: 'Które gniazdo mam zmienić?', lista, podpowiedz: hint.litera, wykonaj: false };
+  }
+
+  let wybrana = gniazda[0];
+  if (/trzec/.test(t)) wybrana = gniazda[2] || gniazda[gniazda.length - 1];
+  else if (/drug/.test(t)) wybrana = gniazda[1] || wybrana;
+  if (!wybrana) return { ok: false, kod: 'BRAK_GNIAZDA', wykonaj: false };
+  if (wybrana.pewnosc === 'niska' && !opts.klik) {
+    return { ok: false, kod: 'NISKIE_PEWNOSC', cecha_id: wybrana.id, wykonaj: false };
+  }
+  return { ok: true, cecha_id: wybrana.id, wykonaj: true, ...celZ(wymiar) };
+}
+
+function walidujOdpowiedzModelu(odp, katalog) {
+  if (!odp || typeof odp !== 'object') return { ok: false, kod: 'ZLY_SCHEMAT' };
+  if (odp.cecha_id == null) return { ok: false, kod: 'BRAK_ID' };
+  const c = (katalog.cechy || []).find(x => x.id === odp.cecha_id);
+  if (!c) return { ok: false, kod: 'CECHA_POZA_KATALOGIEM', cecha_id: odp.cecha_id };
+  return { ok: true, cecha: c };
+}
+
+function planZmiany(cecha, dNowa) {
+  const r0 = cecha.r ?? cecha.srednica_mm / 2;
+  const r1 = dNowa / 2;
+  const h = (cecha.do_mm ?? 0) - (cecha.od_mm ?? 0);
+  const frac = (cecha.gardziel_deg || 0) / 360;
+  const dV = Math.PI * Math.abs(r0 * r0 - r1 * r1) * h * (1 - frac);
+  return { kierunek: r1 < r0 ? 'zwezenie' : 'poszerzenie', objetosc_mm3: dV, od_mm: cecha.od_mm, do_mm: cecha.do_mm, os: cecha.os };
+}
+
+function zwezGniazdo(model, cecha, dNowa) {
+  const arena = [];
+  const K = o => (arena.push(o), o);
+  const rN = dNowa / 2, r0 = cecha.r ?? cecha.srednica_mm / 2;
+  const { s: aligned, wlasny } = naZ(model, cecha.os);
+  if (wlasny) arena.push(aligned);
+  const z0 = cecha.z0 ?? aligned.boundingBox().min[2];
+  const h = cecha.do_mm - cecha.od_mm;
+  const CX = cecha.cx, CY = cecha.cy;
+  const zew = K(Manifold.cylinder(h, r0 + 0.02, r0 + 0.02, 192).translate(CX, CY, z0 + cecha.od_mm));
+  const rdzen = K(Manifold.cylinder(h + 8, rN, rN, 192).translate(CX, CY, z0 + cecha.od_mm - 4));
+  let ring = K(zew.subtract(rdzen));
+  if (cecha.gardziel_deg && cecha.gardziel_deg > 5) {
+    const wach = [[CX, CY]];
+    const od = cecha.gardziel_od_deg || 0;
+    for (let a = od; a <= od + cecha.gardziel_deg; a += 0.5) {
+      const r = a * Math.PI / 180;
+      wach.push([CX + Math.cos(r) * (r0 + 3), CY + Math.sin(r) * (r0 + 3)]);
+    }
+    const H = aligned.boundingBox().max[2] - aligned.boundingBox().min[2];
+    ring = K(ring.subtract(K(Manifold.extrude([wach], H + 8).translate(0, 0, z0 - 4))));
+  }
+  const bb = aligned.boundingBox();
+  const box = K(Manifold.cube([
+    bb.max[0] - bb.min[0] + 0.02,
+    bb.max[1] - bb.min[1] + 0.02,
+    bb.max[2] - bb.min[2] + 0.02
+  ], true).translate((bb.min[0] + bb.max[0]) / 2, (bb.min[1] + bb.max[1]) / 2, (bb.min[2] + bb.max[2]) / 2));
+  ring = K(ring.intersect(box));
+  let wynik = K(aligned.add(ring));
+  wynik = zZ(wynik, cecha.os);
+  if (cecha.os !== 'z') arena.push(wynik);
+  return { wynik, arena };
+}
+
+function padFazki(h0) {
+  return Math.min(3, Math.max(2, Math.max(0, h0) * 0.25));
+}
+
+function rNaPlaszczyznie(aligned, cx, cy, z, rMin, rMax) {
+  let s;
+  try { s = aligned.slice(z); } catch { return null; }
+  const kon = polygonsOf(s);
+  try { s.delete(); } catch {}
+  if (!kon.length) return null;
+  if (wSrodku(kon, cx, cy)) return Infinity;
+  return rInWielokier(kon, cx, cy, rMin, rMax);
+}
+
+function zasiegCiecia(aligned, cecha, dNowa) {
+  const krok = 0.2;
+  const rNeed = dNowa / 2;
+  const r0 = cecha.r ?? cecha.srednica_mm / 2;
+  const bb = aligned.boundingBox();
+  const z0 = cecha.z0 ?? bb.min[2];
+  const od = cecha.od_mm ?? 0;
+  const doMm = cecha.do_mm ?? 0;
+  const h0 = Math.abs(doMm - od);
+  let zLo = z0 + Math.min(od, doMm);
+  let zHi = z0 + Math.max(od, doMm);
+  const rMin = Math.max(0.4, Math.min(r0, rNeed) * 0.3);
+  const rMax = Math.max(bb.max[0] - bb.min[0], bb.max[1] - bb.min[1], 4) * 0.55;
+  const MAX_EXTRA = 8;
+  const zMin = bb.min[2] - 0.5, zMax = bb.max[2] + 0.5;
+
+  const trzebaCiac = (z) => {
+    const r = rNaPlaszczyznie(aligned, cecha.cx, cecha.cy, z, rMin, rMax);
+    if (r == null || r === Infinity) return false;
+    if (r >= rNeed - 0.01) return false;
+    if (r < r0 - 0.8) return false;
+    return true;
+  };
+
+  for (let z = zLo - krok, extra = 0; z >= zMin && extra < MAX_EXTRA; z -= krok, extra += krok) {
+    if (!trzebaCiac(z)) break;
+    zLo = z;
+  }
+  for (let z = zHi + krok, extra = 0; z <= zMax && extra < MAX_EXTRA; z += krok, extra += krok) {
+    if (!trzebaCiac(z)) break;
+    zHi = z;
+  }
+  zLo = Math.max(zMin, zLo - krok);
+  zHi = Math.min(zMax, zHi + krok);
+  if (zHi - zLo < h0 + 0.4) {
+    const pad = padFazki(h0);
+    zLo -= pad;
+    zHi += pad;
+  }
+  return { zLo, zHi };
+}
+
+function poszerzGniazdo(model, cecha, dNowa) {
+  const arena = [];
+  const K = o => (arena.push(o), o);
+  const SEG = 192;
+  const rN = (dNowa / 2 + 0.02) / Math.cos(Math.PI / SEG);
+  const r0 = cecha.r ?? cecha.srednica_mm / 2;
+  const rZew = cecha.r_zewnetrzny ?? (r0 + 6);
+  if ((rZew - rN) < SCIANKA_MIN) {
+    const err = new Error(`Ścianka ${((rZew - rN) * 2).toFixed(2)} mm spadłaby poniżej ${SCIANKA_MIN} mm.`);
+    err.kod = 'SCIANKA';
+    err.liczba = rZew - rN;
+    throw err;
+  }
+  const { s: aligned, wlasny } = naZ(model, cecha.os);
+  if (wlasny) arena.push(aligned);
+  const zc = zasiegCiecia(aligned, cecha, dNowa);
+  const h = Math.max(0.5, zc.zHi - zc.zLo);
+  const walec = K(Manifold.cylinder(h, rN, rN, SEG).translate(cecha.cx, cecha.cy, zc.zLo));
+  let wynik = K(aligned.subtract(walec));
+  wynik = zZ(wynik, cecha.os);
+  if (cecha.os !== 'z') arena.push(wynik);
+  return { wynik, arena };
+}
+
+
+function zmienOtwory(model, cecha, dNowa) {
+  const arena = [];
+  const K = o => (arena.push(o), o);
+  const { s: aligned, wlasny } = naZ(model, cecha.os);
+  if (wlasny) arena.push(aligned);
+  const bb = aligned.boundingBox();
+  const H = bb.max[2] - bb.min[2] + 4;
+  let wynik = aligned;
+  for (const p of (cecha.srodki || [])) {
+    const c = K(Manifold.cylinder(H, dNowa / 2, dNowa / 2, 64).translate(p[0], p[1], bb.min[2] - 2));
+    wynik = K(wynik.subtract(c));
+  }
+  wynik = zZ(wynik, cecha.os);
+  if (cecha.os !== 'z') arena.push(wynik);
+  return { wynik, arena };
+}
+
+function bramkaPrzerobki(stara, nowa, katPrzed, katPo, cecha, plan, dCel) {
+  const bledy = [];
+  const blad = (kod, tekst, liczba) => bledy.push({ kod, tekst, liczba });
+  const zwezanie = dCel < cecha.srednica_mm;
+  if (zwezanie && nowa.volume() <= stara.volume())
+    blad('OBJETOSC', 'Zwężenie otworu zmniejszyło objętość — operacja wycięła coś, czego nie powinna.', nowa.volume());
+  if (!zwezanie && cecha.rodzaj === 'gniazdo_walcowe' && nowa.volume() >= stara.volume())
+    blad('OBJETOSC', 'Poszerzenie otworu zwiększyło objętość — operacja dodała materiał.', nowa.volume());
+
+  const bbS = stara.boundingBox(), bbN = nowa.boundingBox();
+  const gabS = [bbS.max[0] - bbS.min[0], bbS.max[1] - bbS.min[1], bbS.max[2] - bbS.min[2]];
+  const gabN = [bbN.max[0] - bbN.min[0], bbN.max[1] - bbN.min[1], bbN.max[2] - bbN.min[2]];
+  for (let i = 0; i < 3; i++) {
+    if (Math.abs(gabS[i] - gabN[i]) > 0.01)
+      blad('GABARYT', `Gabaryt osi ${i} zmienił się o ${(gabN[i] - gabS[i]).toFixed(3)} mm.`, gabN[i] - gabS[i]);
+  }
+
+  for (const c of (katPrzed.cechy || []).filter(x => x.id !== cecha.id && x.rodzaj === 'gniazdo_walcowe')) {
+    const kand = (katPo.cechy || []).find(x => x.rodzaj === c.rodzaj && x.os === c.os &&
+      Math.abs((x.od_mm ?? 0) - (c.od_mm ?? 0)) < 4);
+    if (!kand)
+      blad('CECHY', `Cecha ${c.id} Ø${c.srednica_mm} zniknęła po operacji.`);
+    else if (Math.abs(kand.srednica_mm - c.srednica_mm) > 0.5)
+      blad('CECHY', `Cecha ${c.id} Ø${c.srednica_mm} zmieniła się na Ø${kand.srednica_mm}.`, kand.srednica_mm);
+  }
+
+  if (cecha.rodzaj === 'gniazdo_walcowe' && Number.isFinite(dCel)) {
+    const { s: aln, wlasny } = naZ(nowa, cecha.os);
+    const z0 = cecha.z0 ?? aln.boundingBox().min[2];
+    let z, h;
+    if (dCel > cecha.srednica_mm) {
+      const { s: aln0, wlasny: w0 } = naZ(stara, cecha.os);
+      const zc = zasiegCiecia(aln0, cecha, dCel);
+      if (w0) aln0.delete();
+      z = zc.zLo;
+      h = Math.max(0.5, zc.zHi - zc.zLo);
+    } else {
+      const L = Math.max(0.5, cecha.do_mm - cecha.od_mm);
+      h = L;
+      z = z0 + cecha.od_mm;
+    }
+    const kolizja = (d) => {
+      const c = Manifold.cylinder(h, d / 2, d / 2, 192).translate(cecha.cx, cecha.cy, z);
+      const k = c.intersect(aln);
+      const v = k.volume();
+      c.delete(); k.delete();
+      return v;
+    };
+    if (kolizja(dCel) > 1) blad('WYMIAR', `Ø${dCel} nie wchodzi.`);
+    if (kolizja(dCel + 0.05) < 1) blad('WYMIAR', `Ø${dCel + 0.05} też wchodzi — otwór za duży.`);
+    if (wlasny) aln.delete();
+  }
+
+  let nS = 1, nN = 1;
+  try {
+    const ds = stara.decompose(), dn = nowa.decompose();
+    nS = ds.length; nN = dn.length;
+    usun(ds); usun(dn);
+  } catch {}
+  if (nN !== nS) blad('KOMPONENTY', `Bryła miała ${nS} część(i), ma ${nN}.`, nN);
+
+  let udzial = 0;
+  try {
+    const dodane = nowa.subtract(stara), ubrane = stara.subtract(nowa);
+    const zmiana = dodane.volume() + ubrane.volume();
+    udzial = stara.volume() > 0 ? zmiana / stara.volume() : 0;
+    dodane.delete(); ubrane.delete();
+  } catch {
+    blad('ZASIEG', 'Nie udało się policzyć zasięgu zmiany.');
+  }
+  if (plan && plan.objetosc_mm3 > 0) {
+    const przew = plan.objetosc_mm3 / stara.volume();
+    if (udzial > przew * 1.2 + 0.01 && udzial > 0.05)
+      blad('ZASIEG', `Udział zmiany ${(udzial * 100).toFixed(1)}% wobec planu ${(przew * 100).toFixed(1)}%.`, udzial);
+  }
+  if (udzial > 0.25 && plan && (plan.objetosc_mm3 / stara.volume()) < 0.05)
+    blad('ZASIEG', `Zmiana ${(udzial * 100).toFixed(1)}% objętości — za rozległa na jedną cechę.`, udzial);
+
+  if (typeof nowa.isEmpty === 'function' && nowa.isEmpty()) blad('PUSTA', 'Wynik jest pusty.');
+  if (nowa.volume() <= 0) blad('PUSTA', 'Objętość wyniku ≤ 0.');
+
+  return { ok: bledy.length === 0, bledy, udzial, nKomponentow: { przed: nS, po: nN }, gabaryt_przed: gabS, gabaryt_po: gabN };
+}
+
+
+function wykonajPrzerobke(kat, cechaId, dNowa, opts = {}) {
+  const oryg = kat._solid;
+  if (!oryg) throw new Error('Brak bryły w katalogu — rozpoznaj() najpierw.');
+  const cecha = kat.cechy.find(c => c.id === cechaId);
+  if (!cecha) return { ok: false, kod: 'CECHA_POZA_KATALOGIEM', oryginal: oryg, katalog: kat, gotowy: false };
+  if (!cecha.edytowalna && !opts.klik) {
+    return { ok: false, kod: 'NISKIE_PEWNOSC', oryginal: oryg, katalog: kat, gotowy: false };
+  }
+  const plan = planZmiany(cecha, dNowa);
+  plan.udzial = plan.objetosc_mm3 / (kat.objetosc_mm3 || oryg.volume());
+  let op;
+  try {
+    if (opts.zlaOperacja === 'wyciecie') {
+      const arena = [];
+      const { s: aln, wlasny } = naZ(oryg, cecha.os);
+      if (wlasny) arena.push(aln);
+      const z0 = cecha.z0 ?? aln.boundingBox().min[2];
+      const bb = aln.boundingBox();
+      const c = Manifold.cylinder((bb.max[2] - bb.min[2]) + 8, (cecha.r || 10) + 2, (cecha.r || 10) + 2, 64)
+        .translate(cecha.cx, cecha.cy, z0 - 4);
+      arena.push(c);
+      op = { wynik: zZ(aln.subtract(c), cecha.os), arena };
+    } else if (opts.zlaOperacja === 'cala_dlugosc') {
+      const idx = { x: 0, y: 1, z: 2 }[cecha.os];
+      const rMax = Math.max(cecha.r, ...((kat.cechy || []).filter(c => c.rodzaj === 'gniazdo_walcowe').map(c => c.r)));
+      const kopia = { ...cecha, od_mm: 0, do_mm: kat.gabaryt_mm[idx] || 80, r: rMax, srednica_mm: rMax * 2 };
+      op = dNowa < kopia.srednica_mm ? zwezGniazdo(oryg, kopia, dNowa) : poszerzGniazdo(oryg, kopia, dNowa);
+    } else if (opts.zlaOperacja === 'wystajacy_pierscien') {
+      const arena = [];
+      const K = o => (arena.push(o), o);
+      const { s: aln, wlasny } = naZ(oryg, cecha.os);
+      if (wlasny) arena.push(aln);
+      const bb = aln.boundingBox();
+      const r0 = cecha.r, rN = dNowa / 2;
+      const zew = K(Manifold.cylinder(bb.max[2] - bb.min[2] + 8, r0 + 0.02, r0 + 0.02, 64).translate(cecha.cx, cecha.cy, bb.min[2] - 4));
+      const rdzen = K(Manifold.cylinder(bb.max[2] - bb.min[2] + 12, rN, rN, 64).translate(cecha.cx, cecha.cy, bb.min[2] - 6));
+      op = { wynik: zZ(K(aln.add(K(zew.subtract(rdzen)))), cecha.os), arena };
+    } else if (opts.zlaOperacja === 'przetnij') {
+      const bb = oryg.boundingBox();
+      const slab = Manifold.cube([(bb.max[0] - bb.min[0]) + 4, 1.2, (bb.max[2] - bb.min[2]) + 4], true)
+        .translate((bb.min[0] + bb.max[0]) / 2, (bb.min[1] + bb.max[1]) / 2, (bb.min[2] + bb.max[2]) / 2);
+      op = { wynik: oryg.subtract(slab), arena: [slab] };
+    } else if (cecha.rodzaj === 'gniazdo_walcowe') {
+      op = dNowa < cecha.srednica_mm ? zwezGniazdo(oryg, cecha, dNowa) : poszerzGniazdo(oryg, cecha, dNowa);
+    } else if (cecha.rodzaj === 'wzor_otworow') {
+      op = zmienOtwory(oryg, cecha, dNowa);
+    } else {
+      return { ok: false, kod: 'RODZAJ', komunikat: 'Ten rodzaj cechy nie jest jeszcze w V1.', oryginal: oryg, gotowy: false };
+    }
+  } catch (e) {
+    return { ok: false, kod: e.kod || 'OPERACJA', komunikat: e.message, liczba: e.liczba, oryginal: oryg, katalog: kat, gotowy: false };
+  }
+  const nowa = op.wynik;
+  let katPo;
+  try {
+    const mesh = nowa.getMesh();
+    katPo = katalogZCech(nowa, mesh.vertProperties, mesh.triVerts, kat.P);
+  } catch {
+    usun(op.arena);
+    return { ok: false, kod: 'USZKODZONY', komunikat: KOM_USZKODZONY, oryginal: oryg, katalog: kat, gotowy: false };
+  }
+  const br = bramkaPrzerobki(oryg, nowa, kat, katPo, cecha, plan, dNowa);
+  if (!br.ok) {
+    try { nowa.delete(); } catch {}
+    usun(op.arena);
+    return { ok: false, kod: br.bledy[0]?.kod, bledy: br.bledy, oryginal: oryg, katalog: kat, gotowy: false, bramka: br };
+  }
+  katPo._solid = nowa;
+  return { ok: true, wynik: nowa, katalogPo: katPo, oryginal: oryg, katalog: kat, gotowy: true, bramka: br, plan };
+}
+
+function snapshotOryginalu(kat) {
+  const m = kat._solid;
+  const bb = m.boundingBox();
+  return {
+    objetosc_mm3: m.volume(),
+    gabaryt: [bb.max[0] - bb.min[0], bb.max[1] - bb.min[1], bb.max[2] - bb.min[2]],
+    cechy: JSON.parse(JSON.stringify(kat.cechy.map(({ id, rodzaj, srednica_mm, od_mm, do_mm, os }) => ({ id, rodzaj, srednica_mm, od_mm, do_mm, os }))))
+  };
+}
+
+function oryginalNietkniety(przed, kat) {
+  const teraz = snapshotOryginalu(kat);
+  if (Math.abs(przed.objetosc_mm3 - teraz.objetosc_mm3) > 1e-4) return false;
+  for (let i = 0; i < 3; i++) if (Math.abs(przed.gabaryt[i] - teraz.gabaryt[i]) > 1e-4) return false;
+  return JSON.stringify(przed.cechy) === JSON.stringify(teraz.cechy);
+}
+
+function fmtDowody(c) {
+  const d = c.dowody || {};
+  if (c.rodzaj === 'gniazdo_walcowe') {
+    return `gniazdo Ø${c.srednica_mm.toFixed(2)} mm — łuk ${d.pokrycie_kata_deg}°, zgodne na ${d.zgodnych_przekrojow} przekrojach, rozrzut promienia ${(d.odchylenie_promienia_mm ?? 0).toFixed(2)} mm`;
+  }
+  return c.opis;
+}
+
+function zapiszSTLBinarny(V, F) {
+  const n = F.length / 3;
+  const u8 = new Uint8Array(84 + n * 50);
+  const dv = new DataView(u8.buffer);
+  const hdr = new TextEncoder().encode('p2s-przerobka');
+  u8.set(hdr, 0);
+  dv.setUint32(80, n, true);
+  let o = 84;
+  for (let t = 0; t < n; t++) {
+    o += 12;
+    for (let k = 0; k < 3; k++) {
+      const i = F[t * 3 + k] * 3;
+      dv.setFloat32(o, V[i], true);
+      dv.setFloat32(o + 4, V[i + 1], true);
+      dv.setFloat32(o + 8, V[i + 2], true);
+      o += 12;
+    }
+    o += 2;
+  }
+  return u8;
+}
+
+window.P2S = window.P2S || {};
+window.P2S.przerobka = {
+  initPrzerobka, rozpoznaj, rozpoznajZBufora, wykonajPrzerobke,
+  luzGniazda, KOM_USZKODZONY, fmtDowody, czytajSTL, czytaj3MF, brylaZSiatki
+};
+})();

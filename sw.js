@@ -1,10 +1,10 @@
 // Service worker - HTML najpierw z sieci (online-first).
 // CACHE wypełnia build_pwa.py z SHA-256 index.html. Nie wpisuj ręcznie.
 // Doradca, diagnostyka i checklisty są w index.html i w cache — działają bez sieci.
-const CACHE = 'p2s-guide-v4.1.0-76b70fa1';
+const CACHE = 'p2s-guide-v4.2.1-7b6dede7';
 const FILES = ['./', './index.html', './manifest.webmanifest',
   './icon-192.png', './icon-512.png', './icon-512-maskable.png',
-  './apple-touch-icon.png', './favicon-32.png', './fflate.min.js', './engine/manifold.js', './engine/manifold.wasm', './engine/LICENSE-manifold.txt', './builder.js', './gate.js', './export3mf.js', './preview.js', './projekt-ui.js', './spec-v1.schema.json'];
+  './apple-touch-icon.png', './favicon-32.png', './fflate.min.js', './engine/manifold.js', './engine/manifold.wasm', './engine/LICENSE-manifold.txt', './builder.js', './gate.js', './export3mf.js', './preview.js', './projekt-ui.js', './spec-v1.schema.json', './przerobka-web.js', './przerobka-ui.js'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));

@@ -3,7 +3,7 @@
   "additionalProperties": false,
   "required": ["spec_version", "nazwa", "material", "bryly", "cechy", "pytania", "uwagi_do_druku"],
   "properties": {
-    "spec_version": { "type": "string", "enum": ["1.0"] },
+    "spec_version": { "type": "string", "enum": ["1.0", "1.1"] },
     "nazwa": { "type": "string" },
     "material": { "type": "string", "enum": ["PLA", "PETG", "ABS", "TPU"] },
     "opis_slowny": { "type": "string" },
@@ -97,6 +97,21 @@
       }
     },
     "pytania": { "type": "array", "items": { "type": "string" } },
-    "uwagi_do_druku": { "type": "string" }
+    "uwagi_do_druku": { "type": "string" },
+    "czesci": {
+      "type": "array",
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "properties": {
+          "nazwa": { "type": "string" },
+          "material": { "type": "string", "enum": ["PLA", "PETG", "ABS", "TPU"] },
+          "opis_slowny": { "type": "string" },
+          "bryly": { "type": "array" },
+          "cechy": { "type": "array" },
+          "uwagi_do_druku": { "type": "string" }
+        }
+      }
+    }
   }
 }

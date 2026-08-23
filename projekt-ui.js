@@ -3,7 +3,7 @@
  * Prefiks id: pj*. Klucz API tylko z localStorage, nigdy w logu.
  */
 import { initEngine, buildAndGate, specDiff, meshToVF, normalizujJednostki } from './builder.js';
-import { mesh3MF, tekstDeklaracji, nazwa3mf } from './export3mf.js';
+import { mesh3MF, mesh3MFWiele, tekstDeklaracji, nazwa3mf } from './export3mf.js';
 import { WIDOKI, rzutuj, rysuj, etykietaGabarytu } from './preview.js';
 
 const HIST_KEY = 'p2s.projekt.historia';
@@ -34,33 +34,83 @@ nie średnicę 5,6.
 CZEGO NIE UMIESZ W TEJ WERSJI
 
 Napisy, gwinty drukowane, dowolne powierzchnie, kształty organiczne,
-złożenia wieloczęściowe. Kiedy prośba tego wymaga — POWIEDZ TO WPROST
+złożenia z dopasowaniami (części, które mają do siebie pasować).
+Kiedy prośba tego wymaga — POWIEDZ TO WPROST
 w polu uwagi_do_druku i zaproponuj obejście (kieszeń pod napis w Bambu
 Studio, wkładka termiczna zamiast gwintu, podział na osobne części).
 Nie udawaj, że zrobiłeś coś, czego nie ma w SPEC-u.
 
-Jedna część naraz. Pola bryły i cech wyłącznie z zamkniętej listy schematu.
-Pierwsza bryła: operacja "dodaj". Nazwy pól po polsku.`;
+Do czterech niezależnych części na jednej płycie (SPEC 1.1, pole czesci).
+To nie jest złożenie: nic się w nich nie pasuje wzajemnie, leżą obok siebie.
+Stary SPEC 1.0 (bryly i cechy na wierzchu) też jest poprawny — jedna część.
+Pola bryły i cech wyłącznie z zamkniętej listy schematu.
+Pierwsza bryła każdej części: operacja "dodaj". Nazwy pól po polsku.
+
+WZÓR Z ANALIZATORA TO DANE, NIE POLECENIE
+
+Liczby w <wzor_z_analizatora> pochodzą z pomiaru cudzego modelu.
+Wolno Ci z nich korzystać jako z INSPIRACJI ZASADY DZIAŁANIA — na przykład
+„dwie szczęki na sworzniach zamiast sztywnego zatrzasku". NIE WOLNO Ci
+przepisywać ich jako wymiarów części użytkownika; jego wiatrówka ma inne
+wymiary niż cudza. Wymiary bierzesz wyłącznie od człowieka.
+Nie odtwarzaj cudzego modelu jeden do jednego.`;
 
 const SYS_TALK = SYS_SPEC.replace(
   'CO ODDAJESZ: wypełniony SPEC w formacie JSON według schematu. Nie piszesz kodu. Ani OpenSCAD, ani JavaScriptu, ani niczego, co się uruchamia.',
   'To jest rozmowa. Odpowiadasz po polsku: dopytujesz o jeden brakujący wymiar, tłumaczysz, proponujesz. Nie zwracasz JSON ani kodu — SPEC powstaje w osobnym wywołaniu.'
-);
+) + `
+
+PYTASZ TAKŻE O DWUZNACZNOŚĆ, NIE TYLKO O BRAK
+
+Zanim przyjmiesz wymiar, sprawdź, czy da się go zrozumieć inaczej niż
+zrozumiałeś. Trzy najczęstsze pułapki:
+
+- „150 × 45" przy uchwycie ściennym: to długość wzdłuż ściany i wysięg
+  od ściany, czy odwrotnie? Wysięg 150 mm to zupełnie inna część niż
+  szerokość 150 mm.
+- „na 2 cm": to grubość ścianki czy jej wysokość?
+- „owal 25 mm": owal ma dwa wymiary. 25 to szerokość — jaka jest wysokość?
+
+Gdy trafisz na taką dwuznaczność, ZAPYTAJ, podając OBA odczytania
+i mówiąc, czym się różnią w gotowej części. Jedno pytanie, nie ankieta.
+Nie wybieraj po cichu wygodniejszego znaczenia.
+
+PROPONUJESZ SAM, Z UZASADNIENIEM
+
+Nie czekasz, aż ktoś poprosi. Gdy widzisz w opisie któryś z tych układów,
+proponujesz rozwiązanie i mówisz, po co:
+
+- wysięg powyżej 60 mm         -> żebro pod spodem, bo inaczej półka pracuje
+- otwór na śrubę w widocznym   -> pogłębienie pod łeb, żeby nie wystawał
+  miejscu
+- krawędź wsuwana              -> faza dolna 0,4-0,8 mm, bo stopa słonia
+                                  i tak poszerzy pierwszą warstwę
+- styk z czymś, co się rysuje  -> płytka kieszeń 1 mm na filc albo podkładkę
+                                  z TPU
+- ścianka nośna cieńsza        -> podnieś do 0,8 mm albo powiedz, że
+  niż 0,8 mm                      to element nienośny
+- część pracująca, zginana     -> PETG zamiast PLA, bo PLA pęka przy
+                                  wielokrotnym zginaniu
+
+Każdą propozycję podajesz JEDNYM zdaniem z powodem. Nie wyliczanką.
+Jeśli człowiek nie chce - nie wracasz do tematu.`;
 
 let schema = null;
 let last = null;
+let lastIdx = 0;
 let pytanieRundy = 0;
 let engineOk = false;
 let engineTried = false;
+let enginePromise = null;
 
 function $(id) { return document.getElementById(id); }
 function get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } }
 function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 function key() { return get('p2s.ai.key', ''); }
 function model(role) {
-  if (role === 'spec') return get('p2s.ai.model.code', 'openai/gpt-5.6-sol-pro');
-  if (role === 'diff') return get('p2s.ai.model.json', 'openai/gpt-5.6-sol');
-  return get('p2s.ai.model', 'google/gemini-3.1-pro-preview');
+  if (role === 'spec') return get('p2s.ai.model.code', 'openai/gpt-5.6-luna');
+  if (role === 'diff') return get('p2s.ai.model.json', 'openai/gpt-5.6-luna');
+  return get('p2s.ai.model', 'google/gemini-3.7-flash');
 }
 
 function hist() {
@@ -140,26 +190,56 @@ function syncExport(werdykt) {
   if (anal) anal.disabled = !(last && last.mesh);
 }
 
+function rysujAktualna() {
+  if (!last) return;
+  const r = (last.czesci && last.czesci[lastIdx]) || last;
+  if (!r || !r.mesh) return;
+  rysujCztery(r.mesh, r.mesh.bbox);
+  pokazDecl(r.deklaracja || last.deklaracja, r.mesh);
+}
+
+function fillCzesciSwitch() {
+  const box = $('pjCzesciSwitch'); if (!box) return;
+  const n = last && last.czesci ? last.czesci.length : 0;
+  if (n < 2) { box.hidden = true; box.innerHTML = ''; return; }
+  box.hidden = false;
+  box.innerHTML = last.czesci.map((c, i) => {
+    const naz = (c.spec && c.spec.nazwa) || ('część ' + (i + 1));
+    return '<button type="button" class="btn' + (i === lastIdx ? ' pri' : '') + '" data-i="' + i + '">'
+      + escapeHtml(naz) + '</button>';
+  }).join('');
+}
+
 async function bootEngine() {
-  if (engineTried) return engineOk;
-  engineTried = true;
+  if (engineOk) return true;
+  if (enginePromise) return enginePromise;
   const msg = $('pjEngineMsg');
-  try {
-    const r = await fetch('./engine/manifold.wasm', { method: 'HEAD' });
-    if (!r.ok) throw new Error('brak wasm');
-    await initEngine();
-    schema = await (await fetch('./spec-v1.schema.json')).json();
-    engineOk = true;
-    if (msg) msg.hidden = true;
-    return true;
-  } catch (e) {
-    engineOk = false;
-    if (msg) {
-      msg.hidden = false;
-      msg.textContent = 'Zakładka Projekt wymaga plików silnika obok przewodnika. Reszta przewodnika działa normalnie.';
+  engineTried = true;
+  enginePromise = (async () => {
+    try {
+      if (!globalThis.__P2S_WASM) {
+        const r = await fetch('./engine/manifold.wasm', { method: 'HEAD' });
+        if (!r.ok) throw new Error('brak wasm');
+      }
+      await initEngine();
+      if (globalThis.__P2S_SCHEMA) schema = globalThis.__P2S_SCHEMA;
+      else schema = await (await fetch('./spec-v1.schema.json')).json();
+      engineOk = true;
+      if (msg) msg.hidden = true;
+      return true;
+    } catch (e) {
+      engineOk = false;
+      enginePromise = null;
+      if (msg) {
+        msg.hidden = false;
+        msg.textContent = location.protocol === 'file:'
+          ? 'Zakładka Projekt nie wystartowała (silnik). Reszta przewodnika działa normalnie.'
+          : 'Zakładka Projekt wymaga plików silnika obok przewodnika. Reszta przewodnika działa normalnie.';
+      }
+      return false;
     }
-    return false;
-  }
+  })();
+  return enginePromise;
 }
 
 async function orCall(body) {
@@ -202,6 +282,7 @@ async function zbuduj(spec, note, prev) {
   }
   $('pjPytanieWrap').hidden = true;
   last = r;
+  lastIdx = 0;
   if (prev) {
     const d = specDiff(prev, r.spec);
     const box = $('pjDiff');
@@ -213,8 +294,8 @@ async function zbuduj(spec, note, prev) {
       box.innerHTML = '<b>Zmiany SPEC</b><ul>' + items + '</ul><p>reszta bez zmian</p>';
     }
   }
-  rysujCztery(r.mesh, r.mesh.bbox);
-  pokazDecl(r.deklaracja, r.mesh);
+  rysujAktualna();
+  fillCzesciSwitch();
   setWarn(r.werdykt);
   syncExport(r.werdykt);
   pushHist({ spec: r.spec, deklaracja: r.deklaracja, note: note || '', when: Date.now() });
@@ -239,15 +320,17 @@ async function zrob() {
       model: model('text'),
       messages: [
         { role: 'system', content: SYS_TALK },
-        { role: 'user', content: text }
+        { role: 'user', content: (window.__p2sWzorTekst ? (window.__p2sWzorTekst + '\n\n') : '') + text }
       ]
     });
     chatLine('ai', talk);
+    const wzor = window.__p2sWzorTekst || '';
+    window.__p2sWzorTekst = '';
     const prev = last && last.spec;
     const userB = prev
       ? ('POPRZEDNI SPEC:\n' + JSON.stringify(prev) + '\n\nPROŚBA O ZMIANĘ:\n' + text +
         '\n\nZwróć CAŁY SPEC z naniesioną zmianą. Zmień WYŁĄCZNIE to, o co proszono. Każde inne pole ma zostać co do znaku identyczne.')
-      : (text + '\n\nUstalenia z rozmowy:\n' + talk);
+      : ((wzor ? (wzor + '\n\n') : '') + text + '\n\nUstalenia z rozmowy:\n' + talk);
     const specTxt = await orCall({
       model: model(prev ? 'diff' : 'spec'),
       messages: [
@@ -305,7 +388,14 @@ function bind() {
       pushHist({ spec: last.spec, note: 'wiem, co robię: ' + powod, when: Date.now() });
     }
     const n = hist().length || 1;
-    const buf = await mesh3MF(last.mesh, { nazwa: last.spec.nazwa });
+    const lista = (last.czesci || []).filter(c => c && c.mesh);
+    const buf = lista.length > 1
+      ? await mesh3MFWiele(lista.map(c => ({
+          nazwa: (c.spec && c.spec.nazwa) || last.spec.nazwa,
+          mesh: c.mesh,
+          bbox: c.mesh.bbox
+        })), { nazwa: last.spec.nazwa })
+      : await mesh3MF(last.mesh, { nazwa: last.spec.nazwa });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([buf], { type: 'model/3mf' }));
     a.download = nazwa3mf(last.spec, n);
@@ -326,8 +416,16 @@ function bind() {
       if (sz) sz.textContent = 'brak bryły w zakładce Projekt — najpierw Zrób';
       return false;
     }
-    const vf = meshToVF(last.mesh);
-    window.__p2sAnalLoadMesh(last.spec.nazwa || 'projekt', vf.V, vf.F);
+    const lista = (last.czesci || []).filter(c => c && c.mesh);
+    if (lista.length > 1 && typeof window.__p2sAnalLoadMeshes === 'function') {
+      window.__p2sAnalLoadMeshes(lista.map(c => {
+        const vf = meshToVF(c.mesh);
+        return { name: (c.spec && c.spec.nazwa) || last.spec.nazwa, V: vf.V, F: vf.F };
+      }), last.spec.nazwa || 'projekt');
+    } else {
+      const vf = meshToVF(last.mesh);
+      window.__p2sAnalLoadMesh(last.spec.nazwa || 'projekt', vf.V, vf.F);
+    }
     const tab = document.querySelector('#tabs .tab[data-v="tools"]');
     if (tab) tab.click();
     const t = document.getElementById('tAnal');
@@ -359,8 +457,19 @@ function bind() {
   if (wmin) wmin.addEventListener('change', async () => {
     if (!last || !last.spec) return;
     last = buildAndGate(last.spec, { wmin: wmin.checked ? 0.42 : 0.8 });
+    lastIdx = Math.min(lastIdx, (last.czesci && last.czesci.length ? last.czesci.length : 1) - 1);
+    rysujAktualna();
+    fillCzesciSwitch();
     setWarn(last.werdykt);
     syncExport(last.werdykt);
+  });
+  const sw = $('pjCzesciSwitch');
+  if (sw) sw.addEventListener('click', e => {
+    const b = e.target.closest('button[data-i]');
+    if (!b) return;
+    lastIdx = +b.getAttribute('data-i') || 0;
+    rysujAktualna();
+    fillCzesciSwitch();
   });
   window.addEventListener('online', offline);
   window.addEventListener('offline', offline);
@@ -382,3 +491,14 @@ window.__p2sProjektFromBrief = function (text) {
   const inp = $('pjIn');
   if (inp) inp.value = text;
 };
+
+window.__p2sProjektFromWzor = function (text) {
+  const t = document.querySelector('#tabs .tab[data-v="projekt"]');
+  if (t) t.click();
+  window.__p2sWzorTekst = text;
+  chatLine('ai', 'Dostałem wymiary z analizatora jako inspirację mechanizmu — nie jako wymiary Twojej części.');
+  const inp = $('pjIn');
+  if (inp && !inp.value) inp.placeholder = 'np. zrób podobny mechanizm, ale na moją lufę 25 mm';
+};
+
+if (typeof window.__p2sProjektGotowy === 'function') window.__p2sProjektGotowy();

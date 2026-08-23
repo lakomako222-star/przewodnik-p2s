@@ -3,7 +3,9 @@
  * Model NIE liczy luzów i NIE pisze kodu. Nieznany typ = wyjątek z nazwą, nigdy continue.
  *
  * Luz jest CAŁĄ szczeliną na wymiarze, nie naddatkiem na stronę.
- * Dowód: kupon M28-C, gniazdo 8 + 0,15 zmierzone 8,15 mm.
+ * Konwencja: kupon M28-C, gniazdo 8 + 0,15 zmierzone 8,15 mm — pełna szczelina, nie per-strona.
+ * Kupon nie dowodzi wzoru. Wzór startowy PETG przesuwne: (0,20 + 0,003×Ø)×1,2;
+ * Ø8 → 8,269 (T-03); Ø44 → 0,398 mm (baza bez mnożnika materiału to 0,332).
  */
 import { sprawdzBramke, gabaryt } from './gate.js';
 
@@ -55,9 +57,22 @@ async function wasmPath() {
 
 export async function initEngine() {
   if (wasm) return { Manifold, CrossSection, wasm };
-  const { default: Module } = await import('./engine/manifold.js');
-  const loc = await wasmPath();
-  wasm = await Module({ locateFile: () => loc });
+  let ModuleFn = (typeof globalThis !== 'undefined' && globalThis.ManifoldModule) || null;
+  const conf = {};
+  if (typeof globalThis !== 'undefined' && globalThis.__P2S_WASM) {
+    conf.wasmBinary = globalThis.__P2S_WASM;
+    // Emscripten still calls findWasmBinary(); empty import.meta.url throws.
+    conf.locateFile = () => 'manifold.wasm';
+  }
+  if (!ModuleFn) {
+    const { default: Module } = await import('./engine/manifold.js');
+    ModuleFn = Module;
+    if (!conf.wasmBinary) {
+      const loc = await wasmPath();
+      conf.locateFile = () => loc;
+    }
+  }
+  wasm = await ModuleFn(conf);
   wasm.setup();
   wasm.setCircularSegments(96);
   Manifold = wasm.Manifold;
@@ -108,7 +123,9 @@ function req(c, pola, typ) {
 
 export function walidujSpec(spec) {
   if (!spec || typeof spec !== 'object') throw new Error('SPEC nie jest obiektem');
-  if (spec.spec_version !== '1.0') throw new Error('Nieznana spec_version: ' + spec.spec_version);
+  if (spec.spec_version !== '1.0' && spec.spec_version !== '1.1') {
+    throw new Error('Nieznana spec_version: ' + spec.spec_version);
+  }
   if (!spec.nazwa) throw new Error('Brak nazwa');
   if (!MNOZNIK[spec.material]) throw new Error('Nieznany materiał: ' + spec.material);
   if (!Array.isArray(spec.bryly)) throw new Error('Brak bryly');
@@ -193,8 +210,8 @@ export function normalizujSpec(specWe) {
         const tOk = 3;
         const Lok = Math.ceil(Math.sqrt(1.5 * y * t / 0.04));
         throw new Error(
-          'odkształcenie ' + eps.toFixed(2) + '% przy dopuszczalnych 2–4% — ramię pęknie przy montażu; ' +
-          'zmniejsz grubość ramienia do ' + tOk + ' mm albo wydłuż je do ' + Lok + ' mm'
+          'ODKSZTALCENIE: odkształcenie ' + eps.toFixed(2) + '% przy dopuszczalnych 2–4% — ramię pęknie przy montażu; ' +
+          'zmniejsz grubość ramienia do ' + tOk + ' mm albo wydłuż je o 8 mm (do ' + Lok + ' mm)'
         );
       }
     }
@@ -392,6 +409,42 @@ function cecha(part, c, keep) {
   }
 }
 
+function specCzesci(specWe) {
+  const spec = JSON.parse(JSON.stringify(specWe));
+  if (Array.isArray(spec.czesci) && spec.czesci.length) {
+    if (spec.czesci.length > 4) throw new Error('Maksymalnie 4 części w jednym projekcie.');
+    return { root: spec, czesci: spec.czesci, z10: false };
+  }
+  return {
+    root: spec,
+    czesci: [{
+      nazwa: spec.nazwa,
+      material: spec.material,
+      opis_slowny: spec.opis_slowny,
+      orientacja_druku: spec.orientacja_druku,
+      bryly: spec.bryly,
+      cechy: spec.cechy,
+      pytania: spec.pytania,
+      uwagi_do_druku: spec.uwagi_do_druku
+    }],
+    z10: true
+  };
+}
+
+function jakoCzesc10(cz, root) {
+  return {
+    spec_version: '1.0',
+    nazwa: cz.nazwa || root.nazwa,
+    material: cz.material || root.material,
+    opis_slowny: cz.opis_slowny || root.opis_slowny || '',
+    orientacja_druku: cz.orientacja_druku || root.orientacja_druku,
+    bryly: cz.bryly || [],
+    cechy: cz.cechy || [],
+    pytania: cz.pytania || root.pytania || [],
+    uwagi_do_druku: cz.uwagi_do_druku || root.uwagi_do_druku || ''
+  };
+}
+
 export function snapshotMesh(part) {
   const m = part.getMesh();
   const g = gabaryt(part);
@@ -420,11 +473,10 @@ function zlozBryly(spec, keep) {
   return part;
 }
 
-export function buildAndGate(specWe, opts) {
-  if (!Manifold) throw new Error('initEngine() najpierw');
+function buildOnePart(specWe, opts) {
   const spec = normalizujSpec(specWe);
   if (spec.pytania && spec.pytania.length && (!spec.bryly || !spec.bryly.length)) {
-    return { pytania: spec.pytania, spec, mesh: null, werdykt: { wpisy: [], eksportOk: false } };
+    return { pytania: spec.pytania, spec, mesh: null, werdykt: { wpisy: [], eksportOk: false }, deklaracja: spec.deklaracja };
   }
   return withArena(keep => {
     let part = zlozBryly(spec, keep);
@@ -440,6 +492,82 @@ export function buildAndGate(specWe, opts) {
     const mesh = snapshotMesh(part);
     return { spec, mesh, werdykt, deklaracja: spec.deklaracja };
   });
+}
+
+export function buildAndGate(specWe, opts) {
+  if (!Manifold) throw new Error('initEngine() najpierw');
+  const pack = specCzesci(specWe);
+  const rootPyt = pack.root.pytania || [];
+  const puste = pack.czesci.every(c => !c.bryly || !c.bryly.length);
+  if (rootPyt.length && puste) {
+    return { pytania: rootPyt, spec: specWe, mesh: null, werdykt: { wpisy: [], eksportOk: false } };
+  }
+  const wyniki = pack.czesci.map(cz => buildOnePart(jakoCzesc10(cz, pack.root), opts));
+  const pytOnly = wyniki.filter(r => r.pytania && r.pytania.length && !r.mesh);
+  if (pytOnly.length && wyniki.every(r => !r.mesh)) {
+    return {
+      pytania: pytOnly.flatMap(r => r.pytania),
+      spec: specWe,
+      mesh: null,
+      werdykt: { wpisy: [], eksportOk: false }
+    };
+  }
+  const wpisy = [];
+  wyniki.forEach((r) => {
+    const prefix = (!pack.z10 && wyniki.length > 1) ? ('[' + (r.spec.nazwa || 'część') + '] ') : '';
+    for (const w of (r.werdykt && r.werdykt.wpisy) || []) {
+      wpisy.push(Object.assign({}, w, { tekst: prefix + w.tekst }));
+    }
+  });
+  const werdykt = {
+    wpisy,
+    eksportOk: wyniki.every(r => r.werdykt && r.werdykt.eksportOk)
+  };
+  if (pack.z10) {
+    const r = wyniki[0];
+    return { spec: r.spec, mesh: r.mesh, werdykt, deklaracja: r.deklaracja, czesci: wyniki };
+  }
+  const spec11 = JSON.parse(JSON.stringify(pack.root));
+  spec11.spec_version = spec11.spec_version || '1.1';
+  spec11.czesci = wyniki.map(r => ({
+    nazwa: r.spec.nazwa,
+    material: r.spec.material,
+    bryly: r.spec.bryly,
+    cechy: r.spec.cechy,
+    uwagi_do_druku: r.spec.uwagi_do_druku,
+    deklaracja: r.deklaracja
+  }));
+  return {
+    spec: spec11,
+    mesh: wyniki[0] && wyniki[0].mesh,
+    werdykt,
+    deklaracja: wyniki[0] && wyniki[0].deklaracja,
+    czesci: wyniki
+  };
+}
+
+/**
+ * Interfejs zestawu 14.6: `export async function build(spec)`.
+ * Zwraca obiekt z boundingBox()/delete(). Cecha, której nie umiemy, albo
+ * błąd bramki (PLYTA, SCIANKA, …) = wyjątek — nigdy bryła bez cechy.
+ */
+export async function build(specWe) {
+  await initEngine();
+  const r = buildAndGate(specWe);
+  if (r.pytania && r.pytania.length && !r.mesh) {
+    throw new Error('SPEC ma pytania i brak brył: ' + r.pytania.join('; '));
+  }
+  const bledy = ((r.werdykt && r.werdykt.wpisy) || []).filter(w => w.poziom === 'blad');
+  if (bledy.length) {
+    throw new Error(bledy.map(w => w.kod + ': ' + w.tekst).join('; '));
+  }
+  const bb = r.mesh.bbox;
+  return {
+    boundingBox() {
+      return { min: bb.min.slice(), max: bb.max.slice() };
+    },
+    delete() {}
+  };
 }
 
 export function meshToVF(mesh) {
