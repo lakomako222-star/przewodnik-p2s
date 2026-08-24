@@ -148,6 +148,7 @@
       return;
     }
     cechy.forEach(function (c, i) {
+      console.log('DET ' + c.id + ' · Ø' + c.srednica_mm + ' · zakres ' + c.od_mm + '–' + c.do_mm);
       var p = c.pewnosc || '';
       var nis = p === 'niska' || c.edytowalna === false;
       var k = el('button', 'pr-kafel' + (nis ? ' nis' : (p === 'wysoka' ? ' wys' : ' sr')));
