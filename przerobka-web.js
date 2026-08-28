@@ -29,13 +29,25 @@ const RODZAJE_V1 = ['gniazdo_walcowe', 'wzor_otworow', 'czop_walcowy'];
 const RODZAJE_REZERWA = ['szczelina', 'kieszen_prostokatna', 'grubosc_scianki', 'czop', 'wymiar_gabarytowy'];
 
 const OSIE = { x: [0, 1, 2], y: [1, 2, 0], z: [2, 0, 1] };
-const SCIANKA_MIN = 0.8;
+/**
+ * Próg drukowalnej ścianki ma JEDEN korzeń — SCIANKA_DRUKOWALNA_MM w gate.js.
+ * Bez własnej liczby zapasowej: cicha kopia rozjechałaby się po wydruku kuponu 6.15
+ * i wtedy Projekt z Przerobem sądziłyby co innego o tej samej drukarce.
+ * Odczyt leniwy jak przy luzMm — gdyby kolejność wklejania kiedyś się zmieniła,
+ * padnie jedna operacja z czytelnym powodem, a nie cała zakładka przy ładowaniu.
+ */
+const sciankaMin = () => {
+  const fn = window.P2S && window.P2S.wymaganaSciankaDrukowalna;
+  if (typeof fn !== 'function') throw new Error('brak P2S.wymaganaSciankaDrukowalna');
+  return fn(window.P2S);
+};
 /** Tylko margines cięcia — nie jest częścią pomiaru zakresu cechy. */
 const MARGINES_CIECIA_MM = 2;
 /** Zapas boolean, żeby wypełnienie zrosło się ze ścianką. Nie jest naddatkiem wymiaru. */
 const ZAKLADKA_BOOLEAN_MM = 0.05;
+const PRZEROBKA_CIRCULAR_SEGMENTS = 192;
 let wasmMod = null;
-let circularSegmentsUstawione = 192;
+let circularSegmentsUstawione = PRZEROBKA_CIRCULAR_SEGMENTS;
 const kandydaciDbg = [];
 const klamra = (v, a, b) => Math.min(b, Math.max(a, v));
 const usun = arr => { for (const o of arr || []) { try { o.delete(); } catch {} } };
@@ -61,16 +73,20 @@ function progiZGabarytu(bb) {
 }
 
 async function initPrzerobka() {
-  if (Manifold) return Manifold;
+  if (Manifold) {
+    ustawNPrzerobki();
+    return Manifold;
+  }
   if (!window.P2S || typeof window.P2S.initEngine !== 'function')
     throw new Error('brak silnika Manifold');
   const eng = await window.P2S.initEngine();
   Manifold = eng.Manifold;
   try {
-    eng.wasm.setCircularSegments(192);
     wasmMod = eng.wasm;
-    circularSegmentsUstawione = 192;
-  } catch (e) {}
+    ustawNPrzerobki();
+  } catch (e) {
+    throw e;
+  }
   return Manifold;
 }
 
@@ -170,24 +186,69 @@ function czytaj3MF(buf, tol = 1e-3) {
   const wszystkie = [];
   for (const xml of xmls) wszystkie.push(...parsujModel3mf(xml));
   if (!wszystkie.length) throw new Error('W 3MF nie znalazłem wierzchołków.');
-  const best = wszystkie.sort((a, b) => b.F.length - a.F.length)[0];
+  const best = wszystkie.slice().sort((a, b) => b.F.length - a.F.length)[0];
   const z = zgrzej(best.V, best.F, tol);
   return { V: z.V, F: z.F, nTri: z.F.length / 3, nazwa: best.name };
+}
+
+function czytaj3MFWszystkie(buf, tol = 1e-3) {
+  const u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
+  const files = unzipSync(u8);
+  const xmls = [];
+  for (const [name, data] of Object.entries(files)) {
+    if (/\.model$/i.test(name)) xmls.push(new TextDecoder().decode(data));
+  }
+  if (!xmls.length) throw new Error('W 3MF nie ma siatki (.model).');
+  const wszystkie = [];
+  for (const xml of xmls) wszystkie.push(...parsujModel3mf(xml));
+  if (!wszystkie.length) throw new Error('W 3MF nie znalazłem wierzchołków.');
+  return wszystkie.map(function (o) {
+    const z = zgrzej(o.V, o.F, tol);
+    return { V: z.V, F: z.F, nTri: z.F.length / 3, nazwa: o.name };
+  });
 }
 
 function wczytajPlik() {
   throw new Error('w przeglądarce użyj rozpoznajZBufora');
 }
 
+function bboxWym(m) {
+  const bb = m.boundingBox();
+  const mn = Array.isArray(bb.min) ? bb.min : [bb.min.x, bb.min.y, bb.min.z];
+  const mx = Array.isArray(bb.max) ? bb.max : [bb.max.x, bb.max.y, bb.max.z];
+  return [mx[0] - mn[0], mx[1] - mn[1], mx[2] - mn[2], mn, mx];
+}
+
 function brylaZSiatki(V, F) {
-  try {
-    return Manifold.ofMesh({ numProp: 3, vertProperties: V, triVerts: F });
-  } catch (e) {
-    const err = new Error(KOM_USZKODZONY);
-    err.kod = 'USZKODZONY';
-    err.przyczyna = String(e && e.message || e);
-    throw err;
+  const tols = [null, 0.05, 0.08];
+  let lastErr;
+  let bbox0 = null;
+  for (const tol of tols) {
+    const src = tol == null ? { V: V, F: F } : zgrzej(V, F, tol);
+    try {
+      const m = Manifold.ofMesh({ numProp: 3, vertProperties: src.V, triVerts: src.F });
+      if (typeof m.isEmpty === 'function' && m.isEmpty()) {
+        try { m.delete(); } catch (e2) {}
+        continue;
+      }
+      const b = bboxWym(m);
+      if (!bbox0) bbox0 = b;
+      else {
+        const d = Math.max(Math.abs(b[0] - bbox0[0]), Math.abs(b[1] - bbox0[1]), Math.abs(b[2] - bbox0[2]));
+        if (d > 0.25) {
+          try { m.delete(); } catch (e2) {}
+          continue;
+        }
+      }
+      return m;
+    } catch (e) {
+      lastErr = e;
+    }
   }
+  const err = new Error(KOM_USZKODZONY);
+  err.kod = 'USZKODZONY';
+  err.przyczyna = String(lastErr && lastErr.message || lastErr);
+  throw err;
 }
 
 function elementyWalca(V, F, os, P) {
@@ -212,6 +273,7 @@ function elementyWalca(V, F, os, P) {
 
 
 
+
 function przeciecie(p, q) {
   const det = p[2] * (-q[3]) - p[3] * (-q[2]);
   if (Math.abs(det) < 0.15) return null;
@@ -226,6 +288,7 @@ function mediana(arr) {
   const m = Math.floor(s.length / 2);
   return s.length % 2 ? s[m] : 0.5 * (s[m - 1] + s[m]);
 }
+
 
 
 
@@ -265,6 +328,7 @@ function dopasujOkreg(pts) {
 
 
 
+
 function rozbijBimodalnie(uzyte, rFin, P) {
   if (!uzyte || uzyte.length < 16) return [uzyte];
   const rs = uzyte.map(k => k.d).slice().sort((a, b) => a - b);
@@ -279,6 +343,7 @@ function rozbijBimodalnie(uzyte, rFin, P) {
   if (lo.length < 8 || hi.length < 8) return [uzyte];
   return [lo, hi];
 }
+
 
 
 
@@ -410,6 +475,7 @@ function walceZNormalnych(V, F, os, P) {
 
 
 
+
 function wSrodku(kon, x, y) {
   let c = false;
   for (const P of kon) {
@@ -443,6 +509,7 @@ function rInBinarny(kon, cx, cy, kier, rMin, rMax) {
 
 
 
+
 function przytnijRdzen(seg) {
   if (seg.length < 3) return seg;
   const med = mediana(seg.map(s => s.r));
@@ -466,6 +533,7 @@ function przytnijRdzen(seg) {
 
 
 
+
 function rInWielokier(kon, cx, cy, rMin, rMax) {
   const rs = [];
   for (let a = 0; a < 360; a += 45) {
@@ -478,6 +546,7 @@ function rInWielokier(kon, cx, cy, rMin, rMax) {
   const sciana = rs.filter(r => r <= mn + 1.2);
   return mediana(sciana);
 }
+
 
 
 
@@ -598,6 +667,7 @@ function skanPromieniowy(m, os, srodek, P) {
 
 
 
+
 function kolko(poly) {
   if (poly.length < 6) return null;
   let sx = 0, sy = 0;
@@ -690,10 +760,12 @@ function pasmo(d) {
 
 
 
+
 function tNaOsAbs(os, z0, t) {
   const zRot = z0 + t;
   return os === 'z' ? zRot : -zRot;
 }
+
 
 
 
@@ -748,6 +820,7 @@ function srednicaSprawdzianem(model, os, cx, cy, z0, od, doMm, d0) {
 
 
 
+
 function srednicaWPasmie(V, F, os, srodekUW, zLo, zHi, r0, P) {
   const [A, U, W] = OSIE[os];
   const rs = [];
@@ -783,6 +856,7 @@ function srednicaWPasmie(V, F, os, srodekUW, zLo, zHi, r0, P) {
   }
   return { d: mediana(rs) * 2, n: rs.length };
 }
+
 
 
 
@@ -854,6 +928,7 @@ function dopiszKrotkieWspolosiowe(V, F, walce, P) {
   }
   return extra;
 }
+
 
 
 
@@ -995,8 +1070,21 @@ function katalogZCech(m, V, F, P) {
   if (drop.size) {
     for (let i = cechy.length - 1; i >= 0; i--) if (drop.has(cechy[i])) cechy.splice(i, 1);
   }
+  for (let i = cechy.length - 1; i >= 0; i--) {
+    const c = cechy[i];
+    if ((c.rodzaj === 'gniazdo_walcowe' || c.rodzaj === 'czop_walcowy') && !(c.dowody?.trojkatow > 0)) {
+      cechy.splice(i, 1);
+    }
+  }
   let nKomp = 1;
   try { const d = m.decompose(); nKomp = d.length; usun(d); } catch {}
+  const RANK_PEWNOSC = { wysoka: 0, srednia: 1, niska: 2 };
+  cechy.sort((a, b) => {
+    const ra = RANK_PEWNOSC[a.pewnosc] ?? 1;
+    const rb = RANK_PEWNOSC[b.pewnosc] ?? 1;
+    if (ra !== rb) return ra - rb;
+    return (b.srednica_mm || 0) - (a.srednica_mm || 0);
+  });
   return {
     gabaryt_mm: gab, bbox: { min: bb.min.slice(), max: bb.max.slice() },
     objetosc_cm3: +(m.volume() / 1000).toFixed(2), objetosc_mm3: +m.volume().toFixed(2),
@@ -1005,6 +1093,7 @@ function katalogZCech(m, V, F, P) {
     kandydaci: kandydaciDbg.slice(), stopnie_skanu: skan.stopnie
   };
 }
+
 
 
 
@@ -1046,10 +1135,287 @@ function rozpoznaj(sciezkaLubMesh) {
   return kat;
 }
 
+function deltaRZobwodu(deltaC_mm) {
+  const c = +deltaC_mm;
+  if (!(c > 0) || !isFinite(c)) throw new Error('Delta obwodu musi być > 0 mm');
+  return c / (2 * Math.PI);
+}
+
+function wybierzObrecz(kat) {
+  const gn = (kat.cechy || []).filter(c =>
+    c.rodzaj === 'gniazdo_walcowe' && c.pewnosc !== 'niska'
+    && Number.isFinite(c.cx) && Number.isFinite(c.cy) && c.srednica_mm > 8);
+  if (!gn.length) return null;
+  gn.sort((a, b) => (b.srednica_mm || 0) - (a.srednica_mm || 0));
+  return gn[0];
+}
+
+function rZewObreczy(kat, hoop) {
+  const czopy = (kat.cechy || []).filter(c =>
+    c.rodzaj === 'czop_walcowy' && c.os === hoop.os && (c.srednica_mm || 0) > hoop.srednica_mm);
+  czopy.sort((a, b) => (b.srednica_mm || 0) - (a.srednica_mm || 0));
+  if (czopy[0]) return czopy[0].srednica_mm / 2;
+  if (Number.isFinite(hoop.r_zewnetrzny)) return hoop.r_zewnetrzny;
+  return hoop.srednica_mm / 2 + 6;
+}
+
+function promienSwiat(os, cx, cy, x, y, z) {
+  if (os === 'y') return Math.hypot(x - cx, z - cy);
+  if (os === 'x') return Math.hypot(z - cx, y - cy);
+  return Math.hypot(x - cx, y - cy);
+}
+
+function punktPromieniowo(os, cx, cy, x, y, z, s) {
+  if (os === 'y') return [cx + (x - cx) * s, y, cy + (z - cy) * s];
+  if (os === 'x') return [x, cy + (y - cy) * s, cx + (z - cx) * s];
+  return [cx + (x - cx) * s, cy + (y - cy) * s, z];
+}
+
+function dodatekRamienia(r, rOuter, extraRamie, overhangMax) {
+  if (!(extraRamie > 0) || r <= rOuter || !(overhangMax > 0)) return 0;
+  return extraRamie * Math.min(1, (r - rOuter) / overhangMax);
+}
+
+function rMaxSiatki(mesh, os, cx, cy) {
+  const V = mesh.vertProperties;
+  const np = mesh.numProp || 3;
+  const n = V.length / np;
+  let rMax = 0, rMin = Infinity;
+  for (let i = 0; i < n; i++) {
+    const r = promienSwiat(os, cx, cy, V[i * np], V[i * np + 1], V[i * np + 2]);
+    rMax = Math.max(rMax, r);
+    rMin = Math.min(rMin, r);
+  }
+  return { rMin, rMax };
+}
+
+function srodekOtworuSwiat(os, p, mid) {
+  if (os === 'x') return { x: mid[0], y: p[1], z: p[0] };
+  if (os === 'y') return { x: p[1], y: mid[1], z: p[0] };
+  return { x: p[0], y: p[1], z: mid[2] };
+}
+
+function przywrocOtworyPoObwodzie(solid, kat, hoop, deltaR, extraRamie, rOuter, overhangMax) {
+  const holes = (kat.cechy || []).filter(c =>
+    c.rodzaj === 'wzor_otworow' && (c.srodki || []).length && c.srednica_mm > 0.8);
+  if (!holes.length) return { wynik: solid, otwory: 'brak' };
+  const bb0 = solid.boundingBox();
+  const mn = Array.isArray(bb0.min) ? bb0.min.slice() : [bb0.min.x, bb0.min.y, bb0.min.z];
+  const mx = Array.isArray(bb0.max) ? bb0.max.slice() : [bb0.max.x, bb0.max.y, bb0.max.z];
+  const mid = [(mn[0] + mx[0]) / 2, (mn[1] + mx[1]) / 2, (mn[2] + mx[2]) / 2];
+  const arena = [];
+  const K = o => (arena.push(o), o);
+  let cur = solid;
+  try {
+    for (const h of holes) {
+      const rNom = h.srednica_mm / 2;
+      const rFill = rNom + 2.4;
+      const axis = h.os || 'x';
+      const span = axis === 'x' ? (mx[0] - mn[0]) : axis === 'y' ? (mx[1] - mn[1]) : (mx[2] - mn[2]);
+      const H = span + 12;
+      for (const p of h.srodki) {
+        const w0 = srodekOtworuSwiat(axis, p, mid);
+        const r = promienSwiat(hoop.os, hoop.cx, hoop.cy, w0.x, w0.y, w0.z);
+        const add = deltaR + dodatekRamienia(r, rOuter, extraRamie, overhangMax);
+        const s = r > 1e-9 ? (r + add) / r : 1;
+        const xyz = punktPromieniowo(hoop.os, hoop.cx, hoop.cy, w0.x, w0.y, w0.z, s);
+        let fill = Manifold.cylinder(H, rFill, rFill, 48);
+        let cut = Manifold.cylinder(H, rNom, rNom, 64);
+        if (axis === 'x') {
+          fill = fill.rotate(0, 90, 0);
+          cut = cut.rotate(0, 90, 0);
+          fill = fill.translate(mn[0] - 6, xyz[1], xyz[2]);
+          cut = cut.translate(mn[0] - 6, xyz[1], xyz[2]);
+        } else if (axis === 'y') {
+          fill = fill.rotate(-90, 0, 0);
+          cut = cut.rotate(-90, 0, 0);
+          fill = fill.translate(xyz[0], mn[1] - 6, xyz[2]);
+          cut = cut.translate(xyz[0], mn[1] - 6, xyz[2]);
+        } else {
+          fill = fill.translate(xyz[0], xyz[1], mn[2] - 6);
+          cut = cut.translate(xyz[0], xyz[1], mn[2] - 6);
+        }
+        K(fill); K(cut);
+        const dodany = K(cur.add(fill));
+        if (cur !== solid) { try { cur.delete(); } catch (eDel) {} }
+        cur = K(dodany.subtract(cut));
+      }
+    }
+    return { wynik: cur, otwory: 'przywrocono', arena };
+  } catch (e) {
+    if (cur !== solid) { try { cur.delete(); } catch (e2) {} }
+    usun(arena);
+    return { wynik: solid, otwory: 'pominieto: ' + (e && e.message || e) };
+  }
+}
+
+function dodajDziurkeBrelok(solid, opts) {
+  opts = opts || {};
+  const d = +(opts.srednica_mm || 5.2);
+  const wall = +(opts.scianka_mm || 2.2);
+  if (!(d >= 3) || d > 12) throw new Error('Ø dziurki breloka 3–12 mm');
+  const b0 = bboxWym(solid);
+  const mn = b0[3], mx = b0[4], size = [b0[0], b0[1], b0[2]];
+  let axis = size[1] >= size[0] && size[1] >= size[2] ? 1 : (size[2] >= size[0] && size[2] >= size[1] ? 2 : 0);
+  let thru = size[0] <= size[1] && size[0] <= size[2] ? 0 : (size[1] <= size[0] && size[1] <= size[2] ? 1 : 2);
+  if (thru === axis) thru = axis === 2 ? 0 : 2;
+  const rem = [0, 1, 2].find(function (i) { return i !== axis && i !== thru; });
+  const lugLen = Math.max(d + 2 * wall, 12);
+  const lug = [0, 0, 0];
+  lug[axis] = lugLen;
+  lug[thru] = size[thru];
+  lug[rem] = Math.min(size[rem], Math.max(d + 2 * wall, 14));
+  const pos = mn.slice();
+  pos[axis] = mx[axis];
+  pos[rem] = mn[rem] + (size[rem] - lug[rem]) / 2;
+  pos[thru] = mn[thru];
+  const arena = [];
+  const K = function (o) { arena.push(o); return o; };
+  const tab = K(Manifold.cube(lug).translate(pos[0], pos[1], pos[2]));
+  const withTab = K(solid.add(tab));
+  const holeC = [pos[0] + lug[0] / 2, pos[1] + lug[1] / 2, pos[2] + lug[2] / 2];
+  holeC[axis] = mx[axis] + lugLen - (d / 2 + wall);
+  const L = size[thru] + 10;
+  let cyl = Manifold.cylinder(L, d / 2, d / 2, 48);
+  if (thru === 0) cyl = cyl.rotate(0, 90, 0).translate(holeC[0] - L / 2, holeC[1], holeC[2]);
+  else if (thru === 1) cyl = cyl.rotate(-90, 0, 0).translate(holeC[0], holeC[1] - L / 2, holeC[2]);
+  else cyl = cyl.translate(holeC[0], holeC[1], holeC[2] - L / 2);
+  K(cyl);
+  const out = K(withTab.subtract(cyl));
+  if (typeof out.isEmpty === 'function' && out.isEmpty()) throw new Error('Dziurka zjadła całą bryłę');
+  const b1 = bboxWym(out);
+  if (b1[axis] + 0.2 < size[axis]) throw new Error('Dziurka skróciła model — zjadła ściankę');
+  const vol0 = solid.volume(), vol1 = out.volume();
+  if (vol1 < vol0 * 0.55) throw new Error('Dziurka zjadła za dużo objętości');
+  return {
+    wynik: out, srednica_mm: d, punkt_mm: holeC,
+    os: thru === 0 ? 'x' : thru === 1 ? 'y' : 'z',
+    lug_mm: lugLen, scianka_mm: wall, vol0: vol0, vol1: vol1, arena: arena
+  };
+}
+
+function wydluzOsiowo(solid, extra_mm, osHint) {
+  const extra = +extra_mm;
+  if (!(extra > 0) || extra > 200) throw new Error('Wydłużenie 0–200 mm');
+  const mesh = solid.getMesh();
+  const np = mesh.numProp || 3;
+  const V0 = mesh.vertProperties;
+  const n = V0.length / np;
+  const b0 = bboxWym(solid);
+  const mn = b0[3], mx = b0[4], size = [b0[0], b0[1], b0[2]];
+  let axis = 0;
+  if (osHint === 'x' || osHint === 0) axis = 0;
+  else if (osHint === 'y' || osHint === 1) axis = 1;
+  else if (osHint === 'z' || osHint === 2) axis = 2;
+  else axis = size[1] >= size[0] ? 1 : 0;
+  const span = size[axis];
+  const margin = Math.min(span * 0.32, Math.max(5, span * 0.22));
+  const lo = mn[axis] + margin, hi = mx[axis] - margin;
+  const V = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) {
+    const p = [V0[i * np], V0[i * np + 1], V0[i * np + 2]];
+    if (p[axis] <= lo) p[axis] -= extra;
+    else if (p[axis] >= hi) p[axis] += extra;
+    V[i * 3] = p[0]; V[i * 3 + 1] = p[1]; V[i * 3 + 2] = p[2];
+  }
+  const wynik = Manifold.ofMesh({ numProp: 3, vertProperties: V, triVerts: mesh.triVerts });
+  return {
+    wynik: wynik, extra_mm: extra,
+    os: axis === 0 ? 'x' : axis === 1 ? 'y' : 'z',
+    bbox_przed: size, bbox_po: bboxWym(wynik).slice(0, 3)
+  };
+}
+
+function powiekszObwodIRamiona(solid, kat, opts) {
+  opts = opts || {};
+  const hoop = opts.hoop || wybierzObrecz(kat);
+  if (!hoop) {
+    const err = new Error('Nie znalazłem obręczy (gniazdo walcowe). Wskaż kafelek albo wczytaj inny plik.');
+    err.kod = 'BRAK_OBRECZY';
+    throw err;
+  }
+  const deltaC = +(opts.deltaC_mm || 0);
+  const extraRamie = Math.max(0, +(opts.extraRamie_mm || 0));
+  if (!(deltaC > 0) && !(extraRamie > 0)) {
+    throw new Error('Podaj Δ obwodu w mm albo wydłużenie ramion w mm.');
+  }
+  const deltaR = deltaC > 0 ? deltaRZobwodu(deltaC) : 0;
+  const rOuter = rZewObreczy(kat, hoop);
+  const mesh0 = solid.getMesh();
+  const span0 = rMaxSiatki(mesh0, hoop.os, hoop.cx, hoop.cy);
+  const overhangMax = Math.max(0.5, span0.rMax - rOuter);
+  const np = mesh0.numProp || 3;
+  const V0 = mesh0.vertProperties;
+  const nV = V0.length / np;
+  const V = new Float32Array(nV * 3);
+  for (let i = 0; i < nV; i++) {
+    const x = V0[i * np], y = V0[i * np + 1], z = V0[i * np + 2];
+    const r = promienSwiat(hoop.os, hoop.cx, hoop.cy, x, y, z);
+    const add = deltaR + dodatekRamienia(r, rOuter, extraRamie, overhangMax);
+    const s = r > 1e-9 ? (r + add) / r : 1;
+    const xyz = punktPromieniowo(hoop.os, hoop.cx, hoop.cy, x, y, z, s);
+    V[i * 3] = xyz[0]; V[i * 3 + 1] = xyz[1]; V[i * 3 + 2] = xyz[2];
+  }
+  const F = mesh0.triVerts instanceof Uint32Array ? mesh0.triVerts : Uint32Array.from(mesh0.triVerts);
+  let nowa;
+  try {
+    nowa = Manifold.ofMesh({ numProp: 3, vertProperties: V, triVerts: F });
+  } catch (e) {
+    const err = new Error(KOM_USZKODZONY);
+    err.kod = 'USZKODZONY';
+    err.przyczyna = String(e && e.message || e);
+    throw err;
+  }
+  const rec = opts.przywrocOtwory === false
+    ? { wynik: nowa, otwory: 'wylaczone' }
+    : przywrocOtworyPoObwodzie(nowa, kat, hoop, deltaR, extraRamie, rOuter, overhangMax);
+  if (rec.wynik !== nowa) { try { nowa.delete(); } catch (eN) {} }
+  nowa = rec.wynik;
+  const bb = nowa.boundingBox();
+  const zmin = Array.isArray(bb.min) ? bb.min[2] : bb.min.z;
+  if (Math.abs(zmin) > 1e-9) {
+    const t = nowa.translate(0, 0, -zmin);
+    try { nowa.delete(); } catch (eT) {}
+    nowa = t;
+  }
+  let katalogPo = null;
+  try {
+    katalogPo = rozpoznaj(nowa);
+  } catch (eK) {
+    katalogPo = { blad: String(eK && eK.message || eK) };
+  }
+  return {
+    ok: true,
+    wynik: nowa,
+    katalogPo,
+    hoop,
+    deltaC_mm: deltaC,
+    deltaR_mm: deltaR,
+    extraRamie_mm: extraRamie,
+    rOuter_mm: rOuter,
+    rMax_przed: span0.rMax,
+    overhang_przed: span0.rMax - rOuter,
+    otwory: rec.otwory,
+    uniform_scale: false
+  };
+}
+
 function rozpoznajZBufora(buf, nazwa) {
   const n = String(nazwa || '').toLowerCase();
   const u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
-  const siatka = n.endsWith('.3mf') ? czytaj3MF(u8) : czytajSTL(u8);
+  if (n.endsWith('.3mf')) {
+    const wszystkie = czytaj3MFWszystkie(u8);
+    const ciala = wszystkie.map(function (s) { return brylaZSiatki(s.V, s.F); });
+    const iMax = wszystkie.reduce(function (best, s, i, arr) {
+      return s.nTri > arr[best].nTri ? i : best;
+    }, 0);
+    const kat = rozpoznaj(ciala[iMax]);
+    kat._ciala = ciala;
+    kat._nazwyCial = wszystkie.map(function (s) { return s.nazwa; });
+    kat._solid = ciala[iMax];
+    return kat;
+  }
+  const siatka = czytajSTL(u8);
   let tmp;
   try {
     tmp = Manifold.ofMesh({ numProp: 3, vertProperties: siatka.V, triVerts: siatka.F });
@@ -1063,7 +1429,16 @@ function rozpoznajZBufora(buf, nazwa) {
   tmp.delete();
   const z = zgrzej(siatka.V, siatka.F, P0.zgrzew_mm);
   const m = brylaZSiatki(z.V, z.F);
-  return rozpoznaj(m);
+  const kat = rozpoznaj(m);
+  kat._ciala = [m];
+  kat._nazwyCial = [nazwa || 'model'];
+  return kat;
+}
+
+function wydluzWszystkieCiala(ciala, extra_mm, osHint) {
+  const lista = Array.isArray(ciala) && ciala.length ? ciala : [];
+  if (!lista.length) throw new Error('Brak ciał do wydłużenia');
+  return lista.map(function (s) { return wydluzOsiowo(s, extra_mm, osHint); });
 }
 
 function luzGniazda(nominal, pasowanie = 'przesuwne', material = 'PETG') {
@@ -1074,7 +1449,8 @@ function interpretujZdanie(zdanie, katalog, opts = {}) {
   const t = String(zdanie || '').toLowerCase().replace(',', '.');
   const m = t.match(/(\d+(?:\.\d+)?)\s*mm/);
   const wymiar = m ? +m[1] : null;
-  const gniazda = (katalog.cechy || []).filter(c => c.rodzaj === 'gniazdo_walcowe');
+  const wszystkieGniazda = (katalog.cechy || []).filter(c => c.rodzaj === 'gniazdo_walcowe');
+  const gniazda = wszystkieGniazda.filter(c => c.pewnosc !== 'niska');
   const rura = /rur[aayę]/.test(t) || /pasowa[cć]/.test(t);
   const gniazdoMa = /gniazd/.test(t) && /ma[cć] mieć|ma miec|na\s+\d/.test(t) && !rura;
   const material = opts.material || 'PETG';
@@ -1116,7 +1492,11 @@ function interpretujZdanie(zdanie, katalog, opts = {}) {
   let wybrana = gniazda[0];
   if (/trzec/.test(t)) wybrana = gniazda[2] || gniazda[gniazda.length - 1];
   else if (/drug/.test(t)) wybrana = gniazda[1] || wybrana;
-  if (!wybrana) return { ok: false, kod: 'BRAK_GNIAZDA', wykonaj: false };
+  if (!wybrana) {
+    if (wszystkieGniazda.some(c => c.pewnosc === 'niska'))
+      return { ok: false, kod: 'NISKIE_PEWNOSC', wykonaj: false };
+    return { ok: false, kod: 'BRAK_GNIAZDA', wykonaj: false };
+  }
   if (wybrana.pewnosc === 'niska' && !opts.klik) {
     return { ok: false, kod: 'NISKIE_PEWNOSC', cecha_id: wybrana.id, wykonaj: false };
   }
@@ -1175,6 +1555,7 @@ function zwezGniazdo(model, cecha, dNowa) {
 
 
 
+
 function segmentyDlaPromienia(r) {
   try {
     if (wasmMod && typeof wasmMod.getCircularSegments === 'function') {
@@ -1185,12 +1566,53 @@ function segmentyDlaPromienia(r) {
   return circularSegmentsUstawione;
 }
 
+/** N w r/cos musi być tym samym, którym silnik buduje walec w tym wątku — nie tylko przy init. */
+function asercjaNWalca(nKomp, rPromien) {
+  const n = Math.max(4, nKomp);
+  let nSilnik = null;
+  try {
+    if (wasmMod && typeof wasmMod.getCircularSegments === 'function') {
+      nSilnik = wasmMod.getCircularSegments(rPromien);
+    }
+  } catch {}
+  if (nSilnik != null && nSilnik !== n) {
+    throw new Error('N kompensacji ' + n + ' ≠ getCircularSegments(' + rPromien + ')=' + nSilnik);
+  }
+  return n;
+}
 
+/** Przywraca cel Przerobu po użyciu wspólnego WASM przez Projekt (N=96). */
+function ustawNPrzerobki() {
+  if (!wasmMod || typeof wasmMod.setCircularSegments !== 'function') {
+    throw new Error('initPrzerobka() najpierw');
+  }
+  wasmMod.setCircularSegments(PRZEROBKA_CIRCULAR_SEGMENTS);
+  circularSegmentsUstawione = PRZEROBKA_CIRCULAR_SEGMENTS;
+  const n = asercjaNWalca(PRZEROBKA_CIRCULAR_SEGMENTS, 10);
+  if (n !== PRZEROBKA_CIRCULAR_SEGMENTS) {
+    throw new Error('N Przerobu ' + n + ' — oczekiwane 192; Projekt ma osobne N=96');
+  }
+  return n;
+}
 
+function ustawNPrzyWalcu(nKomp, rPromien) {
+  const n = Math.max(4, nKomp);
+  if (wasmMod && typeof wasmMod.setCircularSegments === 'function') {
+    wasmMod.setCircularSegments(n);
+    circularSegmentsUstawione = n;
+  }
+  return asercjaNWalca(n, rPromien);
+}
+
+/** Promień narzędzia, żeby apotema wielokąta wpisanego dała r_docelowe. N z silnika, nie 96 z pamięci.
+ *  Bez naddatku +0,02: ten naddatek dawał przepust ~0,04 mm za szeroki (2 × 0,02).
+ *  Jedyna kompensacja wielokąta to r/cos(π/N). */
 function rCiecie(rDocelowe, nSeg) {
-  const N = Math.max(4, nSeg != null ? nSeg : segmentyDlaPromienia(rDocelowe));
+  const N0 = Math.max(4, nSeg != null ? nSeg : segmentyDlaPromienia(rDocelowe));
+  const N = asercjaNWalca(N0, rDocelowe);
   return { r: rDocelowe / Math.cos(Math.PI / N), N };
 }
+
 
 
 
@@ -1199,6 +1621,7 @@ function nZOdczytu(dOczek, dZmierzone) {
   if (!(c > 0.97 && c < 0.99995)) return null;
   return Math.max(16, Math.round(Math.PI / Math.acos(c)));
 }
+
 
 
 
@@ -1237,10 +1660,10 @@ function rMinKrawedziXY(V, F, cx, cy, z, rMin) {
 
 
 
+
 function wytnijDoSrednicy(aligned, cx, cy, zLo, zHi, dNowa, arena, zMierzLo, zMierzHi) {
   const K = o => (arena.push(o), o);
-  const Ntool = Math.max(192, segmentyDlaPromienia(dNowa / 2));
-  let Nface = Ntool;
+  let N = Math.max(192, segmentyDlaPromienia(dNowa / 2));
   const h = Math.max(0.5, zHi - zLo);
   const mLo = Number.isFinite(zMierzLo) ? zMierzLo : zLo;
   const mHi = Number.isFinite(zMierzHi) ? zMierzHi : zHi;
@@ -1248,8 +1671,13 @@ function wytnijDoSrednicy(aligned, cx, cy, zLo, zHi, dNowa, arena, zMierzLo, zMi
   const fracs = [0, 0.25, 0.5, 0.75, 1];
   let wynik = aligned;
   for (let pass = 0; pass < 3; pass++) {
-    const r = (dNowa / 2) / Math.cos(Math.PI / Math.max(4, Nface));
-    const cyl = K(Manifold.cylinder(h, r, r, Ntool).translate(cx, cy, zLo));
+    const nKomp = Math.max(4, N);
+    const nBudowa = ustawNPrzyWalcu(nKomp, dNowa / 2);
+    if (nKomp !== nBudowa) {
+      throw new Error(`N kompensacji ${nKomp} ≠ N budowy ${nBudowa}`);
+    }
+    const r = (dNowa / 2) / Math.cos(Math.PI / nBudowa);
+    const cyl = K(Manifold.cylinder(h, r, r, nBudowa).translate(cx, cy, zLo));
     wynik = K(aligned.subtract(cyl));
     let dM = NaN;
     try {
@@ -1270,17 +1698,22 @@ function wytnijDoSrednicy(aligned, cx, cy, zLo, zHi, dNowa, arena, zMierzLo, zMi
       }
       if (mn !== Infinity) dM = mn;
     } catch {}
-    console.log(`N-12 pass ${pass} N_narzedzia=${Ntool} N_komp=${Nface} r_ciecia=${r.toFixed(4)} odczyt=${Number.isFinite(dM) ? dM.toFixed(4) : 'n/d'}`);
+    console.log(`N-12 pass ${pass} N=${nBudowa} r_ciecia=${r.toFixed(4)} odczyt=${Number.isFinite(dM) ? dM.toFixed(4) : 'n/d'}`);
     if (!Number.isFinite(dM)) break;
     if (Math.abs(dM - dNowa) <= 0.008) break;
     const n2 = dM < dNowa ? nZOdczytu(dNowa, dM)
       : Math.round(Math.PI / Math.acos(Math.min(0.9999, dNowa / dM)));
     if (!n2 || !Number.isFinite(n2) || n2 < 16) break;
-    if (Math.abs(n2 - Nface) < 2) break;
-    Nface = dM < dNowa ? n2 : Math.min(Ntool * 2, n2);
+    if (Math.abs(n2 - N) < 2) break;
+    N = dM < dNowa ? n2 : Math.min(N * 2, n2);
+  }
+  if (wasmMod && typeof wasmMod.setCircularSegments === 'function') {
+    wasmMod.setCircularSegments(PRZEROBKA_CIRCULAR_SEGMENTS);
+    circularSegmentsUstawione = PRZEROBKA_CIRCULAR_SEGMENTS;
   }
   return wynik;
 }
+
 
 
 
@@ -1288,6 +1721,7 @@ function worldZToAligned(os, worldA) {
   if (os === 'z') return worldA;
   return -worldA;
 }
+
 
 
 
@@ -1299,9 +1733,11 @@ function zakresNaAligned(cecha) {
 
 
 
+
 function padFazki(h0) {
   return Math.min(3, Math.max(MARGINES_CIECIA_MM, Math.max(0, h0) * 0.25));
 }
+
 
 
 
@@ -1319,6 +1755,14 @@ function rNaPlaszczyznie(aligned, cx, cy, z, rMin, rMax) {
 
 
 
+
+/** Rozszerza operację od wykrytego zakresu.
+ *  poszerz: idź, dopóki przekrój < dNowa (jest co usuwać) + padFazki.
+ *  zwez:    TYLKO wykryty zakres + zakładka boolean 0,05 mm. Nie wolno
+ *           iść «dopóki przekrój > dNowa» ani «dopóki |d−d0| < 0,15» —
+ *           początek fazy wlotowej jest jeszcze prawie Ø cechy, więc
+ *           wypełnienie wjeżdża w fazę (N-12 / 4.2.24: 2 mm przy y=11;
+ *           4.2.25 przy |d−d0|: 0,7 mm przy y=12,5). */
 function zasiegCiecia(aligned, cecha, dNowa, tryb = 'poszerz') {
   const krok = 0.2;
   const rNeed = dNowa / 2;
@@ -1340,14 +1784,15 @@ function zasiegCiecia(aligned, cecha, dNowa, tryb = 'poszerz') {
   const MAX_EXTRA = 8;
   const zMin = bb.min[2] - 0.5, zMax = bb.max[2] + 0.5;
 
+  if (tryb === 'zwez') {
+    zLo -= ZAKLADKA_BOOLEAN_MM;
+    zHi += ZAKLADKA_BOOLEAN_MM;
+    return { zLo, zHi };
+  }
+
   const trzebaCiac = (z) => {
     const r = rNaPlaszczyznie(aligned, cecha.cx, cecha.cy, z, rMin, rMax);
     if (r == null || r === Infinity) return false;
-    if (tryb === 'zwez') {
-      if (r <= rNeed + 0.01) return false;
-      if (r > r0 + 0.8) return false;
-      return true;
-    }
     if (r >= rNeed - 0.01) return false;
     if (r < r0 - 0.8) return false;
     return true;
@@ -1374,14 +1819,16 @@ function zasiegCiecia(aligned, cecha, dNowa, tryb = 'poszerz') {
 
 
 
+
 function poszerzGniazdo(model, cecha, dNowa) {
   const arena = [];
   const K = o => (arena.push(o), o);
   const { r: rN, N } = rCiecie(dNowa / 2);
   const r0 = cecha.r ?? cecha.srednica_mm / 2;
   const rZew = cecha.r_zewnetrzny ?? (r0 + 6);
-  if ((rZew - rN) < SCIANKA_MIN) {
-    const err = new Error(`Ścianka ${((rZew - rN) * 2).toFixed(2)} mm spadłaby poniżej ${SCIANKA_MIN} mm.`);
+  const progScianki = sciankaMin();
+  if ((rZew - rN) < progScianki) {
+    const err = new Error(`Ścianka ${((rZew - rN) * 2).toFixed(2)} mm spadłaby poniżej ${progScianki} mm.`);
     err.kod = 'SCIANKA';
     err.liczba = rZew - rN;
     throw err;
@@ -1395,6 +1842,7 @@ function poszerzGniazdo(model, cecha, dNowa) {
   if (cecha.os !== 'z') arena.push(wynik);
   return { wynik, arena };
 }
+
 
 
 
@@ -1502,7 +1950,9 @@ function bramkaPrzerobki(stara, nowa, katPrzed, katPo, cecha, plan, dCel) {
 
 
 
+
 function wykonajPrzerobke(kat, cechaId, dNowa, opts = {}) {
+  ustawNPrzerobki();
   const oryg = kat._solid;
   if (!oryg) throw new Error('Brak bryły w katalogu — rozpoznaj() najpierw.');
   const cecha = kat.cechy.find(c => c.id === cechaId);
@@ -1623,6 +2073,9 @@ function zapiszSTLBinarny(V, F) {
 window.P2S = window.P2S || {};
 window.P2S.przerobka = {
   initPrzerobka, rozpoznaj, rozpoznajZBufora, wykonajPrzerobke,
-  luzGniazda, KOM_USZKODZONY, fmtDowody, czytajSTL, czytaj3MF, brylaZSiatki
+  luzGniazda, KOM_USZKODZONY, fmtDowody, czytajSTL, czytaj3MF, czytaj3MFWszystkie, brylaZSiatki,
+  PRZEROBKA_CIRCULAR_SEGMENTS, sciankaMin,
+  deltaRZobwodu, wybierzObrecz, powiekszObwodIRamiona,
+  dodajDziurkeBrelok, wydluzOsiowo, wydluzWszystkieCiala
 };
 })();

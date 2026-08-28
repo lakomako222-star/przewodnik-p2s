@@ -34,6 +34,7 @@ export function nawisy(part, warstwa = 0.2) {
   const m = part.getMesh(), np = m.numProp, vp = m.vertProperties, tv = m.triVerts;
   const zmin = part.boundingBox().min[2];
   let najgorszy = 0, polePodparte = 0, poleZle = 0, poleRazem = 0;
+  const zle = [];
   for (let i = 0; i < tv.length; i += 3) {
     const p = k => [vp[tv[i + k] * np], vp[tv[i + k] * np + 1], vp[tv[i + k] * np + 2]];
     const A = p(0), B = p(1), C = p(2);
@@ -48,13 +49,75 @@ export function nawisy(part, warstwa = 0.2) {
     if (nz < -1e-6) {
       const odPionu = 90 - Math.acos(Math.min(1, -nz)) * 180 / Math.PI;
       if (odPionu > najgorszy) najgorszy = odPionu;
-      if (odPionu > 45) poleZle += pole;
+      if (odPionu > 45) {
+        poleZle += pole;
+        zle.push({
+          t: i, pole,
+          min: [
+            Math.min(A[0], B[0], C[0]),
+            Math.min(A[1], B[1], C[1]),
+            Math.min(A[2], B[2], C[2])
+          ],
+          max: [
+            Math.max(A[0], B[0], C[0]),
+            Math.max(A[1], B[1], C[1]),
+            Math.max(A[2], B[2], C[2])
+          ]
+        });
+      }
     }
   }
+  const parent = zle.map((_, i) => i);
+  const root = i => {
+    let r = i;
+    while (parent[r] !== r) r = parent[r];
+    while (parent[i] !== i) { const n = parent[i]; parent[i] = r; i = n; }
+    return r;
+  };
+  const polacz = (a, b) => {
+    const ra = root(a), rb = root(b);
+    if (ra !== rb) parent[rb] = ra;
+  };
+  const edges = new Map();
+  zle.forEach((f, i) => {
+    const a = tv[f.t], b = tv[f.t + 1], c = tv[f.t + 2];
+    for (const [u0, v0] of [[a, b], [b, c], [c, a]]) {
+      const u = Math.min(u0, v0), v = Math.max(u0, v0);
+      const key = `${u}:${v}`, prev = edges.get(key);
+      if (prev == null) edges.set(key, i); else polacz(i, prev);
+    }
+  });
+  const grupy = new Map();
+  zle.forEach((f, i) => {
+    const r = root(i);
+    let g = grupy.get(r);
+    if (!g) {
+      g = { pole: 0, trojkatow: 0, min: [Infinity, Infinity, Infinity], max: [-Infinity, -Infinity, -Infinity] };
+      grupy.set(r, g);
+    }
+    g.pole += f.pole; g.trojkatow++;
+    for (let k = 0; k < 3; k++) {
+      if (f.min[k] < g.min[k]) g.min[k] = f.min[k];
+      if (f.max[k] > g.max[k]) g.max[k] = f.max[k];
+    }
+  });
+  const spojne = [...grupy.values()].map(g => {
+    const rozmiar = g.max.map((v, i) => v - g.min[i]);
+    return {
+      pole_mm2: +g.pole.toFixed(1),
+      trojkatow: g.trojkatow,
+      rozmiar_mm: rozmiar.map(v => +v.toFixed(1)),
+      krytyczny: g.pole >= 20 && rozmiar.filter(v => v >= 3).length >= 2
+    };
+  }).sort((a, b) => b.pole_mm2 - a.pole_mm2);
   return {
     najgorszy: +najgorszy.toFixed(1),
     procentZlych: poleRazem > 0 ? +(100 * poleZle / poleRazem).toFixed(1) : 0,
-    poleNaStole: +polePodparte.toFixed(1)
+    poleZlych: +poleZle.toFixed(1),
+    poleNaStole: +polePodparte.toFixed(1),
+    najwiekszySpojny: spojne[0]?.pole_mm2 || 0,
+    spojne,
+    krytyczny: spojne.some(g => g.krytyczny)
   };
 }
 
@@ -62,6 +125,380 @@ function wpis(poziom, kod, tekst, liczba) {
   const o = { poziom, kod, tekst };
   if (liczba != null) o.liczba = liczba;
   return o;
+}
+
+/**
+ * Jedyny korzeń progów ścianki — obie zakładki biorą stąd.
+ *
+ * Obie liczby są ZGADNIĘTE do czasu wydruku kuponu 6.15 (ścianki 0,4 / 0,8 / 1,2 / 1,6 mm,
+ * odczyt: najcieńsza, która jeszcze schodzi z płyty). Po wydruku zmień tu jedną liczbę
+ * i oba progi przesuną się razem.
+ *
+ * To dwie różne fizyki, dlatego nie jedna liczba. DRUKOWALNA odpowiada na pytanie
+ * „co dysza umie położyć" i to mierzy kupon. WOKOL_OTWORU odpowiada na „ile materiału
+ * wytrzyma wyrwanie wkręta" i nie wolno jej zjechać poniżej 2 mm nawet na drukarce,
+ * która kładzie 0,4 mm — M3 w 1 mm ścianki i tak rozłupie. Podłoga 2,0 jest nośna,
+ * mnożnik to tylko sprzężenie w drugą stronę: gorsza drukarka podnosi wymagany margines.
+ */
+export const SCIANKA_DRUKOWALNA_MM = 0.8;
+export const SCIANKA_WOKOL_OTWORU_MM = Math.max(2.0, 2.5 * SCIANKA_DRUKOWALNA_MM);
+
+/**
+ * Jedyny legalny odczyt progu. Brak źródła albo zero to wyjątek, nie undefined:
+ * `(rZew - rN) < undefined` jest zawsze false i bramka milknie na wszystkim.
+ */
+export function wymaganaSciankaDrukowalna(zrodlo) {
+  const v = zrodlo && zrodlo.SCIANKA_DRUKOWALNA_MM;
+  if (!(v > 0)) throw new Error('brak P2S.SCIANKA_DRUKOWALNA_MM');
+  return v;
+}
+
+const OS_INDEKS = { x: 0, y: 1, z: 2 };
+const CECHY_Z_OTWOREM = ['otwor', 'otwor_pod_wkladke', 'poglebienie', 'poglebienie_stozkowe'];
+
+function srednicaOtworu(c) {
+  return c.srednica_mm || c.srednica_otworu_mm || null;
+}
+
+/** Cięciwy przekroju siatki płaszczyzną prostopadłą do osi, rzutowane na dwie osie w płaszczyźnie. */
+function cieciwyPrzekroju(mesh, iOs, t, iA, iB) {
+  const np = mesh.numProp || 3;
+  const vp = mesh.vertProperties;
+  const tv = mesh.triVerts;
+  const out = [];
+  for (let f = 0; f + 3 <= tv.length; f += 3) {
+    const o = [tv[f] * np, tv[f + 1] * np, tv[f + 2] * np];
+    const d = [vp[o[0] + iOs] - t, vp[o[1] + iOs] - t, vp[o[2] + iOs] - t];
+    if ((d[0] > 0 && d[1] > 0 && d[2] > 0) || (d[0] < 0 && d[1] < 0 && d[2] < 0)) continue;
+    const pk = [];
+    for (let i = 0; i < 3; i++) {
+      const j = (i + 1) % 3;
+      if ((d[i] <= 0 && d[j] > 0) || (d[i] > 0 && d[j] <= 0)) {
+        const u = d[i] / (d[i] - d[j]);
+        pk.push([
+          vp[o[i] + iA] + u * (vp[o[j] + iA] - vp[o[i] + iA]),
+          vp[o[i] + iB] + u * (vp[o[j] + iB] - vp[o[i] + iB])
+        ]);
+      }
+    }
+    if (pk.length >= 2) out.push([pk[0], pk[1]]);
+  }
+  return out;
+}
+
+/** Ścianek wyciętego otworu musi być w przekroju dużo (N=96 daje dziesiątki cięciw). */
+const MIN_CIECIW_OTWORU = 8;
+
+function odlegloscOdOdcinka(cx, cy, a, b) {
+  const ax = a[0] - cx, ay = a[1] - cy;
+  const dx = b[0] - a[0], dy = b[1] - a[1];
+  const dd = dx * dx + dy * dy;
+  let u = dd > 1e-12 ? -(ax * dx + ay * dy) / dd : 0;
+  u = Math.max(0, Math.min(1, u));
+  return Math.hypot(ax + u * dx, ay + u * dy);
+}
+
+/**
+ * Materiał wokół każdego otworu, mierzony na przekroju prostopadłym do OSI TEGO otworu —
+ * do najbliższej krawędzi konturu, nie do bounding boxa. Bbox kłamie w dwie strony:
+ * przepuszcza otwór 0,4 mm od krawędzi okna w płycie i zatrzymuje otwór odsunięty
+ * od nieregularnego obrysu.
+ *
+ * Wołane PRZED zastosujOrientacjeDruku, bo punkt_mm cechy jest w układzie SPEC-u,
+ * a obrót przenosi siatkę do układu płyty.
+ */
+export function zmierzMarginesyOtworow(part, spec) {
+  let mesh = null;
+  try { mesh = part.getMesh(); } catch (e) { return []; }
+  if (!mesh || !mesh.vertProperties || !mesh.triVerts) return [];
+  const out = [];
+  for (const c of (spec && spec.cechy) || []) {
+    if (!c || CECHY_Z_OTWOREM.indexOf(c.typ) < 0) continue;
+    const d = srednicaOtworu(c);
+    const iOs = OS_INDEKS[String(c.os || '').toLowerCase()];
+    if (!(d > 0) || iOs == null || !Array.isArray(c.punkt_mm)) continue;
+    const osie = [0, 1, 2].filter(i => i !== iOs);
+    const iA = osie[0], iB = osie[1];
+    const r = d / 2;
+    const cx = c.punkt_mm[iA], cy = c.punkt_mm[iB];
+    let naj = Infinity;
+    let sciankiOtworu = 0;
+    // Ścianka samego otworu leży w odległości ~r od środka i nie jest krawędzią materiału.
+    for (const cw of cieciwyPrzekroju(mesh, iOs, c.punkt_mm[iOs], iA, iB)) {
+      const od = odlegloscOdOdcinka(cx, cy, cw[0], cw[1]);
+      if (od <= r + 0.02) sciankiOtworu++;
+      else if (od < naj) naj = od;
+    }
+    // Brak ścianek otworu znaczy, że ten otwór niczego nie wyciął — wypadł w powietrzu
+    // (np. w środku okna) albo płaszczyzna minęła bryłę. Nie zgłaszamy pomiaru,
+    // bo odległość do najbliższej krawędzi wyglądałaby wtedy na zdrowy zapas.
+    if (sciankiOtworu < MIN_CIECIW_OTWORU || naj === Infinity) continue;
+    out.push({
+      id: c.id || c.typ,
+      os: c.os,
+      srednica_mm: +d.toFixed(3),
+      punkt_mm: c.punkt_mm.slice(),
+      margines_mm: +(naj - r).toFixed(3)
+    });
+  }
+  return out;
+}
+
+/**
+ * Ścianka przy otworze — próg SCIANKA_WOKOL_OTWORU_MM, wspólny dla obu zakładek.
+ * Gdy build zdążył zmierzyć materiał (spec._marginesyOtworow), bierzemy pomiar.
+ * Bez pomiaru zostaje zgrubny szacunek z gabarytu: liczy tylko w XY i tylko do bboxa,
+ * więc łapie wyłącznie otwory przy zewnętrznej krawędzi prostokątnej części.
+ */
+export function ocenScienkeOtwor(g, spec, opts) {
+  opts = opts || {};
+  const shardId = opts.shardId != null ? String(opts.shardId) : String((spec && spec.nazwa) || '');
+  const zmierzone = (spec && spec._marginesyOtworow) || opts.marginesy || null;
+  if (zmierzone && zmierzone.length) {
+    let zly = null;
+    for (const m of zmierzone) if (!zly || m.margines_mm < zly.margines_mm) zly = m;
+    if (zly && zly.margines_mm < SCIANKA_WOKOL_OTWORU_MM - 1e-6) {
+      return {
+        ok: false,
+        code: 'SCIENKA_OTWOR',
+        details: {
+          shardId: shardId,
+          wallMm: zly.margines_mm,
+          holeDiameterMm: zly.srednica_mm,
+          edgeDistanceMm: zly.margines_mm,
+          localReason: 'Tylko ' + zly.margines_mm.toFixed(2) + ' mm materiału wokół otworu Ø'
+            + zly.srednica_mm.toFixed(2) + ' mm w punkcie ['
+            + zly.punkt_mm.map(function (n) { return n.toFixed(1); }).join(', ')
+            + '], wymagane ' + SCIANKA_WOKOL_OTWORU_MM.toFixed(1)
+            + ' mm. Mierzone na przekroju prostopadłym do osi ' + zly.os + '.'
+        }
+      };
+    }
+    return { ok: true };
+  }
+  const cechy = (spec && spec.cechy) || [];
+  if (!g || !g.min || !g.max) return { ok: true };
+  for (let i = 0; i < cechy.length; i++) {
+    const c = cechy[i];
+    if (!c) continue;
+    if (CECHY_Z_OTWOREM.indexOf(c.typ) < 0) continue;
+    const d = srednicaOtworu(c);
+    if (!(d && c.punkt_mm)) continue;
+    const r = d / 2, p = c.punkt_mm;
+    const margs = [
+      p[0] - r - g.min[0], g.max[0] - (p[0] + r),
+      p[1] - r - g.min[1], g.max[1] - (p[1] + r)
+    ];
+    const edge = Math.min.apply(null, margs);
+    if (edge < SCIANKA_WOKOL_OTWORU_MM - 1e-6) {
+      const wallMm = +edge.toFixed(3);
+      return {
+        ok: false,
+        code: 'SCIENKA_OTWOR',
+        details: {
+          shardId: shardId,
+          wallMm: wallMm,
+          holeDiameterMm: +(+d).toFixed(3),
+          edgeDistanceMm: wallMm,
+          localReason: 'Mniej niż ' + SCIANKA_WOKOL_OTWORU_MM.toFixed(1)
+            + ' mm materiału wokół otworu Ø' + d.toFixed(2)
+            + ' mm w punkcie [' + p.map(function (n) { return n.toFixed(1); }).join(', ')
+            + '] (szacunek z gabarytu, bez pomiaru konturu).'
+        }
+      };
+    }
+  }
+  return { ok: true };
+}
+
+/**
+ * Część postawiona na wiórze. Mózg deklaruje orientacja_druku.obrot_xyz_deg i builder
+ * ten obrót stosuje, więc obrót wokół złej osi kładzie część na cienkim boku:
+ * listwa 220 mm dostała [0,90,0] i stanęła pionowo na śladzie 14 mm, choć bliźniacza
+ * listwa z tym samym uzasadnieniem dostała [90,0,0] i leży płasko.
+ * Mierzymy gabaryt PO obrocie. Trzy warunki naraz, żeby nie karać uczciwie wysokich
+ * części (stojak Ø205×220, wazon 60×60×200): wysoka, wyższa niż 2,5× dłuższy bok
+ * śladu i stojąca na boku cieńszym niż czwarta część wysokości.
+ */
+export function ocenOrientacjeNaSztorc(g, spec, opts) {
+  opts = opts || {};
+  const shardId = opts.shardId != null ? String(opts.shardId) : String((spec && spec.nazwa) || '');
+  if (!g || !g.min || !g.max) return { ok: true };
+  const dx = g.max[0] - g.min[0];
+  const dy = g.max[1] - g.min[1];
+  const dz = g.max[2] - g.min[2];
+  if (!(dx > 0 && dy > 0 && dz > 0)) return { ok: true };
+  if (dz <= 100) return { ok: true };
+  if (dz < 2.5 * Math.max(dx, dy)) return { ok: true };
+  if (Math.min(dx, dy) >= 0.25 * dz) return { ok: true };
+
+  const obrot = (spec && spec.orientacja_druku && spec.orientacja_druku.obrot_xyz_deg) || null;
+  const slad = dx.toFixed(0) + '×' + dy.toFixed(0);
+  return {
+    ok: false,
+    code: 'ORIENTACJA_NA_SZTORC',
+    details: {
+      shardId: shardId,
+      wysokoscMm: +dz.toFixed(1),
+      sladMm: [+dx.toFixed(1), +dy.toFixed(1)],
+      obrotDeg: Array.isArray(obrot) ? obrot.slice() : null,
+      localReason: 'Część stoi na sztorc: ' + dz.toFixed(0) + ' mm wysokości na śladzie '
+        + slad + ' mm'
+        + (Array.isArray(obrot) ? (' po obrocie [' + obrot.join(', ') + ']') : '')
+        + '. Najdłuższy wymiar poszedł w Z — obrót wykonany wokół złej osi.'
+    }
+  };
+}
+
+/**
+ * Bramka toppera. Wzorzec (generator_topper_aniolek.py + pomiar 3MF) nie ma ANI
+ * jednej belki przez litery i nic nie wystaje poza obrys płyty poza nogami w dół.
+ * Nasz builder sam robi mostek pod linią bazową, więc każda DODATKOWA bryła obok
+ * napisu to prawie zawsze belka wstawiona „na oko" w mm — tu ją zatrzymujemy.
+ *
+ * @param {object} napis  {litery, obrysDokladny, nogi_mm, ...} z napisMesh
+ * @param {Array}  obce   [{id, bryla}] bryły „dodaj" postawione obok napisu
+ * @param {{CrossSection:*}} env
+ */
+export function sprawdzDodatkiNapisu(napis, obce, env) {
+  const CS = env && env.CrossSection;
+  const out = [];
+  if (!CS || !napis || !napis.litery || !napis.litery.length) return out;
+  const TOL = 2.0;
+  const literyCS = CS.ofPolygons(napis.litery, 'Positive');
+  const obrysCS = CS.ofPolygons(napis.obrysDokladny, 'Positive');
+  const dozwolony = obrysCS.offset(TOL, 'Round', 2, 16);
+  try {
+    for (const o of obce) {
+      const bb = o.bryla.boundingBox();
+      const zSr = (bb.min[2] + bb.max[2]) / 2;
+      let slad = null;
+      try { slad = o.bryla.slice(zSr); } catch (e) { slad = null; }
+      if (!slad || slad.isEmpty()) { if (slad) slad.delete(); continue; }
+
+      const przez = slad.intersect(literyCS);
+      const polePrzez = Math.abs(przez.area());
+      przez.delete();
+      if (polePrzez > 1.0) {
+        out.push(wpis('blad', 'NAPIS_BELKA',
+          'Bryła „' + o.id + '” przechodzi przez litery (' + polePrzez.toFixed(1)
+          + ' mm² wspólnego rzutu). Wzorzec toppera nie ma belek przez litery — '
+          + 'litery spina mostek pod linią bazową, który silnik robi sam. '
+          + 'Usuń tę bryłę albo przesuń ją poniżej mostka.', polePrzez));
+      }
+
+      const poza = slad.subtract(dozwolony);
+      const polePoza = Math.abs(poza.area());
+      poza.delete();
+      if (polePoza > 4.0) {
+        const pb = slad.bounds();
+        out.push(wpis('blad', 'NAPIS_POZA_OBRYSEM',
+          'Bryła „' + o.id + '” wystaje poza obrys napisu o więcej niż ' + TOL
+          + ' mm (' + polePoza.toFixed(0) + ' mm² poza ramką, zasięg X '
+          + pb.min[0].toFixed(0) + '…' + pb.max[0].toFixed(0) + ' mm). '
+          + 'Poza obrys wolno wyjść tylko nóżkom w dół — te robi pole nogi_mm.', polePoza));
+      }
+      slad.delete();
+    }
+  } finally {
+    literyCS.delete();
+    obrysCS.delete();
+    dozwolony.delete();
+  }
+  return out;
+}
+
+function foldPl(s) {
+  return String(s || '').toLowerCase()
+    .replace(/ł/g, 'l').replace(/ó/g, 'o').replace(/ą/g, 'a').replace(/ę/g, 'e')
+    .replace(/ś/g, 's').replace(/ć/g, 'c').replace(/ń/g, 'n').replace(/[żź]/g, 'z');
+}
+
+/** Pole największej dziury (konturu ujemnego) w przekroju — „czy to się nabierze wody". */
+function poleDziur(sekcja) {
+  let dziury = 0;
+  let najw = 0;
+  for (const kontur of sekcja.toPolygons()) {
+    let a = 0;
+    for (let i = 0, n = kontur.length; i < n; i++) {
+      const p = kontur[i], q = kontur[(i + 1) % n];
+      a += p[0] * q[1] - q[0] * p[1];
+    }
+    a /= 2;
+    if (a < 0) { dziury += -a; if (-a > najw) najw = -a; }
+  }
+  return { suma: dziury, najwieksza: najw };
+}
+
+/**
+ * Bramka tacy/ociekacza: płaska płyta bez rantu nie może dostać PASS.
+ * Taca ANDER 550×240 to wanienka — dno 2,4 mm i rant dookoła do 25 mm
+ * (SYS_SPEC: „wysokość ścianki razem z dnem = 25 mm, nie 12 mm").
+ * Test: w 60% wysokości przekrój musi być JEDNYM zamkniętym rantem z dziurą.
+ */
+export function sprawdzTace(part, spec) {
+  const out = [];
+  const blob = foldPl([
+    spec && spec.nazwa,
+    ((spec && spec.bryly) || []).map(b => b && b.id).join(' ')
+  ].filter(Boolean).join(' '));
+  // Wkłady ociekacza (grzebień, stelaż, koszyk) to nie wanienki — rantu nie mają i mieć nie muszą.
+  const wklad = /grzebien|stelaz|koszyk|insert|wklad|palec|zab-|ramie/.test(blob);
+  const jestTaca = !wklad && /\btac[aeoy]|wanienk|rynienk|ociekacz/.test(blob);
+  if (!jestTaca) return out;
+
+  const g = gabaryt(part);
+  const pole = g.x * g.y;
+  if (g.z < 12) {
+    out.push(wpis('blad', 'TACA_BEZ_RANTU',
+      'Taca ma tylko ' + g.z.toFixed(1) + ' mm wysokości — to płaska płyta, nie wanienka. '
+      + 'Ociekacz 550×240: dno 2,4 mm + rant dookoła, razem 25 mm.', g.z));
+    return out;
+  }
+  const z = g.min[2] + g.z * 0.6;
+  let sek = null;
+  try { sek = part.slice(z); } catch (e) { return out; }
+  if (!sek || sek.isEmpty()) { if (sek) sek.delete(); return out; }
+  const czesci = sek.decompose();
+  const nCzesci = czesci.length;
+  for (const c of czesci) c.delete();
+  const dz = poleDziur(sek);
+  sek.delete();
+
+  if (dz.najwieksza < pole * 0.35) {
+    out.push(wpis('blad', 'TACA_BEZ_RANTU',
+      'Na wysokości ' + z.toFixed(1) + ' mm przekrój tacy nie zamyka wanienki — '
+      + 'największa dziura ' + dz.najwieksza.toFixed(0) + ' mm² przy obrysie '
+      + pole.toFixed(0) + ' mm² (' + nCzesci + ' rozłącznych kawałków). '
+      + 'Rant musi iść dookoła po WSZYSTKICH czterech bokach, nie tylko po dwóch — '
+      + 'inaczej woda wypływa bokiem. Dodaj brakujące ścianki.', dz.najwieksza));
+  }
+  return out;
+}
+
+/**
+ * Bramka stojaka żebrowanego: „taki jak Towel_Holder_Ribbed" bez żeber to nie ten projekt.
+ * Wzorzec (pomiar): rura Ø120/Ø112 (ścianka 4 mm) × 250 mm, żłobkowanie o amplitudzie
+ * 3,74 mm, trzpień Ø33 na gilzę, 433 cm³. Minimum, którego pilnujemy: 6 żeber.
+ */
+export function sprawdzZebrowanie(spec) {
+  const out = [];
+  const blob = foldPl([spec && spec.nazwa, spec && spec.opis_slowny].filter(Boolean).join(' '));
+  // Tylko stojaki/uchwyty — „rozważ żebra" w uwagach tacy nie jest obietnicą żebrowania.
+  const jestStojak = /stojak|uchwyt|holder|kosz na |podajnik|rolk|recznik|papier/.test(blob);
+  const chceZebra = /zeberk|zebrow|zebrowan|ribbed|zlobk/.test(blob);
+  if (!jestStojak || !chceZebra) return out;
+  const bryly = (spec && spec.bryly) || [];
+  const zeber = bryly.filter(b => /zeberk|zebro|zebra|rib|palec|prec|pret|listw/.test(foldPl(b && b.id))).length
+    + ((spec && spec.cechy) || []).filter(c => c && c.typ === 'zebro').length;
+  if (zeber < 6) {
+    out.push(wpis('blad', 'STOJAK_BEZ_ZEBER',
+      'SPEC obiecuje żebrowanie („' + (spec.nazwa || '') + '”), a ma tylko ' + zeber
+      + ' żeber. Wzorzec Towel_Holder_Ribbed ma żłobkowanie na całym obwodzie '
+      + '(ścianka 4 mm, amplituda ~3,7 mm) — daj min. 6 żeber albo nie pisz „żebrowany”.',
+      zeber));
+  }
+  return out;
 }
 
 /**
@@ -119,7 +556,31 @@ export function sprawdzBramke(part, dekl, spec, opts = {}) {
       `Nawis ${nw.najgorszy}° pod półką, ${nw.procentZlych}% powierzchni — dodaj żebro albo podpory / fazę 45°.`,
       nw.najgorszy);
   }
-  if (nw.poleNaStole < 100 && g.z > 40) {
+  if (nw.krytyczny) {
+    ostrz('NAWIS_SPOJNY',
+      `Spójny płat nawisu ma ${nw.najwiekszySpojny.toFixed(1)} mm² — sprawdź orientację w slicerze. ` +
+      'Pojedyncze kosmetyczne trójkąty są pomijane.',
+      nw.najwiekszySpojny);
+  }
+  const deklaracjaBezPodpor = opts.bezPodpor === true
+    || /\[\s*BEZ\s+PODP[OÓ]R\s*\]/i.test([
+      spec && spec.nazwa,
+      spec && spec.uwagi_do_druku,
+      spec && spec.orientacja_druku && spec.orientacja_druku.uzasadnienie
+    ].filter(Boolean).join(' '));
+  if (deklaracjaBezPodpor && nw.krytyczny) {
+    blad('ORIENTACJA_DRUKU',
+      `Plik oznaczony [BEZ PODPÓR] ma spójny nawis ${nw.najwiekszySpojny.toFixed(1)} mm². ` +
+      'Nie eksportuję fałszywego PASS — sprawdź orientację albo zmień projekt.',
+      nw.najwiekszySpojny);
+  } else if (spec && spec.podpory && spec.podpory.wymagane === false && nw.krytyczny) {
+    ostrz('PODPORY',
+      `SPEC mówi brak podpór, ale jest spójny nawis ${nw.najwiekszySpojny.toFixed(1)} mm². ` +
+      'W Studio sprawdź podgląd cięcia — nie ufaj samej deklaracji.',
+      nw.najwiekszySpojny);
+  }
+  const brimZadeklarowany = spec && spec.brim && spec.brim.wymagany === true;
+  if (nw.poleNaStole < 100 && g.z > 40 && !brimZadeklarowany) {
     ostrz('STOL',
       `Styk ze stołem ${nw.poleNaStole} mm² przy wysokości ${g.z.toFixed(1)} mm — ryzyko odklejenia, rozważ brim.`,
       nw.poleNaStole);
@@ -132,16 +593,6 @@ export function sprawdzBramke(part, dekl, spec, opts = {}) {
       const d = c.srednica_mm || c.srednica_otworu_mm;
       if (d && (d < 1.5 || d > 30)) {
         ostrz('OTWOR', `Średnica otworu ${d.toFixed(2)} mm poza zakresem 1,5–30 mm.`);
-      }
-      if (d && c.punkt_mm) {
-        const r = d / 2, p = c.punkt_mm;
-        const margs = [
-          p[0] - r - g.min[0], g.max[0] - (p[0] + r),
-          p[1] - r - g.min[1], g.max[1] - (p[1] + r)
-        ];
-        if (Math.min.apply(null, margs) < 2 - 1e-6) {
-          blad('SCIENKA_OTWOR', `Mniej niż 2 mm materiału wokół otworu Ø${d.toFixed(2)} mm w punkcie [${p.map(n => n.toFixed(1)).join(', ')}].`);
-        }
       }
     }
     if (c.typ === 'kieszen' && c.promien_naroza_mm != null && c.promien_naroza_mm < 2.2 && c.rola === 'pasowanie') {
@@ -156,6 +607,13 @@ export function sprawdzBramke(part, dekl, spec, opts = {}) {
       }
     }
   }
+  const sci = ocenScienkeOtwor(g, spec);
+  if (!sci.ok) {
+    blad('SCIENKA_OTWOR', sci.details.localReason, sci.details.wallMm);
+  }
+
+  for (const w of sprawdzTace(part, spec)) out.push(w);
+  for (const w of sprawdzZebrowanie(spec)) out.push(w);
 
   const cm3 = vol / 1000;
   if (cm3 > 200) {
