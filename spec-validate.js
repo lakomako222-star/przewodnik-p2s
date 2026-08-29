@@ -321,15 +321,15 @@ export function runShardFeatureGate_SCIENKA_OTWOR(preview, spec, opts) {
     if (!v.ok) return v;
   }
   const zly = wpisyPreview(preview).find(function (w) {
-    return w && w.poziom === 'blad' && w.kod === 'SCIENKA_OTWOR';
+    return w && w.poziom === 'blad' && (w.kod === 'SCIENKA_OTWOR' || w.kod === 'BLAD_POMIARU');
   });
   if (zly) {
     return {
       ok: false,
-      code: 'SCIENKA_OTWOR',
+      code: zly.kod,
       details: {
         shardId: shardId,
-        localReason: String(zly.tekst || 'SCIENKA_OTWOR')
+        localReason: String(zly.tekst || zly.kod)
       }
     };
   }
@@ -410,6 +410,9 @@ export function tekstNaprawyOrientacji(spec, gate, shardId) {
 
 /** Prompt naprawczy dobrany do kodu bramki, która oblała kawałek. */
 export function tekstNaprawyKawalka(spec, gate, shardId) {
+  if (gate && gate.code === 'BLAD_POMIARU') {
+    throw new Error('BLAD_POMIARU nie idzie do naprawy — to zepsuty pomiar.');
+  }
   if (gate && gate.code === 'ORIENTACJA_NA_SZTORC') {
     return tekstNaprawyOrientacji(spec, gate, shardId);
   }
@@ -425,10 +428,25 @@ export function bladBramkiKawalka(fg) {
   return err;
 }
 
+function odmowBezNaprawy(fg, log, teleFn, shardId) {
+  const kod = (fg && fg.code) || 'BLAD_POMIARU';
+  log('chunk_gate=' + kod);
+  log('chunk_repair_attempt=0');
+  log('chunk_repair_result=ODMOWA');
+  teleFn({
+    rola: 'spec-shard',
+    shard: shardId,
+    chunk_gate: kod,
+    chunk_repair_attempt: 0,
+    chunk_repair_result: 'ODMOWA'
+  });
+  throw bladBramkiKawalka(fg);
+}
+
 /**
- * Po schemacie i geometrii: bramki kawałka (SCIENKA_OTWOR, ORIENTACJA_NA_SZTORC).
- * FAIL → 1 repair tylko tego shardu promptem dobranym do kodu bramki, potem znowu
- * schema + geometria + bramki. Bez retry całości.
+ * Po schemacie i geometrii: bramki kawałka (SCIENKA_OTWOR, ORIENTACJA_NA_SZTORC, BLAD_POMIARU).
+ * FAIL konstrukcji → 1 repair tylko tego shardu. BLAD_POMIARU nie idzie do mózgu:
+ * to zepsuty pomiar, nie cienka ścianka.
  */
 export async function processShardWithRepair(spec, opts) {
   opts = opts || {};
@@ -448,6 +466,10 @@ export async function processShardWithRepair(spec, opts) {
 
   const fg = runShardFeatureGates(preview, spec, { shardId: shardId });
   if (fg.ok) return { ok: true, spec: spec, preview: preview, repaired: false };
+
+  if (fg.code === 'BLAD_POMIARU') {
+    odmowBezNaprawy(fg, log, teleFn, shardId);
+  }
 
   const kod = fg.code;
   const zglos = function (wynik) {

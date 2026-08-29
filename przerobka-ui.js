@@ -39,6 +39,9 @@
   var NAZWY_CIAL = null;
 
   function rodzajTxt(c) {
+    if (c && c.odmowa === 'BLAD_POMIARU') return 'błąd pomiaru';
+    if (c && c.odmowa === 'GWINT_LUB_NIEWALEC') return 'gwint / niewalec';
+    if (c && c.odmowa === 'NIE_WALEC') return 'nie walec';
     if (c.rodzaj === 'gniazdo_walcowe') return 'otwór';
     if (c.rodzaj === 'czop_walcowy') return 'czop';
     if (c.rodzaj === 'wzor_otworow') return 'wzór otworów';
@@ -152,12 +155,17 @@
     cechy.forEach(function (c, i) {
       console.log('DET ' + c.id + ' · Ø' + c.srednica_mm + ' · zakres ' + c.od_mm + '–' + c.do_mm);
       var p = c.pewnosc || '';
-      var nis = p === 'niska' || c.edytowalna === false;
+      var nis = p === 'niska' || c.edytowalna === false || !!c.odmowa;
       var k = el('button', 'pr-kafel' + (nis ? ' nis' : (p === 'wysoka' ? ' wys' : ' sr')));
       k.type = 'button';
       k.disabled = nis;
-      k.appendChild(el('div', 'pr-k-d', 'Ø' + fmt(c.srednica_mm) + ' mm'));
-      k.appendChild(el('div', 'pr-k-r', rodzajTxt(c) + ' · oś ' + String(c.os || '').toUpperCase()));
+      var tytul = c.odmowa
+        ? String(c.odmowa)
+        : (Number.isFinite(c.srednica_mm) ? ('Ø' + fmt(c.srednica_mm) + ' mm') : (c.opis || 'cecha'));
+      k.appendChild(el('div', 'pr-k-d', tytul));
+      k.appendChild(el('div', 'pr-k-r', (c.odmowa && c.opis)
+        ? c.opis
+        : (rodzajTxt(c) + ' · oś ' + String(c.os || '').toUpperCase())));
       k.appendChild(el('div', 'pr-k-z', zakresTxt(c)));
       var d = c.dowody || {};
       var luk = d.pokrycie_kata_deg != null ? d.pokrycie_kata_deg : d.pokrycie;
@@ -168,7 +176,9 @@
       k.addEventListener('click', function () { wybierz(i); });
       box.appendChild(k);
     });
-    var otw = cechy.filter(function (c) { return c.rodzaj === 'gniazdo_walcowe'; }).length;
+    var otw = cechy.filter(function (c) {
+      return c.rodzaj === 'gniazdo_walcowe' && !c.odmowa && c.edytowalna !== false;
+    }).length;
     if ($('prWskaz')) {
       $('prWskaz').textContent = otw > 1
         ? ('Znalazłem ' + otw + ' otworów/gniazd. Kliknij ten, który chcesz zmienić — nie zgaduję za Ciebie.')
@@ -185,8 +195,10 @@
     });
     if ($('prEdycja')) $('prEdycja').hidden = false;
     if ($('prEOpis')) {
-      $('prEOpis').textContent = 'Ø' + fmt(c.srednica_mm) + ' mm, ' + rodzajTxt(c) +
-        ', oś ' + String(c.os || '').toUpperCase();
+      $('prEOpis').textContent = c.odmowa
+        ? (c.opis || c.odmowa)
+        : ('Ø' + fmt(c.srednica_mm) + ' mm, ' + rodzajTxt(c) +
+          ', oś ' + String(c.os || '').toUpperCase());
     }
     if ($('prNowa')) $('prNowa').value = fmt(c.srednica_mm);
     przeliczLuz();
@@ -270,6 +282,18 @@
       }
       pokazCechy();
       odswiezPodglad();
+      if (CIALA.length > 1) {
+        var infoPos = el('p', 'pr-info',
+          'Na płycie jest ' + CIALA.length + ' części w pozycjach z pliku. '
+          + 'Pobieranie nie rozsuwa ich na X — coś może wyjść poza płytę albo zejść pod Z=0. '
+          + 'To nie błąd: Przerób oddaje pozycje, Projekt rozsuwa.');
+        if ($('prWynik')) { $('prWynik').innerHTML = ''; $('prWynik').appendChild(infoPos); }
+        if ($('prMeta')) {
+          $('prMeta').textContent = (kat.trojkatow || '—') + ' trójkątów · ' + CIALA.length
+            + ' części, pozycje z pliku'
+            + (kat.czas_ms != null ? ' · ' + kat.czas_ms + ' ms' : '');
+        }
+      }
       stan('');
     } catch (e) {
       stan('');
@@ -339,17 +363,33 @@
     if (lista && typeof window.P2S.mesh3MFWiele === 'function') {
       bytes = await window.P2S.mesh3MFWiele(lista.map(function (s, i) {
         var mesh = meshZBryly(s);
-        return { mesh: mesh, nazwa: (NAZWY_CIAL && NAZWY_CIAL[i]) || ('czesc' + (i + 1)), bbox: mesh.bbox, obrot_xyz_deg: [0, 0, 0] };
-      }), { nazwa: NAZWA + '_zmieniony' });
+        return { mesh: mesh, nazwa: (NAZWY_CIAL && NAZWY_CIAL[i]) || ('czesc' + (i + 1)), bbox: mesh.bbox };
+      }), { nazwa: NAZWA + '_zmieniony', zachowajPolozenie: true, minZZero: false });
     } else if (typeof window.P2S.mesh3MF === 'function') {
       bytes = await window.P2S.mesh3MF(meshZBryly(WYNIK), { nazwa: NAZWA + '_zmieniony' });
     } else return;
     var blob = new Blob([bytes], { type: 'model/3mf' });
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = NAZWA + '_zmieniony.3mf';
-    a.click();
-    setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
+    var nazwaPliku = NAZWA + '_zmieniony.3mf';
+    if (window.P2S && typeof window.P2S.pobierzPlik === 'function') {
+      await window.P2S.pobierzPlik(blob, nazwaPliku);
+    } else {
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = nazwaPliku;
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
+    }
+    var Ainv = pipe();
+    if (Ainv.inwentarz3mf && Ainv.porownajInwentarz && Ainv.tekstInwentarza) {
+      var wy = Ainv.inwentarz3mf(bytes);
+      var we = (KAT && KAT._inwentarzWe) || null;
+      var por = Ainv.porownajInwentarz(we, wy);
+      if ($('prWynik')) {
+        var rap = el('p', por.gubie && por.gubie.length ? 'pr-blad' : 'pr-info');
+        rap.textContent = Ainv.tekstInwentarza(por);
+        $('prWynik').appendChild(rap);
+      }
+    }
   }
 
   var SPEC = null;

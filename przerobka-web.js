@@ -150,62 +150,368 @@ function czytajSTL(buf, tol = 1e-3) {
   return { V: new Float32Array(V), F: new Uint32Array(F), nTri: F.length / 3 };
 }
 
-function parsujModel3mf(xml) {
+const IDENT_3MF = [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0];
+
+function parsujTransform3mf(s) {
+  if (s == null || String(s).trim() === '') return IDENT_3MF.slice();
+  const a = String(s).trim().split(/[\s,]+/).map(Number);
+  if (a.length !== 12 || a.some(function (x) { return !Number.isFinite(x); })) return IDENT_3MF.slice();
+  return a;
+}
+
+function zastosujTransform3mf(x, y, z, t) {
+  return [
+    t[0] * x + t[3] * y + t[6] * z + t[9],
+    t[1] * x + t[4] * y + t[7] * z + t[10],
+    t[2] * x + t[5] * y + t[8] * z + t[11]
+  ];
+}
+
+function zlozTransform3mf(a, b) {
+  const A = [
+    [a[0], a[1], a[2], 0],
+    [a[3], a[4], a[5], 0],
+    [a[6], a[7], a[8], 0],
+    [a[9], a[10], a[11], 1]
+  ];
+  const B = [
+    [b[0], b[1], b[2], 0],
+    [b[3], b[4], b[5], 0],
+    [b[6], b[7], b[8], 0],
+    [b[9], b[10], b[11], 1]
+  ];
+  const C = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      for (let k = 0; k < 4; k++) C[i][j] += A[i][k] * B[k][j];
+    }
+  }
+  return [C[0][0], C[0][1], C[0][2], C[1][0], C[1][1], C[1][2], C[2][0], C[2][1], C[2][2], C[3][0], C[3][1], C[3][2]];
+}
+
+function attr3mf(blok, nazwa) {
+  const m = String(blok || '').match(new RegExp('\\b' + nazwa + '="([^"]*)"'));
+  return m ? m[1] : '';
+}
+
+function transformujVerts3mf(V, t) {
+  const out = V.slice();
+  for (let i = 0; i + 2 < out.length; i += 3) {
+    const p = zastosujTransform3mf(out[i], out[i + 1], out[i + 2], t);
+    out[i] = p[0];
+    out[i + 1] = p[1];
+    out[i + 2] = p[2];
+  }
+  return out;
+}
+
+function parsujModel3mfPelny(xml) {
   const obiekty = [];
   const objRe = /<object\b([^>]*)>([\s\S]*?)<\/object>/gi;
   let om;
   while ((om = objRe.exec(xml))) {
-    const attrs = om[1], body = om[2];
-    const name = (attrs.match(/\bname="([^"]+)"/) || [])[1] || 'obiekt';
-    const verts = [], faces = [];
+    const attrs = om[1];
+    const body = om[2];
+    const id = attr3mf(attrs, 'id');
+    if (!id) continue;
+    const name = attr3mf(attrs, 'name') || 'obiekt';
+    const verts = [];
+    const faces = [];
     const vRe = /<vertex\b([^>]*)\/?\s*>/gi;
     let vm;
     while ((vm = vRe.exec(body))) {
       const a = vm[1];
-      verts.push(+(a.match(/\bx="([^"]+)"/) || [])[1], +(a.match(/\by="([^"]+)"/) || [])[1], +(a.match(/\bz="([^"]+)"/) || [])[1]);
+      verts.push(+(attr3mf(a, 'x') || 0), +(attr3mf(a, 'y') || 0), +(attr3mf(a, 'z') || 0));
     }
     const tRe = /<triangle\b([^>]*)\/?\s*>/gi;
     let tm;
     while ((tm = tRe.exec(body))) {
       const a = tm[1];
-      faces.push(+(a.match(/\bv1="([^"]+)"/) || [])[1], +(a.match(/\bv2="([^"]+)"/) || [])[1], +(a.match(/\bv3="([^"]+)"/) || [])[1]);
+      faces.push(+(attr3mf(a, 'v1') || 0), +(attr3mf(a, 'v2') || 0), +(attr3mf(a, 'v3') || 0));
     }
-    if (verts.length && faces.length) obiekty.push({ name, V: verts, F: faces });
+    const components = [];
+    const cRe = /<component\b([^>]*)\/?\s*>/gi;
+    let cm;
+    while ((cm = cRe.exec(body))) {
+      const a = cm[1];
+      const oid = attr3mf(a, 'objectid');
+      if (!oid) continue;
+      components.push({ objectid: oid, transform: parsujTransform3mf(attr3mf(a, 'transform')) });
+    }
+    obiekty.push({ id: id, name: name, V: verts, F: faces, components: components });
   }
-  return obiekty;
+  const itemy = [];
+  const build = (xml.match(/<build\b[^>]*>([\s\S]*?)<\/build>/i) || ['', ''])[1];
+  const iRe = /<item\b([^>]*)\/?\s*>/gi;
+  let im;
+  while ((im = iRe.exec(build))) {
+    const a = im[1];
+    const oid = attr3mf(a, 'objectid');
+    if (!oid) continue;
+    itemy.push({ objectid: oid, transform: parsujTransform3mf(attr3mf(a, 'transform')) });
+  }
+  return { obiekty: obiekty, itemy: itemy };
 }
 
-function czytaj3MF(buf, tol = 1e-3) {
+function rozwinObiekt3mf(byId, id, parentT, stos) {
+  const key = String(id);
+  if (stos.has(key)) return [];
+  const obj = byId.get(key);
+  if (!obj) return [];
+  stos.add(key);
+  const out = [];
+  if (obj.V.length && obj.F.length) {
+    out.push({
+      name: obj.name,
+      objectid: key,
+      V: transformujVerts3mf(obj.V, parentT),
+      F: obj.F.slice(),
+      transform: parentT.slice()
+    });
+  }
+  for (let ci = 0; ci < obj.components.length; ci++) {
+    const c = obj.components[ci];
+    const t = zlozTransform3mf(c.transform, parentT);
+    out.push.apply(out, rozwinObiekt3mf(byId, c.objectid, t, stos));
+  }
+  stos.delete(key);
+  return out;
+}
+
+function instancjeZXmls(xmls) {
+  const byId = new Map();
+  const itemy = [];
+  for (let xi = 0; xi < xmls.length; xi++) {
+    const p = parsujModel3mfPelny(xmls[xi]);
+    for (let oi = 0; oi < p.obiekty.length; oi++) byId.set(String(p.obiekty[oi].id), p.obiekty[oi]);
+    for (let ii = 0; ii < p.itemy.length; ii++) itemy.push(p.itemy[ii]);
+  }
+  const surowe = [];
+  if (itemy.length) {
+    for (let i = 0; i < itemy.length; i++) {
+      const it = itemy[i];
+      surowe.push.apply(surowe, rozwinObiekt3mf(byId, it.objectid, it.transform, new Set()));
+    }
+  }
+  if (!surowe.length) {
+    byId.forEach(function (o) {
+      if (o.V.length && o.F.length) {
+        surowe.push({
+          name: o.name,
+          objectid: o.id,
+          V: o.V.slice(),
+          F: o.F.slice(),
+          transform: IDENT_3MF.slice()
+        });
+      }
+    });
+  }
+  return surowe;
+}
+
+function xmlsZ3mf(buf) {
   const u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
   const files = unzipSync(u8);
   const xmls = [];
-  for (const [name, data] of Object.entries(files)) {
-    if (/\.model$/i.test(name)) xmls.push(new TextDecoder().decode(data));
+  for (const name of Object.keys(files)) {
+    if (/\.model$/i.test(name)) xmls.push(new TextDecoder().decode(files[name]));
   }
-  if (!xmls.length) throw new Error('W 3MF nie ma siatki (.model).');
-  const wszystkie = [];
-  for (const xml of xmls) wszystkie.push(...parsujModel3mf(xml));
-  if (!wszystkie.length) throw new Error('W 3MF nie znalazłem wierzchołków.');
-  const best = wszystkie.slice().sort((a, b) => b.F.length - a.F.length)[0];
-  const z = zgrzej(best.V, best.F, tol);
-  return { V: z.V, F: z.F, nTri: z.F.length / 3, nazwa: best.name };
+  return xmls;
 }
 
-function czytaj3MFWszystkie(buf, tol = 1e-3) {
-  const u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
-  const files = unzipSync(u8);
-  const xmls = [];
-  for (const [name, data] of Object.entries(files)) {
-    if (/\.model$/i.test(name)) xmls.push(new TextDecoder().decode(data));
+const URI_CORE = 'http://schemas.microsoft.com/3dmanufacturing/core/2015/02';
+const URI_PRODUCTION = 'http://schemas.microsoft.com/3dmanufacturing/production/2015/06';
+const URI_MATERIALS = 'http://schemas.microsoft.com/3dmanufacturing/material/2015/02';
+const URI_BEAM = 'http://schemas.microsoft.com/3dmanufacturing/beamlattice/2017/02';
+const URI_SLICE = 'http://schemas.microsoft.com/3dmanufacturing/slice/2015/07';
+const ROZSZERZENIA_UMIEMY = {};
+ROZSZERZENIA_UMIEMY[URI_CORE] = true;
+ROZSZERZENIA_UMIEMY[URI_PRODUCTION] = true;
+const URI_ETYKIETA = {};
+URI_ETYKIETA[URI_CORE] = 'core';
+URI_ETYKIETA[URI_PRODUCTION] = 'production (instancje)';
+URI_ETYKIETA[URI_MATERIALS] = 'materials (kolory i materiały)';
+URI_ETYKIETA[URI_BEAM] = 'beamlattice (kratownica belkowa — bele i kule, nie trójkąty)';
+URI_ETYKIETA[URI_SLICE] = 'slice';
+
+function parsujNaglowekModelu(xml) {
+  const open = (String(xml).match(/<model\b[^>]*>/i) || [''])[0];
+  const xmlns = {};
+  const def = open.match(/\sxmlns="([^"]+)"/);
+  if (def) xmlns[''] = def[1];
+  const pxRe = /\sxmlns:([A-Za-z_][\w]*)="([^"]+)"/g;
+  let px;
+  while ((px = pxRe.exec(open))) xmlns[px[1]] = px[2];
+  const reqRaw = attr3mf(open, 'requiredextensions');
+  const requiredextensions = reqRaw.trim() ? reqRaw.trim().split(/\s+/) : [];
+  const unit = attr3mf(open, 'unit') || '';
+  const metadata = [];
+  const mdRe = /<metadata\b([^>]*)>([\s\S]*?)<\/metadata>/gi;
+  let mm;
+  while ((mm = mdRe.exec(xml))) {
+    metadata.push({ name: attr3mf(mm[1], 'name') || '', value: String(mm[2] || '').trim() });
   }
+  return { xmlns: xmlns, requiredextensions: requiredextensions, unit: unit, metadata: metadata };
+}
+
+function brakujaceRozszerzenia(naglowek) {
+  const h = naglowek || { xmlns: {}, requiredextensions: [] };
+  const brak = [];
+  const req = h.requiredextensions || [];
+  for (let i = 0; i < req.length; i++) {
+    const prefix = req[i];
+    const uri = prefix === '' ? (h.xmlns[''] || URI_CORE) : (h.xmlns[prefix] || '');
+    if (!uri) {
+      brak.push({ prefix: prefix, uri: '', nazwa: 'nieznany prefiks „' + prefix + '” (brak xmlns)' });
+      continue;
+    }
+    if (ROZSZERZENIA_UMIEMY[uri]) continue;
+    brak.push({ prefix: prefix, uri: uri, nazwa: URI_ETYKIETA[uri] || (prefix + ' → ' + uri) });
+  }
+  return brak;
+}
+
+function rzucJesliNieUmiemy(xmls) {
+  const brak = [];
+  const seen = {};
+  for (let i = 0; i < xmls.length; i++) {
+    const lista = brakujaceRozszerzenia(parsujNaglowekModelu(xmls[i]));
+    for (let j = 0; j < lista.length; j++) {
+      const b = lista[j];
+      const k = b.prefix + '|' + b.uri;
+      if (seen[k]) continue;
+      seen[k] = true;
+      brak.push(b);
+    }
+  }
+  if (!brak.length) return;
+  const err = new Error(
+    'Ten 3MF wymaga rozszerzenia, którego nie obsługuję: '
+    + brak.map(function (b) { return b.nazwa; }).join(', ')
+    + '. Nie wczytuję go częściowo — w pliku jest napisane, że bez tego rozszerzenia nie wolno go przetworzyć.'
+  );
+  err.kod = 'NIEOBSLUGIWANE_ROZSZERZENIE';
+  err.rozszerzenia = brak;
+  throw err;
+}
+
+function inwentarz3mf(buf) {
+  const xmls = xmlsZ3mf(buf);
+  let obiekty = 0, itemy = 0, trojkatyZasoby = 0;
+  const nazwy = [];
+  const metadata = [];
+  const requiredextensions = [];
+  const xmlns = {};
+  let unit = '';
+  for (let i = 0; i < xmls.length; i++) {
+    const h = parsujNaglowekModelu(xmls[i]);
+    Object.assign(xmlns, h.xmlns);
+    if (h.unit) unit = h.unit;
+    for (let r = 0; r < h.requiredextensions.length; r++) {
+      if (requiredextensions.indexOf(h.requiredextensions[r]) < 0) requiredextensions.push(h.requiredextensions[r]);
+    }
+    for (let m = 0; m < h.metadata.length; m++) metadata.push(h.metadata[m]);
+    const p = parsujModel3mfPelny(xmls[i]);
+    obiekty += p.obiekty.length;
+    itemy += p.itemy.length;
+    for (let o = 0; o < p.obiekty.length; o++) {
+      nazwy.push(p.obiekty[o].name);
+      trojkatyZasoby += p.obiekty[o].F.length / 3;
+    }
+  }
+  let trojkatyPlyta = 0;
+  const inst = xmls.length ? instancjeZXmls(xmls) : [];
+  for (let s = 0; s < inst.length; s++) trojkatyPlyta += inst[s].F.length / 3;
+  return {
+    obiekty: obiekty, itemy: itemy,
+    trojkaty_zasoby: trojkatyZasoby, trojkaty_plyta: trojkatyPlyta,
+    instancje: inst.length, nazwy: nazwy, metadata: metadata,
+    requiredextensions: requiredextensions, xmlns: xmlns, unit: unit
+  };
+}
+
+function porownajInwentarz(we, wy) {
+  const gubie = [];
+  if (!we || !wy) return { ok: false, gubie: ['brak inwentarza'], we: we || null, wy: wy || null };
+  if (we.itemy > 0 && wy.itemy < we.itemy) gubie.push('<item>: było ' + we.itemy + ', jest ' + wy.itemy);
+  if (we.obiekty > 0 && wy.obiekty < we.obiekty && !(we.itemy > 0 && wy.itemy >= we.itemy)) {
+    gubie.push('<object>: było ' + we.obiekty + ', jest ' + wy.obiekty);
+  }
+  if (we.trojkaty_plyta > 0 && wy.trojkaty_plyta + 0.5 < we.trojkaty_plyta) {
+    gubie.push('trójkąty na płycie: było ' + we.trojkaty_plyta + ', jest ' + wy.trojkaty_plyta);
+  }
+  if (Number.isFinite(we.objetosc_mm3) && Number.isFinite(wy.objetosc_mm3)
+      && wy.objetosc_mm3 < we.objetosc_mm3 * 0.5) {
+    gubie.push('objętość: było ' + we.objetosc_mm3.toFixed(1) + ' mm³, jest ' + wy.objetosc_mm3.toFixed(1)
+      + ' mm³ (spadek o więcej niż połowę)');
+  }
+  const metaWy = {};
+  const mdWy = wy.metadata || [];
+  for (let i = 0; i < mdWy.length; i++) if (mdWy[i].name) metaWy[mdWy[i].name] = true;
+  const mdWe = we.metadata || [];
+  for (let i = 0; i < mdWe.length; i++) {
+    if (mdWe[i].name && !metaWy[mdWe[i].name]) {
+      if (/^copyright$/i.test(mdWe[i].name)) {
+        gubie.push('metadata „Copyright” (atrybucja CC BY-SA — wymóg licencji, nie kosmetyka)');
+      } else {
+        gubie.push('metadata „' + mdWe[i].name + '”');
+      }
+    }
+  }
+  return { ok: gubie.length === 0, gubie: gubie, we: we, wy: wy };
+}
+
+function tekstInwentarza(porownanie) {
+  const we = (porownanie && porownanie.we) || {};
+  const wy = (porownanie && porownanie.wy) || {};
+  const linie = [];
+  linie.push('Weszło: ' + (we.itemy || 0) + ' × <item>, ' + (we.obiekty || 0) + ' × <object>, '
+    + (we.trojkaty_plyta || 0) + ' trójkątów na płycie'
+    + (Number.isFinite(we.objetosc_mm3) ? ', ' + Math.round(we.objetosc_mm3) + ' mm³' : '') + '.');
+  linie.push('Wyszło: ' + (wy.itemy || 0) + ' × <item>, ' + (wy.obiekty || 0) + ' × <object>, '
+    + (wy.trojkaty_plyta || 0) + ' trójkątów na płycie'
+    + (Number.isFinite(wy.objetosc_mm3) ? ', ' + Math.round(wy.objetosc_mm3) + ' mm³' : '') + '.');
+  if (porownanie && porownanie.gubie && porownanie.gubie.length) {
+    linie.push('Nie umiałem zachować: ' + porownanie.gubie.join('; ') + '.');
+  } else {
+    linie.push('Inwentarz <item> / trójkąty na płycie się zgadza.');
+  }
+  return linie.join(' ');
+}
+
+function zgrzejInstancje3mf(buf, tol) {
+  const xmls = xmlsZ3mf(buf);
   if (!xmls.length) throw new Error('W 3MF nie ma siatki (.model).');
-  const wszystkie = [];
-  for (const xml of xmls) wszystkie.push(...parsujModel3mf(xml));
-  if (!wszystkie.length) throw new Error('W 3MF nie znalazłem wierzchołków.');
-  return wszystkie.map(function (o) {
+  rzucJesliNieUmiemy(xmls);
+  const surowe = instancjeZXmls(xmls);
+  if (!surowe.length) throw new Error('W 3MF nie znalazłem wierzchołków.');
+  return surowe.map(function (o) {
     const z = zgrzej(o.V, o.F, tol);
-    return { V: z.V, F: z.F, nTri: z.F.length / 3, nazwa: o.name };
+    return {
+      V: z.V,
+      F: z.F,
+      nTri: z.F.length / 3,
+      nazwa: o.name,
+      objectid: o.objectid,
+      transform: o.transform
+    };
   });
+}
+
+function czytaj3MF(buf, tol) {
+  if (tol == null) tol = 1e-3;
+  const wszystkie = zgrzejInstancje3mf(buf, tol);
+  return wszystkie.slice().sort(function (a, b) { return b.nTri - a.nTri; })[0];
+}
+
+function czytaj3MFWszystkie(buf, tol) {
+  if (tol == null) tol = 1e-3;
+  return zgrzejInstancje3mf(buf, tol);
+}
+
+function czytaj3MFInstancje(buf, tol) {
+  if (tol == null) tol = 1e-3;
+  return zgrzejInstancje3mf(buf, tol);
 }
 
 function wczytajPlik() {
@@ -258,6 +564,7 @@ function elementyWalca(V, F, os, P) {
     const a = F[t] * 3, b = F[t + 1] * 3, c = F[t + 2] * 3;
     const e1 = [V[b] - V[a], V[b + 1] - V[a + 1], V[b + 2] - V[a + 2]];
     const e2 = [V[c] - V[a], V[c + 1] - V[a + 1], V[c + 2] - V[a + 2]];
+    // Normalna z nawinięcia, nie z nagłówka STL — te bywają zerowe albo odwrócone.
     const n = [e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2], e1[0] * e2[1] - e1[1] * e2[0]];
     const ln = Math.hypot(n[0], n[1], n[2]); if (ln < 1e-10) continue;
     n[0] /= ln; n[1] /= ln; n[2] /= ln;
@@ -269,6 +576,13 @@ function elementyWalca(V, F, os, P) {
   }
   return el;
 }
+
+
+
+
+
+
+
 
 
 
@@ -288,6 +602,13 @@ function mediana(arr) {
   const m = Math.floor(s.length / 2);
   return s.length % 2 ? s[m] : 0.5 * (s[m - 1] + s[m]);
 }
+
+
+
+
+
+
+
 
 
 
@@ -329,6 +650,24 @@ function dopasujOkreg(pts) {
 
 
 
+
+
+
+
+
+
+
+function celZnak(dx, dy, nx, ny) {
+  const d = Math.hypot(dx, dy);
+  if (d < 1e-9) return 0;
+  return (dx * nx + dy * ny) / d;
+}
+
+
+
+
+
+
 function rozbijBimodalnie(uzyte, rFin, P) {
   if (!uzyte || uzyte.length < 16) return [uzyte];
   const rs = uzyte.map(k => k.d).slice().sort((a, b) => a - b);
@@ -347,9 +686,23 @@ function rozbijBimodalnie(uzyte, rFin, P) {
 
 
 
+
+
+
+
+
+
+
 function walceZNormalnych(V, F, os, P) {
   const el = elementyWalca(V, F, os, P);
   if (el.length < 30) return [];
+  const [, U, W] = OSIE[os];
+  let uLo = Infinity, uHi = -Infinity, wLo = Infinity, wHi = -Infinity;
+  for (let i = 0; i < V.length; i += 3) {
+    const u = V[i + U], w = V[i + W];
+    if (u < uLo) uLo = u; if (u > uHi) uHi = u;
+    if (w < wLo) wLo = w; if (w > wHi) wHi = w;
+  }
   let poz = el.slice(), out = [];
   const probeN = Math.min(800, poz.length);
   for (let runda = 0; runda < 12 && poz.length >= 30; runda++) {
@@ -368,7 +721,8 @@ function walceZNormalnych(V, F, os, P) {
         const e = poz[k];
         const dx = e[0] - s[0], dy = e[1] - s[1], d = Math.hypot(dx, dy);
         if (Math.abs(d - r) > P.tol_r_mm) continue;
-        if (Math.abs((dx * e[2] + dy * e[3]) / d) < P.celowanie) continue;
+        // |cel|: czy ściana jest radialna. Znak tu nie rozstrzyga gniazda od czopa.
+        if (Math.abs(celZnak(dx, dy, e[2], e[3])) < P.celowanie) continue;
         n++; pole += e[4];
       }
       if (!best || pole > best.pole) best = { cu: s[0], cw: s[1], r, n, pole };
@@ -379,9 +733,9 @@ function walceZNormalnych(V, F, os, P) {
     for (const e of poz) {
       const dx = e[0] - best.cu, dy = e[1] - best.cw, d = Math.hypot(dx, dy);
       if (d < 1e-9) continue;
-      const aim = Math.abs((dx * e[2] + dy * e[3]) / d);
-      if (Math.abs(d - best.r) > P.tol_r_mm || aim < P.celowanie) continue;
-      kand.push({ e, d, aim, dx, dy });
+      const aimAbs = Math.abs(celZnak(dx, dy, e[2], e[3]));
+      if (Math.abs(d - best.r) > P.tol_r_mm || aimAbs < P.celowanie) continue;
+      kand.push({ e, d, aim: aimAbs, dx, dy });
     }
     let uzyte = kand.filter(k => k.aim >= celOstre);
     if (uzyte.length < 12) uzyte = kand;
@@ -405,7 +759,7 @@ function walceZNormalnych(V, F, os, P) {
     for (const k of uzyte) {
       const rr = Math.hypot(k.e[0] - cu2, k.e[1] - cw2);
       nPelne++; polePelne += k.e[4]; odch += Math.abs(rr - rFin);
-      if ((k.dx * k.e[2] + k.dy * k.e[3]) < 0) doSrodka++;
+      if (celZnak(k.e[0] - cu2, k.e[1] - cw2, k.e[2], k.e[3]) <= -P.celowanie) doSrodka++;
       katy.add(Math.round(Math.atan2(k.dy, k.dx) * 180 / Math.PI / 5));
       if (k.e[5] < zmin) zmin = k.e[5];
       if (k.e[6] > zmax) zmax = k.e[6];
@@ -426,12 +780,15 @@ function walceZNormalnych(V, F, os, P) {
       for (const gr of grupyR) {
         const rG = mediana(gr.map(k => Math.hypot(k.e[0] - cu2, k.e[1] - cw2)));
         let z0g = Infinity, z1g = -Infinity, z0c = Infinity, z1c = -Infinity;
-        let nG = 0, poleG = 0, doSr = 0, odchG = 0;
+        let nG = 0, poleG = 0, doSr = 0, odSr = 0, odchG = 0, su = 0, sw = 0;
         const katG = new Set();
         for (const k of gr) {
           const rr = Math.hypot(k.e[0] - cu2, k.e[1] - cw2);
           nG++; poleG += k.e[4]; odchG += Math.abs(rr - rG);
-          if ((k.dx * k.e[2] + k.dy * k.e[3]) < 0) doSr++;
+          su += k.e[0]; sw += k.e[1];
+          const zn = celZnak(k.e[0] - cu2, k.e[1] - cw2, k.e[2], k.e[3]);
+          if (zn <= -P.celowanie) doSr++;
+          else if (zn >= P.celowanie) odSr++;
           katG.add(Math.round(Math.atan2(k.dy, k.dx) * 180 / Math.PI / 5));
           if (k.e[5] < z0g) z0g = k.e[5];
           if (k.e[6] > z1g) z1g = k.e[6];
@@ -441,12 +798,25 @@ function walceZNormalnych(V, F, os, P) {
           }
         }
         if (nG < 12 || katG.size * 5 < P.min_kat_deg) continue;
+        // Oś poza gabarytem części: Kåsa/RANSAC na łacie heksagonu (7,1 przy
+        // nakrętce w 0,0). Ani otwór, ani czop.
+        if (cu2 < uLo || cu2 > uHi || cw2 < wLo || cw2 > wHi) continue;
+        // Kåsa na heksagonie ucieka poza chmurę inlierów i wtedy wszystkie
+        // normalne „wskazują do osi”.
+        if (Math.hypot(cu2 - su / nG, cw2 - sw / nG) > rG * 1.05) continue;
+        // Znak, nie próg i nie sam gabaryt. |cel| przy RANSAC łapie obie ściany;
+        // tu: ≤ −0,985 = gniazdo, ≥ +0,985 = czop. 60% silnego znaku, nie dot < 0.
+        // Gabaryt jest sitem na śmieciowy środek poza częścią — konieczny, nie wystarczający.
+        const otwor = doSr > nG * 0.6;
+        const czop = odSr > nG * 0.6;
+        if (!otwor && !czop) continue;
         out.push({
           os, r: rG, srednica_mm: +(rG * 2).toFixed(3),
           srodek: [+cu2.toFixed(3), +cw2.toFixed(3)],
           pokrycie_kata_deg: katG.size * 5, trojkatow: nG, pole_mm2: +poleG.toFixed(0),
           odchylenie_promienia_mm: +(odchG / Math.max(1, nG)).toFixed(3),
-          rodzaj: doSr > nG / 2 ? 'otwor/gniazdo' : 'czop/walek',
+          rodzaj: otwor ? 'otwor/gniazdo' : 'czop/walek',
+          udzial_do_osi: +(doSr / Math.max(1, nG)).toFixed(3),
           z_od: Number.isFinite(z0c) ? z0c : z0g,
           z_do: Number.isFinite(z1c) ? z1c : z1g
         });
@@ -454,7 +824,7 @@ function walceZNormalnych(V, F, os, P) {
     }
     poz = poz.filter(e => {
       const dx = e[0] - best.cu, dy = e[1] - best.cw, d = Math.hypot(dx, dy);
-      const aim = d < 1e-9 ? 0 : Math.abs((dx * e[2] + dy * e[3]) / d);
+      const aim = d < 1e-9 ? 0 : Math.abs(celZnak(dx, dy, e[2], e[3]));
       if (aim < P.celowanie) return true;
       if (Math.abs(d - best.r) <= P.tol_r_mm) return false;
       for (const gr of (pokrycie >= P.min_kat_deg && nPelne >= 12 ? rozbijBimodalnie(uzyte, rFin, P) : [])) {
@@ -466,6 +836,13 @@ function walceZNormalnych(V, F, os, P) {
   }
   return out;
 }
+
+
+
+
+
+
+
 
 
 
@@ -510,6 +887,13 @@ function rInBinarny(kon, cx, cy, kier, rMin, rMax) {
 
 
 
+
+
+
+
+
+
+
 function przytnijRdzen(seg) {
   if (seg.length < 3) return seg;
   const med = mediana(seg.map(s => s.r));
@@ -534,6 +918,13 @@ function przytnijRdzen(seg) {
 
 
 
+
+
+
+
+
+
+
 function rInWielokier(kon, cx, cy, rMin, rMax) {
   const rs = [];
   for (let a = 0; a < 360; a += 45) {
@@ -546,6 +937,13 @@ function rInWielokier(kon, cx, cy, rMin, rMax) {
   const sciana = rs.filter(r => r <= mn + 1.2);
   return mediana(sciana);
 }
+
+
+
+
+
+
+
 
 
 
@@ -668,6 +1066,13 @@ function skanPromieniowy(m, os, srodek, P) {
 
 
 
+
+
+
+
+
+
+
 function kolko(poly) {
   if (poly.length < 6) return null;
   let sx = 0, sy = 0;
@@ -761,10 +1166,24 @@ function pasmo(d) {
 
 
 
+
+
+
+
+
+
+
 function tNaOsAbs(os, z0, t) {
   const zRot = z0 + t;
   return os === 'z' ? zRot : -zRot;
 }
+
+
+
+
+
+
+
 
 
 
@@ -821,6 +1240,13 @@ function srednicaSprawdzianem(model, os, cx, cy, z0, od, doMm, d0) {
 
 
 
+
+
+
+
+
+
+
 function srednicaWPasmie(V, F, os, srodekUW, zLo, zHi, r0, P) {
   const [A, U, W] = OSIE[os];
   const rs = [];
@@ -864,6 +1290,13 @@ function srednicaWPasmie(V, F, os, srodekUW, zLo, zHi, r0, P) {
 
 
 
+
+
+
+
+
+
+
 function dopiszKrotkieWspolosiowe(V, F, walce, P) {
   const extra = [];
   const otw = walce.filter(w => w.rodzaj === 'otwor/gniazdo' && w.srednica_mm > 8);
@@ -875,7 +1308,7 @@ function dopiszKrotkieWspolosiowe(V, F, walce, P) {
       const dr = d - w.r;
       if (dr < 2 * P.tol_r_mm || dr > 2.5) continue;
       if (d < 1e-9) continue;
-      const aim = Math.abs(((e[0] - w.srodek[0]) * e[2] + (e[1] - w.srodek[1]) * e[3]) / d);
+      const aim = Math.abs(celZnak(e[0] - w.srodek[0], e[1] - w.srodek[1], e[2], e[3]));
       if (aim < P.celowanie) continue;
       kand.push({ e, d });
     }
@@ -917,6 +1350,12 @@ function dopiszKrotkieWspolosiowe(V, F, walce, P) {
       powod_odrzucenia: powod.join(',') || null
     });
     if (powod.length) continue;
+    let doSrK = 0;
+    for (const k of uzyte) {
+      const dx = k.e[0] - w.srodek[0], dy = k.e[1] - w.srodek[1];
+      if (celZnak(dx, dy, k.e[2], k.e[3]) <= -P.celowanie) doSrK++;
+    }
+    if (doSrK <= uzyte.length * 0.6) continue;
     extra.push({
       os: w.os, r: rMed, srednica_mm: +(rMed * 2).toFixed(3),
       srodek: w.srodek.slice(),
@@ -928,6 +1367,404 @@ function dopiszKrotkieWspolosiowe(V, F, walce, P) {
   }
   return extra;
 }
+
+
+
+
+
+
+
+
+const PROG_NIE_WALEC_MM = 0.3;
+const PROG_GWINT_PRZEKROJ_MM = 0.25;
+const NKAT_PRZEKROJ_GWINT = 180;
+/* Sygnał: przekrój zmienia się wzdłuż osi (stożek, pogłębienie, zlepione cechy).
+   Nie gwint — min po kącie przy stałym z zjada profil zwoju. */
+
+function srednicaMinPrzepustem(V, F, os, cx, cy, od, doMm, krok) {
+  const iOs = { x: 0, y: 1, z: 2 }[os];
+  if (iOs == null || !Number.isFinite(cx) || !Number.isFinite(cy)) return null;
+  const iA = [0, 1, 2].filter(function (i) { return i !== iOs; })[0];
+  const iB = [0, 1, 2].filter(function (i) { return i !== iOs; })[1];
+  const OD = Number(od);
+  const DO = Number(doMm);
+  if (!Number.isFinite(OD) || !Number.isFinite(DO) || !(DO - OD >= 0.8)) return null;
+  const n = 16;
+  const ks = Number.isFinite(krok) && krok > 0 ? krok : Math.max(0.05, (DO - OD) / n);
+  const rMinOdcinka = function (p, q) {
+    const ax = p[iA] - cx, ab = p[iB] - cy, bx = q[iA] - cx, bb = q[iB] - cy;
+    const dx = bx - ax, db = bb - ab, dd = dx * dx + db * db;
+    let t = dd > 1e-12 ? -(ax * dx + ab * db) / dd : 0;
+    t = Math.max(0, Math.min(1, t));
+    return Math.hypot(ax + t * dx, ab + t * db);
+  };
+  let naj = Infinity;
+  let slices = 0;
+  for (let s = OD; s <= DO + 1e-9; s += ks) {
+    let best = Infinity;
+    for (let f = 0; f + 3 <= F.length; f += 3) {
+      const ia = F[f] * 3, ib = F[f + 1] * 3, ic = F[f + 2] * 3;
+      const P = [
+        [V[ia], V[ia + 1], V[ia + 2]],
+        [V[ib], V[ib + 1], V[ib + 2]],
+        [V[ic], V[ic + 1], V[ic + 2]]
+      ];
+      const d = P.map(function (v) { return v[iOs] - s; });
+      if ((d[0] > 0 && d[1] > 0 && d[2] > 0) || (d[0] < 0 && d[1] < 0 && d[2] < 0)) continue;
+      const pk = [];
+      for (let i = 0; i < 3; i++) {
+        const j = (i + 1) % 3;
+        if ((d[i] <= 0 && d[j] > 0) || (d[i] > 0 && d[j] <= 0)) {
+          const u = d[i] / (d[i] - d[j]);
+          pk.push(P[i].map(function (c, k) { return c + u * (P[j][k] - P[i][k]); }));
+        }
+      }
+      if (pk.length < 2) continue;
+      const r = rMinOdcinka(pk[0], pk[1]);
+      if (r > 0.5 && r < best) best = r;
+    }
+    if (best === Infinity) continue;
+    slices++;
+    const D = 2 * best;
+    if (D < naj) naj = D;
+  }
+  if (!slices || naj === Infinity) return null;
+  return naj;
+}
+
+function oznaczNieWalec(cechy, V, F) {
+  for (const c of cechy) {
+    if (!c || c.rodzaj !== 'gniazdo_walcowe') continue;
+    const dP = srednicaMinPrzepustem(V, F, c.os, c.cx, c.cy, c.od_mm, c.do_mm);
+    if (dP == null || !Number.isFinite(c.srednica_mm)) continue;
+    c.srednica_przepust_mm = +dP.toFixed(3);
+    const dlt = Math.abs(dP - c.srednica_mm);
+    c.roznica_przymiarow_mm = +dlt.toFixed(3);
+    if (dlt > PROG_NIE_WALEC_MM) {
+      if (c.odmowa) continue;
+      c.odmowa = 'NIE_WALEC';
+      c.pewnosc = 'niska';
+      c.edytowalna = false;
+      c.opis = 'przekrój zmienia się wzdłuż osi — przymiary Ø' + c.srednica_mm.toFixed(2)
+        + ' vs Ø' + dP.toFixed(2) + ' (nie gwint)';
+    }
+  }
+}
+
+
+
+
+
+
+
+
+function paraSasiadowPonad(zakresy, prog) {
+  if (!zakresy || zakresy.length < 2 || !(prog > 0)) return null;
+  let peak = -Infinity;
+  const indeksy = [];
+  const wParze = new Set();
+  for (let i = 0; i + 1 < zakresy.length; i++) {
+    if (zakresy[i] > prog && zakresy[i + 1] > prog) {
+      wParze.add(i);
+      wParze.add(i + 1);
+      peak = Math.max(peak, zakresy[i], zakresy[i + 1]);
+    }
+  }
+  if (!wParze.size) return null;
+  for (const i of wParze) indeksy.push(i);
+  indeksy.sort((a, b) => a - b);
+  return { zakres: peak, indeksy };
+}
+
+
+
+
+
+function przekrojPromieni(V, F, os, cx, cy, z, nKat) {
+  const iOs = { x: 0, y: 1, z: 2 }[os];
+  if (iOs == null || !Number.isFinite(cx) || !Number.isFinite(cy)) return null;
+  const rest = [0, 1, 2].filter((i) => i !== iOs);
+  const iA = rest[0], iB = rest[1];
+  const segs = [];
+  for (let f = 0; f + 3 <= F.length; f += 3) {
+    const ia = F[f] * 3, ib = F[f + 1] * 3, ic = F[f + 2] * 3;
+    const P = [
+      [V[ia], V[ia + 1], V[ia + 2]],
+      [V[ib], V[ib + 1], V[ib + 2]],
+      [V[ic], V[ic + 1], V[ic + 2]]
+    ];
+    const d = [P[0][iOs] - z, P[1][iOs] - z, P[2][iOs] - z];
+    if ((d[0] > 0 && d[1] > 0 && d[2] > 0) || (d[0] < 0 && d[1] < 0 && d[2] < 0)) continue;
+    const pk = [];
+    for (let i = 0; i < 3; i++) {
+      const j = (i + 1) % 3;
+      if ((d[i] <= 0 && d[j] > 0) || (d[i] > 0 && d[j] <= 0)) {
+        const den = d[i] - d[j];
+        if (Math.abs(den) < 1e-18) continue;
+        const u = d[i] / den;
+        pk.push([P[i][iA] + u * (P[j][iA] - P[i][iA]), P[i][iB] + u * (P[j][iB] - P[i][iB])]);
+      }
+    }
+    if (pk.length === 2) segs.push(pk);
+  }
+  const n = nKat || NKAT_PRZEKROJ_GWINT;
+  const first = [];
+  let nDrugie = 0;
+  for (let k = 0; k < n; k++) {
+    const th = 2 * Math.PI * k / n;
+    const dx = Math.cos(th), dy = Math.sin(th);
+    const ts = [];
+    for (let s = 0; s < segs.length; s++) {
+      const a = segs[s][0], b = segs[s][1];
+      const ex = b[0] - a[0], ey = b[1] - a[1];
+      const den = dx * (-ey) - dy * (-ex);
+      if (Math.abs(den) < 1e-12) continue;
+      const ax = a[0] - cx, ay = a[1] - cy;
+      const t = (ax * (-ey) - ay * (-ex)) / den;
+      const u = (dx * ay - dy * ax) / den;
+      if (t > 1e-9 && u >= -1e-9 && u <= 1 + 1e-9) ts.push(t);
+    }
+    ts.sort((p, q) => p - q);
+    const uniq = [];
+    for (let i = 0; i < ts.length; i++) {
+      if (!uniq.length || ts[i] - uniq[uniq.length - 1] > 1e-4) uniq.push(ts[i]);
+    }
+    if (uniq.length) first.push({ t: uniq[0], th });
+    if (uniq.length >= 2) nDrugie++;
+  }
+  if (first.length < n * 0.4) return null;
+  let rMin = Infinity, rMax = -Infinity, thMax = 0, suma = 0;
+  for (let i = 0; i < first.length; i++) {
+    const t = first[i].t;
+    suma += t;
+    if (t < rMin) rMin = t;
+    if (t > rMax) { rMax = t; thMax = first[i].th; }
+  }
+  return {
+    rMin, rMax, zakres: rMax - rMin, rMed: suma / first.length,
+    dwaTrafienia: nDrugie >= first.length * 0.5, katMax: thMax, nKat: n, z
+  };
+}
+
+
+
+
+
+
+function oznaczGwintLubNiewalec(cechy, V, F, walce, bb) {
+  const PROG = PROG_GWINT_PRZEKROJ_MM;
+  const rDyszy = (typeof PROMIEN_DYSZY_MM === 'number' && PROMIEN_DYSZY_MM > 0)
+    ? PROMIEN_DYSZY_MM
+    : ((typeof window !== 'undefined' && window.P2S && window.P2S.PROMIEN_DYSZY_MM > 0)
+      ? window.P2S.PROMIEN_DYSZY_MM
+      : (typeof sciankaMin === 'function' ? sciankaMin() / 2 : 0));
+  if (!(rDyszy > 0)) throw new Error('brak PROMIEN_DYSZY_MM');
+  /** Fazka w mm, nie procent wysokości części. 18–82% części wchodzi w fazy
+   *  albo omija krótką cechę przy krawędzi — ta sama lekcja co zasiegCiecia. */
+  const pasmoCechyNieCzesci = (od, doMm, zMinCzesci, zMaxCzesci) => {
+    const OD = Number(od), DO = Number(doMm);
+    if (!Number.isFinite(OD) || !Number.isFinite(DO) || DO - OD < 0.8) return null;
+    const h = DO - OD;
+    const hCz = (Number.isFinite(zMaxCzesci) && Number.isFinite(zMinCzesci))
+      ? (zMaxCzesci - zMinCzesci) : h;
+    const calaCzesc = hCz > 0.8 && h > hCz * 0.85;
+    const pad = calaCzesc ? Math.min(0.35, h * 0.08) : Math.min(0.30, h * 0.12);
+    let lo = OD + pad, hi = DO - pad;
+    if (hi - lo < 0.6) { lo = OD; hi = DO; }
+    return { lo, hi };
+  };
+  const indeksy = (os) => {
+    const iOs = { x: 0, y: 1, z: 2 }[os];
+    const rest = [0, 1, 2].filter((i) => i !== iOs);
+    return { iOs, iA: rest[0], iB: rest[1] };
+  };
+  const skokZKatow = (probki) => {
+    if (!probki || probki.length < 4) return null;
+    const ang = [probki[0].th];
+    for (let i = 1; i < probki.length; i++) {
+      let t = probki[i].th;
+      while (t - ang[i - 1] > Math.PI) t -= 2 * Math.PI;
+      while (t - ang[i - 1] < -Math.PI) t += 2 * Math.PI;
+      ang.push(t);
+    }
+    const n = probki.length;
+    let mz = 0, ma = 0;
+    for (let i = 0; i < n; i++) { mz += probki[i].z; ma += ang[i]; }
+    mz /= n; ma /= n;
+    let szz = 0, sza = 0;
+    for (let i = 0; i < n; i++) {
+      const dz = probki[i].z - mz;
+      szz += dz * dz;
+      sza += dz * (ang[i] - ma);
+    }
+    if (szz < 1e-12) return null;
+    const a = sza / szz;
+    if (Math.abs(a) < 0.05) return null;
+    const pitch = Math.abs((2 * Math.PI) / a);
+    if (!(pitch >= 0.25 && pitch <= 8)) return null;
+    return pitch;
+  };
+  const zmierz = (os, cx, cy, od, doMm) => {
+    const { iOs } = indeksy(os);
+    const zMinC = bb && bb.min ? bb.min[iOs] : od;
+    const zMaxC = bb && bb.max ? bb.max[iOs] : doMm;
+    const pas = pasmoCechyNieCzesci(od, doMm, zMinC, zMaxC);
+    if (!pas) return null;
+    const span = pas.hi - pas.lo;
+    const nZ = Math.min(24, Math.max(8, Math.round(span / 0.25) + 1));
+    const ks = span / (nZ - 1);
+    const wiersze = [];
+    for (let i = 0; i < nZ; i++) {
+      const z = pas.lo + i * ks;
+      const p = przekrojPromieni(V, F, os, cx, cy, z, NKAT_PRZEKROJ_GWINT);
+      const ok = p && p.dwaTrafienia;
+      wiersze.push({
+        z,
+        zakres: ok ? p.zakres : 0,
+        rMin: ok ? p.rMin : null,
+        rMax: ok ? p.rMax : null,
+        katMax: ok ? p.katMax : null
+      });
+    }
+    const rMinAll = wiersze.map((w) => w.rMin).filter((r) => r != null);
+    if (rMinAll.length < 4) return null;
+    const rMed = mediana(rMinAll);
+    const prog = Math.max(PROG, 0.08 * rMed);
+    const para = paraSasiadowPonad(wiersze.map((w) => w.zakres), prog);
+    if (!para) return null;
+    const rMinPara = Math.min(
+      ...para.indeksy.map((i) => wiersze[i].rMin).filter((r) => r != null)
+    );
+    const stosunek = (Number.isFinite(rMinPara) && rMinPara > 0)
+      ? para.zakres / rMinPara
+      : Infinity;
+    const katy = para.indeksy
+      .map((i) => wiersze[i])
+      .filter((w) => w.katMax != null)
+      .map((w) => ({ z: w.z, th: w.katMax }));
+    const rMaxGw = Math.max(...para.indeksy.map((i) => wiersze[i].rMax).filter((r) => r != null));
+    const rec = {
+      zakres: para.zakres, rMin: rMinPara, rMax: rMaxGw,
+      przepust: 2 * rMinPara, skok: skokZKatow(katy), stosunek
+    };
+    // rMin poniżej dyszy: BLAD_POMIARU, nie cisza. Stosunek → ∞ przy rMin → 0
+    // bez osobnej stałej „wielokrotność muskania”.
+    if (!Number.isFinite(rMinPara) || rMinPara < rDyszy) rec.blad = true;
+    return rec;
+  };
+  const osie = [];
+  const dodaj = (os, cx, cy, od, doMm, cecha) => {
+    if (!Number.isFinite(cx) || !Number.isFinite(cy)) return;
+    const hit = osie.find((o) => o.os === os && Math.hypot(o.cx - cx, o.cy - cy) < 0.8);
+    if (hit) {
+      if (cecha && !hit.cecha) hit.cecha = cecha;
+      return;
+    }
+    osie.push({ os, cx, cy, od, do: doMm, cecha: cecha || null });
+  };
+  for (const c of cechy) {
+    if (c.rodzaj === 'gniazdo_walcowe') dodaj(c.os, c.cx, c.cy, c.od_mm, c.do_mm, c);
+  }
+  for (const w of walce || []) {
+    const xy = xyPoObrocie(w.os, w.srodek);
+    const { iOs } = indeksy(w.os);
+    let od = w.z_od, doMm = w.z_do;
+    if ((!Number.isFinite(od) || !Number.isFinite(doMm)) && bb && bb.min && bb.max) {
+      od = bb.min[iOs];
+      doMm = bb.max[iOs];
+    }
+    dodaj(w.os, xy[0], xy[1], od, doMm, null);
+  }
+  if (bb && bb.min && bb.max) {
+    for (const os of ['x', 'y', 'z']) {
+      const { iA, iB, iOs } = indeksy(os);
+      dodaj(os, (bb.min[iA] + bb.max[iA]) / 2, (bb.min[iB] + bb.max[iB]) / 2,
+        bb.min[iOs], bb.max[iOs], null);
+    }
+  }
+  let best = null;
+  const bledy = [];
+  for (const o of osie) {
+    const g = zmierz(o.os, o.cx, o.cy, o.od, o.do);
+    if (!g) continue;
+    if (g.blad) {
+      bledy.push({ o, g });
+      continue;
+    }
+    if (!best || g.zakres > best.g.zakres) best = { o, g };
+  }
+  const nowyId = () => {
+    let maxId = 0;
+    for (const c of cechy) if ((c.id || 0) > maxId) maxId = c.id;
+    return maxId + 1;
+  };
+  for (const { o, g } of bledy) {
+    const stos = Number.isFinite(g.stosunek) ? g.stosunek.toFixed(2) : '∞';
+    const rTxt = Number.isFinite(g.rMin) ? g.rMin.toFixed(3) : String(g.rMin);
+    kandydaciDbg.push({
+      os: o.os, r: g.rMin, srednica_mm: Number.isFinite(g.przepust) ? +g.przepust.toFixed(3) : null,
+      srodek: [o.cx, o.cy], inlierow: 0, pokrycie_kata_deg: 0,
+      przyjety: false, powod_odrzucenia: 'BLAD_POMIARU',
+      zakres_promienia_mm: +g.zakres.toFixed(3),
+      stosunek_zakres_rmin: Number.isFinite(g.stosunek) ? +g.stosunek.toFixed(3) : null
+    });
+    cechy.push({
+      id: nowyId(),
+      rodzaj: 'gniazdo_walcowe',
+      os: o.os, cx: o.cx, cy: o.cy,
+      od_mm: Number.isFinite(o.od) ? +Number(o.od).toFixed(2) : null,
+      do_mm: Number.isFinite(o.do) ? +Number(o.do).toFixed(2) : null,
+      dowody: {
+        pokrycie_kata_deg: 0, trojkatow: 1, zgodnych_przekrojow: 0,
+        odchylenie_promienia_mm: g.zakres, stosunek_zakres_rmin: Number.isFinite(g.stosunek) ? +g.stosunek.toFixed(3) : null
+      },
+      odmowa: 'BLAD_POMIARU',
+      pewnosc: 'niska',
+      edytowalna: false,
+      zakres_promienia_mm: +g.zakres.toFixed(3),
+      przepust_mm: Number.isFinite(g.przepust) ? +g.przepust.toFixed(3) : null,
+      stosunek_zakres_rmin: Number.isFinite(g.stosunek) ? +g.stosunek.toFixed(3) : null,
+      srednica_mm: Number.isFinite(g.przepust) ? +g.przepust.toFixed(3) : null,
+      r: Number.isFinite(g.rMin) ? g.rMin : null,
+      opis: 'pomiar niemożliwy — promień ' + rTxt + ' mm poniżej promienia dyszy ('
+        + rDyszy.toFixed(2) + ' mm = SCIANKA_DRUKOWALNA/2); zakres/rMin = ' + stos
+        + '. To zepsuty pomiar, nie otwór.'
+    });
+  }
+  if (!best) return;
+  const g = best.g, o = best.o;
+  const skokTxt = Number.isFinite(g.skok) ? ('skok ' + g.skok.toFixed(2) + ' mm') : 'skok niejednoznaczny';
+  const opis = 'gwint lub niewalec w przekroju — ' + skokTxt
+    + '; gładki wałek przechodzi Ø' + g.przepust.toFixed(2) + ' (nie podaję jednej Ø)';
+  const pola = {
+    odmowa: 'GWINT_LUB_NIEWALEC',
+    pewnosc: 'niska',
+    edytowalna: false,
+    skok_mm: Number.isFinite(g.skok) ? +g.skok.toFixed(3) : null,
+    zakres_promienia_mm: +g.zakres.toFixed(3),
+    przepust_mm: +g.przepust.toFixed(3),
+    stosunek_zakres_rmin: Number.isFinite(g.stosunek) ? +g.stosunek.toFixed(3) : null,
+    srednica_mm: +g.przepust.toFixed(3),
+    r: g.przepust / 2,
+    opis
+  };
+  if (o.cecha && o.cecha.rodzaj === 'gniazdo_walcowe') {
+    Object.assign(o.cecha, pola);
+    return;
+  }
+  cechy.push({
+    id: nowyId(),
+    rodzaj: 'gniazdo_walcowe',
+    os: o.os, cx: o.cx, cy: o.cy,
+    od_mm: Number.isFinite(o.od) ? +Number(o.od).toFixed(2) : null,
+    do_mm: Number.isFinite(o.do) ? +Number(o.do).toFixed(2) : null,
+    dowody: { pokrycie_kata_deg: 0, trojkatow: 1, zgodnych_przekrojow: 0, odchylenie_promienia_mm: g.zakres },
+    ...pola
+  });
+}
+
+
+
 
 
 
@@ -1073,13 +1910,19 @@ function katalogZCech(m, V, F, P) {
   for (let i = cechy.length - 1; i >= 0; i--) {
     const c = cechy[i];
     if ((c.rodzaj === 'gniazdo_walcowe' || c.rodzaj === 'czop_walcowy') && !(c.dowody?.trojkatow > 0)) {
+      if (c.odmowa) continue;
       cechy.splice(i, 1);
     }
   }
+  oznaczNieWalec(cechy, V, F);
+  oznaczGwintLubNiewalec(cechy, V, F, walce, bb);
   let nKomp = 1;
   try { const d = m.decompose(); nKomp = d.length; usun(d); } catch {}
   const RANK_PEWNOSC = { wysoka: 0, srednia: 1, niska: 2 };
   cechy.sort((a, b) => {
+    const oa = a.odmowa ? 0 : 1;
+    const ob = b.odmowa ? 0 : 1;
+    if (oa !== ob) return oa - ob;
     const ra = RANK_PEWNOSC[a.pewnosc] ?? 1;
     const rb = RANK_PEWNOSC[b.pewnosc] ?? 1;
     if (ra !== rb) return ra - rb;
@@ -1093,6 +1936,13 @@ function katalogZCech(m, V, F, P) {
     kandydaci: kandydaciDbg.slice(), stopnie_skanu: skan.stopnie
   };
 }
+
+
+
+
+
+
+
 
 
 
@@ -1413,6 +2263,14 @@ function rozpoznajZBufora(buf, nazwa) {
     kat._ciala = ciala;
     kat._nazwyCial = wszystkie.map(function (s) { return s.nazwa; });
     kat._solid = ciala[iMax];
+    let vol = 0;
+    for (let i = 0; i < ciala.length; i++) {
+      try { vol += ciala[i].volume(); } catch (eV) {}
+    }
+    const inv = inwentarz3mf(u8);
+    inv.objetosc_mm3 = vol;
+    kat._inwentarzWe = inv;
+    if (ciala.length > 1) kat._pozycjeZPliku = true;
     return kat;
   }
   const siatka = czytajSTL(u8);
@@ -1432,6 +2290,12 @@ function rozpoznajZBufora(buf, nazwa) {
   const kat = rozpoznaj(m);
   kat._ciala = [m];
   kat._nazwyCial = [nazwa || 'model'];
+  kat._inwentarzWe = {
+    obiekty: 1, itemy: 0,
+    trojkaty_plyta: kat.trojkatow, trojkaty_zasoby: kat.trojkatow,
+    instancje: 1, nazwy: kat._nazwyCial, metadata: [], requiredextensions: [],
+    objetosc_mm3: m.volume()
+  };
   return kat;
 }
 
@@ -1556,6 +2420,13 @@ function zwezGniazdo(model, cecha, dNowa) {
 
 
 
+
+
+
+
+
+
+
 function segmentyDlaPromienia(r) {
   try {
     if (wasmMod && typeof wasmMod.getCircularSegments === 'function') {
@@ -1565,6 +2436,13 @@ function segmentyDlaPromienia(r) {
   } catch {}
   return circularSegmentsUstawione;
 }
+
+
+
+
+
+
+
 
 /** N w r/cos musi być tym samym, którym silnik buduje walec w tym wątku — nie tylko przy init. */
 function asercjaNWalca(nKomp, rPromien) {
@@ -1616,11 +2494,25 @@ function rCiecie(rDocelowe, nSeg) {
 
 
 
+
+
+
+
+
+
+
 function nZOdczytu(dOczek, dZmierzone) {
   const c = dZmierzone / dOczek;
   if (!(c > 0.97 && c < 0.99995)) return null;
   return Math.max(16, Math.round(Math.PI / Math.acos(c)));
 }
+
+
+
+
+
+
+
 
 
 
@@ -1657,6 +2549,13 @@ function rMinKrawedziXY(V, F, cx, cy, z, rMin) {
   }
   return best === Infinity ? null : best;
 }
+
+
+
+
+
+
+
 
 
 
@@ -1717,10 +2616,24 @@ function wytnijDoSrednicy(aligned, cx, cy, zLo, zHi, dNowa, arena, zMierzLo, zMi
 
 
 
+
+
+
+
+
+
+
 function worldZToAligned(os, worldA) {
   if (os === 'z') return worldA;
   return -worldA;
 }
+
+
+
+
+
+
+
 
 
 
@@ -1734,9 +2647,23 @@ function zakresNaAligned(cecha) {
 
 
 
+
+
+
+
+
+
+
 function padFazki(h0) {
   return Math.min(3, Math.max(MARGINES_CIECIA_MM, Math.max(0, h0) * 0.25));
 }
+
+
+
+
+
+
+
 
 
 
@@ -1751,6 +2678,13 @@ function rNaPlaszczyznie(aligned, cx, cy, z, rMin, rMax) {
   if (wSrodku(kon, cx, cy)) return Infinity;
   return rInWielokier(kon, cx, cy, rMin, rMax);
 }
+
+
+
+
+
+
+
 
 
 
@@ -1820,15 +2754,28 @@ function zasiegCiecia(aligned, cecha, dNowa, tryb = 'poszerz') {
 
 
 
+
+
+
+
+
+
+
+function progSciankiMm() {
+  if (typeof sciankaMin === 'function') return sciankaMin();
+  if (typeof SCIANKA_MIN === 'number') return SCIANKA_MIN;
+  throw new Error('brak progu ścianki (gate.js / SCIANKA_DRUKOWALNA_MM)');
+}
+
 function poszerzGniazdo(model, cecha, dNowa) {
   const arena = [];
   const K = o => (arena.push(o), o);
   const { r: rN, N } = rCiecie(dNowa / 2);
   const r0 = cecha.r ?? cecha.srednica_mm / 2;
   const rZew = cecha.r_zewnetrzny ?? (r0 + 6);
-  const progScianki = sciankaMin();
-  if ((rZew - rN) < progScianki) {
-    const err = new Error(`Ścianka ${((rZew - rN) * 2).toFixed(2)} mm spadłaby poniżej ${progScianki} mm.`);
+  const minS = progSciankiMm();
+  if ((rZew - rN) < minS) {
+    const err = new Error(`Ścianka ${((rZew - rN) * 2).toFixed(2)} mm spadłaby poniżej ${minS} mm.`);
     err.kod = 'SCIANKA';
     err.liczba = rZew - rN;
     throw err;
@@ -1842,6 +2789,13 @@ function poszerzGniazdo(model, cecha, dNowa) {
   if (cecha.os !== 'z') arena.push(wynik);
   return { wynik, arena };
 }
+
+
+
+
+
+
+
 
 
 
@@ -1951,6 +2905,13 @@ function bramkaPrzerobki(stara, nowa, katPrzed, katPo, cecha, plan, dCel) {
 
 
 
+
+
+
+
+
+
+
 function wykonajPrzerobke(kat, cechaId, dNowa, opts = {}) {
   ustawNPrzerobki();
   const oryg = kat._solid;
@@ -2041,12 +3002,20 @@ function oryginalNietkniety(przed, kat) {
 }
 
 function fmtDowody(c) {
+  if (c && (c.odmowa === 'GWINT_LUB_NIEWALEC' || c.odmowa === 'BLAD_POMIARU')) return c.opis;
   const d = c.dowody || {};
-  if (c.rodzaj === 'gniazdo_walcowe') {
+  if (c.rodzaj === 'gniazdo_walcowe' && Number.isFinite(c.srednica_mm)) {
     return `gniazdo Ø${c.srednica_mm.toFixed(2)} mm — łuk ${d.pokrycie_kata_deg}°, zgodne na ${d.zgodnych_przekrojow} przekrojach, rozrzut promienia ${(d.odchylenie_promienia_mm ?? 0).toFixed(2)} mm`;
   }
   return c.opis;
 }
+
+
+
+
+
+
+
 
 function zapiszSTLBinarny(V, F) {
   const n = F.length / 3;
@@ -2073,7 +3042,8 @@ function zapiszSTLBinarny(V, F) {
 window.P2S = window.P2S || {};
 window.P2S.przerobka = {
   initPrzerobka, rozpoznaj, rozpoznajZBufora, wykonajPrzerobke,
-  luzGniazda, KOM_USZKODZONY, fmtDowody, czytajSTL, czytaj3MF, czytaj3MFWszystkie, brylaZSiatki,
+  luzGniazda, KOM_USZKODZONY, fmtDowody, czytajSTL, czytaj3MF, czytaj3MFWszystkie, czytaj3MFInstancje, brylaZSiatki,
+  inwentarz3mf, porownajInwentarz, tekstInwentarza,
   PRZEROBKA_CIRCULAR_SEGMENTS, sciankaMin,
   deltaRZobwodu, wybierzObrecz, powiekszObwodIRamiona,
   dodajDziurkeBrelok, wydluzOsiowo, wydluzWszystkieCiala

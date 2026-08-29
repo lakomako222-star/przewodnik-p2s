@@ -488,11 +488,17 @@ export async function mesh3MF(mesh, opcje = {}) {
   }, { level: 6, mtime: opcje.mtime || new Date(2020, 0, 1) });
 }
 
+function transformItem3mf(t) {
+  const a = Array.isArray(t) && t.length === 12 ? t : [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0];
+  return a.map(r3).join(' ');
+}
+
 export async function mesh3MFWiele(czesci, opcje = {}) {
   const { zipSync, strToU8 } = await fflateApi();
   const obiekty = [], itemy = [];
   let kursorX = 0;
   const ODSTEP = opcje.odstep_mm ?? 8;
+  const zachowaj = opcje.zachowajPolozenie === true;
 
   czesci.forEach((cz, i) => {
     const id = i + 1;
@@ -509,6 +515,10 @@ export async function mesh3MFWiele(czesci, opcje = {}) {
     <triangles>${T.join('')}</triangles>
    </mesh>
   </object>`);
+    if (zachowaj || cz.zachowajPolozenie) {
+      itemy.push(`<item objectid="${id}" transform="${transformItem3mf(cz.transform)}" printable="1"/>`);
+      return;
+    }
     const b = cz.bbox || m.bbox;
     const min0 = Array.isArray(b.min) ? b.min[0] : 0;
     const max0 = Array.isArray(b.max) ? b.max[0] : (b.x || 0);

@@ -1,0 +1,34 @@
+{
+  "wersja": "4.2.26",
+  "stempel": "41da3dab",
+  "krytyczne": [
+    "index.html",
+    "engine/manifold.js",
+    "engine/manifold.wasm",
+    "engine/LICENSE-manifold.txt"
+  ],
+  "opcjonalne": [
+    "manifest.webmanifest",
+    "icon-192.png",
+    "icon-512.png",
+    "icon-512-maskable.png",
+    "apple-touch-icon.png",
+    "favicon-32.png",
+    "fflate.min.js",
+    "builder.js",
+    "gate.js",
+    "export3mf.js",
+    "preview.js",
+    "projekt-ui.js",
+    "spec-v1.schema.json",
+    "przerobka-web.js",
+    "przerobka-ui.js",
+    "szukaj.js",
+    "nitka.js",
+    "spec-validate.js",
+    "font-skrypt.js",
+    "wersja.json",
+    "pliki.json",
+    "sw.js"
+  ]
+}

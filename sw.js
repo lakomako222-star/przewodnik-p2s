@@ -1,13 +1,42 @@
 // Service worker - HTML najpierw z sieci (online-first).
 // CACHE wypełnia build_pwa.py z SHA-256 index.html. Nie wpisuj ręcznie.
 // Doradca, diagnostyka i checklisty są w index.html i w cache — działają bez sieci.
-const CACHE = 'p2s-guide-v4.2.25-7d69e719';
-const FILES = ['./', './index.html', './manifest.webmanifest',
-  './icon-192.png', './icon-512.png', './icon-512-maskable.png',
-  './apple-touch-icon.png', './favicon-32.png', './fflate.min.js', './engine/manifold.js', './engine/manifold.wasm', './engine/LICENSE-manifold.txt', './builder.js', './gate.js', './export3mf.js', './preview.js', './projekt-ui.js', './spec-v1.schema.json', './przerobka-web.js', './przerobka-ui.js', './szukaj.js', './nitka.js', './spec-validate.js'];
+const CACHE = 'p2s-guide-v4.2.26-41da3dab';
+
+// addAll jest atomowe: jeden 404 odrzuca całą instalację SW i offline pada po cichu.
+// Krytyczne (przewodnik + silnik) muszą być kompletne. Reszta: allSettled.
+const CRITICAL = ['./', './index.html',
+  './engine/manifold.js', './engine/manifold.wasm', './engine/LICENSE-manifold.txt'];
+const OPTIONAL = ['./manifest.webmanifest', './icon-192.png',
+  './icon-512.png', './icon-512-maskable.png', './apple-touch-icon.png', './favicon-32.png', './fflate.min.js', './builder.js', './gate.js', './export3mf.js', './preview.js', './projekt-ui.js', './spec-v1.schema.json', './przerobka-web.js', './przerobka-ui.js', './szukaj.js', './nitka.js', './spec-validate.js', './font-skrypt.js', './wersja.json', './pliki.json', './sw.js'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
+  e.waitUntil((async () => {
+    const c = await caches.open(CACHE);
+    await c.addAll(CRITICAL);
+    await Promise.allSettled(OPTIONAL.map(u => c.add(u))).then(function (wyniki) {
+      var odpadly = [];
+      for (var i = 0; i < wyniki.length; i++) {
+        if (wyniki[i].status === 'rejected') {
+          var powod = (wyniki[i].reason && (wyniki[i].reason.message || String(wyniki[i].reason))) || 'rejected';
+          odpadly.push(OPTIONAL[i] + ' — ' + powod);
+        }
+      }
+      if (!odpadly.length) return;
+      console.warn('[P2S SW] OPTIONAL niekompletny:', odpadly);
+      try {
+        c.put('./sw-optional-odpadly.json', new Response(JSON.stringify({
+          when: Date.now(), odpadly: odpadly
+        }), { headers: { 'Content-Type': 'application/json' } }));
+      } catch (e1) {}
+      return self.clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(function (klienci) {
+        for (var k = 0; k < klienci.length; k++) {
+          klienci[k].postMessage({ typ: 'sw-optional-odpadly', odpadly: odpadly });
+        }
+      });
+    });
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate', e => {

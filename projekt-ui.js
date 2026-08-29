@@ -408,11 +408,33 @@ function pjPokazStamp() {
   }
 }
 
+function pjOriginFile() {
+  return typeof location !== 'undefined' && location.protocol === 'file:';
+}
+
+const PJ_FILE_ORIGIN_MSG =
+  'Zakładka Projekt nie woła OpenRoutera z pliku na dysku (Origin null, CORS). '
+  + 'Otwórz https://lakomako222-star.github.io/przewodnik-p2s/ albo zainstaluj PWA '
+  + '(Chrome → Dodaj do ekranu głównego). SPEC możesz wkleić ręcznie — budowanie i 3MF działają lokalnie.';
+
+function pjPokazOstrzezenieFile() {
+  const el = typeof $ === 'function' ? $('pjFileOrigin') : null;
+  if (!el) return;
+  if (pjOriginFile()) {
+    el.hidden = false;
+    el.textContent = PJ_FILE_ORIGIN_MSG;
+  } else {
+    el.hidden = true;
+  }
+}
+
 async function pjPobierzWersjaJson() {
   try {
-    // file:// i WebView assetów nie umieją fetchować względnego JSON — stamp jest już w HTML.
-    // Zakładka Aktualizuj to GitHub API, nie ten plik; APK nie rezygnuje z niej.
-    if (typeof location !== 'undefined' && location.protocol === 'file:') return;
+    // file://: Fetch API nie ładuje względnego JSON. Stamp jest już w HTML.
+    // APK: origin appassets, ./wersja.json z /biezaca/ albo /assets/.
+    // Aktualizacja *paczki* APK idzie mostkiem Java (apk/version.json).
+    // Treść przewodnika schodzi w tle do katalogu wewnętrznego.
+    if (pjOriginFile()) return;
     const r = await fetch('./wersja.json', { cache: 'no-store' });
     if (!r.ok) return;
     const j = await r.json();
@@ -432,7 +454,7 @@ async function loadPjModele() {
   syncPjModeleHint(orCatalog);
   if (orCatalog) return;
   try {
-    if (typeof location !== 'undefined' && location.protocol === 'file:') {
+    if (pjOriginFile()) {
       orCatalog = null;
       syncPjModeleHint(null);
       return;
@@ -996,7 +1018,7 @@ const PJ_TELE_KEY = 'p2s.telemetria.v1';
 function pjMetaWersji() {
   const m = (typeof window !== 'undefined' && window.__P2S_META) || {};
   return {
-    wersja: m.wersja || (typeof window !== 'undefined' && window.P2S_VER_NAME) || '4.2.25',
+    wersja: m.wersja || (typeof window !== 'undefined' && window.P2S_VER_NAME) || '4.2.26',
     stamp: m.stamp || m.cache || '',
     talk_ms: m.talk_ms || PJ_TIMEOUT_TALK_MS,
     spec_ms: m.spec_ms || PJ_TIMEOUT_SPEC_MS
@@ -1571,6 +1593,10 @@ async function pjRozmowaZSzukaniem(text, imgs) {
 }
 
 async function zrob() {
+  if (pjOriginFile()) {
+    chatLine('ai', PJ_FILE_ORIGIN_MSG);
+    return;
+  }
   const raw = ($('pjIn').value || '').trim();
   const imgs = pjPendingImgs.slice();
   if (!raw && !imgs.length) return;
@@ -1725,6 +1751,7 @@ function offline() {
 
 function bind() {
   migrujMozgV16();
+  pjPokazOstrzezenieFile();
   const talkSel = $('pjModelTalk');
   const specSel = $('pjModelSpec');
   const profilSel = $('pjProfil');
@@ -1795,15 +1822,27 @@ function bind() {
           bbox: c.mesh.bbox
         })), { nazwa: last.spec.nazwa, spec: last.spec })
       : await mesh3MF(last.mesh, { nazwa: last.spec.nazwa, spec: last.spec });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([buf], { type: 'model/3mf' }));
-    a.download = nazwa3mf(last.spec, n);
-    a.click();
+    const blob3 = new Blob([buf], { type: 'model/3mf' });
+    const n3 = nazwa3mf(last.spec, n);
+    if (window.P2S && typeof window.P2S.pobierzPlik === 'function') {
+      await window.P2S.pobierzPlik(blob3, n3);
+    } else {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob3);
+      a.download = n3;
+      a.click();
+    }
     const t = tekstDeklaracji(last.spec, last.deklaracja, last.werdykt);
-    const b = document.createElement('a');
-    b.href = URL.createObjectURL(new Blob([t], { type: 'text/plain;charset=utf-8' }));
-    b.download = String(last.spec.nazwa || 'czesc') + '_v' + n + '_deklaracja.txt';
-    b.click();
+    const blobTxt = new Blob([t], { type: 'text/plain;charset=utf-8' });
+    const nTxt = String(last.spec.nazwa || 'czesc') + '_v' + n + '_deklaracja.txt';
+    if (window.P2S && typeof window.P2S.pobierzPlik === 'function') {
+      await window.P2S.pobierzPlik(blobTxt, nTxt);
+    } else {
+      const b = document.createElement('a');
+      b.href = URL.createObjectURL(blobTxt);
+      b.download = nTxt;
+      b.click();
+    }
   });
   function toAnal() {
     if (!last || !last.mesh || typeof window.__p2sAnalLoadMesh !== 'function') {

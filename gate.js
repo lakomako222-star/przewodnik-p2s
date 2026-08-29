@@ -142,6 +142,10 @@ function wpis(poziom, kod, tekst, liczba) {
  */
 export const SCIANKA_DRUKOWALNA_MM = 0.8;
 export const SCIANKA_WOKOL_OTWORU_MM = Math.max(2.0, 2.5 * SCIANKA_DRUKOWALNA_MM);
+/** Promień dyszy = połowa SCIANKA_DRUKOWALNA (ścianka = dwie ścieżki).
+ *  Najmniejsza cecha, jaka fizycznie może istnieć w wydruku. Kupon 6.15
+ *  rusza SCIANKA — to idzie razem, bez osobnej literału 0,4. */
+export const PROMIEN_DYSZY_MM = SCIANKA_DRUKOWALNA_MM / 2;
 
 /**
  * Jedyny legalny odczyt progu. Brak źródła albo zero to wyjątek, nie undefined:
@@ -151,6 +155,65 @@ export function wymaganaSciankaDrukowalna(zrodlo) {
   const v = zrodlo && zrodlo.SCIANKA_DRUKOWALNA_MM;
   if (!(v > 0)) throw new Error('brak P2S.SCIANKA_DRUKOWALNA_MM');
   return v;
+}
+
+/**
+ * Bramka licząca wielkość fizyczną (długość, grubość, średnica) nie wolno
+ * porównywać wartości niemożliwej z progiem. −1,6 mm < 2 mm jest prawdziwe
+ * arytmetycznie i wysyła zdrowy model do naprawy. NaN i Infinity też.
+ * Zero zostaje — to „nie ma materiału”, czyli SCIENKA_OTWOR, nie zepsuty pomiar.
+ */
+export function pomiarFizycznyNiemozliwy(v) {
+  return typeof v !== 'number' || !Number.isFinite(v) || v < 0;
+}
+
+/**
+ * Promień otworu poniżej dyszy jest tak samo niemożliwy jak ścianka −1,6 mm.
+ * Zero ścianki zostaje SCIENKA_OTWOR („nie ma materiału”). Zero promienia
+ * otworu to zepsuty pomiar — oś muska ścianę, to nie jest cecha.
+ */
+export function promienCechyNiemozliwy(r) {
+  return typeof r !== 'number' || !Number.isFinite(r) || r < PROMIEN_DYSZY_MM;
+}
+
+function maxGabarytMm(g) {
+  if (!g || !g.min || !g.max) return null;
+  const dx = g.max[0] - g.min[0];
+  const dy = g.max[1] - g.min[1];
+  const dz = g.max[2] - g.min[2];
+  const m = Math.max(dx, dy, dz);
+  return Number.isFinite(m) ? m : null;
+}
+
+/**
+ * Ścianka większa niż cała część jest tak samo niemożliwa jak ujemna.
+ * Porównanie do NAJMNIEJSZEGO gabarytu fałszywie pali płyty (ścianka 5,9 mm
+ * w XY przy grubości 5 mm jest legalna). Strażnik: wall > max(dx,dy,dz).
+ */
+export function sciankaPonadGabaryt(v, g) {
+  const maxG = maxGabarytMm(g);
+  return Number.isFinite(v) && maxG != null && v > maxG + 1e-6;
+}
+
+function werdyktBladPomiaru(opts) {
+  opts = opts || {};
+  const v = opts.wallMm;
+  const opis = (typeof v === 'number' && Number.isFinite(v))
+    ? (v.toFixed(2) + ' mm')
+    : String(v);
+  return {
+    ok: false,
+    code: 'BLAD_POMIARU',
+    details: {
+      shardId: opts.shardId != null ? String(opts.shardId) : '',
+      wallMm: v,
+      holeDiameterMm: opts.holeDiameterMm,
+      edgeDistanceMm: v,
+      localReason: 'Pomiar ścianki wokół otworu dał wartość niemożliwą ('
+        + opis + '). To zepsuty pomiar, nie wymiar skrajny — odmowa, bez naprawy geometrii.'
+        + (opts.dopisek ? ' ' + opts.dopisek : '')
+    }
+  };
 }
 
 const OS_INDEKS = { x: 0, y: 1, z: 2 };
@@ -255,6 +318,24 @@ export function ocenScienkeOtwor(g, spec, opts) {
   const shardId = opts.shardId != null ? String(opts.shardId) : String((spec && spec.nazwa) || '');
   const zmierzone = (spec && spec._marginesyOtworow) || opts.marginesy || null;
   if (zmierzone && zmierzone.length) {
+    for (const m of zmierzone) {
+      if (pomiarFizycznyNiemozliwy(m.margines_mm)) {
+        return werdyktBladPomiaru({
+          shardId: shardId,
+          wallMm: m.margines_mm,
+          holeDiameterMm: m.srednica_mm,
+          dopisek: m.os ? ('Oś cechy: ' + m.os + '.') : ''
+        });
+      }
+      if (sciankaPonadGabaryt(m.margines_mm, g)) {
+        return werdyktBladPomiaru({
+          shardId: shardId,
+          wallMm: m.margines_mm,
+          holeDiameterMm: m.srednica_mm,
+          dopisek: 'Ścianka większa niż największy gabaryt części — pomiar niemożliwy.'
+        });
+      }
+    }
     let zly = null;
     for (const m of zmierzone) if (!zly || m.margines_mm < zly.margines_mm) zly = m;
     if (zly && zly.margines_mm < SCIANKA_WOKOL_OTWORU_MM - 1e-6) {
@@ -290,6 +371,16 @@ export function ocenScienkeOtwor(g, spec, opts) {
       p[1] - r - g.min[1], g.max[1] - (p[1] + r)
     ];
     const edge = Math.min.apply(null, margs);
+    if (pomiarFizycznyNiemozliwy(edge) || sciankaPonadGabaryt(edge, g)) {
+      return werdyktBladPomiaru({
+        shardId: shardId,
+        wallMm: +(+edge).toFixed(3),
+        holeDiameterMm: +(+d).toFixed(3),
+        dopisek: sciankaPonadGabaryt(edge, g)
+          ? 'Ścianka większa niż największy gabaryt części — szacunek z gabarytu.'
+          : 'Szacunek z gabarytu (bbox), bez pomiaru konturu.'
+      });
+    }
     if (edge < SCIANKA_WOKOL_OTWORU_MM - 1e-6) {
       const wallMm = +edge.toFixed(3);
       return {
@@ -609,7 +700,7 @@ export function sprawdzBramke(part, dekl, spec, opts = {}) {
   }
   const sci = ocenScienkeOtwor(g, spec);
   if (!sci.ok) {
-    blad('SCIENKA_OTWOR', sci.details.localReason, sci.details.wallMm);
+    blad(sci.code || 'SCIENKA_OTWOR', sci.details.localReason, sci.details.wallMm);
   }
 
   for (const w of sprawdzTace(part, spec)) out.push(w);
