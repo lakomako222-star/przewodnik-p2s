@@ -270,6 +270,7 @@
       $('prEdycja').hidden = false;
       $('prEdycja').classList.toggle('pr-tylko-werdykt', odm);
     }
+    if (!odm) reformEtap('zmiana');
     if ($('prEOpis')) {
       if (odm) {
         var t = trescKartyOdmowy(c);
@@ -328,6 +329,7 @@
     WYNIK = null;
     WYBRANA = null;
     NAZWA = String(file.name || 'model').replace(/\.(stl|3mf)$/i, '');
+    reformEtap('import');
     stan('wczytuję silnik…');
     await yieldUi();
     try {
@@ -361,6 +363,7 @@
           (kat.czas_ms != null ? ' · ' + kat.czas_ms + ' ms' : '');
       }
       pokazCechy();
+      reformEtap('analiza');
       odswiezPodglad();
       if (CIALA.length > 1) {
         var infoPos = el('p', 'pr-info',
@@ -442,6 +445,7 @@
   }
   async function pobierz() {
     if (!WYNIK || !window.P2S) return;
+    reformEtap('eksport');
     var lista = (CIALA && CIALA.length > 1) ? CIALA : null;
     var bytes;
     if (lista && typeof window.P2S.mesh3MFWiele === 'function') {
@@ -960,6 +964,12 @@
       await wczytaj(asFile(pack.blob, (pack.nazwa || 'projekt') + '.3mf'));
     }
   }
+  function reformEtap(nazwa) {
+    document.querySelectorAll('.reform-etapy [data-etap]').forEach(function (el) {
+      el.classList.toggle('on', el.getAttribute('data-etap') === nazwa);
+    });
+  }
+  window.__p2sReformEtap = reformEtap;
   function bind() {
     var dz = $('prDrop');
     var pl = $('prPlik');

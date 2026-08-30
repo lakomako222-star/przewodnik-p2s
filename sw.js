@@ -1,14 +1,14 @@
 // Service worker - HTML najpierw z sieci (online-first).
 // CACHE wypełnia build_pwa.py z SHA-256 index.html. Nie wpisuj ręcznie.
 // Doradca, diagnostyka i checklisty są w index.html i w cache — działają bez sieci.
-const CACHE = 'p2s-guide-v4.2.27-fb1f805e';
+const CACHE = 'p2s-guide-v4.2.28-c33843ee';
 
 // addAll jest atomowe: jeden 404 odrzuca całą instalację SW i offline pada po cichu.
 // Krytyczne (przewodnik + silnik) muszą być kompletne. Reszta: allSettled.
 const CRITICAL = ['./', './index.html',
   './engine/manifold.js', './engine/manifold.wasm', './engine/LICENSE-manifold.txt'];
 const OPTIONAL = ['./manifest.webmanifest', './icon-192.png',
-  './icon-512.png', './icon-512-maskable.png', './apple-touch-icon.png', './favicon-32.png', './fflate.min.js', './builder.js', './gate.js', './export3mf.js', './preview.js', './projekt-ui.js', './spec-v1.schema.json', './przerobka-web.js', './przerobka-ui.js', './szukaj.js', './nitka.js', './spec-validate.js', './font-skrypt.js', './wersja.json', './pliki.json', './sw.js'];
+  './icon-512.png', './icon-512-maskable.png', './apple-touch-icon.png', './favicon-32.png', './fflate.min.js', './builder.js', './gate.js', './export3mf.js', './preview.js', './projekt-ui.js', './spec-v1.schema.json', './przerobka-web.js', './przerobka-ui.js', './intent.js', './szukaj.js', './nitka.js', './spec-validate.js', './font-skrypt.js', './wersja.json', './pliki.json', './sw.js'];
 
 self.addEventListener('install', e => {
   e.waitUntil((async () => {

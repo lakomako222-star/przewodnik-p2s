@@ -1902,6 +1902,36 @@ function bind() {
     syncExport(last.werdykt);
     pokazCheckliste(last.spec, last.werdykt);
   });
+  function otworzRzut(klucz) {
+    if (!last) return;
+    const r = (last.czesci && last.czesci[lastIdx]) || last;
+    if (!r || !r.mesh) return;
+    let dlg = $('pjRzutDlg');
+    if (!dlg) {
+      dlg = document.createElement('dialog');
+      dlg.id = 'pjRzutDlg';
+      dlg.innerHTML = '<canvas id="pjRzutDuzy" width="720" height="520" aria-label="powiększony rzut"></canvas>'
+        + '<p id="pjRzutPrzebieg" class="tnote"></p>'
+        + '<button type="button" class="btn" id="pjRzutZamknij">Zamknij</button>';
+      document.body.appendChild(dlg);
+      $('pjRzutZamknij').addEventListener('click', () => dlg.close());
+    }
+    const c = $('pjRzutDuzy');
+    const ctx = c.getContext('2d');
+    rysuj(ctx, rzutuj(r.mesh, WIDOKI[klucz], c.width, c.height));
+    const bb = r.mesh.bbox;
+    const przeb = $('pjRzutPrzebieg');
+    if (przeb) {
+      przeb.textContent = WIDOKI[klucz].etykieta + ' · ' + etykietaGabarytu(klucz, bb)
+        + ' · przebieg ' + bb.x.toFixed(1) + '×' + bb.y.toFixed(1) + '×' + bb.z.toFixed(1) + ' mm';
+    }
+    if (dlg.showModal) dlg.showModal();
+    else dlg.setAttribute('open', '');
+  }
+  ['pjIzo', 'pjPrzod', 'pjBok', 'pjGora'].forEach((id, i) => {
+    const c = $(id);
+    if (c) c.addEventListener('click', () => otworzRzut(['izo', 'przod', 'bok', 'gora'][i]));
+  });
   const sw = $('pjCzesciSwitch');
   if (sw) sw.addEventListener('click', e => {
     const b = e.target.closest('button[data-i]');
