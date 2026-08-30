@@ -591,6 +591,7 @@ function elementyWalca(V, F, os, P) {
 
 
 
+
 function przeciecie(p, q) {
   const det = p[2] * (-q[3]) - p[3] * (-q[2]);
   if (Math.abs(det) < 0.15) return null;
@@ -605,6 +606,7 @@ function mediana(arr) {
   const m = Math.floor(s.length / 2);
   return s.length % 2 ? s[m] : 0.5 * (s[m - 1] + s[m]);
 }
+
 
 
 
@@ -666,11 +668,13 @@ function dopasujOkreg(pts) {
 
 
 
+
 function celZnak(dx, dy, nx, ny) {
   const d = Math.hypot(dx, dy);
   if (d < 1e-9) return 0;
   return (dx * nx + dy * ny) / d;
 }
+
 
 
 
@@ -694,6 +698,7 @@ function rozbijBimodalnie(uzyte, rFin, P) {
   if (lo.length < 8 || hi.length < 8) return [uzyte];
   return [lo, hi];
 }
+
 
 
 
@@ -871,6 +876,7 @@ function walceZNormalnych(V, F, os, P) {
 
 
 
+
 function wSrodku(kon, x, y) {
   let c = false;
   for (const P of kon) {
@@ -896,6 +902,7 @@ function rInBinarny(kon, cx, cy, kier, rMin, rMax) {
   }
   return lo;
 }
+
 
 
 
@@ -949,6 +956,7 @@ function przytnijRdzen(seg) {
 
 
 
+
 function rInWielokier(kon, cx, cy, rMin, rMax) {
   const rs = [];
   for (let a = 0; a < 360; a += 45) {
@@ -961,6 +969,7 @@ function rInWielokier(kon, cx, cy, rMin, rMax) {
   const sciana = rs.filter(r => r <= mn + 1.2);
   return mediana(sciana);
 }
+
 
 
 
@@ -1103,6 +1112,7 @@ function skanPromieniowy(m, os, srodek, P) {
 
 
 
+
 function kolko(poly) {
   if (poly.length < 6) return null;
   let sx = 0, sy = 0;
@@ -1206,10 +1216,12 @@ function pasmo(d) {
 
 
 
+
 function tNaOsAbs(os, z0, t) {
   const zRot = z0 + t;
   return os === 'z' ? zRot : -zRot;
 }
+
 
 
 
@@ -1286,6 +1298,7 @@ function srednicaSprawdzianem(model, os, cx, cy, z0, od, doMm, d0) {
 
 
 
+
 function srednicaWPasmie(V, F, os, srodekUW, zLo, zHi, r0, P) {
   const [A, U, W] = OSIE[os];
   const rs = [];
@@ -1321,6 +1334,7 @@ function srednicaWPasmie(V, F, os, srodekUW, zLo, zHi, r0, P) {
   }
   return { d: mediana(rs) * 2, n: rs.length };
 }
+
 
 
 
@@ -1420,6 +1434,7 @@ function dopiszKrotkieWspolosiowe(V, F, walce, P) {
 
 
 
+
 const PROG_NIE_WALEC_MM = 0.3;
 const PROG_GWINT_PRZEKROJ_MM = 0.25;
 const NKAT_PRZEKROJ_GWINT = 180;
@@ -1428,24 +1443,38 @@ const PROG_STOSUNEK_ZAKRES_RMIN = 2.0;
    Nie gwint — min po kącie przy stałym z zjada profil zwoju. */
 
 function srednicaMinPrzepustem(V, F, os, cx, cy, od, doMm, krok) {
+  const pl = plastrySrednicy(V, F, os, cx, cy, od, doMm, krok);
+  if (!pl.length) return null;
+  let naj = Infinity;
+  for (const p of pl) if (p.d < naj) naj = p.d;
+  return naj === Infinity ? null : naj;
+}
+
+
+function fasetaSrednicyMm(d, nKat) {
+  const n = nKat > 4 ? nKat : 16;
+  if (!(d > 0)) return 0;
+  return d * (1 / Math.cos(Math.PI / n) - 1);
+}
+
+function plastrySrednicy(V, F, os, cx, cy, od, doMm, krok) {
   const iOs = { x: 0, y: 1, z: 2 }[os];
-  if (iOs == null || !Number.isFinite(cx) || !Number.isFinite(cy)) return null;
-  const iA = [0, 1, 2].filter(function (i) { return i !== iOs; })[0];
-  const iB = [0, 1, 2].filter(function (i) { return i !== iOs; })[1];
+  if (iOs == null || !Number.isFinite(cx) || !Number.isFinite(cy)) return [];
+  const iA = [0, 1, 2].filter((i) => i !== iOs)[0];
+  const iB = [0, 1, 2].filter((i) => i !== iOs)[1];
   const OD = Number(od);
   const DO = Number(doMm);
-  if (!Number.isFinite(OD) || !Number.isFinite(DO) || !(DO - OD >= 0.8)) return null;
+  if (!Number.isFinite(OD) || !Number.isFinite(DO) || !(DO - OD >= 0.8)) return [];
   const n = 16;
   const ks = Number.isFinite(krok) && krok > 0 ? krok : Math.max(0.05, (DO - OD) / n);
-  const rMinOdcinka = function (p, q) {
+  const rMinOdcinka = (p, q) => {
     const ax = p[iA] - cx, ab = p[iB] - cy, bx = q[iA] - cx, bb = q[iB] - cy;
     const dx = bx - ax, db = bb - ab, dd = dx * dx + db * db;
     let t = dd > 1e-12 ? -(ax * dx + ab * db) / dd : 0;
     t = Math.max(0, Math.min(1, t));
     return Math.hypot(ax + t * dx, ab + t * db);
   };
-  let naj = Infinity;
-  let slices = 0;
+  const out = [];
   for (let s = OD; s <= DO + 1e-9; s += ks) {
     let best = Infinity;
     for (let f = 0; f + 3 <= F.length; f += 3) {
@@ -1455,14 +1484,14 @@ function srednicaMinPrzepustem(V, F, os, cx, cy, od, doMm, krok) {
         [V[ib], V[ib + 1], V[ib + 2]],
         [V[ic], V[ic + 1], V[ic + 2]]
       ];
-      const d = P.map(function (v) { return v[iOs] - s; });
+      const d = P.map((v) => v[iOs] - s);
       if ((d[0] > 0 && d[1] > 0 && d[2] > 0) || (d[0] < 0 && d[1] < 0 && d[2] < 0)) continue;
       const pk = [];
       for (let i = 0; i < 3; i++) {
         const j = (i + 1) % 3;
         if ((d[i] <= 0 && d[j] > 0) || (d[i] > 0 && d[j] <= 0)) {
           const u = d[i] / (d[i] - d[j]);
-          pk.push(P[i].map(function (c, k) { return c + u * (P[j][k] - P[i][k]); }));
+          pk.push(P[i].map((c, k) => c + u * (P[j][k] - P[i][k])));
         }
       }
       if (pk.length < 2) continue;
@@ -1470,23 +1499,47 @@ function srednicaMinPrzepustem(V, F, os, cx, cy, od, doMm, krok) {
       if (r > 0.5 && r < best) best = r;
     }
     if (best === Infinity) continue;
-    slices++;
-    const D = 2 * best;
-    if (D < naj) naj = D;
+    out.push({ z: s, d: 2 * best });
   }
-  if (!slices || naj === Infinity) return null;
-  return naj;
+  return out;
+}
+
+function przytnijOknoPlaskie(plastry, nKat) {
+  if (!plastry || plastry.length < 2) return plastry || [];
+  let a = 0, b = plastry.length - 1;
+  while (a < b) {
+    const fa = fasetaSrednicyMm(Math.max(plastry[a].d, plastry[a + 1].d), nKat);
+    if (Math.abs(plastry[a + 1].d - plastry[a].d) > fa) a++;
+    else break;
+  }
+  while (b > a) {
+    const fb = fasetaSrednicyMm(Math.max(plastry[b].d, plastry[b - 1].d), nKat);
+    if (Math.abs(plastry[b].d - plastry[b - 1].d) > fb) b--;
+    else break;
+  }
+  return plastry.slice(a, b + 1);
 }
 
 function oznaczNieWalec(cechy, V, F) {
   for (const c of cechy) {
     if (!c || c.rodzaj !== 'gniazdo_walcowe') continue;
-    const dP = srednicaMinPrzepustem(V, F, c.os, c.cx, c.cy, c.od_mm, c.do_mm);
+    if (c.odmowa === 'BLAD_POMIARU' || c.odmowa === 'BŁĄD_POMIARU') continue;
+    const raw = plastrySrednicy(V, F, c.os, c.cx, c.cy, c.od_mm, c.do_mm) || [];
+    const pl = przytnijOknoPlaskie(raw, 16);
+    if (pl.length >= 2) {
+      c.od_mm = +pl[0].z.toFixed(2);
+      c.do_mm = +pl[pl.length - 1].z.toFixed(2);
+    }
+    const ds = pl.map((p) => p.d);
+    const dP = ds.length ? Math.min(...ds) : null;
     if (dP == null || !Number.isFinite(c.srednica_mm)) continue;
     c.srednica_przepust_mm = +dP.toFixed(3);
     const dlt = Math.abs(dP - c.srednica_mm);
     c.roznica_przymiarow_mm = +dlt.toFixed(3);
-    if (dlt > PROG_NIE_WALEC_MM) {
+    const med = ds.slice().sort((a, b) => a - b)[Math.floor(ds.length / 2)];
+    const zakres = Math.max(...ds) - Math.min(...ds);
+    const fa = fasetaSrednicyMm(med, 16);
+    if (zakres > fa) {
       if (c.odmowa) continue;
       c.odmowa = 'NIE_WALEC';
       c.pewnosc = 'niska';
@@ -1496,6 +1549,7 @@ function oznaczNieWalec(cechy, V, F) {
     }
   }
 }
+
 
 
 
@@ -1524,6 +1578,7 @@ function paraSasiadowPonad(zakresy, prog) {
   indeksy.sort((a, b) => a - b);
   return { zakres: peak, indeksy };
 }
+
 
 
 
@@ -1597,6 +1652,7 @@ function przekrojPromieni(V, F, os, cx, cy, z, nKat) {
     dwaTrafienia: nDrugie >= first.length * 0.5, katMax: thMax, nKat: n, z
   };
 }
+
 
 
 
@@ -1863,6 +1919,7 @@ function oznaczGwintLubNiewalec(cechy, V, F, walce, bb) {
 
 
 
+
 function katalogZCech(m, V, F, P) {
   kandydaciDbg.length = 0;
   const bb = m.boundingBox();
@@ -2030,6 +2087,7 @@ function katalogZCech(m, V, F, P) {
     kandydaci: kandydaciDbg.slice(), stopnie_skanu: skan.stopnie
   };
 }
+
 
 
 
@@ -2411,11 +2469,14 @@ function jestBladPomiaru(c) {
   return k === 'BLAD_POMIARU' || k === 'BŁĄD_POMIARU';
 }
 
+
 function cechyDecyzyjne(cechy) {
   return (cechy || []).filter((c) => !jestBladPomiaru(c));
 }
 
+
 function interpretujZdanie(zdanie, katalog, opts = {}
+
 ) {
   const t = String(zdanie || '').toLowerCase().replace(',', '.');
   const m = t.match(/(\d+(?:\.\d+)?)\s*mm/);
@@ -2483,6 +2544,7 @@ function walidujOdpowiedzModelu(odp, katalog) {
 }
 
 
+
 function planZmiany(cecha, dNowa) {
   const r0 = cecha.r ?? cecha.srednica_mm / 2;
   const r1 = dNowa / 2;
@@ -2538,6 +2600,7 @@ function zwezGniazdo(model, cecha, dNowa) {
 
 
 
+
 function segmentyDlaPromienia(r) {
   try {
     if (wasmMod && typeof wasmMod.getCircularSegments === 'function') {
@@ -2547,6 +2610,7 @@ function segmentyDlaPromienia(r) {
   } catch {}
   return circularSegmentsUstawione;
 }
+
 
 
 
@@ -2618,11 +2682,13 @@ function rCiecie(rDocelowe, nSeg) {
 
 
 
+
 function nZOdczytu(dOczek, dZmierzone) {
   const c = dZmierzone / dOczek;
   if (!(c > 0.97 && c < 0.99995)) return null;
   return Math.max(16, Math.round(Math.PI / Math.acos(c)));
 }
+
 
 
 
@@ -2669,6 +2735,7 @@ function rMinKrawedziXY(V, F, cx, cy, z, rMin) {
   }
   return best === Infinity ? null : best;
 }
+
 
 
 
@@ -2749,10 +2816,12 @@ function wytnijDoSrednicy(aligned, cx, cy, zLo, zHi, dNowa, arena, zMierzLo, zMi
 
 
 
+
 function worldZToAligned(os, worldA) {
   if (os === 'z') return worldA;
   return -worldA;
 }
+
 
 
 
@@ -2786,9 +2855,11 @@ function zakresNaAligned(cecha) {
 
 
 
+
 function padFazki(h0) {
   return Math.min(3, Math.max(MARGINES_CIECIA_MM, Math.max(0, h0) * 0.25));
 }
+
 
 
 
@@ -2813,6 +2884,7 @@ function rNaPlaszczyznie(aligned, cx, cy, z, rMin, rMax) {
   if (wSrodku(kon, cx, cy)) return Infinity;
   return rInWielokier(kon, cx, cy, rMin, rMax);
 }
+
 
 
 
@@ -2902,11 +2974,13 @@ function zasiegCiecia(aligned, cecha, dNowa, tryb = 'poszerz') {
 
 
 
+
 function progSciankiMm() {
   if (typeof sciankaMin === 'function') return sciankaMin();
   if (typeof SCIANKA_MIN === 'number') return SCIANKA_MIN;
   throw new Error('brak progu ścianki (gate.js / SCIANKA_DRUKOWALNA_MM)');
 }
+
 
 
 
@@ -2933,6 +3007,7 @@ function poszerzGniazdo(model, cecha, dNowa) {
   if (cecha.os !== 'z') arena.push(wynik);
   return { wynik, arena };
 }
+
 
 
 
@@ -3066,7 +3141,10 @@ function bramkaPrzerobki(stara, nowa, katPrzed, katPo, cecha, plan, dCel) {
 
 
 
+
+
 function wykonajPrzerobke(kat, cechaId, dNowa, opts = {}
+
 ) {
   ustawNPrzerobki();
   const oryg = kat._solid;
@@ -3164,6 +3242,7 @@ function fmtDowody(c) {
   }
   return c.opis;
 }
+
 
 
 
