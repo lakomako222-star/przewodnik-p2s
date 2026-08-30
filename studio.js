@@ -598,7 +598,7 @@
     var ver = window.P2S_VER_NAME || (window.__P2S_META && window.__P2S_META.wersja) || '—';
     var hint = $('syncTrescHint');
     if (hint) {
-      hint.textContent = 'Treść w tej kopii: ' + ver + '. Paczka APK bywa oznaczona jako 4.2.26 (albo inny numer shella) i nadal jest „najnowsza” — to wersja aplikacji, nie przewodnika. Przewodnik schodzi osobno z Pages do /biezaca/. Origin APK zostaje appassets.';
+      hint.textContent = 'Treść w tej kopii: ' + ver + '. Paczka na GitHubie (apk/version.json) to 4.0.14 — to trigger updatera APK, nie numer przewodnika. Sideload debug może mieć inny numer shella. Przewodnik schodzi z Pages do /biezaca/. Origin APK zostaje appassets.';
     }
     showP('apka');
   }

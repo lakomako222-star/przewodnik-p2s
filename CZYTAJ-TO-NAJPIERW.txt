@@ -1,0 +1,199 @@
+PRZEWODNIK BAMBU LAB P2S — APLIKACJA Z ASYSTENTEM AI  (treść 4.2.34)
+====================================================================
+
+Jedna aplikacja na telefon i na komputer. Siedem zakładek:
+
+  PRZEWODNIK   cała treść, wyszukiwarka, spis treści — działa bez internetu
+  DORADCA      prowadzi krok po kroku przy typowych awariach — bez internetu
+  NARZĘDZIA    koszt wydruku, zmiana filamentu, powłoka, skala — bez internetu
+  PROJEKT      zdanie/SPEC -> siatka -> bramka -> 3MF; generowanie przy N=96
+  PRZERÓB      lokalny STL/3MF -> pomiar/zmiana -> 3MF; N=192 i r/cos(pi/N)
+  ASYSTENT     rozmowa jak z człowiekiem, ocena zdjęć wydruku, szukanie w sieci
+               — potrzebuje internetu i klucza
+  AKTUALIZUJ   aktualizacja poradnika i bazy uzupełnień — potrzebuje internetu
+
+Projekt i Przerób mają celowo różne N. Nie ujednolicaj ich: Projekt tworzy
+nowe bryły przy N=96, a Przerób precyzyjnie obrabia cylindry przy N=192
+z kompensacją apotemy r/cos(pi/N).
+
+═══════════════════════════════════════════════════════════════════
+URUCHOMIENIE I EWENTUALNA PUBLIKACJA
+═══════════════════════════════════════════════════════════════════
+
+Na komputerze możesz otworzyć index.html lokalnie. Na Androidzie projekt ma
+osobny kontener APK: origin `https://appassets.androidplatform.net` jest stały,
+treść schodzi z Pages do katalogu wewnętrznego.
+
+Numery (zmierzone 30.08.2026, potem treść podbita do 4.2.34):
+  Pages / treść:     4.2.34  (https://lakomako222-star.github.io/przewodnik-p2s/)
+  Paczka GitHub:     4.0.14  (apk/version.json, versionCode 40014015)
+                     — to trigger updatera APK. Nie podbijaj bez nowej paczki
+                     na raw.githubusercontent.com/.../PrzewodnikP2S-latest.apk.
+  Sideload debug:    bywa 4.2.33 (versionCode 40233000) — to shell, nie Pages.
+
+PWA z Pages zostaje jako zapas (Chrome → Dodaj do ekranu głównego; iPhone).
+PWA wymaga https://.
+
+Nie publikuj folderu ani GitHub Pages automatycznie. Publikacja jest osobnym
+krokiem wykonywanym dopiero po wyraźnej decyzji właściciela „publikuj”.
+
+SPOSÓB SZYBKI — NETLIFY DROP (bez konta, około 2 minuty)
+  1. Wejdź na https://app.netlify.com/drop
+  2. NIE przeciągaj całego folderu roboczego. Wpadną śmieci:
+     preview-demo.html, _mier_chipy.html, apk/CZYTAJ.txt i inne pliki
+     poza listą z pliki.json.
+  3. Wrzuć TYLKO kanoniczną PWA po build_pwa.py: index.html, sw.js,
+     manifest.webmanifest, ikony, engine/, wersja.json, pliki.json
+     oraz skrypty z pliki.json. Bez preview-demo.html i _mier_chipy.html.
+  4. Dostaniesz adres w stylu https://cos-tam-1234.netlify.app
+  Bez konta adres działa ograniczony czas. Załóż darmowe konto Netlify,
+  jeśli ma zostać na stałe.
+
+SPOSÓB NA STAŁE — GITHUB PAGES (darmowe, wymaga konta GitHub)
+  1. Utwórz publiczne repozytorium, np. "przewodnik-p2s".
+  2. Wgraj pliki PWA (index.html, sw.js, manifest, ikony, engine/,
+     wersja.json, pliki.json i skrypty z pliki.json). Nie wrzucaj
+     preview-demo.html ani _mier_chipy.html.
+  3. Settings -> Pages -> Source: "Deploy from a branch", gałąź main, folder / (root).
+  4. Po chwili dostaniesz adres https://TWOJA-NAZWA.github.io/przewodnik-p2s/
+
+Adres zapisz sobie — będzie potrzebny na każdym urządzeniu.
+
+
+═══════════════════════════════════════════════════════════════════
+INSTALACJA
+═══════════════════════════════════════════════════════════════════
+
+ANDROID (Chrome) — to jest droga domyślna na telefon
+  Otwórz https://lakomako222-star.github.io/przewodnik-p2s/
+  Menu (trzy kropki) -> "Dodaj do ekranu głównego" albo "Zainstaluj aplikację".
+  Czasem baner instalacji pojawia się sam na dole ekranu.
+  HTML idzie z sieci: zainstalowana kopia nie zostaje na starej wersji.
+
+iPHONE / iPAD (musi być Safari, nie Chrome)
+  Otwórz ten sam adres -> przycisk Udostępnij -> "Dodaj do ekranu początkowego".
+
+WINDOWS / macOS / LINUX (Chrome lub Edge)
+  Otwórz adres -> ikona instalacji po prawej stronie paska adresu
+  (albo menu -> "Zainstaluj"). Dostaniesz osobne okno i ikonę
+  w menu Start / w Docku. Ta sama aplikacja co na telefonie.
+
+Po instalacji przewiń raz całą treść przy włączonym internecie — przewodnik
+zapisze się w pamięci i będzie działał bez sieci, także przy drukarce
+w garażu czy piwnicy.
+
+
+═══════════════════════════════════════════════════════════════════
+URUCHOMIENIE ASYSTENTA (klucz OpenRouter)
+═══════════════════════════════════════════════════════════════════
+
+OpenRouter to jedno konto do wszystkich modeli AI. Płacisz tylko za to,
+o co faktycznie pytasz.
+
+  1. Wejdź na https://openrouter.ai i załóż konto.
+  2. Doładuj wybraną kwotą i ustaw limit wydatków odpowiedni dla siebie.
+  3. Zakładka Keys -> "Create Key" -> skopiuj klucz w całości
+     (zaczyna się od sk-or-v1-). Zobaczysz go tylko raz.
+  4. W aplikacji otwórz zakładkę ASYSTENT -> koło zębate u góry po prawej.
+  5. Wklej klucz, kliknij "Sprawdź klucz", potem "Zapisz".
+
+Klucz zapisuje się wyłącznie w pamięci tej jednej przeglądarki i nie wychodzi
+nigdzie poza openrouter.ai. Na drugim urządzeniu (np. na komputerze) trzeba
+go wkleić jeszcze raz — to ta sama aplikacja, ale osobna pamięć.
+
+W tym samym oknie ustawień warto wypełnić pole "Twoje ustawienie sprzętu",
+np. "dysza 0,4 mm, płyta Frostbite, AMS 2 Pro z PLA i PETG, drukarka
+w nieogrzewanym garażu". Asystent dostaje to przy każdym pytaniu i przestaje
+zgadywać.
+
+Po włączeniu Asystenta do OpenRouter i wybranego modelu trafiają: pytanie,
+wybrane fragmenty przewodnika, ustawienie sprzętu, ostatnie wiadomości oraz
+dodane zdjęcia. Wyszukiwanie internetowe działa tylko po jego włączeniu przez
+użytkownika; aplikacja nie włącza go samodzielnie.
+
+MODELE (Projekt i Asystent, ten sam klucz)
+  Domyślnie: Gemini Flash do rozmowy (szybko) i GPT-5.6 Luna do SPEC JSON
+  (tani dwukrok). W zakładce Projekt są dwie listy: Rozmowa i SPEC. Sol
+  (openai/gpt-5.6-sol) i Grok 4.6 (x-ai/grok-4.6) pojawiają się, gdy
+  OpenRouter je zgłosi — są mocniejsze i droższe. Grok Fast tylko jeśli
+  jest na liście API. Pełna lista: koło zębate Asystenta.
+
+
+═══════════════════════════════════════════════════════════════════
+JAK KORZYSTAĆ Z ASYSTENTA
+═══════════════════════════════════════════════════════════════════
+
+ZWYKŁE PYTANIE
+  Wpisz na dole, co się dzieje. Asystent najpierw przeszukuje Twój przewodnik
+  i odpowiada na jego podstawie. Pod odpowiedzią pojawiają się przyciski
+  z nazwami rozdziałów — kliknięcie przenosi do właściwego miejsca w treści.
+
+ZDJĘCIE WYDRUKU
+  Przycisk aparatu obok pola tekstu. Możesz zrobić zdjęcie na miejscu albo
+  wybrać z galerii, do trzech naraz. Zdjęcie jest pomniejszane przed wysłaniem,
+  żeby nie przepłacać. Model opisuje, co widzi, i dopiero potem diagnozuje.
+  Uwaga: musi być wybrany model czytający obrazy — w ustawieniach są oznaczone
+  ikonką aparatu.
+
+SZUKANIE W SIECI
+  Przełącznik "Szukaj w sieci" pod polem tekstu. Włączaj go tylko wtedy, gdy
+  pytanie wykracza poza przewodnik — na przykład komunikat błędu, nowa wersja
+  oprogramowania drukarki albo świeży problem z forum. Pod odpowiedzią pojawią
+  się adresy stron, z których asystent skorzystał.
+  Koszt zależy od wybranego modelu, liczby wyników i bieżącego cennika.
+  Rzeczywisty koszt pokazuje interfejs aplikacji.
+
+KOSZT
+  Pod każdą odpowiedzią widać, ile faktycznie kosztowała. Zwykle są to grosze.
+  Model zmienisz w ustawieniach — tańszy do prostych pytań, mocniejszy
+  do trudnej diagnostyki.
+
+NOWA ROZMOWA
+  Ikona ołówka u góry. Warto zaczynać od nowa przy zmianie tematu — krótsza
+  rozmowa to niższy koszt.
+
+
+═══════════════════════════════════════════════════════════════════
+CZĘSTE PYTANIA
+═══════════════════════════════════════════════════════════════════
+
+Czy przewodnik nadal działa bez internetu?
+  Tak. Przewodnik, doradca i narzędzia działają w pełni offline. Bez sieci
+  nie działają funkcje sieciowe Asystenta ani zakładka Aktualizuj.
+
+Ile to kosztuje?
+  Koszt zależy od modelu, długości rozmowy, zdjęć i wyszukiwania. Interfejs
+  pokazuje koszt wykonanej odpowiedzi; w OpenRouter ustaw własny limit wydatków.
+
+Czy ktoś zobaczy moje rozmowy?
+  Rozmowy zapisują się w pamięci Twojej przeglądarki. Przy pytaniu do OpenRouter
+  i wybranego dostawcy modelu trafiają także wybrane fragmenty przewodnika,
+  ustawienie sprzętu, ostatnie wiadomości i dodane zdjęcia.
+
+Asystent pisze, że klucz został odrzucony.
+  Skopiuj klucz jeszcze raz z openrouter.ai (bez spacji na końcu) i użyj
+  przycisku "Sprawdź klucz". Jeżeli klucz działa, a odpowiedzi nie ma —
+  prawdopodobnie skończyły się środki na koncie.
+
+Chcę usunąć klucz z tego urządzenia.
+  Ustawienia -> "Usuń klucz i wszystkie rozmowy".
+
+Jak zaktualizować treść przewodnika?
+  Otwórz zakładkę Aktualizuj i wybierz „Sprawdź i zaktualizuj”. Na hostingu
+  możesz też podmienić index.html; aplikacja pobierze nową wersję online.
+
+
+═══════════════════════════════════════════════════════════════════
+CO JEST W PACZCE
+═══════════════════════════════════════════════════════════════════
+
+index.html               przewodnik i wszystkie siedem zakładek
+manifest.webmanifest     nazwa aplikacji, ikony, kolory
+sw.js                    obsługa trybu offline
+builder.js / gate.js      Projekt: SPEC, geometria i bramki
+przerobka-*.js            Przerób: detektor, operacje i interfejs
+export3mf.js              eksport Core 3MF w milimetrach
+engine/                   Manifold i nota Apache-2.0
+icon-*.png               ikony aplikacji
+apple-touch-icon.png     ikona dla iPhone'a
+favicon-32.png           ikona w karcie przeglądarki
