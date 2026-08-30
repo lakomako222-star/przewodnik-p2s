@@ -1,6 +1,7 @@
 /**
  * Podgląd 2D — cztery rzuty, malarz, bez three.js.
  * strokeStyle MUSI być identyczny z fillStyle, inaczej widać przekątne triangulacji.
+ * Obrót 360: przycisk „obrót” kręci kamerą izo (azymut), bez gestu.
  */
 export const WIDOKI = {
   izo: { az: -35, el: 25, etykieta: 'izo' },
@@ -8,8 +9,13 @@ export const WIDOKI = {
   bok: { az: 90, el: 0, etykieta: 'bok' },
   gora: { az: 0, el: 90, etykieta: 'góra' }
 };
+const IZO_AZ0 = -35, IZO_EL0 = 25;
+const meshIzoByCanvas = Object.create(null);
+let pendingIzoMesh = null;
+const obrotStan = { on: false, raf: 0, last: 0 };
 
 export function rzutuj(mesh, widok, W, H, pad = 14) {
+  if (mesh && widok === WIDOKI.izo) pendingIzoMesh = mesh;
   const az = widok.az * Math.PI / 180, el = widok.el * Math.PI / 180;
   const ca = Math.cos(az), sa = Math.sin(az), ce = Math.cos(el), se = Math.sin(el);
   const r = [ca, -sa, 0], u = [sa * se, ca * se, ce], f = [sa * ce, ca * ce, -se];
@@ -56,6 +62,10 @@ export function rzutuj(mesh, widok, W, H, pad = 14) {
 }
 
 export function rysuj(ctx, tris, tlo = '#12151a') {
+  if (ctx && ctx.canvas && pendingIzoMesh) {
+    const id = ctx.canvas.id;
+    if (id === 'pjIzo' || id === 'prCv0') meshIzoByCanvas[id] = pendingIzoMesh;
+  }
   ctx.fillStyle = tlo; ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   for (const t of tris) {
     const g = Math.round(38 + 205 * t.sh);
@@ -76,3 +86,118 @@ export function etykietaGabarytu(widokKlucz, bbox) {
   if (widokKlucz === 'bok') return `${y} × ${z} mm`;
   return `${x} × ${y} × ${z} mm`;
 }
+
+function woliMniejRuchu() {
+  return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function widokPodgladuWidoczny() {
+  const pj = document.getElementById('view-projekt');
+  const pr = document.getElementById('view-przerobka');
+  function vis(el) {
+    if (!el) return false;
+    const s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden';
+  }
+  return vis(pj) || vis(pr);
+}
+
+function podpisIzo(on) {
+  const lb = document.getElementById('pjLabIzo');
+  if (!lb) return;
+  const mesh = meshIzoByCanvas.pjIzo;
+  const bb = mesh && mesh.bbox;
+  const head = on ? 'obrót' : 'izo';
+  lb.textContent = bb ? (head + ' · ' + etykietaGabarytu('izo', bb)) : head;
+}
+
+function rysujIzoCanvasy() {
+  ['pjIzo', 'prCv0'].forEach(function (id) {
+    const mesh = meshIzoByCanvas[id];
+    const c = document.getElementById(id);
+    if (!mesh || !c) return;
+    rysuj(c.getContext('2d'), rzutuj(mesh, WIDOKI.izo, c.width, c.height));
+  });
+  podpisIzo(obrotStan.on);
+}
+
+function klatkaObrotu(ts) {
+  if (!obrotStan.on) return;
+  if (document.hidden || !widokPodgladuWidoczny()) {
+    obrotStan.raf = 0;
+    return;
+  }
+  if (!obrotStan.last) obrotStan.last = ts;
+  const dt = Math.min(80, ts - obrotStan.last);
+  obrotStan.last = ts;
+  if (dt >= 16) {
+    WIDOKI.izo.az = (WIDOKI.izo.az + dt * 0.036) % 360;
+    rysujIzoCanvasy();
+  }
+  obrotStan.raf = requestAnimationFrame(klatkaObrotu);
+}
+
+function syncPrzyciskiObrotu() {
+  ['pjObrot', 'prObrot'].forEach(function (id) {
+    const b = document.getElementById(id);
+    if (!b) return;
+    b.setAttribute('aria-pressed', obrotStan.on ? 'true' : 'false');
+  });
+}
+
+function ustawObrot(on) {
+  obrotStan.on = !!on;
+  syncPrzyciskiObrotu();
+  cancelAnimationFrame(obrotStan.raf);
+  obrotStan.raf = 0;
+  if (!obrotStan.on) {
+    WIDOKI.izo.az = IZO_AZ0;
+    WIDOKI.izo.el = IZO_EL0;
+    rysujIzoCanvasy();
+    return;
+  }
+  if (woliMniejRuchu()) {
+    WIDOKI.izo.az = (WIDOKI.izo.az + 45) % 360;
+    rysujIzoCanvasy();
+    obrotStan.on = false;
+    syncPrzyciskiObrotu();
+    return;
+  }
+  obrotStan.last = 0;
+  obrotStan.raf = requestAnimationFrame(klatkaObrotu);
+}
+
+function podlaczObrot() {
+  if (typeof document === 'undefined') return;
+  ['pjObrot', 'prObrot'].forEach(function (id) {
+    const b = document.getElementById(id);
+    if (!b || b.getAttribute('data-p2s-obrot') === '1') return;
+    b.setAttribute('data-p2s-obrot', '1');
+    b.addEventListener('click', function () {
+      ustawObrot(!obrotStan.on);
+    });
+  });
+  const tabs = document.getElementById('tabs');
+  if (tabs && !tabs.getAttribute('data-p2s-obrot-tab')) {
+    tabs.setAttribute('data-p2s-obrot-tab', '1');
+    tabs.addEventListener('click', function () {
+      setTimeout(function () {
+        if (!obrotStan.on) return;
+        if (widokPodgladuWidoczny() && !obrotStan.raf) {
+          obrotStan.last = 0;
+          obrotStan.raf = requestAnimationFrame(klatkaObrotu);
+        }
+      }, 0);
+    });
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      cancelAnimationFrame(obrotStan.raf);
+      obrotStan.raf = 0;
+    } else if (obrotStan.on && !obrotStan.raf) {
+      obrotStan.last = 0;
+      obrotStan.raf = requestAnimationFrame(klatkaObrotu);
+    }
+  });
+}
+podlaczObrot();
