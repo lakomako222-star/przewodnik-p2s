@@ -1,4 +1,4 @@
-PRZEWODNIK BAMBU LAB P2S — APLIKACJA Z ASYSTENTEM AI  (treść 4.2.34)
+PRZEWODNIK BAMBU LAB P2S — APLIKACJA Z ASYSTENTEM AI  (treść 4.2.35)
 ====================================================================
 
 Jedna aplikacja na telefon i na komputer. Siedem zakładek:
@@ -24,8 +24,9 @@ Na komputerze możesz otworzyć index.html lokalnie. Na Androidzie projekt ma
 osobny kontener APK: origin `https://appassets.androidplatform.net` jest stały,
 treść schodzi z Pages do katalogu wewnętrznego.
 
-Numery (zmierzone 30.08.2026, potem treść podbita do 4.2.34):
-  Pages / treść:     4.2.34  (https://lakomako222-star.github.io/przewodnik-p2s/)
+Numery (zmierzone 30.08.2026; treść 4.2.35):
+  GitHub APK = 4.0.14; sideload/debug bywa 4.2.33; treść = Pages.
+  Pages / treść:     4.2.35  (https://lakomako222-star.github.io/przewodnik-p2s/)
   Paczka GitHub:     4.0.14  (apk/version.json, versionCode 40014015)
                      — to trigger updatera APK. Nie podbijaj bez nowej paczki
                      na raw.githubusercontent.com/.../PrzewodnikP2S-latest.apk.

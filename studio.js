@@ -307,7 +307,7 @@
       warianty: ['pjChatWrap'],
       model: ['pjLayoutWrap'],
       weryfikacja: ['pjWarn', 'pjDrukLista', 'pjDiff', 'pjAkcje', 'pjStudioHint'],
-      ekspert: ['pjOpusLinia', 'pjModele', 'pjEkspertExtra']
+      ekspert: ['pjOpusLinia', 'pjEkspertHint', 'pjModele', 'pjEkspertExtra']
     };
     var chat = $('pjChat');
     if (chat && !$('pjChatWrap')) {
@@ -595,10 +595,9 @@
       var b = e.target.closest('[data-sync]');
       if (b) showP(b.getAttribute('data-sync'));
     });
-    var ver = window.P2S_VER_NAME || (window.__P2S_META && window.__P2S_META.wersja) || '—';
     var hint = $('syncTrescHint');
     if (hint) {
-      hint.textContent = 'Treść w tej kopii: ' + ver + '. Paczka na GitHubie (apk/version.json) to 4.0.14 — to trigger updatera APK, nie numer przewodnika. Sideload debug może mieć inny numer shella. Przewodnik schodzi z Pages do /biezaca/. Origin APK zostaje appassets.';
+      hint.textContent = 'GitHub APK = 4.0.14; sideload/debug bywa 4.2.33; treść = Pages.';
     }
     showP('apka');
   }
