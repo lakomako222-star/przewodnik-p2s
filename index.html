@@ -716,6 +716,23 @@ td{padding:10px 12px;line-height:1.5}
 .pr-kafel.wys{border-left-color:var(--pr-zi)}
 .pr-kafel.sr{border-left-color:var(--pr-zo)}
 .pr-kafel.nis{border-left-color:var(--pr-cz);opacity:.5;cursor:not-allowed}
+.pr-kafel.pr-karta-odmowy{opacity:1;cursor:pointer;border-left-color:var(--pr-ak);padding:14px 12px}
+.pr-k-kod{font-size:1.12rem;font-weight:700;letter-spacing:.01em}
+.pr-k-skok{font-size:1.02rem;font-weight:600;color:var(--pr-ak);margin-top:4px}
+.pr-k-powod{font-size:.86rem;margin-top:6px;line-height:1.35}
+.pr-k-co{font-size:.84rem;color:var(--pr-sz);margin-top:6px;line-height:1.4}
+.pr-kafel.ost{border-left-color:var(--pr-zo);opacity:1;cursor:pointer}
+.pr-k-pew{font-size:.8rem;font-weight:700;color:var(--pr-zo);margin:2px 0 4px;letter-spacing:.04em}
+.pr-bledy-pomiaru{margin:10px 0 0;padding:8px 10px;border:1px dashed var(--pr-lin);border-radius:8px;
+  color:var(--pr-sz);font-size:.8rem}
+.pr-bledy-pomiaru summary{cursor:pointer}
+.pr-blad-pomiaru-w{margin:8px 0 0;line-height:1.4}
+#prEdycja.pr-tylko-werdykt label,
+#prEdycja.pr-tylko-werdykt select,
+#prEdycja.pr-tylko-werdykt input,
+#prEdycja.pr-tylko-werdykt .pr-row,
+#prEdycja.pr-tylko-werdykt #prLuz,
+#prEdycja.pr-tylko-werdykt #prZrob{display:none}
 .pr-k-d{font-size:1.05rem;font-weight:600}
 .pr-k-r{font-size:.86rem}
 .pr-k-z,.pr-k-p{font-size:.78rem;color:var(--pr-sz)}
@@ -3318,6 +3335,10 @@ function show(v) {
     if (active) b.setAttribute('aria-current', 'page');
     else b.removeAttribute('aria-current');
   });
+  var qwrap = document.querySelector('.qwrap');
+  if (qwrap) qwrap.style.display = (v === 'guide') ? '' : 'none';
+  var results = document.getElementById('results');
+  if (results && v !== 'guide') results.classList.remove('on');
   window.scrollTo(0, 0);
 }
 tabs.addEventListener('click', function (e) {
@@ -6843,8 +6864,8 @@ if ('serviceWorker' in navigator) {
 
 </script>
 <script>
-window.P2S_VER_NAME='4.2.26';
-window.__P2S_META={wersja:'4.2.26',talk_ms:300000,spec_ms:600000};
+window.P2S_VER_NAME='4.2.27';
+window.__P2S_META={wersja:'4.2.27',talk_ms:300000,spec_ms:600000};
 window.__P2S_DECISION="DECYZJA 4.2.22: bramka SCIENKA_OTWOR na kawałku SPEC po schemacie i próbnym buildzie geometrii, przed sklejeniem; 1 lokalna naprawa tylko wadliwego shardu, bez retry całego T5 i bez monolitu. DECYZJA 4.2.21: topper z napisem to jeden płaski wykrój 2D wyciągnięty na grubość — litery spina mostek 3 mm pod linią bazową i ramka 4,2 mm po obrysie (liczby z pomiaru wzorcowego toppera 142×153×2,8 mm), nóżki to płaskie trapezy 9,5→5,0 mm zamiast walców położonych na boku (te robiły z napisu 3 mm gabaryt 4,2 mm), font liczy szerokość znaku po zapalonych kolumnach, a poprzeczki w połowie liter zniknęły; nowe bramki NAPIS_BELKA / NAPIS_POZA_OBRYSEM (dołożona bryła przecina litery albo wychodzi >2 mm poza obrys), TACA_BEZ_RANTU (przekrój w 60% wysokości bez zamkniętej dziury ≥35% obrysu = płyta, nie wanienka) i STOJAK_BEZ_ZEBER (<6 żeber przy nazwie obiecującej żebrowanie) wracają do mózgu istniejącą ścieżką SPEC_GEOMETRIA; SYS_SPEC zakazuje dokładania własnych belek do napisu i podaje przepis na tacę-wanienkę oraz konstrukcję wzorca Towel_Holder_Ribbed. DECYZJA 4.2.20: strumień SSE dla każdego shardu SPEC — bufor do końca, potem schema (talk/plan/monolit bez zmian); max_tokens 26000 (powtórka 40000) + jawne reasoning.max_tokens 10000 zamiast effort:max, bo effort u Anthropica to część max_tokens; telemetria liczy tokeny myślenia i wyjścia; kawałek po schemacie przechodzi próbny build (SPEC_GEOMETRIA wraca do mózgu); finish_reason=length lub urwany JSON = SHARD_TRUNCATED + jedna powtórka; OR_BUSY dopisuje powód. DECYZJA 4.2.19: spec-sharding T5/T6 (N× SPEC 1.0 → czesci 1.1); plan json_object 120s; niepełny shard = nie PASS; schema PL bez shards[]. DECYZJA 4.2.18: wersja.json + SW hash; talk 300s / SPEC 600s; 408/429 backoff; Grok tylko profil eksperymentalny; SPEC schema przed 3MF; derivedFrom estimated. DECYZJA 4.2.17: timeout talk 300s / SPEC 600s; retry Opus; SPEC mm 1:1; zakaz pustych brył po RYSUJ; napis bbox. DECYZJA 4.2.16: mózg Claude Opus 5 max; zapas Grok 4.6 xhigh / Sol Pro / DeepSeek V4 Pro; pinnedId puszcza Anthropic; [[SZUKAJ]] wymuszone przy marce. DECYZJA 4.2.15: napis FDM+traktor; dziurka breloka uszkiem; spaw 0,05; skala XYZ; wydłuż uchwyty; 8 części i podział P2S; bez publikacji. DECYZJA 4.2.14: figurka CSG nie pudełko; brief z mm → RYSUJ; drop bez SPEC; alias otworu; retry bramki SCIENKA_OTWOR; bez publikacji. DECYZJA 4.2.13: Przerób — obwód obręczy ΔC (5 cm=50 mm) przesunięciem promieniowym + ramiona, nie skala całego bbox; bez publikacji. DECYZJA 4.2.12: nitka Projekt→Przerób (SPEC+siatka+checklista, localStorage); zdjęcie Flash-gdy-brak-wizji; scaleLiveMesh % na żywym modelu; bez publikacji. DECYZJA 4.2.11: picker Sol/Grok/Flash/Luna w Projekcie (lista OpenRouter); 3MF hint bez project_settings + Kopiuj do Studio; strona Sufit produktu; bez publikacji. DECYZJA 4.2.10: Projekt — [[SZUKAJ]] Wikipedia/DuckDuckGo bez klucza, dopytaj mm przed RYSUJ, po 3MF poprawki+checklista Studio; Asystent punkt 12; ściągi 5.17/5.18/6.8/5.15; bez publikacji. DECYZJA 4.2.9: Projekt — orientacja/podpory/brim w rozmowie i SPEC, checklista po 3MF (geometria bez project_settings); bramka 4.2.7 bez podpór zostaje; bez publikacji. DECYZJA 4.2.8: 5.17 nowa szpula (KALIBROWANE / nowe / Classic = Słoneczny); 5.18 proces 0.20 Standard na co dzień, 0.16 HQ, 0.24 test; bez publikacji. DECYZJA 4.2.7: plik bez podpór musi mieć fizycznie zapisaną orientację, stabilny styk i zero krytycznego nawisu w cechach mierzonych; stary 3MF FAIL, nowy PASS lokalnego gate; potwierdzenie ostrzeżenia Bambu i pomiar fizyczny pozostają otwarte; bez publikacji. DECYZJA 4.2.6: sufit programowy lokalnie; Projekt N=96, Przerób N=192 z r/cos(pi/N); N-14 z siatki 69,79–75; pełny sufit dopiero po wydruku i suwmiarce; bez publikacji. DECYZJA 4.2.5: 5.13 pułapka JSON \"nil\" (BambuStudio #10583); 3MF e2e przywrócony lokalnie; Pages zostaje 4.2.1 do słowa publikuj. DECYZJA 4.2.4: zakładka Projekt — wynalazca: dopytaj (wanna/rant), 2–3 sposoby, poleć jeden, extras jako propozycje, „lepiej nie” przy słabym briefie; SPEC JSON po wyborze; paste-SPEC zostaje. DECYZJA 4.2.3: zakładka Projekt — dopytaj rant/kształt, zaproponuj przyssawki z nazwą kubka (Qinuo QNSC-M40), searchPlan+OpenRouter web, potem SPEC; paste-SPEC zostaje. DECYZJA 4.2.2: N-12 kompensacja apotemy z N silnika (nie 96) i bez +0,02; N-13 zakres world-Y w rekordzie cechy; N-14 krótki współosiowy Ø56, zakres z siatki (nie 68–73); N-15 profil y→Ø(y) krok 0,2 maxDev 0,010; asercja N przy budowie walca. DECYZJA 4.2.1: zakładka Przerób/Przeróbka w UI, ten sam potok co Node 4.2 (bez przepisywania detektora/operacji/bramki). Silnik na wątku głównym z wklejonym Manifold (file://, jak Projekt). Pole aDens type=text inputmode=decimal. DECYZJA 4.2.0: modele P0 wg WYTYCZNE 4.2 (luna / gemini-3.7-flash / terra-pro). Detektor przeróbki w Node. Silnik Manifold wklejony jako base64 + UI jako zwykły skrypt (decyzja 4.1.1 zostaje). DECYZJA 4.1.1: silnik Manifold wklejony jako base64 + UI jako zwykły skrypt, nie jako pliki boczne. Powód: przewodnik jest jednym plikiem otwieranym z dysku; moduły ES i fetch .wasm są zablokowane przy file://. Pliki engine/ zostają obok dla PWA (cache SW) i testów Node.";
 
 window.__P2S_SILNIK='base64';
@@ -13715,6 +13736,9 @@ function elementyWalca(V, F, os, P) {
 
 
 
+
+
+
 function przeciecie(p, q) {
   const det = p[2] * (-q[3]) - p[3] * (-q[2]);
   if (Math.abs(det) < 0.15) return null;
@@ -13729,6 +13753,9 @@ function mediana(arr) {
   const m = Math.floor(s.length / 2);
   return s.length % 2 ? s[m] : 0.5 * (s[m - 1] + s[m]);
 }
+
+
+
 
 
 
@@ -13784,11 +13811,17 @@ function dopasujOkreg(pts) {
 
 
 
+
+
+
 function celZnak(dx, dy, nx, ny) {
   const d = Math.hypot(dx, dy);
   if (d < 1e-9) return 0;
   return (dx * nx + dy * ny) / d;
 }
+
+
+
 
 
 
@@ -13809,6 +13842,9 @@ function rozbijBimodalnie(uzyte, rFin, P) {
   if (lo.length < 8 || hi.length < 8) return [uzyte];
   return [lo, hi];
 }
+
+
+
 
 
 
@@ -13980,6 +14016,9 @@ function walceZNormalnych(V, F, os, P) {
 
 
 
+
+
+
 function wSrodku(kon, x, y) {
   let c = false;
   for (const P of kon) {
@@ -14005,6 +14044,9 @@ function rInBinarny(kon, cx, cy, kier, rMin, rMax) {
   }
   return lo;
 }
+
+
+
 
 
 
@@ -14052,6 +14094,9 @@ function przytnijRdzen(seg) {
 
 
 
+
+
+
 function rInWielokier(kon, cx, cy, rMin, rMax) {
   const rs = [];
   for (let a = 0; a < 360; a += 45) {
@@ -14064,6 +14109,9 @@ function rInWielokier(kon, cx, cy, rMin, rMax) {
   const sciana = rs.filter(r => r <= mn + 1.2);
   return mediana(sciana);
 }
+
+
+
 
 
 
@@ -14200,6 +14248,9 @@ function skanPromieniowy(m, os, srodek, P) {
 
 
 
+
+
+
 function kolko(poly) {
   if (poly.length < 6) return null;
   let sx = 0, sy = 0;
@@ -14300,10 +14351,16 @@ function pasmo(d) {
 
 
 
+
+
+
 function tNaOsAbs(os, z0, t) {
   const zRot = z0 + t;
   return os === 'z' ? zRot : -zRot;
 }
+
+
+
 
 
 
@@ -14374,6 +14431,9 @@ function srednicaSprawdzianem(model, os, cx, cy, z0, od, doMm, d0) {
 
 
 
+
+
+
 function srednicaWPasmie(V, F, os, srodekUW, zLo, zHi, r0, P) {
   const [A, U, W] = OSIE[os];
   const rs = [];
@@ -14409,6 +14469,9 @@ function srednicaWPasmie(V, F, os, srodekUW, zLo, zHi, r0, P) {
   }
   return { d: mediana(rs) * 2, n: rs.length };
 }
+
+
+
 
 
 
@@ -14502,9 +14565,13 @@ function dopiszKrotkieWspolosiowe(V, F, walce, P) {
 
 
 
+
+
+
 const PROG_NIE_WALEC_MM = 0.3;
 const PROG_GWINT_PRZEKROJ_MM = 0.25;
 const NKAT_PRZEKROJ_GWINT = 180;
+const PROG_STOSUNEK_ZAKRES_RMIN = 2.0;
 /* Sygnał: przekrój zmienia się wzdłuż osi (stożek, pogłębienie, zlepione cechy).
    Nie gwint — min po kącie przy stałym z zjada profil zwoju. */
 
@@ -14585,6 +14652,9 @@ function oznaczNieWalec(cechy, V, F) {
 
 
 
+
+
+
 function paraSasiadowPonad(zakresy, prog) {
   if (!zakresy || zakresy.length < 2 || !(prog > 0)) return null;
   let peak = -Infinity;
@@ -14602,6 +14672,9 @@ function paraSasiadowPonad(zakresy, prog) {
   indeksy.sort((a, b) => a - b);
   return { zakres: peak, indeksy };
 }
+
+
+
 
 
 
@@ -14678,6 +14751,9 @@ function przekrojPromieni(V, F, os, cx, cy, z, nKat) {
 
 
 
+
+
+
 function oznaczGwintLubNiewalec(cechy, V, F, walce, bb) {
   const PROG = PROG_GWINT_PRZEKROJ_MM;
   const rDyszy = (typeof PROMIEN_DYSZY_MM === 'number' && PROMIEN_DYSZY_MM > 0)
@@ -14704,6 +14780,16 @@ function oznaczGwintLubNiewalec(cechy, V, F, walce, bb) {
     const iOs = { x: 0, y: 1, z: 2 }[os];
     const rest = [0, 1, 2].filter((i) => i !== iOs);
     return { iOs, iA: rest[0], iB: rest[1] };
+  };
+  /** Połowa mniejszego boku prostopadle do osi cechy — nie stała mm.
+   *  r_max poza tym = zewnętrzna granica poza materiałem. */
+  const polgabarytProstopadle = (os) => {
+    if (!bb || !bb.min || !bb.max) return null;
+    const { iA, iB } = indeksy(os);
+    const ha = (bb.max[iA] - bb.min[iA]) / 2;
+    const hb = (bb.max[iB] - bb.min[iB]) / 2;
+    if (!Number.isFinite(ha) || !Number.isFinite(hb)) return null;
+    return Math.min(ha, hb);
   };
   const skokZKatow = (probki) => {
     if (!probki || probki.length < 4) return null;
@@ -14774,9 +14860,10 @@ function oznaczGwintLubNiewalec(cechy, V, F, walce, bb) {
       zakres: para.zakres, rMin: rMinPara, rMax: rMaxGw,
       przepust: 2 * rMinPara, skok: skokZKatow(katy), stosunek
     };
-    // rMin poniżej dyszy: BLAD_POMIARU, nie cisza. Stosunek → ∞ przy rMin → 0
-    // bez osobnej stałej „wielokrotność muskania”.
-    if (!Number.isFinite(rMinPara) || rMinPara < rDyszy) rec.blad = true;
+    // rMin < dysza: BLAD_POMIARU (stosunek → ∞ przy rMin → 0).
+    // rMin może przejść dyszę (tutucu1 ≈0,995), a zakres/rMin i tak jest śmieciem.
+    if (!Number.isFinite(rMinPara) || rMinPara < rDyszy
+        || stosunek >= PROG_STOSUNEK_ZAKRES_RMIN) rec.blad = true;
     return rec;
   };
   const osie = [];
@@ -14809,16 +14896,29 @@ function oznaczGwintLubNiewalec(cechy, V, F, walce, bb) {
         bb.min[iOs], bb.max[iOs], null);
     }
   }
-  let best = null;
-  const bledy = [];
+  const kandydaci = [];
   for (const o of osie) {
     const g = zmierz(o.os, o.cx, o.cy, o.od, o.do);
     if (!g) continue;
-    if (g.blad) {
-      bledy.push({ o, g });
-      continue;
+    const pol = polgabarytProstopadle(o.os);
+    if (Number.isFinite(g.rMax) && Number.isFinite(pol) && g.rMax > pol) {
+      const stosLog = Number.isFinite(g.stosunek) ? +g.stosunek.toFixed(3) : null;
+      console.log('ZASIEG odrzut', JSON.stringify({
+        os: o.os,
+        r_max: +g.rMax.toFixed(3),
+        polgabaryt: +pol.toFixed(3),
+        stosunek: stosLog
+      }));
+      g.blad = true;
+      g.zasieg = { r_max: g.rMax, polgabaryt: pol, stosunek: g.stosunek };
     }
-    if (!best || g.zakres > best.g.zakres) best = { o, g };
+    kandydaci.push({ o, g });
+  }
+  const bledy = kandydaci.filter((k) => k.g.blad);
+  let best = null;
+  for (const k of kandydaci) {
+    if (k.g.blad) continue;
+    if (!best || k.g.zakres > best.g.zakres) best = k;
   }
   const nowyId = () => {
     let maxId = 0;
@@ -14828,6 +14928,20 @@ function oznaczGwintLubNiewalec(cechy, V, F, walce, bb) {
   for (const { o, g } of bledy) {
     const stos = Number.isFinite(g.stosunek) ? g.stosunek.toFixed(2) : '∞';
     const rTxt = Number.isFinite(g.rMin) ? g.rMin.toFixed(3) : String(g.rMin);
+    const podDysza = !Number.isFinite(g.rMin) || g.rMin < rDyszy;
+    const zas = g.zasieg;
+    const opisBlad = zas
+      ? ('pomiar niemożliwy — r_max=' + Number(zas.r_max).toFixed(2)
+        + ' mm > półgabaryt ⊥ ' + Number(zas.polgabaryt).toFixed(2)
+        + ' mm (oś ' + o.os + ', zakres/rMin = ' + stos
+        + '). Otwór nie może wychodzić poza materiał.')
+      : (podDysza
+        ? ('pomiar niemożliwy — promień ' + rTxt + ' mm poniżej promienia dyszy ('
+          + rDyszy.toFixed(2) + ' mm = SCIANKA_DRUKOWALNA/2); zakres/rMin = ' + stos
+          + '. To zepsuty pomiar, nie otwór.')
+        : ('pomiar niemożliwy — zakres/rMin = ' + stos + ' ≥ ' + PROG_STOSUNEK_ZAKRES_RMIN
+          + ' (rMin=' + rTxt + ' mm przechodzi próg dyszy ' + rDyszy.toFixed(2)
+          + ' mm). To zepsuta oś, nie gwint.'));
     kandydaciDbg.push({
       os: o.os, r: g.rMin, srednica_mm: Number.isFinite(g.przepust) ? +g.przepust.toFixed(3) : null,
       srodek: [o.cx, o.cy], inlierow: 0, pokrycie_kata_deg: 0,
@@ -14853,9 +14967,7 @@ function oznaczGwintLubNiewalec(cechy, V, F, walce, bb) {
       stosunek_zakres_rmin: Number.isFinite(g.stosunek) ? +g.stosunek.toFixed(3) : null,
       srednica_mm: Number.isFinite(g.przepust) ? +g.przepust.toFixed(3) : null,
       r: Number.isFinite(g.rMin) ? g.rMin : null,
-      opis: 'pomiar niemożliwy — promień ' + rTxt + ' mm poniżej promienia dyszy ('
-        + rDyszy.toFixed(2) + ' mm = SCIANKA_DRUKOWALNA/2); zakres/rMin = ' + stos
-        + '. To zepsuty pomiar, nie otwór.'
+      opis: opisBlad
     });
   }
   if (!best) return;
@@ -14889,6 +15001,9 @@ function oznaczGwintLubNiewalec(cechy, V, F, walce, bb) {
     ...pola
   });
 }
+
+
+
 
 
 
@@ -15063,6 +15178,9 @@ function katalogZCech(m, V, F, P) {
     kandydaci: kandydaciDbg.slice(), stopnie_skanu: skan.stopnie
   };
 }
+
+
+
 
 
 
@@ -15436,7 +15554,17 @@ function luzGniazda(nominal, pasowanie = 'przesuwne', material = 'PETG') {
   return luzMm(nominal, pasowanie, material);
 }
 
-function interpretujZdanie(zdanie, katalog, opts = {}) {
+function jestBladPomiaru(c) {
+  const k = c && c.odmowa;
+  return k === 'BLAD_POMIARU' || k === 'BŁĄD_POMIARU';
+}
+
+function cechyDecyzyjne(cechy) {
+  return (cechy || []).filter((c) => !jestBladPomiaru(c));
+}
+
+function interpretujZdanie(zdanie, katalog, opts = {}
+) {
   const t = String(zdanie || '').toLowerCase().replace(',', '.');
   const m = t.match(/(\d+(?:\.\d+)?)\s*mm/);
   const wymiar = m ? +m[1] : null;
@@ -15497,10 +15625,11 @@ function interpretujZdanie(zdanie, katalog, opts = {}) {
 function walidujOdpowiedzModelu(odp, katalog) {
   if (!odp || typeof odp !== 'object') return { ok: false, kod: 'ZLY_SCHEMAT' };
   if (odp.cecha_id == null) return { ok: false, kod: 'BRAK_ID' };
-  const c = (katalog.cechy || []).find(x => x.id === odp.cecha_id);
+  const c = cechyDecyzyjne(katalog.cechy).find(x => x.id === odp.cecha_id);
   if (!c) return { ok: false, kod: 'CECHA_POZA_KATALOGIEM', cecha_id: odp.cecha_id };
   return { ok: true, cecha: c };
 }
+
 
 function planZmiany(cecha, dNowa) {
   const r0 = cecha.r ?? cecha.srednica_mm / 2;
@@ -15554,6 +15683,9 @@ function zwezGniazdo(model, cecha, dNowa) {
 
 
 
+
+
+
 function segmentyDlaPromienia(r) {
   try {
     if (wasmMod && typeof wasmMod.getCircularSegments === 'function') {
@@ -15563,6 +15695,9 @@ function segmentyDlaPromienia(r) {
   } catch {}
   return circularSegmentsUstawione;
 }
+
+
+
 
 
 
@@ -15628,11 +15763,17 @@ function rCiecie(rDocelowe, nSeg) {
 
 
 
+
+
+
 function nZOdczytu(dOczek, dZmierzone) {
   const c = dZmierzone / dOczek;
   if (!(c > 0.97 && c < 0.99995)) return null;
   return Math.max(16, Math.round(Math.PI / Math.acos(c)));
 }
+
+
+
 
 
 
@@ -15676,6 +15817,9 @@ function rMinKrawedziXY(V, F, cx, cy, z, rMin) {
   }
   return best === Infinity ? null : best;
 }
+
+
+
 
 
 
@@ -15750,10 +15894,16 @@ function wytnijDoSrednicy(aligned, cx, cy, zLo, zHi, dNowa, arena, zMierzLo, zMi
 
 
 
+
+
+
 function worldZToAligned(os, worldA) {
   if (os === 'z') return worldA;
   return -worldA;
 }
+
+
+
 
 
 
@@ -15781,9 +15931,15 @@ function zakresNaAligned(cecha) {
 
 
 
+
+
+
 function padFazki(h0) {
   return Math.min(3, Math.max(MARGINES_CIECIA_MM, Math.max(0, h0) * 0.25));
 }
+
+
+
 
 
 
@@ -15805,6 +15961,9 @@ function rNaPlaszczyznie(aligned, cx, cy, z, rMin, rMax) {
   if (wSrodku(kon, cx, cy)) return Infinity;
   return rInWielokier(kon, cx, cy, rMin, rMax);
 }
+
+
+
 
 
 
@@ -15888,11 +16047,17 @@ function zasiegCiecia(aligned, cecha, dNowa, tryb = 'poszerz') {
 
 
 
+
+
+
 function progSciankiMm() {
   if (typeof sciankaMin === 'function') return sciankaMin();
   if (typeof SCIANKA_MIN === 'number') return SCIANKA_MIN;
   throw new Error('brak progu ścianki (gate.js / SCIANKA_DRUKOWALNA_MM)');
 }
+
+
+
 
 function poszerzGniazdo(model, cecha, dNowa) {
   const arena = [];
@@ -15916,6 +16081,9 @@ function poszerzGniazdo(model, cecha, dNowa) {
   if (cecha.os !== 'z') arena.push(wynik);
   return { wynik, arena };
 }
+
+
+
 
 
 
@@ -15963,8 +16131,11 @@ function bramkaPrzerobki(stara, nowa, katPrzed, katPo, cecha, plan, dCel) {
       blad('GABARYT', `Gabaryt osi ${i} zmienił się o ${(gabN[i] - gabS[i]).toFixed(3)} mm.`, gabN[i] - gabS[i]);
   }
 
-  for (const c of (katPrzed.cechy || []).filter(x => x.id !== cecha.id && x.rodzaj === 'gniazdo_walcowe')) {
-    const kand = (katPo.cechy || []).find(x => x.rodzaj === c.rodzaj && x.os === c.os &&
+  const przedDec = cechyDecyzyjne(katPrzed.cechy)
+    .filter((x) => x.id !== cecha.id && x.rodzaj === 'gniazdo_walcowe');
+  const poDec = cechyDecyzyjne(katPo.cechy);
+  for (const c of przedDec) {
+    const kand = poDec.find(x => x.rodzaj === c.rodzaj && x.os === c.os &&
       Math.abs(x.srednica_mm - c.srednica_mm) < 0.8 &&
       Math.abs((x.od_mm ?? 0) - (c.od_mm ?? 0)) < 6);
     if (!kand)
@@ -16039,7 +16210,12 @@ function bramkaPrzerobki(stara, nowa, katPrzed, katPo, cecha, plan, dCel) {
 
 
 
-function wykonajPrzerobke(kat, cechaId, dNowa, opts = {}) {
+
+
+
+
+function wykonajPrzerobke(kat, cechaId, dNowa, opts = {}
+) {
   ustawNPrzerobki();
   const oryg = kat._solid;
   if (!oryg) throw new Error('Brak bryły w katalogu — rozpoznaj() najpierw.');
@@ -16144,6 +16320,9 @@ function fmtDowody(c) {
 
 
 
+
+
+
 function zapiszSTLBinarny(V, F) {
   const n = F.length / 3;
   const u8 = new Uint8Array(84 + n * 50);
@@ -16221,13 +16400,62 @@ window.P2S.przerobka = {
   var NAZWY_CIAL = null;
 
   function rodzajTxt(c) {
-    if (c && c.odmowa === 'BLAD_POMIARU') return 'błąd pomiaru';
+    if (c && (c.odmowa === 'BLAD_POMIARU' || c.odmowa === 'BŁĄD_POMIARU')) return 'błąd pomiaru';
     if (c && c.odmowa === 'GWINT_LUB_NIEWALEC') return 'gwint / niewalec';
     if (c && c.odmowa === 'NIE_WALEC') return 'nie walec';
     if (c.rodzaj === 'gniazdo_walcowe') return 'otwór';
     if (c.rodzaj === 'czop_walcowy') return 'czop';
     if (c.rodzaj === 'wzor_otworow') return 'wzór otworów';
     return c.rodzaj || 'cecha';
+  }
+function jestBladPomiaru(c) {
+  const k = c && c.odmowa;
+  return k === 'BLAD_POMIARU' || k === 'BŁĄD_POMIARU';
+}
+
+  function jestOdmowaWyniku(c) {
+    return !!(c && c.odmowa && !jestBladPomiaru(c));
+  }
+  /** Stan kafelka: odmowa ≠ pewność niska ≠ zepsuty pomiar. */
+  function klasyfikujCecheKafelka(c) {
+    if (!c) return { lista: 'pomin', typ: 'pomin', klasa: '', disabled: false };
+    if (jestBladPomiaru(c)) {
+      return { lista: 'blad_pomiaru', typ: 'blad_pomiaru', klasa: '', disabled: false };
+    }
+    if (jestOdmowaWyniku(c)) {
+      return { lista: 'decyzja', typ: 'odmowa', klasa: 'pr-kafel pr-karta-odmowy', disabled: false };
+    }
+    var p = c.pewnosc || '';
+    if (p === 'niska' || c.edytowalna === false) {
+      return { lista: 'decyzja', typ: 'niska', klasa: 'pr-kafel ost', disabled: false };
+    }
+    if (p === 'wysoka') {
+      return { lista: 'decyzja', typ: 'walec', klasa: 'pr-kafel wys', disabled: false };
+    }
+    return { lista: 'decyzja', typ: 'walec', klasa: 'pr-kafel sr', disabled: false };
+  }
+  function trescKartyOdmowy(c) {
+    var kod = String((c && c.odmowa) || '');
+    var zamiatanie = (c && Number.isFinite(c.zakres_promienia_mm))
+      ? ('zamiatanie ' + fmt(c.zakres_promienia_mm, 3) + ' mm')
+      : '';
+    var skok = (c && Number.isFinite(c.skok_mm))
+      ? ('skok ' + fmt(c.skok_mm) + ' mm')
+      : '';
+    var powod = (c && c.opis) || '';
+    var co = 'To wynik pomiaru, nie awaria. Nie da się podać jednej średnicy.';
+    if (kod === 'GWINT_LUB_NIEWALEC') {
+      co = 'Nie wpisuj jednej Ø. Zmierz gwint albo użyj przepustu — edycja walca tu nie działa.';
+    } else if (kod === 'NIE_WALEC') {
+      co = 'Przekrój zmienia się wzdłuż osi. Nie edytuj jak gładkiego otworu.';
+    }
+    return {
+      kod: kod,
+      naglowek: zamiatanie || kod,
+      skok: skok,
+      powod: powod,
+      co: co
+    };
   }
   function zakresTxt(c) {
     if (c.zakres_nd || c.od_mm == null || c.do_mm == null || !isFinite(c.od_mm) || !isFinite(c.do_mm))
@@ -16334,30 +16562,54 @@ window.P2S.przerobka = {
       box.appendChild(el('p', 'pr-pusto', 'Nie znalazłem powierzchni walcowych w tym modelu.'));
       return;
     }
+    var bledyPomiaru = [];
     cechy.forEach(function (c, i) {
       console.log('DET ' + c.id + ' · Ø' + c.srednica_mm + ' · zakres ' + c.od_mm + '–' + c.do_mm);
-      var p = c.pewnosc || '';
-      var nis = p === 'niska' || c.edytowalna === false || !!c.odmowa;
-      var k = el('button', 'pr-kafel' + (nis ? ' nis' : (p === 'wysoka' ? ' wys' : ' sr')));
+      var stanK = klasyfikujCecheKafelka(c);
+      if (stanK.lista === 'blad_pomiaru') {
+        bledyPomiaru.push(c);
+        return;
+      }
+      var k = el('button', stanK.klasa);
       k.type = 'button';
-      k.disabled = nis;
-      var tytul = c.odmowa
-        ? String(c.odmowa)
-        : (Number.isFinite(c.srednica_mm) ? ('Ø' + fmt(c.srednica_mm) + ' mm') : (c.opis || 'cecha'));
-      k.appendChild(el('div', 'pr-k-d', tytul));
-      k.appendChild(el('div', 'pr-k-r', (c.odmowa && c.opis)
-        ? c.opis
-        : (rodzajTxt(c) + ' · oś ' + String(c.os || '').toUpperCase())));
-      k.appendChild(el('div', 'pr-k-z', zakresTxt(c)));
-      var d = c.dowody || {};
-      var luk = d.pokrycie_kata_deg != null ? d.pokrycie_kata_deg : d.pokrycie;
-      var tr = d.trojkatow != null ? d.trojkatow : c.trojkatow;
-      k.appendChild(el('div', 'pr-k-p',
-        'łuk ' + (luk != null ? luk + '°' : '—') +
-        ' · ' + (tr != null ? tr : '—') + ' trójkątów · pewność ' + pewnoscTxt(p)));
+      k.disabled = false;
+      k.setAttribute('data-i', String(i));
+      if (stanK.typ === 'odmowa') {
+        var t = trescKartyOdmowy(c);
+        k.appendChild(el('div', 'pr-k-kod', t.naglowek));
+        if (t.skok) k.appendChild(el('div', 'pr-k-skok', t.skok));
+        if (t.powod) k.appendChild(el('div', 'pr-k-powod', t.powod));
+        k.appendChild(el('div', 'pr-k-co', t.co));
+      } else {
+        var p = c.pewnosc || '';
+        var tytul = Number.isFinite(c.srednica_mm)
+          ? ('Ø' + fmt(c.srednica_mm) + ' mm')
+          : (c.opis || 'cecha');
+        k.appendChild(el('div', 'pr-k-d', tytul));
+        if (stanK.typ === 'niska') k.appendChild(el('div', 'pr-k-pew', 'PEWNOŚĆ NISKA'));
+        k.appendChild(el('div', 'pr-k-r', rodzajTxt(c) + ' · oś ' + String(c.os || '').toUpperCase()));
+        k.appendChild(el('div', 'pr-k-z', zakresTxt(c)));
+        var d = c.dowody || {};
+        var luk = d.pokrycie_kata_deg != null ? d.pokrycie_kata_deg : d.pokrycie;
+        var tr = d.trojkatow != null ? d.trojkatow : c.trojkatow;
+        k.appendChild(el('div', 'pr-k-p',
+          'łuk ' + (luk != null ? luk + '°' : '—') +
+          ' · ' + (tr != null ? tr : '—') + ' trójkątów · pewność ' + pewnoscTxt(p)));
+      }
       k.addEventListener('click', function () { wybierz(i); });
       box.appendChild(k);
     });
+    if (bledyPomiaru.length) {
+      var det = el('details', 'pr-bledy-pomiaru');
+      var nBl = bledyPomiaru.length;
+      det.appendChild(el('summary', null,
+        'detektor: ' + (nBl === 1 ? '1 błąd pomiaru' : (nBl + ' błędów pomiaru'))));
+      bledyPomiaru.forEach(function (c) {
+        det.appendChild(el('p', 'pr-blad-pomiaru-w',
+          (c.odmowa || 'BLAD_POMIARU') + (c.opis ? ' — ' + c.opis : '')));
+      });
+      box.appendChild(det);
+    }
     var otw = cechy.filter(function (c) {
       return c.rodzaj === 'gniazdo_walcowe' && !c.odmowa && c.edytowalna !== false;
     }).length;
@@ -16372,17 +16624,25 @@ window.P2S.przerobka = {
     var c = cechy[i];
     if (!c) return;
     WYBRANA = i;
-    document.querySelectorAll('#prCechy .pr-kafel').forEach(function (k, j) {
-      k.classList.toggle('akt', j === i);
+    document.querySelectorAll('#prCechy .pr-kafel').forEach(function (k) {
+      k.classList.toggle('akt', Number(k.getAttribute('data-i')) === i);
     });
-    if ($('prEdycja')) $('prEdycja').hidden = false;
-    if ($('prEOpis')) {
-      $('prEOpis').textContent = c.odmowa
-        ? (c.opis || c.odmowa)
-        : ('Ø' + fmt(c.srednica_mm) + ' mm, ' + rodzajTxt(c) +
-          ', oś ' + String(c.os || '').toUpperCase());
+    var odm = jestOdmowaWyniku(c);
+    if ($('prEdycja')) {
+      $('prEdycja').hidden = false;
+      $('prEdycja').classList.toggle('pr-tylko-werdykt', odm);
     }
-    if ($('prNowa')) $('prNowa').value = fmt(c.srednica_mm);
+    if ($('prEOpis')) {
+      if (odm) {
+        var t = trescKartyOdmowy(c);
+        $('prEOpis').textContent = [t.naglowek, t.skok, t.powod, t.co].filter(Boolean).join(' — ');
+      } else {
+        $('prEOpis').textContent = 'Ø' + fmt(c.srednica_mm) + ' mm, ' + rodzajTxt(c) +
+          ', oś ' + String(c.os || '').toUpperCase()
+          + (c.pewnosc === 'niska' ? ' · PEWNOŚĆ NISKA' : '');
+      }
+    }
+    if ($('prNowa')) $('prNowa').value = odm ? '' : fmt(c.srednica_mm);
     przeliczLuz();
   }
   function wierszTab(tab, a, b) {
@@ -16495,6 +16755,10 @@ window.P2S.przerobka = {
     if (WYBRANA == null || !KAT) return;
     var A = pipe();
     var c = KAT.cechy[WYBRANA];
+    if (jestOdmowaWyniku(c) || jestBladPomiaru(c)) {
+      if ($('prWynik')) $('prWynik').textContent = 'Ta cecha nie ma jednej średnicy do edycji.';
+      return;
+    }
     var d = dCel();
     if (d == null) {
       if ($('prWynik')) $('prWynik').textContent = 'Podaj liczbę.';
@@ -17131,6 +17395,10 @@ window.P2S.przerobka = {
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
   else bind();
+  window.P2S.klasyfikujCecheKafelka = klasyfikujCecheKafelka;
+  window.P2S.trescKartyOdmowy = trescKartyOdmowy;
+  window.P2S.pokazCechyPrzerobu = function (kat) { KAT = kat; pokazCechy(); };
+  window.P2S.wybierzCechePrzerobu = wybierz;
   window.__P2S_PRZEROBKA_UI = true;
 })();
 </script>

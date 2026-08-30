@@ -39,13 +39,61 @@
   var NAZWY_CIAL = null;
 
   function rodzajTxt(c) {
-    if (c && c.odmowa === 'BLAD_POMIARU') return 'błąd pomiaru';
+    if (c && (c.odmowa === 'BLAD_POMIARU' || c.odmowa === 'BŁĄD_POMIARU')) return 'błąd pomiaru';
     if (c && c.odmowa === 'GWINT_LUB_NIEWALEC') return 'gwint / niewalec';
     if (c && c.odmowa === 'NIE_WALEC') return 'nie walec';
     if (c.rodzaj === 'gniazdo_walcowe') return 'otwór';
     if (c.rodzaj === 'czop_walcowy') return 'czop';
     if (c.rodzaj === 'wzor_otworow') return 'wzór otworów';
     return c.rodzaj || 'cecha';
+  }
+  function jestBladPomiaru(c) {
+    var k = c && c.odmowa;
+    return k === 'BLAD_POMIARU' || k === 'BŁĄD_POMIARU';
+  }
+  function jestOdmowaWyniku(c) {
+    return !!(c && c.odmowa && !jestBladPomiaru(c));
+  }
+  /** Stan kafelka: odmowa ≠ pewność niska ≠ zepsuty pomiar. */
+  function klasyfikujCecheKafelka(c) {
+    if (!c) return { lista: 'pomin', typ: 'pomin', klasa: '', disabled: false };
+    if (jestBladPomiaru(c)) {
+      return { lista: 'blad_pomiaru', typ: 'blad_pomiaru', klasa: '', disabled: false };
+    }
+    if (jestOdmowaWyniku(c)) {
+      return { lista: 'decyzja', typ: 'odmowa', klasa: 'pr-kafel pr-karta-odmowy', disabled: false };
+    }
+    var p = c.pewnosc || '';
+    if (p === 'niska' || c.edytowalna === false) {
+      return { lista: 'decyzja', typ: 'niska', klasa: 'pr-kafel ost', disabled: false };
+    }
+    if (p === 'wysoka') {
+      return { lista: 'decyzja', typ: 'walec', klasa: 'pr-kafel wys', disabled: false };
+    }
+    return { lista: 'decyzja', typ: 'walec', klasa: 'pr-kafel sr', disabled: false };
+  }
+  function trescKartyOdmowy(c) {
+    var kod = String((c && c.odmowa) || '');
+    var zamiatanie = (c && Number.isFinite(c.zakres_promienia_mm))
+      ? ('zamiatanie ' + fmt(c.zakres_promienia_mm, 3) + ' mm')
+      : '';
+    var skok = (c && Number.isFinite(c.skok_mm))
+      ? ('skok ' + fmt(c.skok_mm) + ' mm')
+      : '';
+    var powod = (c && c.opis) || '';
+    var co = 'To wynik pomiaru, nie awaria. Nie da się podać jednej średnicy.';
+    if (kod === 'GWINT_LUB_NIEWALEC') {
+      co = 'Nie wpisuj jednej Ø. Zmierz gwint albo użyj przepustu — edycja walca tu nie działa.';
+    } else if (kod === 'NIE_WALEC') {
+      co = 'Przekrój zmienia się wzdłuż osi. Nie edytuj jak gładkiego otworu.';
+    }
+    return {
+      kod: kod,
+      naglowek: zamiatanie || kod,
+      skok: skok,
+      powod: powod,
+      co: co
+    };
   }
   function zakresTxt(c) {
     if (c.zakres_nd || c.od_mm == null || c.do_mm == null || !isFinite(c.od_mm) || !isFinite(c.do_mm))
@@ -152,30 +200,54 @@
       box.appendChild(el('p', 'pr-pusto', 'Nie znalazłem powierzchni walcowych w tym modelu.'));
       return;
     }
+    var bledyPomiaru = [];
     cechy.forEach(function (c, i) {
       console.log('DET ' + c.id + ' · Ø' + c.srednica_mm + ' · zakres ' + c.od_mm + '–' + c.do_mm);
-      var p = c.pewnosc || '';
-      var nis = p === 'niska' || c.edytowalna === false || !!c.odmowa;
-      var k = el('button', 'pr-kafel' + (nis ? ' nis' : (p === 'wysoka' ? ' wys' : ' sr')));
+      var stanK = klasyfikujCecheKafelka(c);
+      if (stanK.lista === 'blad_pomiaru') {
+        bledyPomiaru.push(c);
+        return;
+      }
+      var k = el('button', stanK.klasa);
       k.type = 'button';
-      k.disabled = nis;
-      var tytul = c.odmowa
-        ? String(c.odmowa)
-        : (Number.isFinite(c.srednica_mm) ? ('Ø' + fmt(c.srednica_mm) + ' mm') : (c.opis || 'cecha'));
-      k.appendChild(el('div', 'pr-k-d', tytul));
-      k.appendChild(el('div', 'pr-k-r', (c.odmowa && c.opis)
-        ? c.opis
-        : (rodzajTxt(c) + ' · oś ' + String(c.os || '').toUpperCase())));
-      k.appendChild(el('div', 'pr-k-z', zakresTxt(c)));
-      var d = c.dowody || {};
-      var luk = d.pokrycie_kata_deg != null ? d.pokrycie_kata_deg : d.pokrycie;
-      var tr = d.trojkatow != null ? d.trojkatow : c.trojkatow;
-      k.appendChild(el('div', 'pr-k-p',
-        'łuk ' + (luk != null ? luk + '°' : '—') +
-        ' · ' + (tr != null ? tr : '—') + ' trójkątów · pewność ' + pewnoscTxt(p)));
+      k.disabled = false;
+      k.setAttribute('data-i', String(i));
+      if (stanK.typ === 'odmowa') {
+        var t = trescKartyOdmowy(c);
+        k.appendChild(el('div', 'pr-k-kod', t.naglowek));
+        if (t.skok) k.appendChild(el('div', 'pr-k-skok', t.skok));
+        if (t.powod) k.appendChild(el('div', 'pr-k-powod', t.powod));
+        k.appendChild(el('div', 'pr-k-co', t.co));
+      } else {
+        var p = c.pewnosc || '';
+        var tytul = Number.isFinite(c.srednica_mm)
+          ? ('Ø' + fmt(c.srednica_mm) + ' mm')
+          : (c.opis || 'cecha');
+        k.appendChild(el('div', 'pr-k-d', tytul));
+        if (stanK.typ === 'niska') k.appendChild(el('div', 'pr-k-pew', 'PEWNOŚĆ NISKA'));
+        k.appendChild(el('div', 'pr-k-r', rodzajTxt(c) + ' · oś ' + String(c.os || '').toUpperCase()));
+        k.appendChild(el('div', 'pr-k-z', zakresTxt(c)));
+        var d = c.dowody || {};
+        var luk = d.pokrycie_kata_deg != null ? d.pokrycie_kata_deg : d.pokrycie;
+        var tr = d.trojkatow != null ? d.trojkatow : c.trojkatow;
+        k.appendChild(el('div', 'pr-k-p',
+          'łuk ' + (luk != null ? luk + '°' : '—') +
+          ' · ' + (tr != null ? tr : '—') + ' trójkątów · pewność ' + pewnoscTxt(p)));
+      }
       k.addEventListener('click', function () { wybierz(i); });
       box.appendChild(k);
     });
+    if (bledyPomiaru.length) {
+      var det = el('details', 'pr-bledy-pomiaru');
+      var nBl = bledyPomiaru.length;
+      det.appendChild(el('summary', null,
+        'detektor: ' + (nBl === 1 ? '1 błąd pomiaru' : (nBl + ' błędów pomiaru'))));
+      bledyPomiaru.forEach(function (c) {
+        det.appendChild(el('p', 'pr-blad-pomiaru-w',
+          (c.odmowa || 'BLAD_POMIARU') + (c.opis ? ' — ' + c.opis : '')));
+      });
+      box.appendChild(det);
+    }
     var otw = cechy.filter(function (c) {
       return c.rodzaj === 'gniazdo_walcowe' && !c.odmowa && c.edytowalna !== false;
     }).length;
@@ -190,17 +262,25 @@
     var c = cechy[i];
     if (!c) return;
     WYBRANA = i;
-    document.querySelectorAll('#prCechy .pr-kafel').forEach(function (k, j) {
-      k.classList.toggle('akt', j === i);
+    document.querySelectorAll('#prCechy .pr-kafel').forEach(function (k) {
+      k.classList.toggle('akt', Number(k.getAttribute('data-i')) === i);
     });
-    if ($('prEdycja')) $('prEdycja').hidden = false;
-    if ($('prEOpis')) {
-      $('prEOpis').textContent = c.odmowa
-        ? (c.opis || c.odmowa)
-        : ('Ø' + fmt(c.srednica_mm) + ' mm, ' + rodzajTxt(c) +
-          ', oś ' + String(c.os || '').toUpperCase());
+    var odm = jestOdmowaWyniku(c);
+    if ($('prEdycja')) {
+      $('prEdycja').hidden = false;
+      $('prEdycja').classList.toggle('pr-tylko-werdykt', odm);
     }
-    if ($('prNowa')) $('prNowa').value = fmt(c.srednica_mm);
+    if ($('prEOpis')) {
+      if (odm) {
+        var t = trescKartyOdmowy(c);
+        $('prEOpis').textContent = [t.naglowek, t.skok, t.powod, t.co].filter(Boolean).join(' — ');
+      } else {
+        $('prEOpis').textContent = 'Ø' + fmt(c.srednica_mm) + ' mm, ' + rodzajTxt(c) +
+          ', oś ' + String(c.os || '').toUpperCase()
+          + (c.pewnosc === 'niska' ? ' · PEWNOŚĆ NISKA' : '');
+      }
+    }
+    if ($('prNowa')) $('prNowa').value = odm ? '' : fmt(c.srednica_mm);
     przeliczLuz();
   }
   function wierszTab(tab, a, b) {
@@ -313,6 +393,10 @@
     if (WYBRANA == null || !KAT) return;
     var A = pipe();
     var c = KAT.cechy[WYBRANA];
+    if (jestOdmowaWyniku(c) || jestBladPomiaru(c)) {
+      if ($('prWynik')) $('prWynik').textContent = 'Ta cecha nie ma jednej średnicy do edycji.';
+      return;
+    }
     var d = dCel();
     if (d == null) {
       if ($('prWynik')) $('prWynik').textContent = 'Podaj liczbę.';
@@ -949,5 +1033,9 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
   else bind();
+  window.P2S.klasyfikujCecheKafelka = klasyfikujCecheKafelka;
+  window.P2S.trescKartyOdmowy = trescKartyOdmowy;
+  window.P2S.pokazCechyPrzerobu = function (kat) { KAT = kat; pokazCechy(); };
+  window.P2S.wybierzCechePrzerobu = wybierz;
   window.__P2S_PRZEROBKA_UI = true;
 })();
