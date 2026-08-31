@@ -467,10 +467,7 @@ export async function mesh3MF(mesh, opcje = {}) {
   const model =
 `<?xml version="1.0" encoding="UTF-8"?>
 <model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02">
- <metadata name="Application">Przewodnik P2S</metadata>
- <metadata name="Title">${esc3(nazwa)}</metadata>
- <metadata name="Description">${esc3(opisHintStudio(opcje.spec))}</metadata>
- <resources>
+${xmlMetadanych3mf(opcje, nazwa)} <resources>
   <object id="1" type="model" name="${esc3(nazwa)}">
    <mesh>
     <vertices>${V.join('')}</vertices>
@@ -530,10 +527,7 @@ export async function mesh3MFWiele(czesci, opcje = {}) {
   const model =
 `<?xml version="1.0" encoding="UTF-8"?>
 <model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02">
- <metadata name="Application">Przewodnik P2S</metadata>
- <metadata name="Title">${esc3(opcje.nazwa || 'projekt')}</metadata>
- <metadata name="Description">${esc3(opisHintStudio(opcje.spec))}</metadata>
- <resources>
+${xmlMetadanych3mf(opcje, opcje.nazwa || 'projekt')} <resources>
 ${obiekty.join('\n')}
  </resources>
  <build>${itemy.join('')}</build>
@@ -579,6 +573,33 @@ function opisHintStudio(spec) {
   const fil = nazwaFilamentuKalibrowane(spec && spec.material);
   return 'Wskazówka, nie ustawienie slicera: proces 0.20 mm Standard @BBL P2S; filament '
     + fil + '. 3MF to geometria — profil KALIBROWANE wybierasz w Studio. Bez project_settings.';
+}
+
+/** ND potwierdzona: wolno ciąć u siebie, nie publikować. Bramka PRZED eksportem. */
+export function wymagaPotwierdzeniaNd(licMeta) {
+  const L = licMeta && licMeta.licencja;
+  return !!(L && L.przerobic === false && L.potwierdzona);
+}
+
+export function polaLicencji3mf(licMeta) {
+  if (!licMeta) return { author: '', license: '', extraDesc: '' };
+  const L = licMeta.licencja || {};
+  return {
+    author: String(licMeta.autor || ''),
+    license: String(L.label_pl || L.id || L.raw || ''),
+    extraDesc: [licMeta.zrodlo, licMeta.tytul, L.restrictions_pl].filter(Boolean).join(' · ')
+  };
+}
+
+function xmlMetadanych3mf(opcje, nazwa) {
+  const pola = polaLicencji3mf(opcje.licencja || opcje.licMeta || null);
+  const desc = [opisHintStudio(opcje.spec), pola.extraDesc].filter(Boolean).join(' | ');
+  let xml = ` <metadata name="Application">Przewodnik P2S</metadata>\n`;
+  xml += ` <metadata name="Title">${esc3(nazwa)}</metadata>\n`;
+  xml += ` <metadata name="Description">${esc3(desc)}</metadata>\n`;
+  if (pola.author) xml += ` <metadata name="Author">${esc3(pola.author)}</metadata>\n`;
+  if (pola.license) xml += ` <metadata name="License">${esc3(pola.license)}</metadata>\n`;
+  return xml;
 }
 
 /**

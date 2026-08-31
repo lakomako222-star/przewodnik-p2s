@@ -1,0 +1,11 @@
+# Kanał OTA APK: origin 4.0.14. Lokalny apk/version.json (np. 4.2.15) to brud.
+apk/version.json
+apk/PrzewodnikP2S-latest.apk
+
+# Pomiary / demo — nie produkt
+_mier_chipy.html
+preview-demo.html
+
+# Ciężkie binaria — 25 MB w git zostaje na zawsze
+vendor/ort/*.wasm
+modele/*.onnx

@@ -596,7 +596,7 @@ export function sprawdzZebrowanie(spec) {
  * @param {*} part Manifold
  * @param {object} dekl deklaracja (bbox z pomiaru po budowie)
  * @param {object} spec znormalizowany SPEC
- * @param {{ wmin?: number }} opts wmin 0.8 (nośna) albo 0.42
+ * @param {{ wmin?: number, wylaczBramki?: string[] }} opts wmin 0.8 (nośna) albo 0.42
  */
 export function sprawdzBramke(part, dekl, spec, opts = {}) {
   const out = [];
@@ -703,8 +703,13 @@ export function sprawdzBramke(part, dekl, spec, opts = {}) {
     blad(sci.code || 'SCIENKA_OTWOR', sci.details.localReason, sci.details.wallMm);
   }
 
-  for (const w of sprawdzTace(part, spec)) out.push(w);
-  for (const w of sprawdzZebrowanie(spec)) out.push(w);
+  const skip = new Set((opts && opts.wylaczBramki) || []);
+  if (!skip.has('TACA_BEZ_RANTU')) {
+    for (const w of sprawdzTace(part, spec)) out.push(w);
+  }
+  if (!skip.has('STOJAK_BEZ_ZEBER')) {
+    for (const w of sprawdzZebrowanie(spec)) out.push(w);
+  }
 
   const cm3 = vol / 1000;
   if (cm3 > 200) {

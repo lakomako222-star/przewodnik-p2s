@@ -1,0 +1,12 @@
+Apache License 2.0
+
+Model ONNX: Masamsa/3d-print-failure-mobilevit-xxs
+https://huggingface.co/Masamsa/3d-print-failure-mobilevit-xxs
+
+Base: apple/mobilevit-xx-small (Apache-2.0)
+https://huggingface.co/apple/mobilevit-xx-small
+
+PrintGuard (oliverbravery/PrintGuard) i Edge-FDM-Fault-Detection są GPL-2.0
+i celowo NIE wchodzą do tej paczki.
+
+onnxruntime-web: MIT (Microsoft).

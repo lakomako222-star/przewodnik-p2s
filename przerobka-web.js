@@ -592,6 +592,7 @@ function elementyWalca(V, F, os, P) {
 
 
 
+
 function przeciecie(p, q) {
   const det = p[2] * (-q[3]) - p[3] * (-q[2]);
   if (Math.abs(det) < 0.15) return null;
@@ -606,6 +607,7 @@ function mediana(arr) {
   const m = Math.floor(s.length / 2);
   return s.length % 2 ? s[m] : 0.5 * (s[m - 1] + s[m]);
 }
+
 
 
 
@@ -669,11 +671,13 @@ function dopasujOkreg(pts) {
 
 
 
+
 function celZnak(dx, dy, nx, ny) {
   const d = Math.hypot(dx, dy);
   if (d < 1e-9) return 0;
   return (dx * nx + dy * ny) / d;
 }
+
 
 
 
@@ -698,6 +702,7 @@ function rozbijBimodalnie(uzyte, rFin, P) {
   if (lo.length < 8 || hi.length < 8) return [uzyte];
   return [lo, hi];
 }
+
 
 
 
@@ -877,6 +882,7 @@ function walceZNormalnych(V, F, os, P) {
 
 
 
+
 function wSrodku(kon, x, y) {
   let c = false;
   for (const P of kon) {
@@ -902,6 +908,7 @@ function rInBinarny(kon, cx, cy, kier, rMin, rMax) {
   }
   return lo;
 }
+
 
 
 
@@ -957,6 +964,7 @@ function przytnijRdzen(seg) {
 
 
 
+
 function rInWielokier(kon, cx, cy, rMin, rMax) {
   const rs = [];
   for (let a = 0; a < 360; a += 45) {
@@ -969,6 +977,7 @@ function rInWielokier(kon, cx, cy, rMin, rMax) {
   const sciana = rs.filter(r => r <= mn + 1.2);
   return mediana(sciana);
 }
+
 
 
 
@@ -1113,6 +1122,7 @@ function skanPromieniowy(m, os, srodek, P) {
 
 
 
+
 function kolko(poly) {
   if (poly.length < 6) return null;
   let sx = 0, sy = 0;
@@ -1217,10 +1227,12 @@ function pasmo(d) {
 
 
 
+
 function tNaOsAbs(os, z0, t) {
   const zRot = z0 + t;
   return os === 'z' ? zRot : -zRot;
 }
+
 
 
 
@@ -1299,6 +1311,7 @@ function srednicaSprawdzianem(model, os, cx, cy, z0, od, doMm, d0) {
 
 
 
+
 function srednicaWPasmie(V, F, os, srodekUW, zLo, zHi, r0, P) {
   const [A, U, W] = OSIE[os];
   const rs = [];
@@ -1334,6 +1347,7 @@ function srednicaWPasmie(V, F, os, srodekUW, zLo, zHi, r0, P) {
   }
   return { d: mediana(rs) * 2, n: rs.length };
 }
+
 
 
 
@@ -1435,6 +1449,7 @@ function dopiszKrotkieWspolosiowe(V, F, walce, P) {
 
 
 
+
 const PROG_NIE_WALEC_MM = 0.3;
 const PROG_GWINT_PRZEKROJ_MM = 0.25;
 const NKAT_PRZEKROJ_GWINT = 180;
@@ -1451,11 +1466,13 @@ function srednicaMinPrzepustem(V, F, os, cx, cy, od, doMm, krok) {
 }
 
 
+
 function fasetaSrednicyMm(d, nKat) {
   const n = nKat > 4 ? nKat : 16;
   if (!(d > 0)) return 0;
   return d * (1 / Math.cos(Math.PI / n) - 1);
 }
+
 
 function plastrySrednicy(V, F, os, cx, cy, od, doMm, krok) {
   const iOs = { x: 0, y: 1, z: 2 }[os];
@@ -1504,6 +1521,7 @@ function plastrySrednicy(V, F, os, cx, cy, od, doMm, krok) {
   return out;
 }
 
+
 function przytnijOknoPlaskie(plastry, nKat) {
   if (!plastry || plastry.length < 2) return plastry || [];
   let a = 0, b = plastry.length - 1;
@@ -1519,6 +1537,7 @@ function przytnijOknoPlaskie(plastry, nKat) {
   }
   return plastry.slice(a, b + 1);
 }
+
 
 function oznaczNieWalec(cechy, V, F) {
   for (const c of cechy) {
@@ -1561,6 +1580,7 @@ function oznaczNieWalec(cechy, V, F) {
 
 
 
+
 function paraSasiadowPonad(zakresy, prog) {
   if (!zakresy || zakresy.length < 2 || !(prog > 0)) return null;
   let peak = -Infinity;
@@ -1578,6 +1598,7 @@ function paraSasiadowPonad(zakresy, prog) {
   indeksy.sort((a, b) => a - b);
   return { zakres: peak, indeksy };
 }
+
 
 
 
@@ -1652,6 +1673,7 @@ function przekrojPromieni(V, F, os, cx, cy, z, nKat) {
     dwaTrafienia: nDrugie >= first.length * 0.5, katMax: thMax, nKat: n, z
   };
 }
+
 
 
 
@@ -1920,6 +1942,7 @@ function oznaczGwintLubNiewalec(cechy, V, F, walce, bb) {
 
 
 
+
 function katalogZCech(m, V, F, P) {
   kandydaciDbg.length = 0;
   const bb = m.boundingBox();
@@ -2087,6 +2110,7 @@ function katalogZCech(m, V, F, P) {
     kandydaci: kandydaciDbg.slice(), stopnie_skanu: skan.stopnie
   };
 }
+
 
 
 
@@ -2470,12 +2494,15 @@ function jestBladPomiaru(c) {
 }
 
 
+
 function cechyDecyzyjne(cechy) {
   return (cechy || []).filter((c) => !jestBladPomiaru(c));
 }
 
 
+
 function interpretujZdanie(zdanie, katalog, opts = {}
+
 
 ) {
   const t = String(zdanie || '').toLowerCase().replace(',', '.');
@@ -2545,6 +2572,7 @@ function walidujOdpowiedzModelu(odp, katalog) {
 
 
 
+
 function planZmiany(cecha, dNowa) {
   const r0 = cecha.r ?? cecha.srednica_mm / 2;
   const r1 = dNowa / 2;
@@ -2601,6 +2629,7 @@ function zwezGniazdo(model, cecha, dNowa) {
 
 
 
+
 function segmentyDlaPromienia(r) {
   try {
     if (wasmMod && typeof wasmMod.getCircularSegments === 'function') {
@@ -2610,6 +2639,7 @@ function segmentyDlaPromienia(r) {
   } catch {}
   return circularSegmentsUstawione;
 }
+
 
 
 
@@ -2683,11 +2713,13 @@ function rCiecie(rDocelowe, nSeg) {
 
 
 
+
 function nZOdczytu(dOczek, dZmierzone) {
   const c = dZmierzone / dOczek;
   if (!(c > 0.97 && c < 0.99995)) return null;
   return Math.max(16, Math.round(Math.PI / Math.acos(c)));
 }
+
 
 
 
@@ -2735,6 +2767,7 @@ function rMinKrawedziXY(V, F, cx, cy, z, rMin) {
   }
   return best === Infinity ? null : best;
 }
+
 
 
 
@@ -2817,10 +2850,12 @@ function wytnijDoSrednicy(aligned, cx, cy, zLo, zHi, dNowa, arena, zMierzLo, zMi
 
 
 
+
 function worldZToAligned(os, worldA) {
   if (os === 'z') return worldA;
   return -worldA;
 }
+
 
 
 
@@ -2856,9 +2891,11 @@ function zakresNaAligned(cecha) {
 
 
 
+
 function padFazki(h0) {
   return Math.min(3, Math.max(MARGINES_CIECIA_MM, Math.max(0, h0) * 0.25));
 }
+
 
 
 
@@ -2884,6 +2921,7 @@ function rNaPlaszczyznie(aligned, cx, cy, z, rMin, rMax) {
   if (wSrodku(kon, cx, cy)) return Infinity;
   return rInWielokier(kon, cx, cy, rMin, rMax);
 }
+
 
 
 
@@ -2975,11 +3013,13 @@ function zasiegCiecia(aligned, cecha, dNowa, tryb = 'poszerz') {
 
 
 
+
 function progSciankiMm() {
   if (typeof sciankaMin === 'function') return sciankaMin();
   if (typeof SCIANKA_MIN === 'number') return SCIANKA_MIN;
   throw new Error('brak progu ścianki (gate.js / SCIANKA_DRUKOWALNA_MM)');
 }
+
 
 
 
@@ -3007,6 +3047,7 @@ function poszerzGniazdo(model, cecha, dNowa) {
   if (cecha.os !== 'z') arena.push(wynik);
   return { wynik, arena };
 }
+
 
 
 
@@ -3143,7 +3184,10 @@ function bramkaPrzerobki(stara, nowa, katPrzed, katPo, cecha, plan, dCel) {
 
 
 
+
+
 function wykonajPrzerobke(kat, cechaId, dNowa, opts = {}
+
 
 ) {
   ustawNPrzerobki();
@@ -3242,6 +3286,7 @@ function fmtDowody(c) {
   }
   return c.opis;
 }
+
 
 
 

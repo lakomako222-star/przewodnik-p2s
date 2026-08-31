@@ -1513,6 +1513,18 @@ async function zbuduj(spec, note, prev, context, opts) {
   if (bledyBramki.length) {
     throw new Error(bledyBramki.map(w => w.kod + ': ' + w.tekst).join('; '));
   }
+  if (typeof window !== 'undefined' && window.P2S
+      && typeof window.P2S.flagaWizjaProjekt === 'function'
+      && window.P2S.flagaWizjaProjekt()
+      && typeof window.P2S.ocenWizjaProjekt === 'function'
+      && r.mesh) {
+    const wiz = window.P2S.ocenWizjaProjekt(r.mesh, spec);
+    if (wiz && wiz.kody && wiz.kody.length) {
+      throw new Error(wiz.kody.map(function (k) {
+        return k + ': ' + ((wiz.teksty && wiz.teksty[k]) || k);
+      }).join('; '));
+    }
+  }
   $('pjPytanieWrap').hidden = true;
   last = r;
   lastIdx = 0;
@@ -1902,6 +1914,20 @@ function bind() {
     syncExport(last.werdykt);
     pokazCheckliste(last.spec, last.werdykt);
   });
+  const wizCb = $('pjWizjaProjekt');
+  if (wizCb) {
+    let off = false;
+    try { off = localStorage.getItem('p2s.wizjaProjekt') === '0'; } catch (e0) {}
+    wizCb.checked = !off;
+    if (window.P2S && typeof window.P2S.ustawWizjeProjekt === 'function') {
+      window.P2S.ustawWizjeProjekt(!off);
+    }
+    wizCb.addEventListener('change', () => {
+      if (window.P2S && typeof window.P2S.ustawWizjeProjekt === 'function') {
+        window.P2S.ustawWizjeProjekt(!!wizCb.checked);
+      }
+    });
+  }
   function otworzRzut(klucz) {
     if (!last) return;
     const r = (last.czesci && last.czesci[lastIdx]) || last;

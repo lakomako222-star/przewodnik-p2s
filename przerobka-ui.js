@@ -37,6 +37,34 @@
   var MESH = null;
   var CIALA = null;
   var NAZWY_CIAL = null;
+  var LIC_META = null;
+
+  function pokazLicencjePrzerobu() {
+    var box = $('prLicencja');
+    if (!box) return;
+    if (!LIC_META) { box.innerHTML = ''; box.hidden = true; return; }
+    box.hidden = false;
+    var L = LIC_META.licencja || {};
+    var nd = L.przerobic === false && L.potwierdzona;
+    box.innerHTML = '';
+    box.appendChild(el('p', 'tnote',
+      (LIC_META.zrodlo || 'model') + (LIC_META.autor ? ' · ' + LIC_META.autor : '')
+      + (LIC_META.tytul ? ' · ' + LIC_META.tytul : '')));
+    box.appendChild(el('p', 'tnote',
+      (L.label_pl || 'Licencja niepotwierdzona')
+      + (L.restrictions_pl ? ' — ' + L.restrictions_pl : '')));
+    if (nd) {
+      box.appendChild(el('p', 'sm-nd',
+        'ND: tnij u siebie, nie publikuj przeróbki. To nie jest porada prawna.'));
+    }
+    if (LIC_META.url) {
+      var a = el('a', null, 'Strona autora');
+      a.href = LIC_META.url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      box.appendChild(a);
+    }
+  }
 
   function rodzajTxt(c) {
     if (c && (c.odmowa === 'BLAD_POMIARU' || c.odmowa === 'BŁĄD_POMIARU')) return 'błąd pomiaru';
@@ -201,6 +229,7 @@
       return;
     }
     var bledyPomiaru = [];
+    var kafle = [];
     cechy.forEach(function (c, i) {
       console.log('DET ' + c.id + ' · Ø' + c.srednica_mm + ' · zakres ' + c.od_mm + '–' + c.do_mm);
       var stanK = klasyfikujCecheKafelka(c);
@@ -208,6 +237,18 @@
         bledyPomiaru.push(c);
         return;
       }
+      kafle.push({ c: c, i: i, stanK: stanK });
+    });
+    kafle.sort(function (a, b) {
+      var ra = a.stanK.typ === 'odmowa' ? 1 : 0;
+      var rb = b.stanK.typ === 'odmowa' ? 1 : 0;
+      if (ra !== rb) return ra - rb;
+      return a.i - b.i;
+    });
+    kafle.forEach(function (item) {
+      var c = item.c;
+      var i = item.i;
+      var stanK = item.stanK;
       var k = el('button', stanK.klasa);
       k.type = 'button';
       k.disabled = false;
@@ -241,7 +282,7 @@
       var det = el('details', 'pr-bledy-pomiaru');
       var nBl = bledyPomiaru.length;
       det.appendChild(el('summary', null,
-        'detektor: ' + (nBl === 1 ? '1 błąd pomiaru' : (nBl + ' błędów pomiaru'))));
+        'nie zmierzyłem — detektor: ' + (nBl === 1 ? '1 błąd pomiaru' : (nBl + ' błędów pomiaru'))));
       bledyPomiaru.forEach(function (c) {
         det.appendChild(el('p', 'pr-blad-pomiaru-w',
           (c.odmowa || 'BLAD_POMIARU') + (c.opis ? ' — ' + c.opis : '')));
@@ -362,6 +403,7 @@
         $('prMeta').textContent = (kat.trojkatow || '—') + ' trójkątów' +
           (kat.czas_ms != null ? ' · ' + kat.czas_ms + ' ms' : '');
       }
+      pokazLicencjePrzerobu();
       pokazCechy();
       reformEtap('analiza');
       odswiezPodglad();
@@ -443,18 +485,32 @@
     if ($('prPobierz')) $('prPobierz').disabled = false;
     odswiezPodglad();
   }
+  function wymagaNd() {
+    if (window.P2S && typeof window.P2S.wymagaPotwierdzeniaNd === 'function') {
+      return window.P2S.wymagaPotwierdzeniaNd(LIC_META);
+    }
+    var L = LIC_META && LIC_META.licencja;
+    return !!(L && L.przerobic === false && L.potwierdzona);
+  }
   async function pobierz() {
     if (!WYNIK || !window.P2S) return;
+    if (wymagaNd()) {
+      var ok = window.confirm(
+        'Licencja ND: wolno ciąć u siebie, nie publikować przeróbki. To nie jest porada prawna. Eksportować?'
+      );
+      if (!ok) return;
+    }
     reformEtap('eksport');
     var lista = (CIALA && CIALA.length > 1) ? CIALA : null;
     var bytes;
+    var opcjeLic = { licencja: LIC_META };
     if (lista && typeof window.P2S.mesh3MFWiele === 'function') {
       bytes = await window.P2S.mesh3MFWiele(lista.map(function (s, i) {
         var mesh = meshZBryly(s);
         return { mesh: mesh, nazwa: (NAZWY_CIAL && NAZWY_CIAL[i]) || ('czesc' + (i + 1)), bbox: mesh.bbox };
-      }), { nazwa: NAZWA + '_zmieniony', zachowajPolozenie: true, minZZero: false });
+      }), Object.assign({ nazwa: NAZWA + '_zmieniony', zachowajPolozenie: true, minZZero: false }, opcjeLic));
     } else if (typeof window.P2S.mesh3MF === 'function') {
-      bytes = await window.P2S.mesh3MF(meshZBryly(WYNIK), { nazwa: NAZWA + '_zmieniony' });
+      bytes = await window.P2S.mesh3MF(meshZBryly(WYNIK), Object.assign({ nazwa: NAZWA + '_zmieniony' }, opcjeLic));
     } else return;
     var blob = new Blob([bytes], { type: 'model/3mf' });
     var nazwaPliku = NAZWA + '_zmieniony.3mf';
@@ -601,7 +657,7 @@
         SPEC = window.P2S.scaleSpecNumeric(SPEC, sx);
         var r = window.P2S.buildAndGate(SPEC);
         if (r && r.mesh && typeof window.P2S.mesh3MF === 'function') {
-          var buf = await window.P2S.mesh3MF(r.mesh, { nazwa: NAZWA, spec: SPEC });
+          var buf = await window.P2S.mesh3MF(r.mesh, { nazwa: NAZWA, spec: SPEC, licencja: LIC_META });
           await wczytaj(asFile(buf, (NAZWA || 'projekt') + '_skala.3mf'));
           SPEC = r.spec || SPEC;
           odswiezCheckliste(window.P2S.ocenBrimPoSkali ? window.P2S.ocenBrimPoSkali(SPEC, r.mesh.bbox) : SPEC, r.werdykt);
@@ -888,7 +944,7 @@
       if (typeof window.P2S.initEngine === 'function') await window.P2S.initEngine();
       var r = window.P2S.buildAndGate(spec);
       if (r && r.mesh && typeof window.P2S.mesh3MF === 'function') {
-        var buf = await window.P2S.mesh3MF(r.mesh, { nazwa: spec.nazwa || NAZWA, spec: spec });
+        var buf = await window.P2S.mesh3MF(r.mesh, { nazwa: spec.nazwa || NAZWA, spec: spec, licencja: LIC_META });
         await wczytaj(asFile(buf, (spec.nazwa || NAZWA || 'projekt') + '_przerob.3mf'));
         SPEC = r.spec || spec;
         odswiezCheckliste(SPEC, r.werdykt);
@@ -1043,6 +1099,11 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
   else bind();
+  window.P2S.wczytaj = wczytaj;
+  window.P2S.ustawLicencjePrzerobu = function (meta) {
+    LIC_META = meta || null;
+    pokazLicencjePrzerobu();
+  };
   window.P2S.klasyfikujCecheKafelka = klasyfikujCecheKafelka;
   window.P2S.trescKartyOdmowy = trescKartyOdmowy;
   window.P2S.pokazCechyPrzerobu = function (kat) { KAT = kat; pokazCechy(); };

@@ -53,6 +53,9 @@ export function dopasowania(zdanie) {
   if (/\bkalkulator\b|\bile wazy\b|\bluz\b.*pasow/.test(t))
     dodaj(hits, 'tools', 'narzędzie');
 
+  if (/\b(znajdz|szukaj)\b.*\b(model|uchwyt|stl|3mf)\b|\bthingiverse\b|\bprintables\b|\bmakerworld\b|\bszukanie modeli\b/.test(t))
+    dodaj(hits, 'tools', 'szukanie modeli');
+
   if (/\basystent\b|\bdopytaj ai\b|\bdopytaj\b/.test(t) && !/\bprzewodnik\b/.test(t))
     dodaj(hits, 'ai', 'rozmowa');
 

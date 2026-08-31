@@ -1107,11 +1107,29 @@ function specMaNapis(spec) {
   return ((spec && spec.bryly) || []).some(b => b && b.ksztalt && b.ksztalt.typ === 'napis');
 }
 
+function sprobujBrep(part, c, keep, spec) {
+  const g = typeof globalThis !== 'undefined' ? globalThis : null;
+  const api = g && g.P2S;
+  if (!api || typeof api.flagaBrepCechy !== 'function' || !api.flagaBrepCechy()) return null;
+  if (typeof api.zastosujBrepCeche !== 'function') return null;
+  const r = api.zastosujBrepCeche(part, c, keep);
+  if (r && r.ok && r.part) return r.part;
+  if (spec && r && r.etykieta) {
+    const arr = spec._ostrzezeniaNorm || (spec._ostrzezeniaNorm = []);
+    if (arr.indexOf(r.etykieta) < 0) arr.push(r.etykieta);
+  }
+  return null;
+}
+
 function cecha(part, c, keep, spec) {
   if (c.typ === 'zaokraglenie_pionowe' && specMaNapis(spec)) {
     (spec._ostrzezeniaNorm || (spec._ostrzezeniaNorm = []))
       .push('zaokraglenie_pionowe pominięte na napisie FDM (zjada kreski bitmapy).');
     return part;
+  }
+  if (c.typ === 'zaokraglenie_pionowe' || c.typ === 'faza_gorna' || c.typ === 'faza_dolna') {
+    const alt = sprobujBrep(part, c, keep, spec);
+    if (alt) return alt;
   }
   switch (c.typ) {
     case 'otwor':
@@ -1192,10 +1210,11 @@ export function snapshotMesh(part) {
   };
 }
 
-function zlozBryly(spec, keep) {
+function zlozBryly(spec, keep, opts) {
   let part = null;
   const ctx = {};
   const obce = [];
+  const skip = new Set((opts && opts.wylaczBramki) || []);
   for (const b of spec.bryly) {
     const s = osadz(bryla(b.ksztalt, keep, ctx), b, keep);
     if (ctx.napis && b.ksztalt.typ !== 'napis' && b.operacja === 'dodaj') {
@@ -1209,7 +1228,8 @@ function zlozBryly(spec, keep) {
   }
   if (!part) throw new Error('Brak brył do złożenia');
   if (ctx.napis && obce.length) {
-    const wpisy = sprawdzDodatkiNapisu(ctx.napis, obce, { CrossSection });
+    const wpisy = sprawdzDodatkiNapisu(ctx.napis, obce, { CrossSection })
+      .filter(w => !skip.has(w.kod));
     const bledy = wpisy.filter(w => w.poziom === 'blad');
     if (bledy.length) throw new Error(bledy.map(w => w.kod + ': ' + w.tekst).join(' | '));
     for (const w of wpisy) (spec._ostrzezeniaNorm || (spec._ostrzezeniaNorm = [])).push(w.tekst);
@@ -1241,7 +1261,7 @@ function buildOnePart(specWe, opts) {
     return { pytania: spec.pytania, spec, mesh: null, werdykt: { wpisy: [], eksportOk: false }, deklaracja: spec.deklaracja };
   }
   return withArena(keep => {
-    let part = zlozBryly(spec, keep);
+    let part = zlozBryly(spec, keep, opts);
     for (const c of spec.cechy) part = cecha(part, c, keep, spec);
     // Materiał wokół otworów mierzymy tu, bo punkt_mm cechy żyje w układzie SPEC-u,
     // a zastosujOrientacjeDruku przenosi siatkę do układu płyty.

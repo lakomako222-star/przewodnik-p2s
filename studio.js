@@ -510,7 +510,7 @@
     { id: 'calc', label: 'Kalkulatory', heads: ['Zmiana filamentu', 'Koszt wydruku', 'Grubość powłoki', 'Skala a materiał', 'Dobierz luz', 'Jeden pomiar', 'Deklaracja', 'Okrąg a liczba'] },
     { id: 'modele', label: 'Modele', heads: ['Szukanie modeli', 'Licencja', 'Karta modelu', 'Kreator briefu'] },
     { id: 'analiza', label: 'Analiza', heads: ['Analiza modelu'] },
-    { id: 'uslugi', label: 'Usługi', heads: ['Usługi zewnętrzne'] }
+    { id: 'uslugi', label: 'Usługi', heads: ['Usługi zewnętrzne', 'Odczyt LAN'] }
   ];
 
   function bindTools() {

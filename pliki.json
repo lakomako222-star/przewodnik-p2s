@@ -1,6 +1,6 @@
 {
-  "wersja": "4.2.35",
-  "stempel": "95963980",
+  "wersja": "4.2.42",
+  "stempel": "702792a3",
   "krytyczne": [
     "index.html",
     "engine/manifold.js",
@@ -24,14 +24,28 @@
     "przerobka-web.js",
     "przerobka-ui.js",
     "intent.js",
+    "modele_guard.js",
+    "modele-rura.js",
     "szukaj.js",
     "nitka.js",
     "spec-validate.js",
     "font-skrypt.js",
     "studio.css",
     "studio.js",
+    "analizator-3mf.js",
+    "analizator-profile.js",
+    "analizator-profile.json",
+    "wyszukiwanie.js",
+    "wektory-przewodnik.json",
+    "ocena-zdjecia.js",
+    "ocena-zdjecia.json",
+    "drukarka-status.js",
+    "wizja-projekt.js",
+    "brep-cechy.js",
+    "modele/LICENSE-ocena-zdjecia.txt",
     "wersja.json",
     "pliki.json",
-    "sw.js"
+    "sw.js",
+    "vendor/ort/LICENSE-onnxruntime-web.txt"
   ]
 }
