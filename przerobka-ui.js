@@ -132,9 +132,10 @@
     if (p === 'srednia') return 'średnia';
     return p || '';
   }
+  var SUFIT_PR = 'Walec tak (N=192). Szczelina i kieszeń nie w tej wersji.';
   function stan(t) {
     var n = $('prStan');
-    if (n) n.textContent = t || '';
+    if (n) n.textContent = t || SUFIT_PR;
   }
   function pasKey(v) {
     var p = window.P2S && window.P2S.PASOWANIA;

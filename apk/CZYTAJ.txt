@@ -1,0 +1,36 @@
+APK — droga docelowa na telefon (stan 30.08.2026)
+=================================================
+
+Paczka `PrzewodnikP2S-latest.apk` na GitHubie to nadal **4.0.14**
+(versionCode 40014015). To publiczny trigger updatera Java — nie podbijaj
+GitHub apk/version.json bez nowej paczki pod tym samym URL.
+Lokalny kanoniczny `apk/version.json` = **4.2.15 / 40215000** — nietknięty.
+Sideload shell: VERSION_NAME=**4.2.42**, VERSION_CODE_BASE=**40233000**
+(legacy code z 4.2.33). Nie wymyślaj nowego versionCode.
+Treść kanon Desktop = **4.2.42** (lokalnie). Pages publiczny zapas = **4.2.35**.
+Origin się nie zmienia, pliki pod nim tak.
+
+Origin
+------
+https://appassets.androidplatform.net
+  /assets/   — wpieczony spadochron
+  /biezaca/  — kopia z Pages (podmiana przy następnym starcie)
+
+localStorage (klucze, p2s.uslugi) należy do origin, więc przeżywa
+aktualizację treści. Nawigacja wprost na Pages przeniosłaby origin —
+tego nie robimy.
+
+PWA zostaje jako zapas (brak paczki, iPhone):
+https://lakomako222-star.github.io/przewodnik-p2s/
+
+Jedna lista plików
+------------------
+`pliki.json` z `build_pwa.py`. Czytają ją `sw.js` i updater APK.
+Na appassets service worker się **nie** rejestruje — aktualizuje apka.
+
+Milczące WebView
+----------------
+onShowFileChooser — wczytanie STL
+DownloadListener — http(s)
+P2S.pobierzPlik → MediaStore — blob: (3MF z fflate); sam DownloadListener
+dla blob: nie jest wołany.

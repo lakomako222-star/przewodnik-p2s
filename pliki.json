@@ -1,6 +1,6 @@
 {
-  "wersja": "4.2.42",
-  "stempel": "702792a3",
+  "wersja": "4.2.45",
+  "stempel": "7d1e12eb",
   "krytyczne": [
     "index.html",
     "engine/manifold.js",
@@ -32,6 +32,9 @@
     "font-skrypt.js",
     "studio.css",
     "studio.js",
+    "t0-checklista.js",
+    "szpule-kalibrowane.js",
+    "hms-dekoder.js",
     "analizator-3mf.js",
     "analizator-profile.js",
     "analizator-profile.json",

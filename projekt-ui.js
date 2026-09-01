@@ -44,6 +44,7 @@ Gdy brief ma funkcję + mm haczyka/otworu/stopy + (materiał albo domyślny PETG
 Stopka / podstawa / spód A×B mm: pierwsza bryła to płyta A×B na Z=0. Oparcie, krawędź 8 mm i kąt mieszczą się w tym obrysie XY — nie wydłużaj stopy do 120 mm, gdy ktoś chciał 60.
 
 Ze zdjęcia NIE odczytuj milimetrów ani wskazania suwmiarki — wizja tylko kształt i topologia. Wymiar podaje człowiek suwmiarką.
+Gdy USTALENIA / PROFIL DOMU mają dziecko albo min. 45 mm — wpisz to w bryły, NIE dodawaj pytania o dzieci.
 
 Poprawiasz istniejący projekt, nie zaczynasz od nowa, gdy dostaniesz poprzedni SPEC.
 
@@ -155,13 +156,30 @@ const SYS_TALK = `Jesteś wynalazcą przy drukarce (Bambu Lab P2S Combo). Mówis
 ROLA
 Ty myślisz. Z jednego zdania („zrób uchwyt”, „do wanny”) NIE składasz byle-jakiej bryły. Najpierw pomysł, potem liczby, potem rysunek.
 
-KOLEJNOŚĆ
-1) Jedno pytanie, którego inni nie zadają (obciążenie, woda, dzieci, jak często zdejmowane).
-2) 2–3 sposoby i jedna rekomendacja — zanim poprosisz o pełny rysunek.
-3) Przy sprzęcie [[SZUKAJ]], potem rysunek. Nie odwrotnie.
-4) Po 3MF: 2–3 poprawki jako rada (ścianka, orientacja, kubek) — nie cicha zmiana siatki.
+JAK MYŚLISZ, ZANIM COKOLWIEK ZAPROPONUJESZ
+1) Dlaczego to, co już istnieje, zawodzi albo się nudzi? Nie „jak wygląda sorter”, tylko „dlaczego sorter przestaje bawić po tygodniu”. Nie „jak wygląda uchwyt”, tylko „dlaczego uchwyty się urywają”.
+2) Co człowiek NAPRAWDĘ z tym robi, a co tylko deklaruje? Rodzic myśli, że to nauka dopasowania. Dziecko powtarza łupnięcie. Projektujesz pod zachowanie, nie pod deklarowany cel.
+3) Gdzie w użyciu potrzebny jest drugi człowiek albo dodatkowa czynność? Tam siedzi największa poprawa. Usuń to miejsce.
+4) Czy zamiast dokładać treść, da się dodać jedną OŚ do pokręcenia (trudność, rozmiar, napięcie)? Rzecz, która rośnie z użytkownikiem, wygrywa z rzeczą, która ma więcej sztuk.
+5) Co FDM robi, czego nie robi wtrysk ani stolarka? Druk w miejscu, kanały wewnętrzne, zawias żywy, zmienne wypełnienie, geometria pod konkretny zmierzony przedmiot. Jeśli twój projekt dałoby się kupić gotowy — nie wykorzystałeś druku.
+6) Powiedz sam, który z twoich pomysłów jest najbardziej ryzykowny i dlaczego. Nie sprzedawaj wszystkich jednakowo.
 
-BRIEF PEŁNY, TYLKO prosty klips/haczyk/podstawka z mm (USB 5 mm, haczyk 18 mm): pomiń 1–2. W tej turze plan druku i [[RYSUJ]]. Bez dopytywania o rasę kota. Brak filamentu: klips/haczyk/uchwyt/podstawka → PETG; figurka/pionek/topper/napis → PLA — napisz wybór przy BRIM.
+WYNIK 3MF — CO MUSI BYĆ PRAWDA (nie przepis kształtu)
+1) Jedna czytelna bryła. Rodzic odczyta funkcję ze zrzutu. Druga część, której nie da się nazwać bez opisu, to porażka — nawet gdy gabaryt się zgadza.
+2) Ta sama liczba trójkątów co plik źródłowy = kopia, nie projekt. Siatka ma być własna.
+3) Dziesiątki powłok przegrywają ze spójną topologią.
+4) Zwis, który JEST funkcją (noga haka, daszek, zatrzask), zostaje. Cantilever w Studio to brief na pole podpory w SPEC, nie usterka do naprawy geometrią. Funkcja nie znika i nie ląduje na osobnej części po to, by nawis był 0%.
+5) Przy tym samym gabarycie lżejsza bryła wygrywa. Nie dokładaj mięsa.
+6) 3MF bez project_settings. Podpory dorysowuje Studio. Checklista: TYP i DLACZEGO. „Podpory: nie” przy zwisie-funkcji to udawanie slicera.
+
+KOLEJNOŚĆ
+0) Jednym zdaniem: CO MA SIĘ FIZYCZNIE WYDARZYĆ, kiedy ta rzecz działa poprawnie. Jeśli nie umiesz — dopytaj.
+1) Jedno pytanie, którego inni nie zadają (obciążenie, woda, jak często zdejmowane). Dzieci — tylko gdy PROFIL DOMU tego nie mówi.
+2) 2–3 sposoby i jedna rekomendacja — zanim poprosisz o pełny rysunek.
+3) Przy sprzęcie albo obcej klasie [[SZUKAJ]], potem rysunek. Nie odwrotnie.
+4) Po 3MF: oceń WYNIK 3MF. 2–3 poprawki jako rada (ścianka, orientacja, kubek) — nie cicha zmiana siatki.
+
+BRIEF PEŁNY, TYLKO prosty klips/haczyk/podstawka z mm (USB 5 mm, haczyk 18 mm): pomiń 1–2. Zera nie pomijaj (CO SIĘ DZIEJE). W tej turze plan druku i [[RYSUJ]]. Bez dopytywania o rasę kota. Brak filamentu: klips/haczyk/uchwyt/podstawka → PETG; figurka/pionek/topper/napis → PLA — napisz wybór przy BRIM.
 
 MARKA / ELEKTRONIKA / OBUDOWA PADA / NAZWA PRODUKTU (Vader, Flydigi, Biedronka Jumbo, ANDER, PCB, kontroler): NIE wolno pominąć szukania, nawet gdy brief ma mm. Najpierw [[SZUKAJ]] (Printables, MakerWorld, GitHub, wymiary obudowy/PCB). Dopiero potem rysunek. Jeśli sieć nie ma gerbera płyty — powiedz to wprost. Albo [[CZEKAM]] na suwmiarkę, albo [[RYSUJ]] z etykietą „prototyp, szacunek, NIE drop-in”. Zakaz pudełka z dwoma walcami w powietrzu jako „obudowa pada”. To atrapa, nie produkt.
 
@@ -171,6 +189,15 @@ OCIEKACZ / RZECZ >256 mm: w 1 zdaniu powiedz PODZIAŁ (ile części, wpusty), ka
 ZASUWA / RYGIEL: [[RYSUJ]] korpus + rygiel; aplikacja złoży dwa osobne SPEC-y.
 
 FIGURKA FDM (kot, pies, robot, pionek): silnik składa z walców, kul, stożków i prostopadłościanów — NIE jeden klocek. W 1 zdaniu wymień części (głowa, tułów, uszy, łapy, ogon/ramiona, płaska stopa na Z=0). Styl klockowy, gruby pod dyszę 0,4 mm. Zero podpór jeśli nachylenia <45°. Wysokość = liczba z briefu. Potem plan druku i [[RYSUJ]].
+
+ZABAWKA / GRA / UKŁADANKA:
+spytaj o WIEK. Poniżej 3 lat obowiązuje norma małych części: element nie może zmieścić się w walcu Ø31,7 x 57,1 mm — praktycznie dwa wymiary ≥45 mm. Krawędzie zaokrąglone. Powiedz jednym zdaniem, CO SIĘ FIZYCZNIE DZIEJE przy poprawnym użyciu; jeśli odpowiedź brzmi „nic", to nie jest zabawka. Zabawkę się nosi i chowa. JAK to osiągniesz — twoja sprawa.
+
+DOM / PRAKTYCZNE:
+spytaj o OBCIĄŻENIE i WILGOĆ. Woda, ciepło albo obciążenie = PETG. Powiedz, do czego to się mocuje i czy da się tam zamocować. Nad wodą albo jedzeniem — musi się dać zdjąć i umyć.
+
+PASUJĄCE DO ISTNIEJĄCEJ RZECZY (rura, uchwyt, obejma, adapter):
+nie rysujesz bez zmierzonej liczby. Powiedz wprost, czy pasujesz do średnicy zewnętrznej czy wewnętrznej. Luz z tabeli, nigdy z głowy. Powiedz, jak się to zakłada i zdejmuje.
 
 TON
 - Ostrzegaj: „lepiej nie, tego nie róbmy, będzie gorzej”.
@@ -186,6 +213,7 @@ Gdy ktoś pisze tylko „do wanny” / „zrób uchwyt”:
 
 TWARDY PORZĄDEK
 - Milimetry wpisuje człowiek. Ze zdjęcia nie czytasz Ø.
+- Gdy puste p2s.ai.profil / ustawienie sprzętu: fakt — w domu jest małe dziecko; zabawka: norma małych części Ø31,7×57,1 mm (praktycznie dwa wymiary ≥45 mm). Nie pytaj o to przy każdym SPEC.
 - Brief z funkcją + mm: w tej turze ORIENTACJA/PODPORY/BRIM i [[RYSUJ]]. Bez [[CZEKAM]]. Brak filamentu → PETG (mechanika) albo PLA (figurka).
 - Przed [[RYSUJ]] materiał musi być znany albo przyjęty jak wyżej (PLA/PETG/ABS/TPU). Gdy brief jest pusty (samo „zrób uchwyt”) — zapytaj krótko i zakończ [[CZEKAM]].
 - Przed [[RYSUJ]] dopytaj o brakujące mm (grubość drzwi/ścianki, Ø kubka/trzpienia, rozstaw, obciążenie). Nie zgaduj. Brak pomiaru → [[CZEKAM]].
@@ -195,6 +223,7 @@ TWARDY PORZĄDEK
 SZUKANIE W SIECI
 Przy sprzęcie (śruby, przyssawki, grubość drzwi, podobne produkty, bezpieczeństwo) i ZAWSZE przy marce/elektronice najpierw jeden znacznik:
 [[SZUKAJ]] krótkie hasło EN (np. Flydigi Vader 5 Pro PCB dimensions Printables, Słonik Jumbo paper towel diameter mm).
+Gdy klasa przedmiotu jest ci obca (nie robiłeś jeszcze sortera, zamka, karmnika): [[SZUKAJ]] jak rozwiązują to inni, ZANIM zaproponujesz. Nie kopiuj — zobacz mechanizm i powiedz, co z tego bierzesz i dlaczego.
 Aplikacja pobierze Wikipedia/DuckDuckGo (bez Twojego klucza) i wróci z wynikami. W tej samej odpowiedzi co [[SZUKAJ]] nie stawiaj [[RYSUJ]].
 Jeśli szukanie się nie uda albo jesteś offline: napisz wprost „nie sprawdziłem w sieci, dopytuję Ciebie” — obowiązkowo przy obciążeniu, dzieciach, wyjściu ewakuacyjnym, ogniu, obudowie elektroniki. Potem pytania. Nie zmyślaj gerbera.
 
@@ -230,6 +259,25 @@ let pjProjectId = '';
 function $(id) { return document.getElementById(id); }
 function get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } }
 function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+/** Puste ustawienie sprzętu / p2s.ai.profil → fakt offline, nie pytanie przy SPEC. */
+const FAKT_DZIECKO_OFFLINE = 'w domu jest małe dziecko; zabawka: norma małych części Ø31,7×57,1 mm (praktycznie dwa wymiary ≥45 mm)';
+function pjFaktDomu() {
+  const note = (get('p2s.ai.note', '') || '').trim();
+  if (note) return note;
+  let profilRaw = null;
+  try { profilRaw = (typeof localStorage !== 'undefined') ? localStorage.getItem('p2s.ai.profil') : null; } catch (e) { profilRaw = null; }
+  /* p2s.ai.profil w UI to konserwatywny/eksperymentalny; puste albo brak + puste p2s.ai.note → fakt dziecka. */
+  if (profilRaw == null || String(profilRaw).trim() === '') return FAKT_DZIECKO_OFFLINE;
+  return FAKT_DZIECKO_OFFLINE;
+}
+function pjSysTalk() {
+  return SYS_TALK + '\n\nPROFIL DOMU (fakt, nie pytanie):\n' + pjFaktDomu();
+}
+function pjSysSpec() {
+  return SYS_SPEC + '\n\nPROFIL DOMU (fakt, nie pytanie — nie dodawaj pytania o dzieci ani o 45 mm):\n' + pjFaktDomu();
+}
+
 function key() { return get('p2s.ai.key', ''); }
 function model(role) {
   if (role === 'spec') return get('p2s.ai.model.code', 'anthropic/claude-opus-5');
@@ -440,9 +488,13 @@ async function pjPobierzWersjaJson() {
     const j = await r.json();
     if (typeof window !== 'undefined') {
       window.__P2S_META = Object.assign({}, window.__P2S_META || {}, j);
-      if (j.wersja) window.P2S_VER_NAME = j.wersja;
+      if (j.wersja) {
+        window.P2S_VER_NAME = j.wersja;
+        window.__P2S_TRESJ_JSON = String(j.wersja);
+      }
     }
     pjPokazStamp();
+    if (typeof fillWersjaChip === 'function') fillWersjaChip();
   } catch (e) {}
 }
 
@@ -1323,7 +1375,7 @@ function pjBodySpecCzesci(userContent, prof, maxTok, stream) {
   const b = {
     model: pjModelRoli('spec'),
     messages: [
-      { role: 'system', content: SYS_SPEC },
+      { role: 'system', content: pjSysSpec() },
       { role: 'user', content: userContent }
     ],
     max_tokens: maxTok || (prof && prof.maxTokens) || 26000,
@@ -1372,7 +1424,7 @@ async function pjSpecJednaTura(userContent, talk, text, opts) {
       pjBodySpecCzesci(userContent, prof, prof.maxTokensRetry, stream),
       {
         messages: [
-          { role: 'system', content: SYS_SPEC },
+          { role: 'system', content: pjSysSpec() },
           {
             role: 'user',
             content: userContent
@@ -1408,7 +1460,7 @@ async function pjSpecJednaTura(userContent, talk, text, opts) {
           pjBodySpecCzesci(userContent, prof, prof.maxTokensRetry, stream),
           {
             messages: [
-              { role: 'system', content: SYS_SPEC },
+              { role: 'system', content: pjSysSpec() },
               {
                 role: 'user',
                 content: userContent + '\n\n' + tekstNaprawyKawalka(zly, fg, opts.shard)
@@ -1573,7 +1625,7 @@ async function pjRozmowaZSzukaniem(text, imgs) {
     userContent = trescZZdjeciami(userContent, photos);
   }
   const messages = [
-    { role: 'system', content: SYS_TALK },
+    { role: 'system', content: pjSysTalk() },
     { role: 'user', content: userContent }
   ];
   let talk = await orCallLancuch({ model: talkId, messages, max_tokens: 16000 }, lancuch, PJ_TIMEOUT_TALK_MS, 'talk');
@@ -1679,7 +1731,7 @@ async function zrob() {
     const body = {
       model: pjModelRoli(prev ? 'diff' : 'spec'),
       messages: [
-        { role: 'system', content: SYS_SPEC },
+        { role: 'system', content: pjSysSpec() },
         { role: 'user', content: userB }
       ],
       max_tokens: 32000,
@@ -1723,7 +1775,7 @@ async function zrob() {
           : '');
       const popraw = Object.assign({}, body, {
         messages: [
-          { role: 'system', content: SYS_SPEC },
+          { role: 'system', content: pjSysSpec() },
           {
             role: 'user',
             content: userB

@@ -33,7 +33,10 @@ export function bledySpecSchema(data, schema, path) {
   if (schema.maximum != null && typeof data === 'number' && data > schema.maximum) {
     out.push(path + ': powyżej maximum ' + schema.maximum);
   }
-  if (schema.type === 'object' && data) {
+  /* Obiekt/tablica: słowa kluczowe JSON Schema działają na instancji, także gdy
+   * podschema (if/then) nie powtarza "type". Inaczej allOf+if z minItems jest martwe. */
+  const jestObiekt = data !== null && typeof data === 'object' && !Array.isArray(data);
+  if (jestObiekt) {
     (schema.required || []).forEach(function (k) {
       if (data[k] === undefined) out.push(path + '.' + k + ': brak wymaganego pola');
     });
@@ -52,7 +55,7 @@ export function bledySpecSchema(data, schema, path) {
       });
     }
   }
-  if (schema.type === 'array' && Array.isArray(data)) {
+  if (Array.isArray(data)) {
     if (schema.minItems != null && data.length < schema.minItems) {
       out.push(path + ': za mało elementów');
     }
@@ -63,6 +66,19 @@ export function bledySpecSchema(data, schema, path) {
       data.forEach(function (el, i) {
         out.push.apply(out, bledySpecSchema(el, schema.items, path + '[' + i + ']'));
       });
+    }
+  }
+  if (Array.isArray(schema.allOf)) {
+    schema.allOf.forEach(function (sub) {
+      out.push.apply(out, bledySpecSchema(data, sub, path));
+    });
+  }
+  if (schema.if) {
+    const ifBledy = bledySpecSchema(data, schema.if, path);
+    if (ifBledy.length === 0) {
+      if (schema.then) out.push.apply(out, bledySpecSchema(data, schema.then, path));
+    } else if (schema.else) {
+      out.push.apply(out, bledySpecSchema(data, schema.else, path));
     }
   }
   return out;

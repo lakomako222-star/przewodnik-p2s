@@ -47,8 +47,16 @@ export function dopasowania(zdanie) {
   if (/\bnitk|\bpajeczyn|stringing|warstwy pekaj|nie trzyma sie plyt|niedotlok/.test(t))
     dodaj(hits, 'advisor', 'objaw druku');
 
-  if (/\bhms\b|kod bledu|rozdzial 16/.test(t))
+  if (/\bdekoder\b.*\bhms\b|\bhms\b.*\bdekoder\b|\bwklej kod hms\b/.test(t))
+    dodaj(hits, 'tools', 'dekoder HMS');
+  else if (/\bhms\b|kod bledu|rozdzial 16/.test(t))
     dodaj(hits, 'guide', 'kod HMS / wiedza');
+
+  if (/\bstart wydruku\b|\bchecklista t-?0\b|\bt-0 start\b/.test(t))
+    dodaj(hits, 'tools', 'start wydruku');
+
+  if (/\bszpul(e|a) kalibrowan/.test(t))
+    dodaj(hits, 'tools', 'szpule KALIBROWANE');
 
   if (/\bkalkulator\b|\bile wazy\b|\bluz\b.*pasow/.test(t))
     dodaj(hits, 'tools', 'narzędzie');

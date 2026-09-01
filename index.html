@@ -882,6 +882,11 @@ h3[data-sprawdzono="2026-08-23"]::after{
     <p class="studio-home-sub">Jedno zdanie. Przy zerze albo dwóch drogach nie zgaduję — karta wyniku zostaje kartą.</p>
     <div class="studio-home-pole"></div>
     <div class="studio-home-karta"></div>
+    <div id="t0HomeKarta" class="t0-home"></div>
+    <div class="studio-home-skroty" id="t0HomeSkroty">
+      <button type="button" data-home-tool="tSzpule">Szpule KALIBROWANE</button>
+      <button type="button" data-home-tool="tHms">Dekoder HMS</button>
+    </div>
   </div>
 </div>
 
@@ -2646,6 +2651,9 @@ h3[data-sprawdzono="2026-08-23"]::after{
 <div class="tw"><table><colgroup><col style="width:34.0%"><col style="width:66.0%"></colgroup><thead><tr><th>Kategoria</th><th>Co z niej pochodzi</th></tr></thead><tbody><tr><td data-l="Kategoria">Arkusz specyfikacji i blog Bambu Lab</td><td data-l="Co z niej pochodzi">Parametry P2S, obszar roboczy, temperatury graniczne, wyposażenie</td></tr><tr><td data-l="Kategoria">Bambu Lab Wiki</td><td data-l="Co z niej pochodzi">Procedury obsługi, konserwacji, kalibracji, suszenia i druku TPU</td></tr><tr><td data-l="Kategoria">Karty TDS Bambu Lab</td><td data-l="Co z niej pochodzi">Temperatury i suszenie TPU 95A HF oraz TPU for AMS</td></tr><tr><td data-l="Kategoria">Profile w repozytorium Bambu Studio</td><td data-l="Co z niej pochodzi">Nazwy płyt, limity przepływu, temperatury profilu P2S</td></tr><tr><td data-l="Kategoria">Strony produktowe SUNLU</td><td data-l="Co z niej pochodzi">Zakresy temperatur i prędkości dla PLA, PETG i TPU</td></tr><tr><td data-l="Kategoria">Poradniki SUNLU</td><td data-l="Co z niej pochodzi">Parametry i czasy suszenia</td></tr><tr><td data-l="Kategoria">Materiały BIQU i sprzedawców</td><td data-l="Co z niej pochodzi">Specyfikacja, temperatury i czyszczenie CryoGrip Pro Frostbite oraz Glacier</td></tr><tr><td data-l="Kategoria">Forum Bambu Lab i społeczność</td><td data-l="Co z niej pochodzi">Rozdział 26 - znane pułapki, słabe punkty, praktyka użytkowników</td></tr><tr><td data-l="Kategoria">MakerWorld i Printables</td><td data-l="Co z niej pochodzi">Rozdział 27 - modele akcesoriów i doświadczenia z doborem materiału</td></tr><tr><td data-l="Kategoria">Karta techniczna desykantu</td><td data-l="Co z niej pochodzi">Temperatura i czas regeneracji żelu krzemionkowego</td></tr></tbody></table></div>
 <h2 id="r-33-zrodla-wersja-i-zastrzezenia-33-3a-zrodla-pierwotne">Źródła pierwotne sprawdzone 21.08.2026</h2>
 <ul><li><a href="https://csm.bblcdn.com/hub/011651bed7b4405cb2c57da72ca8300c.pdf" target="_blank" rel="noopener noreferrer">Bambu Lab P2S — specyfikacja PDF</a></li><li><a href="https://us.store.bambulab.com/products/ams-2-pro?from=home_web" target="_blank" rel="noopener noreferrer">Bambu Lab AMS 2 Pro — zgodność materiałów i suszenie</a></li><li><a href="https://jp.store.bambulab.com/en/products/bambu-high-flow-hotend-h2d" target="_blank" rel="noopener noreferrer">Bambu High Flow Hotend — tabela H2/P2S</a></li><li><a href="https://github.com/bambulab/BambuStudio/releases/tag/v02.08.02.61" target="_blank" rel="noopener noreferrer">Bambu Studio 2.8.2 v02.08.02.61</a></li><li><a href="https://uk.store.bambulab.com/products/tpu-95a-hf?modelId=661571&amp;skr=yes" target="_blank" rel="noopener noreferrer">Bambu TPU 95A HF</a></li><li><a href="https://us.store.bambulab.com/products/tpu-for-ams" target="_blank" rel="noopener noreferrer">Bambu TPU for AMS</a></li><li><a href="https://www.sunlu.com/products/petg-3d-printing-filament" target="_blank" rel="noopener noreferrer">SUNLU PETG</a></li><li><a href="https://www.sunlu.com/products/tpu-95a-flexible-filament" target="_blank" rel="noopener noreferrer">SUNLU TPU 95A</a></li><li><a href="https://www.sunlu.com/wiki/filament-usage-guide" target="_blank" rel="noopener noreferrer">SUNLU Filament Usage Guide</a></li><li><a href="https://www.sunlu.com/de/wiki/fdm-performance-comparison" target="_blank" rel="noopener noreferrer">SUNLU FDM performance comparison — źródło rozbieżności High Speed Matte PETG</a></li><li><a href="https://biqu.equipment/products/biqu-panda-buildplate-cryogrip-pro?variant=42456105123938" target="_blank" rel="noopener noreferrer">BIQU Panda CryoGrip Pro</a></li></ul>
+<div class="box info"><div class="box-t">Treść 4.2.45</div><p>31.08.2026. T-0: flow 0,8645 skalibrowane (KALIBROWANE SUNLU PLA+ CUSTOM / Frostbite-bliźniak) — punkt 5 zwykły daily-check, nie dług. Nagłówek n/8 bez „· dług”. Reset dnia / nowy wydruk nie liczy wydruków na niekalibrowanym flow. Nadal: nie zgaduj 0,98. Chip ⚙ czyta <code>wersja.json</code>. <code>apk/version.json</code> nietknięty. Wersja treści przewodnika 3.3.</p></div>
+<div class="box info"><div class="box-t">Treść 4.2.44</div><p>31.08.2026. T-0: punkt flow to dług (amber + licznik wydruków na <code>p2s.t0.flow.dlug</code>), nie daily-check „0,8645 aż do kalibracji”. Reset dnia i „nowy wydruk” nie spłacają niedolewu. Nadal: nie wpisuj 0,98 — KALIBROWANE SUNLU PLA+ CUSTOM, kotwica 6.4. Chip ⚙ czyta <code>wersja.json</code>. <code>apk/version.json</code> nietknięty. Wersja treści przewodnika 3.3.</p></div>
+<div class="box info"><div class="box-t">Treść 4.2.43</div><p>31.08.2026. T-0 start wydruku (Frostbite, offline): kafel home + Narzędzia. Karty szpul KALIBROWANE (flow z profili, nie zgadywany). Dekoder HMS 16.1 (0500-8062/8051, Build Plate Detection) — hybryda jak szukajka, zero chmury. <code>apk/version.json</code> nietknięty. Wersja treści przewodnika 3.3.</p></div>
 <div class="box info"><div class="box-t">Treść 4.2.42</div><p>31.08.2026. Przerób: detektor łuku niepełnego (T-36, Kåsa, 215°). Projekt: B-Rep faza/zaokrąglenie za flagą, default off; brak WASM libcascade (~40&nbsp;MB) = CSG jak dziś, etykieta [WYWNIOSKOWANE]. Occt nie wchodzi do <code>index.html</code>. <code>apk/version.json</code> nietknięty. Wersja treści przewodnika 3.3.</p></div>
 <div class="box info"><div class="box-t">Treść 4.2.41</div><p>31.08.2026. Szukajka: osie nie-awaryjne (kalibracja, profile, licencje, modele, koszty, materiały, Studio) + macierz pokrewieństwa w <code>kryteria.json</code> (qᵀ M d). T-32: sufit poza osią diagnostyczną powyżej progu; 0500-8062 w rozdz. 16.1. Trzy nośniki wersji: pierwszy boks <code>Treść</code> = <code>wersja.json</code> = <code>pliki.json</code> — nie „Aktualizacja merytoryczna” (pierwszy z nich to 4.2.22). Sidecar int8 przy buildzie, nie w <code>index.html</code>. <code>apk/version.json</code> nietknięty. Wersja treści przewodnika 3.3.</p></div>
 <div class="box info"><div class="box-t">Treść 4.2.40</div><p>31.08.2026. Projekt: pętla render→wizja po bramkach 4.2.21 (T-35). Bramki deterministyczne zawsze pierwsze; wizja nie kasuje FAIL. Stała kamera (izo/przód/bok/góra). Max 3 iteracje, +1 wywołanie chmury. Wyłącznik = jak dziś. <code>apk/version.json</code> nietknięty. Wersja treści przewodnika 3.3.</p></div>
@@ -2698,7 +2706,7 @@ h3[data-sprawdzono="2026-08-23"]::after{
 <ul class="check"><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-0-nazwe-i-liste-profili-pl"><span>Nazwę i listę profili płyt</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-1-temperatury-w-profilach"><span>Temperatury w profilach filamentów dla P2S</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-2-nazwy-i-lokalizacje-kali"><span>Nazwy i lokalizację kalibracji w menu</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-3-sposob-mapowania-i-synch"><span>Sposób mapowania i synchronizacji AMS</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-4-funkcje-i-limity-suszeni"><span>Funkcje i limity suszenia w AMS 2 Pro</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-5-procedure-kalibracji-pie"><span>Procedurę kalibracji pierwszej warstwy na ekranie</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-6-harmonogram-i-procedury"><span>Harmonogram i procedury konserwacji</span></label></li></ul>
 <p>Nie przenoś starych, niestandardowych presetów bez porównania z nowym profilem bazowym P2S. Zapisz stary profil pod inną nazwą, zamiast go nadpisywać.</p>
 <div class="box tip"><div class="box-t">Jak utrzymać ten dokument żywy</div><p>Trzymaj dziennik z rozdziału 29 razem z wydrukowanym przewodnikiem. Za każdym razem, gdy tabela w przewodniku okaże się nieaktualna, dopisz poprawkę na marginesie i datę. Po roku będziesz mieć wersję dopasowaną do własnego sprzętu i własnych materiałów.</p></div></section>
-  <div class="foot">Przewodnik 3.3 · treść 4.2.42 · stan na 31.08.2026<br>Etykieta szpuli i komunikat na ekranie drukarki mają pierwszeństwo przed tym przewodnikiem.</div>
+  <div class="foot">Przewodnik 3.3 · treść 4.2.45 · stan na 31.08.2026<br>Etykieta szpuli i komunikat na ekranie drukarki mają pierwszeństwo przed tym przewodnikiem.</div>
 </main>
 
 <!-- ===== DORADCA + NARZĘDZIA: wstrzykiwane przez build-html.js ===== -->
@@ -2713,9 +2721,43 @@ h3[data-sprawdzono="2026-08-23"]::after{
 <section id="view-tools" class="view">
   <div class="vhead">
     <h1 class="vtitle">Narzędzia</h1>
-    <p class="vsub">Kalkulatory, analiza, kreator briefu, szukanie, licencja, karta modelu, deklaracja i fasety.</p>
+    <p class="vsub">Warsztat: T-0, szpule, HMS. Kalkulatory, analiza, kreator briefu, szukanie, licencja, karta modelu.</p>
   </div>
   <nav id="toolsKoty" aria-label="Kategorie narzędzi"></nav>
+
+  <div class="tool" id="t0Narzedzie">
+    <h3>T-0 start wydruku</h3>
+    <p class="th">Lista warsztatowa przy drukarce. Offline. Nie steruje Handy ani Studio.</p>
+    <div id="t0Lista"></div>
+  </div>
+
+  <div class="tool" id="tKalibKolejnosc">
+    <h3>Kolejność kalibracji</h3>
+    <p class="th">Pięć kroków przy drukarce. Nie nadpisuj skalibrowanego 0,8645 zgadywanym 0,98.</p>
+    <div class="t0-lista" id="kalibKolejnosc">
+      <div class="t0-wiersz"><label><input type="checkbox" data-kalib="suchy_k"><span>Suchy filament i K już zrobione</span></label><a class="t0-chip" href="#r-6-kalibracje-krok-po-kroku-6-3-dynamika-przeplywu-k-krok-po-kroku">6.3</a></div>
+      <div class="t0-wiersz"><label><input type="checkbox" data-kalib="etap1"><span>Flow Etap 1</span></label><a class="t0-chip" href="#r-6-kalibracje-krok-po-kroku-6-4-natezenie-przeplywu-etap-1">6.4</a></div>
+      <div class="t0-wiersz"><label><input type="checkbox" data-kalib="klocki"><span>Odczyt klocków</span></label><a class="t0-chip" href="#r-6-kalibracje-krok-po-kroku-6-5-jak-odczytac-klocki-metoda">6.5</a></div>
+      <div class="t0-wiersz"><label><input type="checkbox" data-kalib="etap2"><span>Flow Etap 2</span></label><a class="t0-chip" href="#r-6-kalibracje-krok-po-kroku-6-6-natezenie-przeplywu-etap-2">6.6</a></div>
+      <div class="t0-wiersz"><label><input type="checkbox" data-kalib="zapis"><span>Zapis nazwy profilu</span></label><a class="t0-chip" href="#r-6-kalibracje-krok-po-kroku-6-7-zapis-wyniku-i-nazwa-profilu">6.7</a></div>
+    </div>
+  </div>
+
+  <div class="tool" id="tSzpule">
+    <h3>Szpule KALIBROWANE</h3>
+    <p class="th">Rejestr z profili. Presetów KALIBROWANE w Studio nie nadpisujemy. Zero sieci.</p>
+    <div id="tSzpuleLista"></div>
+  </div>
+
+  <div class="tool" id="tHms">
+    <h3>Dekoder HMS</h3>
+    <p class="th">Wklej kod z ekranu. Jedna akcja, offline, jak szukajka.</p>
+    <div class="row">
+      <label>Kod HMS<input id="hmsIn" type="text" inputmode="text" autocomplete="off" placeholder="0500-8062"></label>
+    </div>
+    <p><button type="button" class="t0-reset" id="hmsIdz">Rozkoduj</button></p>
+    <div id="hmsOut" class="tout"></div>
+  </div>
 
   <div class="tool">
     <h3>Zmiana filamentu</h3>
@@ -2998,6 +3040,7 @@ h3[data-sprawdzono="2026-08-23"]::after{
     <button id="aiCog" title="Ustawienia" aria-label="Ustawienia">⚙</button>
   </div>
   <div id="aiChips" class="ai-chips" hidden></div>
+  <p id="aiTrybPasek" class="ai-tryb" role="status"><span id="aiTrybEtykieta">lokalnie niedostępne — chmura</span></p>
   <div id="aiGate" hidden>
     <h2>Aktywacja asystenta</h2>
     <p>Bez klucza OpenRouter rozmowa nie ruszy. Klucz zostaje na tym urządzeniu. Modele i klucze są w centrum sterowania (koło zębate).</p>
@@ -3025,7 +3068,7 @@ h3[data-sprawdzono="2026-08-23"]::after{
 <div id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" aria-hidden="true">
   <div class="card">
     <h3 id="sheetTitle">Ustawienia asystenta</h3>
-    <p class="sub">Klucz zostaje wyłącznie w pamięci tego urządzenia. Nie wysyłam go nigdzie poza OpenRouter.<br><span style="opacity:.8">Wersja aplikacji: 4.2.20</span></p>
+    <p class="sub">Klucz zostaje wyłącznie w pamięci tego urządzenia. Nie wysyłam go nigdzie poza OpenRouter.<br><span id="sheetVer" style="opacity:.8">treść —</span></p>
 
     <div class="fld">
       <label for="setKey">Klucz OpenRouter</label>
@@ -3130,7 +3173,7 @@ h3[data-sprawdzono="2026-08-23"]::after{
 <section id="view-sync" class="view">
   <div class="vhead">
     <h1 class="vtitle">Aktualizuj</h1>
-    <p class="vsub">Baza uzupełnień na GitHubie albo nowa wersja poradnika w aplikacji.</p>
+    <p id="syncTrescHint" class="vsub">OTA GitHub 4.0.14 · shell (version.properties) 4.2.42 · treść (wersja.json) 4.2.45.</p>
   </div>
   <nav id="syncKoty" aria-label="Aktualizuj">
     <button type="button" data-sync="apka" class="on">Apka</button>
@@ -3138,7 +3181,9 @@ h3[data-sprawdzono="2026-08-23"]::after{
     <button type="button" data-sync="tresc">Treść</button>
   </nav>
   <div id="syncTrescBox" hidden>
-    <p id="syncTrescHint">GitHub APK = 4.0.14; sideload/debug bywa 4.2.33; treść = Pages.</p>
+    <div class="box info"><div class="box-t">Treść 4.2.45</div><p>31.08.2026. T-0: flow 0,8645 skalibrowane — punkt 5 daily-check, nie dług. Nie zgaduj 0,98. Chip ⚙ = <code>wersja.json</code>. Paczka GitHub zostaje 4.0.14.</p></div>
+    <div class="box info"><div class="box-t">Treść 4.2.44</div><p>31.08.2026. T-0: flow = dług niekalibrowany (nie daily-check). Chip ⚙ = <code>wersja.json</code>. Paczka GitHub zostaje 4.0.14.</p></div>
+    <div class="box info"><div class="box-t">Treść 4.2.43</div><p>31.08.2026. T-0 start wydruku (Frostbite), karty szpul KALIBROWANE, dekoder HMS 16.1 offline. Paczka GitHub zostaje 4.0.14.</p></div>
     <div class="box info"><div class="box-t">Treść 4.2.42</div><p>31.08.2026. T-36 łuk niepełny + T-37 B-Rep za flagą (bez WASM = CSG). Paczka GitHub zostaje 4.0.14.</p></div>
     <div class="box info"><div class="box-t">Treść 4.2.41</div><p>31.08.2026. Szukajka: osie nie-awaryjne + macierz pokrewieństwa; kody HMS 0500-8062/8051 w 16.1. Paczka GitHub zostaje 4.0.14.</p></div>
     <div class="box info"><div class="box-t">Treść 4.2.40</div><p>31.08.2026. Pętla render→wizja w Projekcie (T-35): bramki pierwsze, wizja nie kasuje FAIL, max +1 chmura. Paczka GitHub zostaje 4.0.14.</p></div>
@@ -3216,6 +3261,12 @@ h3[data-sprawdzono="2026-08-23"]::after{
       <button type="button" class="btn pri" id="pjZrob">Zrób</button>
     </div>
   </div>
+  <div id="pjSpecWrap">
+    <p class="tnote">Bez klucza: wklej SPEC i zbuduj. Geometria, podgląd i 3MF działają offline.</p>
+    <label for="pjSpec">Wklej SPEC</label>
+    <textarea id="pjSpec" rows="8" placeholder='{"spec_version":"1.1", "czesci":[...]}'></textarea>
+    <button type="button" class="btn" id="pjBuildSpec" style="margin-top:8px">Zbuduj z SPEC</button>
+  </div>
   <input type="file" id="pjFotoIn" accept="image/*" capture="environment" hidden>
   <div id="pjThumbs" class="pj-thumbs" hidden></div>
   <p class="tnote" id="pjVisionHint" hidden></p>
@@ -3260,11 +3311,6 @@ h3[data-sprawdzono="2026-08-23"]::after{
   </div>
   <h3>Rozmowa</h3>
   <div id="pjChat"></div>
-  <details style="margin-top:14px">
-    <summary>Wklej SPEC ręcznie (tryb bez klucza)</summary>
-    <textarea id="pjSpec" rows="8" placeholder='{"spec_version":"1.1", "czesci":[...]}'></textarea>
-    <button type="button" class="btn" id="pjBuildSpec" style="margin-top:8px">Zbuduj z SPEC</button>
-  </details>
   <p class="pj-footlic">Silnik geometrii: Manifold (Apache License 2.0), wklejony do tego pliku. Nota licencyjna: plik engine/LICENSE-manifold.txt obok przewodnika (kopia w PWA). Ta zakładka nie uruchamia kodu wygenerowanego przez model — model wypełnia JSON.</p>
 </section>
 
@@ -3299,7 +3345,7 @@ h3[data-sprawdzono="2026-08-23"]::after{
   </nav>
   <div id="prDrop"><b>Import</b><span>Upuść STL lub 3MF, także z MakerWorld</span></div>
   <input type="file" id="prPlik" accept=".stl,.3mf" hidden>
-  <div id="prStan"></div>
+  <div id="prStan">Walec tak (N=192). Szczelina i kieszeń nie w tej wersji.</div>
   <div id="prObiekty" hidden></div>
   <div id="prMeta"></div>
   <div id="prLicencja" hidden></div>
@@ -3562,11 +3608,16 @@ function intentPokazKarte(wynik) {
     karta.hidden = true;
     karta.innerHTML = '';
     show(wynik.zakladka);
-    if (wynik.zakladka === 'tools' && window.P2S && typeof window.P2S.uruchomSzukanieModeli === 'function') {
-      var inpSz = document.getElementById('intentIn');
+    if (wynik.zakladka === 'tools') {
+      var inpSz = document.getElementById('intentIn') || document.getElementById('paletaIn');
       var fraza = (inpSz && inpSz.value) || '';
-      if (/\b(znajd[zź]|szukaj|thingiverse|printables|makerworld|model)\b/i.test(fraza)) {
+      if (/\b(znajd[zź]|szukaj|thingiverse|printables|makerworld|model)\b/i.test(fraza)
+          && window.P2S && typeof window.P2S.uruchomSzukanieModeli === 'function') {
         window.P2S.uruchomSzukanieModeli(fraza);
+      } else if (window.__p2sStudio && typeof window.__p2sStudio.openToolById === 'function') {
+        if (/start wydruku|t-0|checklista/i.test(fraza)) window.__p2sStudio.openToolById('t0Narzedzie');
+        else if (/szpul/i.test(fraza) && /kalibrowan/i.test(fraza)) window.__p2sStudio.openToolById('tSzpule');
+        else if (/dekoder/i.test(fraza) && /hms/i.test(fraza)) window.__p2sStudio.openToolById('tHms');
       }
     }
     return;
@@ -6339,7 +6390,8 @@ function systemPrompt(chunks, thin) {
          'Jeśli nie masz wyników z sieci — napisz, że w przewodniku tego nie ma i zaproponuj włączenie „Szukaj w sieci”.\n';
   }
   var note = get(STORE.note, '').trim();
-  if (note) s += '\nSPRZĘT I WARUNKI ZGŁOSZONE PRZEZ UŻYTKOWNIKA (traktuj jako fakt):\n' + note + '\n';
+  if (!note) note = 'w domu jest małe dziecko; najkrótszy wymiar części zabawki ≥ 45 mm';
+  s += '\nSPRZĘT I WARUNKI ZGŁOSZONE PRZEZ UŻYTKOWNIKA (traktuj jako fakt):\n' + note + '\n';
   if (chunks && chunks.length) {
     s += '\nROZDZIAŁY PRZEWODNIKA (dla orientacji, o czym w ogóle jest mowa):\n' + chapters() + '\n';
     s += '\nFRAGMENTY PRZEWODNIKA I UZUPEŁNIEŃ PASUJĄCE DO PYTANIA:\n';
@@ -7206,6 +7258,59 @@ function showApkUpdateUi() {
 }
 window.P2S_onApkReady = showApkUpdateUi;
 
+function p2sOriginHint() {
+  try {
+    var proto = (location && location.protocol) || '';
+    var host = (location && location.hostname) || '';
+    if (host === 'appassets.androidplatform.net') return 'apk / appassets';
+    if (window.P2SNative) return 'apk';
+    if (proto === 'file:') return 'file';
+    if (proto === 'https:' || proto === 'http:') return 'https';
+  } catch (e) {}
+  return '';
+}
+function p2sChipText(withOrigin) {
+  var tresc = '';
+  try { tresc = window.__P2S_TRESJ_JSON || ''; } catch (e00) {}
+  if (!tresc) {
+    try { tresc = (window.__P2S_META && window.__P2S_META.wersja) || ''; } catch (e0) {}
+  }
+  if (!tresc) tresc = window.P2S_VER_NAME || '';
+  var shell = window.P2S_SHELL_NAME || '';
+  try {
+    if (window.P2SNative && typeof window.P2SNative.versionName === 'function') {
+      var nv = window.P2SNative.versionName();
+      if (nv) shell = nv;
+    }
+  } catch (e1) {}
+  var oHint = p2sOriginHint();
+  var isApk = (oHint === 'apk / appassets' || oHint === 'apk');
+  var s;
+  if (isApk) {
+    s = 'treść ' + (tresc || '?') + ' · shell APK ' + (shell || '?');
+  } else {
+    s = 'treść ' + (tresc || '?') + ' · PWA';
+  }
+  if (withOrigin) {
+    if (oHint) s += ' · ' + oHint;
+  }
+  return s;
+}
+function fillWersjaChip() {
+  var el = document.getElementById('sheetVer');
+  if (el) el.textContent = p2sChipText(true);
+  var proto = '';
+  try { proto = (location && location.protocol) || ''; } catch (eP) {}
+  if (proto === 'file:') return;
+  fetch('./wersja.json', { cache: 'no-store' }).then(function (r) {
+    if (!r.ok) return null;
+    return r.json();
+  }).then(function (j) {
+    if (!j || !j.wersja) return;
+    window.__P2S_TRESJ_JSON = String(j.wersja);
+    if (el) el.textContent = p2sChipText(true);
+  }).catch(function () {});
+}
 function openSheet() {
   $('setKey').value    = get(STORE.key, '');
   if ($('setGh')) $('setGh').value = get(STORE.gh, '');
@@ -7221,6 +7326,7 @@ function openSheet() {
   $('keyStat').textContent = ''; $('keyStat').className = 'kstat';
   renderSuppList();
   showApkUpdateUi();
+  fillWersjaChip();
   sheet.classList.add('on');
   sheet.setAttribute('aria-hidden', 'false');
   $('setClose').focus();
@@ -7495,6 +7601,7 @@ if ('serviceWorker' in navigator) {
     }
   });
   window.addEventListener('load', function () {
+    fillWersjaChip();
     var apkOrigin = location.hostname === 'appassets.androidplatform.net';
     if (apkOrigin) {
       navigator.serviceWorker.getRegistrations().then(function (rs) {
@@ -7555,8 +7662,9 @@ if ('serviceWorker' in navigator) {
 
 </script>
 <script>
-window.P2S_VER_NAME='4.2.42';
-window.__P2S_META={wersja:'4.2.42',talk_ms:300000,spec_ms:600000};
+window.P2S_VER_NAME='4.2.45';
+window.P2S_SHELL_NAME='4.2.42';
+window.__P2S_META={wersja:'4.2.45',talk_ms:300000,spec_ms:600000,shell:'4.2.42'};
 window.__P2S_DECISION="DECYZJA 4.2.22: bramka SCIENKA_OTWOR na kawałku SPEC po schemacie i próbnym buildzie geometrii, przed sklejeniem; 1 lokalna naprawa tylko wadliwego shardu, bez retry całego T5 i bez monolitu. DECYZJA 4.2.21: topper z napisem to jeden płaski wykrój 2D wyciągnięty na grubość — litery spina mostek 3 mm pod linią bazową i ramka 4,2 mm po obrysie (liczby z pomiaru wzorcowego toppera 142×153×2,8 mm), nóżki to płaskie trapezy 9,5→5,0 mm zamiast walców położonych na boku (te robiły z napisu 3 mm gabaryt 4,2 mm), font liczy szerokość znaku po zapalonych kolumnach, a poprzeczki w połowie liter zniknęły; nowe bramki NAPIS_BELKA / NAPIS_POZA_OBRYSEM (dołożona bryła przecina litery albo wychodzi >2 mm poza obrys), TACA_BEZ_RANTU (przekrój w 60% wysokości bez zamkniętej dziury ≥35% obrysu = płyta, nie wanienka) i STOJAK_BEZ_ZEBER (<6 żeber przy nazwie obiecującej żebrowanie) wracają do mózgu istniejącą ścieżką SPEC_GEOMETRIA; SYS_SPEC zakazuje dokładania własnych belek do napisu i podaje przepis na tacę-wanienkę oraz konstrukcję wzorca Towel_Holder_Ribbed. DECYZJA 4.2.20: strumień SSE dla każdego shardu SPEC — bufor do końca, potem schema (talk/plan/monolit bez zmian); max_tokens 26000 (powtórka 40000) + jawne reasoning.max_tokens 10000 zamiast effort:max, bo effort u Anthropica to część max_tokens; telemetria liczy tokeny myślenia i wyjścia; kawałek po schemacie przechodzi próbny build (SPEC_GEOMETRIA wraca do mózgu); finish_reason=length lub urwany JSON = SHARD_TRUNCATED + jedna powtórka; OR_BUSY dopisuje powód. DECYZJA 4.2.19: spec-sharding T5/T6 (N× SPEC 1.0 → czesci 1.1); plan json_object 120s; niepełny shard = nie PASS; schema PL bez shards[]. DECYZJA 4.2.18: wersja.json + SW hash; talk 300s / SPEC 600s; 408/429 backoff; Grok tylko profil eksperymentalny; SPEC schema przed 3MF; derivedFrom estimated. DECYZJA 4.2.17: timeout talk 300s / SPEC 600s; retry Opus; SPEC mm 1:1; zakaz pustych brył po RYSUJ; napis bbox. DECYZJA 4.2.16: mózg Claude Opus 5 max; zapas Grok 4.6 xhigh / Sol Pro / DeepSeek V4 Pro; pinnedId puszcza Anthropic; [[SZUKAJ]] wymuszone przy marce. DECYZJA 4.2.15: napis FDM+traktor; dziurka breloka uszkiem; spaw 0,05; skala XYZ; wydłuż uchwyty; 8 części i podział P2S; bez publikacji. DECYZJA 4.2.14: figurka CSG nie pudełko; brief z mm → RYSUJ; drop bez SPEC; alias otworu; retry bramki SCIENKA_OTWOR; bez publikacji. DECYZJA 4.2.13: Przerób — obwód obręczy ΔC (5 cm=50 mm) przesunięciem promieniowym + ramiona, nie skala całego bbox; bez publikacji. DECYZJA 4.2.12: nitka Projekt→Przerób (SPEC+siatka+checklista, localStorage); zdjęcie Flash-gdy-brak-wizji; scaleLiveMesh % na żywym modelu; bez publikacji. DECYZJA 4.2.11: picker Sol/Grok/Flash/Luna w Projekcie (lista OpenRouter); 3MF hint bez project_settings + Kopiuj do Studio; strona Sufit produktu; bez publikacji. DECYZJA 4.2.10: Projekt — [[SZUKAJ]] Wikipedia/DuckDuckGo bez klucza, dopytaj mm przed RYSUJ, po 3MF poprawki+checklista Studio; Asystent punkt 12; ściągi 5.17/5.18/6.8/5.15; bez publikacji. DECYZJA 4.2.9: Projekt — orientacja/podpory/brim w rozmowie i SPEC, checklista po 3MF (geometria bez project_settings); bramka 4.2.7 bez podpór zostaje; bez publikacji. DECYZJA 4.2.8: 5.17 nowa szpula (KALIBROWANE / nowe / Classic = Słoneczny); 5.18 proces 0.20 Standard na co dzień, 0.16 HQ, 0.24 test; bez publikacji. DECYZJA 4.2.7: plik bez podpór musi mieć fizycznie zapisaną orientację, stabilny styk i zero krytycznego nawisu w cechach mierzonych; stary 3MF FAIL, nowy PASS lokalnego gate; potwierdzenie ostrzeżenia Bambu i pomiar fizyczny pozostają otwarte; bez publikacji. DECYZJA 4.2.6: sufit programowy lokalnie; Projekt N=96, Przerób N=192 z r/cos(pi/N); N-14 z siatki 69,79–75; pełny sufit dopiero po wydruku i suwmiarce; bez publikacji. DECYZJA 4.2.5: 5.13 pułapka JSON \"nil\" (BambuStudio #10583); 3MF e2e przywrócony lokalnie; Pages zostaje 4.2.1 do słowa publikuj. DECYZJA 4.2.4: zakładka Projekt — wynalazca: dopytaj (wanna/rant), 2–3 sposoby, poleć jeden, extras jako propozycje, „lepiej nie” przy słabym briefie; SPEC JSON po wyborze; paste-SPEC zostaje. DECYZJA 4.2.3: zakładka Projekt — dopytaj rant/kształt, zaproponuj przyssawki z nazwą kubka (Qinuo QNSC-M40), searchPlan+OpenRouter web, potem SPEC; paste-SPEC zostaje. DECYZJA 4.2.2: N-12 kompensacja apotemy z N silnika (nie 96) i bez +0,02; N-13 zakres world-Y w rekordzie cechy; N-14 krótki współosiowy Ø56, zakres z siatki (nie 68–73); N-15 profil y→Ø(y) krok 0,2 maxDev 0,010; asercja N przy budowie walca. DECYZJA 4.2.1: zakładka Przerób/Przeróbka w UI, ten sam potok co Node 4.2 (bez przepisywania detektora/operacji/bramki). Silnik na wątku głównym z wklejonym Manifold (file://, jak Projekt). Pole aDens type=text inputmode=decimal. DECYZJA 4.2.0: modele P0 wg WYTYCZNE 4.2 (luna / gemini-3.7-flash / terra-pro). Detektor przeróbki w Node. Silnik Manifold wklejony jako base64 + UI jako zwykły skrypt (decyzja 4.1.1 zostaje). DECYZJA 4.1.1: silnik Manifold wklejony jako base64 + UI jako zwykły skrypt, nie jako pliki boczne. Powód: przewodnik jest jednym plikiem otwieranym z dysku; moduły ES i fetch .wasm są zablokowane przy file://. Pliki engine/ zostają obok dla PWA (cache SW) i testów Node.";
 
 window.__P2S_SILNIK='base64';
@@ -11274,7 +11382,10 @@ function bledySpecSchema(data, schema, path) {
   if (schema.maximum != null && typeof data === 'number' && data > schema.maximum) {
     out.push(path + ': powyżej maximum ' + schema.maximum);
   }
-  if (schema.type === 'object' && data) {
+  /* Obiekt/tablica: słowa kluczowe JSON Schema działają na instancji, także gdy
+   * podschema (if/then) nie powtarza "type". Inaczej allOf+if z minItems jest martwe. */
+  const jestObiekt = data !== null && typeof data === 'object' && !Array.isArray(data);
+  if (jestObiekt) {
     (schema.required || []).forEach(function (k) {
       if (data[k] === undefined) out.push(path + '.' + k + ': brak wymaganego pola');
     });
@@ -11293,7 +11404,7 @@ function bledySpecSchema(data, schema, path) {
       });
     }
   }
-  if (schema.type === 'array' && Array.isArray(data)) {
+  if (Array.isArray(data)) {
     if (schema.minItems != null && data.length < schema.minItems) {
       out.push(path + ': za mało elementów');
     }
@@ -11304,6 +11415,19 @@ function bledySpecSchema(data, schema, path) {
       data.forEach(function (el, i) {
         out.push.apply(out, bledySpecSchema(el, schema.items, path + '[' + i + ']'));
       });
+    }
+  }
+  if (Array.isArray(schema.allOf)) {
+    schema.allOf.forEach(function (sub) {
+      out.push.apply(out, bledySpecSchema(data, sub, path));
+    });
+  }
+  if (schema.if) {
+    const ifBledy = bledySpecSchema(data, schema.if, path);
+    if (ifBledy.length === 0) {
+      if (schema.then) out.push.apply(out, bledySpecSchema(data, schema.then, path));
+    } else if (schema.else) {
+      out.push.apply(out, bledySpecSchema(data, schema.else, path));
     }
   }
   return out;
@@ -11955,6 +12079,7 @@ Gdy brief ma funkcję + mm haczyka/otworu/stopy + (materiał albo domyślny PETG
 Stopka / podstawa / spód A×B mm: pierwsza bryła to płyta A×B na Z=0. Oparcie, krawędź 8 mm i kąt mieszczą się w tym obrysie XY — nie wydłużaj stopy do 120 mm, gdy ktoś chciał 60.
 
 Ze zdjęcia NIE odczytuj milimetrów ani wskazania suwmiarki — wizja tylko kształt i topologia. Wymiar podaje człowiek suwmiarką.
+Gdy USTALENIA / PROFIL DOMU mają dziecko albo min. 45 mm — wpisz to w bryły, NIE dodawaj pytania o dzieci.
 
 Poprawiasz istniejący projekt, nie zaczynasz od nowa, gdy dostaniesz poprzedni SPEC.
 
@@ -12066,13 +12191,30 @@ const SYS_TALK = `Jesteś wynalazcą przy drukarce (Bambu Lab P2S Combo). Mówis
 ROLA
 Ty myślisz. Z jednego zdania („zrób uchwyt”, „do wanny”) NIE składasz byle-jakiej bryły. Najpierw pomysł, potem liczby, potem rysunek.
 
-KOLEJNOŚĆ
-1) Jedno pytanie, którego inni nie zadają (obciążenie, woda, dzieci, jak często zdejmowane).
-2) 2–3 sposoby i jedna rekomendacja — zanim poprosisz o pełny rysunek.
-3) Przy sprzęcie [[SZUKAJ]], potem rysunek. Nie odwrotnie.
-4) Po 3MF: 2–3 poprawki jako rada (ścianka, orientacja, kubek) — nie cicha zmiana siatki.
+JAK MYŚLISZ, ZANIM COKOLWIEK ZAPROPONUJESZ
+1) Dlaczego to, co już istnieje, zawodzi albo się nudzi? Nie „jak wygląda sorter”, tylko „dlaczego sorter przestaje bawić po tygodniu”. Nie „jak wygląda uchwyt”, tylko „dlaczego uchwyty się urywają”.
+2) Co człowiek NAPRAWDĘ z tym robi, a co tylko deklaruje? Rodzic myśli, że to nauka dopasowania. Dziecko powtarza łupnięcie. Projektujesz pod zachowanie, nie pod deklarowany cel.
+3) Gdzie w użyciu potrzebny jest drugi człowiek albo dodatkowa czynność? Tam siedzi największa poprawa. Usuń to miejsce.
+4) Czy zamiast dokładać treść, da się dodać jedną OŚ do pokręcenia (trudność, rozmiar, napięcie)? Rzecz, która rośnie z użytkownikiem, wygrywa z rzeczą, która ma więcej sztuk.
+5) Co FDM robi, czego nie robi wtrysk ani stolarka? Druk w miejscu, kanały wewnętrzne, zawias żywy, zmienne wypełnienie, geometria pod konkretny zmierzony przedmiot. Jeśli twój projekt dałoby się kupić gotowy — nie wykorzystałeś druku.
+6) Powiedz sam, który z twoich pomysłów jest najbardziej ryzykowny i dlaczego. Nie sprzedawaj wszystkich jednakowo.
 
-BRIEF PEŁNY, TYLKO prosty klips/haczyk/podstawka z mm (USB 5 mm, haczyk 18 mm): pomiń 1–2. W tej turze plan druku i [[RYSUJ]]. Bez dopytywania o rasę kota. Brak filamentu: klips/haczyk/uchwyt/podstawka → PETG; figurka/pionek/topper/napis → PLA — napisz wybór przy BRIM.
+WYNIK 3MF — CO MUSI BYĆ PRAWDA (nie przepis kształtu)
+1) Jedna czytelna bryła. Rodzic odczyta funkcję ze zrzutu. Druga część, której nie da się nazwać bez opisu, to porażka — nawet gdy gabaryt się zgadza.
+2) Ta sama liczba trójkątów co plik źródłowy = kopia, nie projekt. Siatka ma być własna.
+3) Dziesiątki powłok przegrywają ze spójną topologią.
+4) Zwis, który JEST funkcją (noga haka, daszek, zatrzask), zostaje. Cantilever w Studio to brief na pole podpory w SPEC, nie usterka do naprawy geometrią. Funkcja nie znika i nie ląduje na osobnej części po to, by nawis był 0%.
+5) Przy tym samym gabarycie lżejsza bryła wygrywa. Nie dokładaj mięsa.
+6) 3MF bez project_settings. Podpory dorysowuje Studio. Checklista: TYP i DLACZEGO. „Podpory: nie” przy zwisie-funkcji to udawanie slicera.
+
+KOLEJNOŚĆ
+0) Jednym zdaniem: CO MA SIĘ FIZYCZNIE WYDARZYĆ, kiedy ta rzecz działa poprawnie. Jeśli nie umiesz — dopytaj.
+1) Jedno pytanie, którego inni nie zadają (obciążenie, woda, jak często zdejmowane). Dzieci — tylko gdy PROFIL DOMU tego nie mówi.
+2) 2–3 sposoby i jedna rekomendacja — zanim poprosisz o pełny rysunek.
+3) Przy sprzęcie albo obcej klasie [[SZUKAJ]], potem rysunek. Nie odwrotnie.
+4) Po 3MF: oceń WYNIK 3MF. 2–3 poprawki jako rada (ścianka, orientacja, kubek) — nie cicha zmiana siatki.
+
+BRIEF PEŁNY, TYLKO prosty klips/haczyk/podstawka z mm (USB 5 mm, haczyk 18 mm): pomiń 1–2. Zera nie pomijaj (CO SIĘ DZIEJE). W tej turze plan druku i [[RYSUJ]]. Bez dopytywania o rasę kota. Brak filamentu: klips/haczyk/uchwyt/podstawka → PETG; figurka/pionek/topper/napis → PLA — napisz wybór przy BRIM.
 
 MARKA / ELEKTRONIKA / OBUDOWA PADA / NAZWA PRODUKTU (Vader, Flydigi, Biedronka Jumbo, ANDER, PCB, kontroler): NIE wolno pominąć szukania, nawet gdy brief ma mm. Najpierw [[SZUKAJ]] (Printables, MakerWorld, GitHub, wymiary obudowy/PCB). Dopiero potem rysunek. Jeśli sieć nie ma gerbera płyty — powiedz to wprost. Albo [[CZEKAM]] na suwmiarkę, albo [[RYSUJ]] z etykietą „prototyp, szacunek, NIE drop-in”. Zakaz pudełka z dwoma walcami w powietrzu jako „obudowa pada”. To atrapa, nie produkt.
 
@@ -12082,6 +12224,15 @@ OCIEKACZ / RZECZ >256 mm: w 1 zdaniu powiedz PODZIAŁ (ile części, wpusty), ka
 ZASUWA / RYGIEL: [[RYSUJ]] korpus + rygiel; aplikacja złoży dwa osobne SPEC-y.
 
 FIGURKA FDM (kot, pies, robot, pionek): silnik składa z walców, kul, stożków i prostopadłościanów — NIE jeden klocek. W 1 zdaniu wymień części (głowa, tułów, uszy, łapy, ogon/ramiona, płaska stopa na Z=0). Styl klockowy, gruby pod dyszę 0,4 mm. Zero podpór jeśli nachylenia <45°. Wysokość = liczba z briefu. Potem plan druku i [[RYSUJ]].
+
+ZABAWKA / GRA / UKŁADANKA:
+spytaj o WIEK. Poniżej 3 lat obowiązuje norma małych części: element nie może zmieścić się w walcu Ø31,7 x 57,1 mm — praktycznie dwa wymiary ≥45 mm. Krawędzie zaokrąglone. Powiedz jednym zdaniem, CO SIĘ FIZYCZNIE DZIEJE przy poprawnym użyciu; jeśli odpowiedź brzmi „nic", to nie jest zabawka. Zabawkę się nosi i chowa. JAK to osiągniesz — twoja sprawa.
+
+DOM / PRAKTYCZNE:
+spytaj o OBCIĄŻENIE i WILGOĆ. Woda, ciepło albo obciążenie = PETG. Powiedz, do czego to się mocuje i czy da się tam zamocować. Nad wodą albo jedzeniem — musi się dać zdjąć i umyć.
+
+PASUJĄCE DO ISTNIEJĄCEJ RZECZY (rura, uchwyt, obejma, adapter):
+nie rysujesz bez zmierzonej liczby. Powiedz wprost, czy pasujesz do średnicy zewnętrznej czy wewnętrznej. Luz z tabeli, nigdy z głowy. Powiedz, jak się to zakłada i zdejmuje.
 
 TON
 - Ostrzegaj: „lepiej nie, tego nie róbmy, będzie gorzej”.
@@ -12097,6 +12248,7 @@ Gdy ktoś pisze tylko „do wanny” / „zrób uchwyt”:
 
 TWARDY PORZĄDEK
 - Milimetry wpisuje człowiek. Ze zdjęcia nie czytasz Ø.
+- Gdy puste p2s.ai.profil / ustawienie sprzętu: fakt — w domu jest małe dziecko; zabawka: norma małych części Ø31,7×57,1 mm (praktycznie dwa wymiary ≥45 mm). Nie pytaj o to przy każdym SPEC.
 - Brief z funkcją + mm: w tej turze ORIENTACJA/PODPORY/BRIM i [[RYSUJ]]. Bez [[CZEKAM]]. Brak filamentu → PETG (mechanika) albo PLA (figurka).
 - Przed [[RYSUJ]] materiał musi być znany albo przyjęty jak wyżej (PLA/PETG/ABS/TPU). Gdy brief jest pusty (samo „zrób uchwyt”) — zapytaj krótko i zakończ [[CZEKAM]].
 - Przed [[RYSUJ]] dopytaj o brakujące mm (grubość drzwi/ścianki, Ø kubka/trzpienia, rozstaw, obciążenie). Nie zgaduj. Brak pomiaru → [[CZEKAM]].
@@ -12106,6 +12258,7 @@ TWARDY PORZĄDEK
 SZUKANIE W SIECI
 Przy sprzęcie (śruby, przyssawki, grubość drzwi, podobne produkty, bezpieczeństwo) i ZAWSZE przy marce/elektronice najpierw jeden znacznik:
 [[SZUKAJ]] krótkie hasło EN (np. Flydigi Vader 5 Pro PCB dimensions Printables, Słonik Jumbo paper towel diameter mm).
+Gdy klasa przedmiotu jest ci obca (nie robiłeś jeszcze sortera, zamka, karmnika): [[SZUKAJ]] jak rozwiązują to inni, ZANIM zaproponujesz. Nie kopiuj — zobacz mechanizm i powiedz, co z tego bierzesz i dlaczego.
 Aplikacja pobierze Wikipedia/DuckDuckGo (bez Twojego klucza) i wróci z wynikami. W tej samej odpowiedzi co [[SZUKAJ]] nie stawiaj [[RYSUJ]].
 Jeśli szukanie się nie uda albo jesteś offline: napisz wprost „nie sprawdziłem w sieci, dopytuję Ciebie” — obowiązkowo przy obciążeniu, dzieciach, wyjściu ewakuacyjnym, ogniu, obudowie elektroniki. Potem pytania. Nie zmyślaj gerbera.
 
@@ -12141,6 +12294,25 @@ let pjProjectId = '';
 function $(id) { return document.getElementById(id); }
 function get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } }
 function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+/** Puste ustawienie sprzętu / p2s.ai.profil → fakt offline, nie pytanie przy SPEC. */
+const FAKT_DZIECKO_OFFLINE = 'w domu jest małe dziecko; zabawka: norma małych części Ø31,7×57,1 mm (praktycznie dwa wymiary ≥45 mm)';
+function pjFaktDomu() {
+  const note = (get('p2s.ai.note', '') || '').trim();
+  if (note) return note;
+  let profilRaw = null;
+  try { profilRaw = (typeof localStorage !== 'undefined') ? localStorage.getItem('p2s.ai.profil') : null; } catch (e) { profilRaw = null; }
+  /* p2s.ai.profil w UI to konserwatywny/eksperymentalny; puste albo brak + puste p2s.ai.note → fakt dziecka. */
+  if (profilRaw == null || String(profilRaw).trim() === '') return FAKT_DZIECKO_OFFLINE;
+  return FAKT_DZIECKO_OFFLINE;
+}
+function pjSysTalk() {
+  return SYS_TALK + '\n\nPROFIL DOMU (fakt, nie pytanie):\n' + pjFaktDomu();
+}
+function pjSysSpec() {
+  return SYS_SPEC + '\n\nPROFIL DOMU (fakt, nie pytanie — nie dodawaj pytania o dzieci ani o 45 mm):\n' + pjFaktDomu();
+}
+
 function key() { return get('p2s.ai.key', ''); }
 function model(role) {
   if (role === 'spec') return get('p2s.ai.model.code', 'anthropic/claude-opus-5');
@@ -12351,9 +12523,13 @@ async function pjPobierzWersjaJson() {
     const j = await r.json();
     if (typeof window !== 'undefined') {
       window.__P2S_META = Object.assign({}, window.__P2S_META || {}, j);
-      if (j.wersja) window.P2S_VER_NAME = j.wersja;
+      if (j.wersja) {
+        window.P2S_VER_NAME = j.wersja;
+        window.__P2S_TRESJ_JSON = String(j.wersja);
+      }
     }
     pjPokazStamp();
+    if (typeof fillWersjaChip === 'function') fillWersjaChip();
   } catch (e) {}
 }
 
@@ -13234,7 +13410,7 @@ function pjBodySpecCzesci(userContent, prof, maxTok, stream) {
   const b = {
     model: pjModelRoli('spec'),
     messages: [
-      { role: 'system', content: SYS_SPEC },
+      { role: 'system', content: pjSysSpec() },
       { role: 'user', content: userContent }
     ],
     max_tokens: maxTok || (prof && prof.maxTokens) || 26000,
@@ -13283,7 +13459,7 @@ async function pjSpecJednaTura(userContent, talk, text, opts) {
       pjBodySpecCzesci(userContent, prof, prof.maxTokensRetry, stream),
       {
         messages: [
-          { role: 'system', content: SYS_SPEC },
+          { role: 'system', content: pjSysSpec() },
           {
             role: 'user',
             content: userContent
@@ -13319,7 +13495,7 @@ async function pjSpecJednaTura(userContent, talk, text, opts) {
           pjBodySpecCzesci(userContent, prof, prof.maxTokensRetry, stream),
           {
             messages: [
-              { role: 'system', content: SYS_SPEC },
+              { role: 'system', content: pjSysSpec() },
               {
                 role: 'user',
                 content: userContent + '\n\n' + tekstNaprawyKawalka(zly, fg, opts.shard)
@@ -13484,7 +13660,7 @@ async function pjRozmowaZSzukaniem(text, imgs) {
     userContent = trescZZdjeciami(userContent, photos);
   }
   const messages = [
-    { role: 'system', content: SYS_TALK },
+    { role: 'system', content: pjSysTalk() },
     { role: 'user', content: userContent }
   ];
   let talk = await orCallLancuch({ model: talkId, messages, max_tokens: 16000 }, lancuch, PJ_TIMEOUT_TALK_MS, 'talk');
@@ -13590,7 +13766,7 @@ async function zrob() {
     const body = {
       model: pjModelRoli(prev ? 'diff' : 'spec'),
       messages: [
-        { role: 'system', content: SYS_SPEC },
+        { role: 'system', content: pjSysSpec() },
         { role: 'user', content: userB }
       ],
       max_tokens: 32000,
@@ -13634,7 +13810,7 @@ async function zrob() {
           : '');
       const popraw = Object.assign({}, body, {
         messages: [
-          { role: 'system', content: SYS_SPEC },
+          { role: 'system', content: pjSysSpec() },
           {
             role: 'user',
             content: userB
@@ -17411,9 +17587,10 @@ window.P2S.przerobka = {
     if (p === 'srednia') return 'średnia';
     return p || '';
   }
+  var SUFIT_PR = 'Walec tak (N=192). Szczelina i kieszeń nie w tej wersji.';
   function stan(t) {
     var n = $('prStan');
-    if (n) n.textContent = t || '';
+    if (n) n.textContent = t || SUFIT_PR;
   }
   function pasKey(v) {
     var p = window.P2S && window.P2S.PASOWANIA;
@@ -18573,6 +18750,9 @@ window.P2S.przerobka = {
 </script>
 <script src="modele_guard.js"></script>
 <script src="modele-rura.js"></script>
+<script src="t0-checklista.js"></script>
+<script src="szpule-kalibrowane.js"></script>
+<script src="hms-dekoder.js"></script>
 <script src="studio.js"></script>
 </body>
 </html>

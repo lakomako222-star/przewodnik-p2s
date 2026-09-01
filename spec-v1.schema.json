@@ -159,5 +159,14 @@
         }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "bryly": { "minItems": 1 } },
+        "required": ["bryly"]
+      },
+      "then": { "required": ["orientacja_druku", "podpory", "brim"] }
+    }
+  ]
 }

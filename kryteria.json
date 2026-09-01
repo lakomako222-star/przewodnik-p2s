@@ -1,0 +1,932 @@
+{
+  "zrodlo": "siatka tutucu1.STL (detektor 2026-08-24) + N-12/N-13 z WYTYCZNE 4.2.2. Z 4.2.3 wzięte: N-15 0,2/0,010, asercja N przy walcu, N-12r 0,05, min_support D56=20. N-14 pas rysunkowy 68–73 odrzucony (szpula/kosmetyka). Nie wzięte: inlier 2°, D56 56,00 jako FAIL przy 56,067, globalny min_support=1.",
+  "data": "2026-08-24",
+  "uwaga": "Jedno źródło progów dla test-przerobka.mjs. Test luźniejszy od tej tabeli jest wadą procesu. N-14 okno osiowe jest z inlierów siatki, nie z tabeli 68–73.",
+  "tutucu1": {
+    "plik": "tutucu1.STL",
+    "sha256": "acd5604afe3ac410d1dcea0f8e6c30a4029e758d9a22ebefac40af4118cd6d42",
+    "bajty": 1097184,
+    "detekcja_max_s": 8,
+    "cechy": [
+      {
+        "id": "T-26-54",
+        "srednica_mm": 54,
+        "tol_srednicy_mm": 0.05
+      },
+      {
+        "id": "T-26-44",
+        "srednica_mm": 44,
+        "tol_srednicy_mm": 0.05
+      },
+      {
+        "id": "N-13",
+        "srednica_mm": 36,
+        "tol_srednicy_mm": 0.05,
+        "od_mm": 13,
+        "do_mm": 27,
+        "tol_zakresu_mm": 0.15
+      },
+      {
+        "id": "N-14",
+        "srednica_mm": 56.067,
+        "tol_srednicy_mm": 0.05,
+        "od_mm": 69.79,
+        "do_mm": 75,
+        "tol_zakresu_mm": 0.2,
+        "min_support_trojkatow": 20,
+        "zrodlo_zakresu": "inliery siatki tutucu1.STL, 34 trójkąty, oś Y świata",
+        "pas_rysunkowy_odrzucony": {
+          "od_mm": 68,
+          "do_mm": 73,
+          "powod": "szpula/kosmetyka — nie wymuszać na detektorze"
+        }
+      }
+    ]
+  },
+  "silnik": {
+    "wymagana_asercja": "getCircularSegments(r) == N w r/cos == N Manifold.cylinder, przy budowie walca",
+    "N_przerobka": 192,
+    "N_projekt": 96
+  },
+  "detektor": {
+    "zabronione": [
+      "cecha z support == 0",
+      "cecha widmo bez trójkątów"
+    ],
+    "luk_niepelny": {
+      "id": "T-36",
+      "luk_deg": 215,
+      "promien_mm": 27,
+      "n_punktow": 44,
+      "prog_osi_mm": 0.05,
+      "prog_promienia_mm": 0.05,
+      "srodek_mm": [
+        0,
+        0
+      ]
+    }
+  },
+  "narzedzie_pomiarowe": {
+    "bias_mm": 0.0002,
+    "test": "N-16",
+    "bias_max_dopuszczalny_mm": 0.005
+  },
+  "przepusty": [
+    {
+      "id": "N-11",
+      "oczekiwany_mm": 38,
+      "maxdev_mm": 0.01
+    },
+    {
+      "id": "N-12a",
+      "oczekiwany_mm": 35.8,
+      "maxdev_mm": 0.01
+    },
+    {
+      "id": "N-12b",
+      "oczekiwany_mm": 35.366,
+      "maxdev_mm": 0.01
+    },
+    {
+      "id": "N-12c",
+      "oczekiwany_mm": 35,
+      "maxdev_mm": 0.01
+    },
+    {
+      "id": "N-12d",
+      "oczekiwany_mm": 42,
+      "maxdev_mm": 0.01
+    }
+  ],
+  "sasiedzi_nietkniete": {
+    "id": "N-12r",
+    "cechy": [
+      "D44",
+      "D54"
+    ],
+    "max_odchylka_mm": 0.05
+  },
+  "pas_poza_cecha": {
+    "id": "N-12s",
+    "pas_mm": 5,
+    "skip_krawedz_mm": 0.4,
+    "max_odchylka_mm": 0.12,
+    "min_probek": 8,
+    "uwaga": "Zostaje na stałe. N-12r widzi tylko stopnie Ø44/Ø54. 4.2.24 zjadło obie fazy Ø36: wlot y=11–13 (zgłoszone) i wylot y≈29,1 max |Δ|=2,39 mm (okno 9,5–15 tego nie widziało). Pas ±5 mm poza cechą vs oryginał łapie obie strony. 4.2.22 i 4.2.25: max |Δ|=0 na 127 próbkach y 7–13 i 27,2–34."
+  },
+  "profil_osiowy": {
+    "id": "N-15",
+    "krok_mm": 0.2,
+    "max_odchylka_na_zakresie_cechy_mm": 0.01
+  },
+  "t27": {
+    "cel_mm": 35.366,
+    "maxdev_mm": 0.01,
+    "zakazany_bias_mm": 0.033,
+    "max_bias_mm": 0.01,
+    "max_rozjazd_export_mm": 0.01
+  },
+  "t28": {
+    "max_rozjazd_zakresu_mm": 1.5,
+    "min_pokrycie_zakresu": 0.55,
+    "min_trojkatow": 1
+  },
+  "t29": {
+    "srednica_mm": 56,
+    "tol_srednicy_mm": 0.1,
+    "min_support_trojkatow": 1
+  },
+  "analizator_3mf": {
+    "id": "T-30",
+    "epsilon_rownosci": 0.000001,
+    "fixture": "e2e-projekt/fixtures/Shape_Puzzle_2.3mf",
+    "oczekiwane": [
+      {
+        "klucz": "filament_flow_ratio",
+        "plik": "0.8645",
+        "strona": "twoje",
+        "dowod": "ODCZYTANE"
+      },
+      {
+        "klucz": "sparse_infill_density",
+        "plik": "5%",
+        "strona": "model",
+        "dowod": "ODCZYTANE"
+      },
+      {
+        "klucz": "elefant_foot_compensation",
+        "plik": "0.1",
+        "strona": "model",
+        "dowod": "ODCZYTANE"
+      }
+    ],
+    "inherits_dowod": {
+      "klucz": "sparse_infill_density",
+      "tabela": "proc",
+      "lisc": "0.20mm High Quality @BBL P2S",
+      "warstwa": "fdm_process_common",
+      "sys": "15%",
+      "uwaga": "W liściu High Quality klucza nie ma — bez łańcucha był „brak w tabeli”."
+    }
+  },
+  "wyszukiwanie": {
+    "id": "T-32",
+    "waga_semantyki": 0.62,
+    "waga_slow": 0.38,
+    "prog_podobienstwa": 0.28,
+    "wzor_kodu": "[0-9]{3,}[-–][0-9]{3,}|\\b\\d+[,.]\\d{3,}\\b",
+    "wymaga_webgpu": false,
+    "sidecar_max_B": 1250000,
+    "zapytanie_poza_osiami_diagnostycznymi": "jaki profil do PETG",
+    "oczekiwany_przyczepnosc_id": "r-15-diagnostyka-objaw-przyczyna-dzialanie-15-2-pierwsza-warstwa-i-przyczepnosc",
+    "zakazany_wylaczny_odklejenie_id": "r-17-co-robic-w-trakcie-wydruku-i-w-sytuacji-awaryjnej-17-4-zanik-zasilania-sieci-i-sterowania",
+    "baseline_0500_8062": {
+      "zmierzono": "2026-08-31 po tabeli 16.1 (kody z DIAGNOZA-DRUKU-2026-08-28.md)",
+      "przewodnik_ids": [
+        "r-16-komunikaty-hms-i-praca-z-bledami-16-1-jak-pracowac-z-kodem-hms",
+        "r-33-zrodla-wersja-i-zastrzezenia-33-3a-zrodla-pierwotne",
+        "r-33-zrodla-wersja-i-zastrzezenia-33-3a-zrodla-pierwotne"
+      ],
+      "asystent_ids": [
+        "r-16-komunikaty-hms-i-praca-z-bledami-16-1-jak-pracowac-z-kodem-hms",
+        "r-33-zrodla-wersja-i-zastrzezenia-33-3a-zrodla-pierwotne",
+        "r-33-zrodla-wersja-i-zastrzezenia-33-3a-zrodla-pierwotne",
+        "r-16-komunikaty-hms-i-praca-z-bledami-16-1-jak-pracowac-z-kodem-hms"
+      ]
+    },
+    "oczekiwany_rogi_id": [
+      "r-jak-korzystac-z-przewodnika-sciaga-3-pierwsza-pomoc-dziesiec-najczestszych-sytuacji",
+      "r-15-diagnostyka-objaw-przyczyna-dzialanie-15-2-pierwsza-warstwa-i-przyczepnosc"
+    ],
+    "macierz_pokrewienstwa": {
+      "komentarz": "qᵀ M d zamiast qᵀ d. Przekątna = 1 w kodzie. Tu tylko pary ≠ 0, ręcznie, podglądalne. warping↔odklejenie umiarkowane, żeby „wypaczonego modelu” w 17.4 nie zasłaniało 15.2.",
+      "pary": [
+        [
+          "odklejenie",
+          "przyczepnosc",
+          0.95
+        ],
+        [
+          "przyczepnosc",
+          "warping_rogi",
+          0.8
+        ],
+        [
+          "odklejenie",
+          "warping_rogi",
+          0.35
+        ],
+        [
+          "odklejenie",
+          "plyta",
+          0.55
+        ],
+        [
+          "przyczepnosc",
+          "plyta",
+          0.6
+        ],
+        [
+          "warping_rogi",
+          "plyta",
+          0.4
+        ],
+        [
+          "odklejenie",
+          "materialy",
+          0.3
+        ],
+        [
+          "przyczepnosc",
+          "materialy",
+          0.35
+        ],
+        [
+          "przyczepnosc",
+          "kalibracja",
+          0.35
+        ],
+        [
+          "warping_rogi",
+          "kalibracja",
+          0.35
+        ],
+        [
+          "nitki",
+          "wilgoc",
+          0.7
+        ],
+        [
+          "nitki",
+          "materialy",
+          0.45
+        ],
+        [
+          "nitki",
+          "kalibracja",
+          0.3
+        ],
+        [
+          "nitki",
+          "odklejenie",
+          0.2
+        ],
+        [
+          "wilgoc",
+          "materialy",
+          0.55
+        ],
+        [
+          "niedotlok",
+          "kalibracja",
+          0.5
+        ],
+        [
+          "niedotlok",
+          "warstwy",
+          0.45
+        ],
+        [
+          "niedotlok",
+          "materialy",
+          0.35
+        ],
+        [
+          "warstwy",
+          "kalibracja",
+          0.4
+        ],
+        [
+          "warstwy",
+          "materialy",
+          0.3
+        ],
+        [
+          "ams",
+          "hms",
+          0.45
+        ],
+        [
+          "ams",
+          "materialy",
+          0.35
+        ],
+        [
+          "ams",
+          "studio",
+          0.25
+        ],
+        [
+          "hms",
+          "plyta",
+          0.5
+        ],
+        [
+          "hms",
+          "kalibracja",
+          0.3
+        ],
+        [
+          "hms",
+          "studio",
+          0.25
+        ],
+        [
+          "plyta",
+          "studio",
+          0.45
+        ],
+        [
+          "plyta",
+          "kalibracja",
+          0.4
+        ],
+        [
+          "plyta",
+          "materialy",
+          0.4
+        ],
+        [
+          "plyta",
+          "profile",
+          0.35
+        ],
+        [
+          "kalibracja",
+          "profile",
+          0.5
+        ],
+        [
+          "kalibracja",
+          "studio",
+          0.45
+        ],
+        [
+          "kalibracja",
+          "materialy",
+          0.4
+        ],
+        [
+          "profile",
+          "materialy",
+          0.55
+        ],
+        [
+          "profile",
+          "studio",
+          0.65
+        ],
+        [
+          "profile",
+          "koszty",
+          0.25
+        ],
+        [
+          "licencje",
+          "modele",
+          0.7
+        ],
+        [
+          "licencje",
+          "koszty",
+          0.25
+        ],
+        [
+          "modele",
+          "koszty",
+          0.4
+        ],
+        [
+          "modele",
+          "studio",
+          0.3
+        ],
+        [
+          "koszty",
+          "materialy",
+          0.45
+        ],
+        [
+          "koszty",
+          "studio",
+          0.2
+        ],
+        [
+          "materialy",
+          "studio",
+          0.4
+        ]
+      ]
+    },
+    "pojecia": [
+      {
+        "id": "warping_rogi",
+        "hasla": [
+          "rogi",
+          "rogach",
+          "podnosz",
+          "warping",
+          "wypacz",
+          "skurcz",
+          "brim",
+          "naroznik",
+          "brzeg",
+          "krawedz",
+          "lifting",
+          "peel",
+          "corner",
+          "corners",
+          "edge",
+          "edges",
+          "warp"
+        ]
+      },
+      {
+        "id": "odklejenie",
+        "hasla": [
+          "odklej",
+          "odryw",
+          "detach",
+          "spaghetti",
+          "klucha"
+        ]
+      },
+      {
+        "id": "przyczepnosc",
+        "hasla": [
+          "przykleja",
+          "przyczepnosc",
+          "adhesion"
+        ]
+      },
+      {
+        "id": "nitki",
+        "hasla": [
+          "nitki",
+          "pajeczyna",
+          "stringing",
+          "retrakc"
+        ]
+      },
+      {
+        "id": "wilgoc",
+        "hasla": [
+          "trzask",
+          "bable",
+          "wysusz",
+          "wilgoc"
+        ]
+      },
+      {
+        "id": "niedotlok",
+        "hasla": [
+          "niedotlok",
+          "cienkie",
+          "przeplyw"
+        ]
+      },
+      {
+        "id": "warstwy",
+        "hasla": [
+          "pekaj",
+          "delamin",
+          "chlodzen"
+        ]
+      },
+      {
+        "id": "ams",
+        "hasla": [
+          "ams",
+          "splata",
+          "ptfe"
+        ]
+      },
+      {
+        "id": "hms",
+        "hasla": [
+          "hms",
+          "komunikat"
+        ]
+      },
+      {
+        "id": "plyta",
+        "hasla": [
+          "znacznik",
+          "frostbite",
+          "textured"
+        ]
+      },
+      {
+        "id": "kalibracja",
+        "hasla": [
+          "kalibrac",
+          "poziomowan",
+          "offset",
+          "dynamika",
+          "pressure",
+          "wieza",
+          "kupon",
+          "natezenie",
+          "auto-poziom",
+          "flow ratio"
+        ]
+      },
+      {
+        "id": "profile",
+        "hasla": [
+          "profil",
+          "kalibrowane",
+          "inherits",
+          "preset",
+          "generic",
+          "0.20mm",
+          "0.16mm",
+          "0.24mm",
+          "high quality"
+        ]
+      },
+      {
+        "id": "licencje",
+        "hasla": [
+          "licenc",
+          "creative",
+          "commons",
+          "cc-by",
+          "cc0",
+          "printables",
+          "thingiverse",
+          "makerworld",
+          "wylaczn",
+          "public domain"
+        ]
+      },
+      {
+        "id": "modele",
+        "hasla": [
+          "stl",
+          "3mf",
+          "printables",
+          "thingiverse",
+          "makerworld",
+          "grabcad",
+          "bibliotek",
+          "repozytor",
+          "cults",
+          "myminifactory"
+        ]
+      },
+      {
+        "id": "koszty",
+        "hasla": [
+          "koszt",
+          "cena",
+          "gram",
+          "odpad",
+          "purge",
+          "zuzyc",
+          "oplaca",
+          "pieniadz",
+          "pln",
+          "zlot"
+        ]
+      },
+      {
+        "id": "materialy",
+        "hasla": [
+          "petg",
+          "tpu",
+          "abs",
+          "asa",
+          "filament",
+          "szpul",
+          "suszen",
+          "sunlu",
+          "pla+",
+          "pa-cf"
+        ]
+      },
+      {
+        "id": "studio",
+        "hasla": [
+          "studio",
+          "slicer",
+          "g-code",
+          "gcode",
+          "orcaslicer",
+          "importuj",
+          "konfigurac",
+          "curr_bed",
+          "bbscfg",
+          "handy"
+        ]
+      }
+    ]
+  },
+  "ocena_zdjecia": {
+    "id": "T-33",
+    "prog_pewnosci": 0.22,
+    "wymaga_webgpu": true,
+    "onnx_max_B": 8000000,
+    "sidecar_max_B": 250000,
+    "model": {
+      "plik": "modele/ocena-zdjecia.onnx",
+      "zrodlo": "https://huggingface.co/Masamsa/3d-print-failure-mobilevit-xxs",
+      "baza": "apple/mobilevit-xx-small",
+      "licencja": "Apache-2.0",
+      "uwaga": "PrintGuard i Edge-FDM-Fault-Detection są GPL-2.0 — nie wchodzą do paczki. Ten ONNX jest binarny (normal/failure); klasa FDM (niedolew / awaria pierwszej warstwy) to najbliższy prototyp z sidecara, etykieta [WYWNIOSKOWANE]."
+    },
+    "id2label_onnx": {
+      "0": "normal",
+      "1": "failure"
+    },
+    "klasy": [
+      {
+        "id": "niedolew",
+        "etykieta": "niedolew"
+      },
+      {
+        "id": "awaria_pierwszej_warstwy",
+        "etykieta": "awaria pierwszej warstwy"
+      },
+      {
+        "id": "spaghetti",
+        "etykieta": "spaghetti"
+      }
+    ],
+    "siatka": 8,
+    "fixture_dir": "e2e-projekt/fixtures/ocena-zdjecia",
+    "testy": [
+      {
+        "id": "niedolew",
+        "plik": "test/niedolew.rgb256",
+        "klasa": "niedolew",
+        "zrodlo": "DIAGNOZA-DRUKU-2026-08-28.md 1000039079 albo legalny przykład niedolewu"
+      },
+      {
+        "id": "niedolew-9080",
+        "plik": "test/niedolew-9080.rgb256",
+        "klasa": "niedolew",
+        "zrodlo": "DIAGNOZA 1000039080",
+        "opcjonalny": true
+      },
+      {
+        "id": "niedolew-8994",
+        "plik": "test/niedolew-8994.rgb256",
+        "klasa": "niedolew",
+        "zrodlo": "DIAGNOZA 1000038994",
+        "opcjonalny": true
+      },
+      {
+        "id": "awaria_pierwszej_warstwy",
+        "plik": "test/awaria_pierwszej_warstwy.rgb256",
+        "klasa": "awaria_pierwszej_warstwy",
+        "zrodlo": "DIAGNOZA-DRUKU-2026-08-28.md 1000039516 albo legalny przykład awarii 1. warstwy"
+      },
+      {
+        "id": "awaria-9517",
+        "plik": "test/awaria-9517.rgb256",
+        "klasa": "awaria_pierwszej_warstwy",
+        "zrodlo": "DIAGNOZA 1000039517",
+        "opcjonalny": true
+      },
+      {
+        "id": "awaria-9524",
+        "plik": "test/awaria-9524.rgb256",
+        "klasa": "awaria_pierwszej_warstwy",
+        "zrodlo": "DIAGNOZA 1000039524",
+        "opcjonalny": true
+      }
+    ]
+  },
+  "pwa_precache": {
+    "uwaga": "SW install nie może zachłannie ciągnąć ORT/ONNX. Leniwie przy pierwszym ocenZdjecie. allSettled ≠ lazy. Nie asercjonować apk/version.json == wersja.json (kanał OTA 4.0.14 vs treść).",
+    "zakazane": [
+      "modele/ocena-zdjecia.onnx",
+      "vendor/ort/ort-wasm-simd-threaded.asyncify.wasm",
+      "vendor/ort/ort-wasm-simd-threaded.asyncify.mjs",
+      "vendor/ort/ort.webgpu.min.js",
+      "vendor/ort/ort.webgpu.min.mjs"
+    ],
+    "precache_rdzen_max_B": 8000000
+  },
+  "rura_modele": {
+    "id": "T-00",
+    "kontrakt_pobierz_url": "1",
+    "nd_przed_eksportem": true,
+    "printables_wez": true,
+    "pwa_bez_mostka": "linki"
+  },
+  "wizja_projekt": {
+    "id": "T-35",
+    "max_iter": 3,
+    "max_chmura": 1,
+    "min_lapanych_z_4": 3,
+    "siatka": 96,
+    "widoki": [
+      "izo",
+      "przod",
+      "bok",
+      "gora"
+    ],
+    "kody": [
+      "NAPIS_BELKA",
+      "NAPIS_POZA_OBRYSEM",
+      "TACA_BEZ_RANTU",
+      "STOJAK_BEZ_ZEBER"
+    ],
+    "ls": "p2s.wizjaProjekt"
+  },
+  "drukarka_lan": {
+    "id": "T-34",
+    "kontrakt": "2",
+    "port": 8883,
+    "protokol": "mqtt-3.1.1",
+    "tls": true,
+    "temat": "device/#",
+    "user": "bblp",
+    "timeout_ms": 8000,
+    "tylko_odczyt": true,
+    "zakaz_publish": true,
+    "spd_lvl": {
+      "1": "silent",
+      "2": "standard",
+      "3": "sport",
+      "4": "ludicrous"
+    },
+    "hosty_ok": [
+      "192.168.1.50",
+      "10.0.0.2",
+      "172.16.9.1"
+    ],
+    "hosty_zle": [
+      "8.8.8.8",
+      "1.1.1.1",
+      "printables.com",
+      "127.0.0.1",
+      "0.0.0.0",
+      "172.32.0.1",
+      "mqtt.bambulab.com"
+    ],
+    "fixture": "e2e-projekt/fixtures/drukarka-lan/sport-report.json"
+  },
+  "brep_cechy": {
+    "id": "T-37",
+    "occt_w_index": false,
+    "wasm_max_index_B": 0,
+    "uwaga": "libcascade/opencascade.js WASM ~40 MB (Context7 /taucad/opencascade.js). Sufit index.html 3.4 MB — nie wchodzi. Brak modułu = faza/zaokrąglenie CSG jak dziś."
+  },
+  "checklista_t0": {
+    "id": "T-38",
+    "alias": "T-0",
+    "offline": true,
+    "siec": false,
+    "flaga_degradacji": false,
+    "project_settings": false,
+    "nowy_3mf": false,
+    "flow_pla_plus": "0.8645",
+    "proces": "0.20mm Standard @BBL P2S",
+    "curr_bed_type": 3,
+    "plyta_studio": "Smooth PEI Plate / High Temp Plate",
+    "plyta_fizyczna": "BIQU Panda CryoGrip Pro Frostbite",
+    "filament_dzienny": "KALIBROWANE SUNLU PLA+ CUSTOM Frostbite",
+    "zakaz_w_nazwie": ["czapa", "ORYGINAL"],
+    "flow_nie_daily": false,
+    "uwaga": "Punkt flow to daily-check. 0,8645 to kanon profilu KALIBROWANE SUNLU PLA+ CUSTOM (skalibrowane). Nie zgaduj 0,98 z ręki jako naprawa. Reset dnia / nowy wydruk nie prowadzi licznika długu.",
+    "punkty": [
+      {
+        "id": "plyta_fizyczna",
+        "label": "Płyta fizyczna: niebieska Frostbite (CryoGrip Pro), nie czapa.",
+        "href": "r-jak-korzystac-z-przewodnika-dzien-dzisiejszy-frostbite",
+        "chip": "dziś"
+      },
+      {
+        "id": "plyta_studio",
+        "label": "Studio i ekran P2S: High Temp / Smooth PEI (curr_bed_type 3), nie Textured.",
+        "href": "r-7-biqu-panda-cryogrip-pro-frostbite-7-4-rozpoznawanie-plyty-i-pierwsza-warstwa",
+        "chip": "7.4"
+      },
+      {
+        "id": "proces",
+        "label": "Proces: 0.20mm Standard @BBL P2S — bez „czapa”.",
+        "href": "r-5-filament-innej-marki-od-a-do-z-sunlu-5-18-proces-warstwa-osobna-lista",
+        "chip": "5.18"
+      },
+      {
+        "id": "filament",
+        "label": "Filament: KALIBROWANE SUNLU PLA+ CUSTOM z dopiskiem Frostbite (nie czapa/ORYGINAL).",
+        "href": "r-5-filament-innej-marki-od-a-do-z-sunlu-5-17-nowa-szpula-ktory-profil",
+        "chip": "5.17"
+      },
+      {
+        "id": "flow",
+        "kind": "dzien",
+        "label": "Flow: zostaw 0,8645 (skalibrowane, nie zgaduj 0,98).",
+        "href": "r-6-kalibracje-krok-po-kroku-6-4-natezenie-przeplywu-etap-1",
+        "chip": "6.4"
+      },
+      {
+        "id": "detekcja",
+        "label": "Detekcja płyty: Frostbite nie ma QR — ostrzeżenie 0500-8062 jest normalne.",
+        "href": "r-16-komunikaty-hms-i-praca-z-bledami-16-1-jak-pracowac-z-kodem-hms",
+        "chip": "16.1"
+      },
+      {
+        "id": "sport",
+        "label": "Sport: na ekranie drukarki, nie w procesie.",
+        "href": "r-5-filament-innej-marki-od-a-do-z-sunlu-5-18-proces-warstwa-osobna-lista",
+        "chip": "5.18"
+      },
+      {
+        "id": "po_druku",
+        "label": "Po druku: ostygnąć, giąć płytę, woda+mydło, nie alkohol.",
+        "href": "r-7-biqu-panda-cryogrip-pro-frostbite-7-5-zdejmowanie-wydrukow-i-ochrona-powloki",
+        "chip": "7.5"
+      }
+    ]
+  },
+  "szpule_kalibrowane": {
+    "id": "T-39",
+    "offline": true,
+    "nadpis_studio": false,
+    "uwaga": "Karty w apce. Presetów KALIBROWANE w Studio nie nadpisujemy. Flow tylko z liścia profilu.",
+    "zrodlo": "pliki/pliki AKTUALNE/profile-sunlu-skalirowane/",
+    "data_odczytu": "2026-08-26",
+    "szpule": [
+      {
+        "id": "pla_plus",
+        "slot": "A2",
+        "nazwa_studio": "KALIBROWANE SUNLU PLA+ CUSTOM @BBL P2S",
+        "nazwa_karty": "KALIBROWANE SUNLU PLA+ CUSTOM Frostbite",
+        "material": "PLA+",
+        "flow": "0.8645",
+        "k": "0.020",
+        "dysza_mm": "0.4",
+        "dysze_profilu": ["0.4", "0.6", "0.8"],
+        "stol_frostbite_C": [40, 40],
+        "stol_profil_hot_plate_C": 65,
+        "plyta": "Frostbite",
+        "plyta_nie": "czapa",
+        "nozzle_C_lisc": null,
+        "dowod_flow": "ODCZYTANE"
+      },
+      {
+        "id": "classic",
+        "slot": "A3",
+        "nazwa_studio": "KALIBROWANE SUNLU PLA Classic Słoneczny @BBL P2S",
+        "nazwa_karty": "KALIBROWANE SUNLU PLA Classic Słoneczny Frostbite",
+        "material": "PLA Classic",
+        "flow": "0.99813",
+        "k": "0.022",
+        "dysza_mm": "0.4",
+        "dysze_profilu": ["0.4", "0.6", "0.8"],
+        "stol_frostbite_C": [40, 40],
+        "stol_profil_hot_plate_C": 55,
+        "plyta": "Frostbite",
+        "plyta_nie": "czapa",
+        "nozzle_C_lisc": [220, 210],
+        "dowod_flow": "ODCZYTANE"
+      },
+      {
+        "id": "petg",
+        "slot": "A4",
+        "nazwa_studio": "KALIBROWANE SUNLU PETG @BBL P2S",
+        "nazwa_karty": "KALIBROWANE SUNLU PETG Frostbite",
+        "material": "PETG",
+        "flow": "0.967575",
+        "k": "0.035",
+        "dysza_mm": "0.4",
+        "dysze_profilu": ["0.4", "0.6", "0.8"],
+        "stol_frostbite_C": [60, 60],
+        "stol_profil_hot_plate_C": null,
+        "plyta": "Frostbite",
+        "plyta_nie": "czapa",
+        "nozzle_C_lisc": null,
+        "dowod_flow": "ODCZYTANE"
+      }
+    ]
+  },
+  "hms_dekoder": {
+    "id": "T-40",
+    "offline": true,
+    "siec": false,
+    "hybryda_jak_szukajka": true,
+    "rozdzial": "r-16-komunikaty-hms-i-praca-z-bledami-16-1-jak-pracowac-z-kodem-hms",
+    "kody": [
+      {
+        "kod": "0500-8062",
+        "komunikat": "Nie wykryto znacznika płyty",
+        "na_frostbite": "Kamera nie widzi kodu QR Bambu. CryoGrip / Frostbite go nie ma. Build Plate Detection wstrzymuje start."
+      },
+      {
+        "kod": "0500-8051",
+        "komunikat": "Typ płyty nie zgadza się z G-code",
+        "na_frostbite": "Profil płyty w Studio nie zgadza się z tym, co drukarka rozpoznała, albo ze stanem bez znacznika."
+      },
+      {
+        "kod": "Build Plate Detection",
+        "komunikat": "Wykrywanie płyty kamerą live-view",
+        "na_frostbite": "Czyta kod QR na tylnym zaczepie. Działa tylko na płytach Bambu 2. generacji (P2S/X2D). Na Frostbite wyłącz detekcję albo potwierdzaj Ignoruj przy każdym starcie."
+      }
+    ]
+  }
+}

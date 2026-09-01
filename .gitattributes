@@ -1,0 +1,10 @@
+# LF w plikach tekstowych (Windows ma core.autocrlf=true); binaria bez konwersji EOL.
+* text=auto eol=lf
+*.wasm binary
+*.onnx binary
+*.apk binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.woff* binary

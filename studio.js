@@ -303,7 +303,7 @@
     if (!view || view.getAttribute('data-studio-pj') === '1') return;
     view.setAttribute('data-studio-pj', '1');
     var groups = {
-      brief: ['pjWyt', 'pjNInfo', 'pjComposeDock', 'pjThumbs', 'pjVisionHint', 'pjResearch', 'pjPytanieWrap', 'pjEngineMsg', 'pjFileOrigin', 'pjOffline'],
+      brief: ['pjWyt', 'pjNInfo', 'pjComposeDock', 'pjSpecWrap', 'pjThumbs', 'pjVisionHint', 'pjResearch', 'pjPytanieWrap', 'pjEngineMsg', 'pjFileOrigin', 'pjOffline'],
       warianty: ['pjChatWrap'],
       model: ['pjLayoutWrap'],
       weryfikacja: ['pjWarn', 'pjDrukLista', 'pjDiff', 'pjAkcje', 'pjStudioHint'],
@@ -326,9 +326,8 @@
     if (layout && !layout.id) layout.id = 'pjLayoutWrap';
     var btnrow = view.querySelector('.btnrow');
     if (btnrow && btnrow.querySelector('#pjDl3mf') && !btnrow.id) btnrow.id = 'pjAkcje';
-    var details = view.querySelector('details');
     var foot = view.querySelector('.pj-footlic');
-    if (details || foot || $('pjHist')) {
+    if (foot || $('pjHist')) {
       var extra = $('pjEkspertExtra');
       if (!extra) {
         extra = document.createElement('div');
@@ -340,7 +339,6 @@
       var mimoIn = $('pjMimo');
       var mimo = mimoIn && mimoIn.closest('label');
       if (mimo) extra.appendChild(mimo);
-      if (details) extra.appendChild(details);
       if (foot) extra.appendChild(foot);
     }
     Object.keys(groups).forEach(function (key) {
@@ -429,6 +427,42 @@
     });
   }
 
+  function syncAiTryb() {
+    var pasek = $('aiTrybPasek');
+    var el = $('aiTrybEtykieta');
+    if (!el) return;
+    var s = null;
+    try {
+      if (window.P2S && typeof window.P2S.stanBramkiOceny === 'function') {
+        s = window.P2S.stanBramkiOceny();
+      }
+    } catch (e) { s = null; }
+    var tryb = (s && s.tryb) || 'chmura';
+    var txt;
+    if (s && s.odpala_klasyfikator && tryb === 'lokalnie') {
+      txt = s.etykieta || 'lokalna pierwsza ocena';
+    } else {
+      txt = (s && s.etykieta) || 'lokalnie niedostępne — chmura';
+    }
+    el.textContent = txt;
+    if (pasek) pasek.setAttribute('data-tryb', tryb);
+  }
+
+  function bindAiTryb() {
+    syncAiTryb();
+    [400, 1500, 4000].forEach(function (ms) { setTimeout(syncAiTryb, ms); });
+    var chk = $('setOcenaLok');
+    if (chk && chk.getAttribute('data-tryb-bound') !== '1') {
+      chk.setAttribute('data-tryb-bound', '1');
+      chk.addEventListener('change', function () { setTimeout(syncAiTryb, 40); });
+    }
+    var save = $('setSave');
+    if (save && save.getAttribute('data-tryb-save') !== '1') {
+      save.setAttribute('data-tryb-save', '1');
+      save.addEventListener('click', function () { setTimeout(syncAiTryb, 80); });
+    }
+  }
+
   /* ---------- Doradca ---------- */
   var advSnaps = [];
   function enhanceAdvisor() {
@@ -467,37 +501,6 @@
         if (isMenu) post.textContent = 'Wybierz jeden objaw.';
         else if (title) post.textContent = title.textContent;
       }
-      if (!isMenu) return;
-      var grps = Array.prototype.slice.call(box.querySelectorAll('.agrp'));
-      if (!grps.length || box.querySelector('.adv-kat')) return;
-      var kat = document.createElement('div');
-      kat.className = 'adv-kat';
-      var opts = Array.prototype.slice.call(box.querySelectorAll('.aopt'));
-      var buckets = [];
-      var cur = { t: 'Inne', items: [] };
-      box.querySelectorAll('.agrp, .aopt').forEach(function (el) {
-        if (el.classList.contains('agrp')) {
-          if (cur.items.length || cur.t !== 'Inne') buckets.push(cur);
-          cur = { t: el.textContent, items: [] };
-        } else cur.items.push(el);
-      });
-      if (cur.items.length) buckets.push(cur);
-      grps.forEach(function (g) { g.hidden = true; });
-      opts.forEach(function (o) { o.hidden = true; });
-      buckets.forEach(function (bk, i) {
-        var b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'aopt';
-        b.textContent = bk.t;
-        b.addEventListener('click', function () {
-          kat.hidden = true;
-          bk.items.forEach(function (o) { o.hidden = false; });
-          if (post) post.textContent = bk.t + ' — jeden objaw.';
-        });
-        kat.appendChild(b);
-      });
-      var aq = box.querySelector('.aq');
-      if (aq) aq.insertAdjacentElement('afterend', kat);
     }
     if (window.MutationObserver) {
       new MutationObserver(afterRender).observe(box, { childList: true });
@@ -510,7 +513,8 @@
     { id: 'calc', label: 'Kalkulatory', heads: ['Zmiana filamentu', 'Koszt wydruku', 'Grubość powłoki', 'Skala a materiał', 'Dobierz luz', 'Jeden pomiar', 'Deklaracja', 'Okrąg a liczba'] },
     { id: 'modele', label: 'Modele', heads: ['Szukanie modeli', 'Licencja', 'Karta modelu', 'Kreator briefu'] },
     { id: 'analiza', label: 'Analiza', heads: ['Analiza modelu'] },
-    { id: 'uslugi', label: 'Usługi', heads: ['Usługi zewnętrzne', 'Odczyt LAN'] }
+    { id: 'uslugi', label: 'Usługi', heads: ['Usługi zewnętrzne', 'Odczyt LAN'] },
+    { id: 'warsztat', label: 'Warsztat', heads: ['T-0 start wydruku', 'Kolejność kalibracji', 'Szpule KALIBROWANE', 'Dekoder HMS'] }
   ];
 
   function bindTools() {
@@ -529,6 +533,9 @@
         });
       });
       t.setAttribute('data-tool-cat', cat);
+    });
+    tools.forEach(function (t, i) {
+      if (!t.getAttribute('data-tool-i')) t.setAttribute('data-tool-i', t.id || ('t-' + i));
     });
     var lista = $('toolsLista');
     if (!lista) {
@@ -570,6 +577,55 @@
       if (b) showCat(b.getAttribute('data-tool-cat'));
     });
     showCat('calc');
+    toolsCtl.showCat = showCat;
+    toolsCtl.openTool = openTool;
+  }
+
+  var KALIB_KEY = 'p2s.kalib.kolejnosc';
+  function bindKalibKolejnosc() {
+    var root = $('tKalibKolejnosc');
+    if (!root || root.getAttribute('data-kalib-bound') === '1') return;
+    root.setAttribute('data-kalib-bound', '1');
+    var stan = {};
+    try { stan = JSON.parse(localStorage.getItem(KALIB_KEY) || '{}') || {}; }
+    catch (e) { stan = {}; }
+    root.querySelectorAll('input[data-kalib]').forEach(function (inp) {
+      inp.checked = !!stan[inp.getAttribute('data-kalib')];
+    });
+    root.addEventListener('change', function (e) {
+      var inp = e.target.closest('input[data-kalib]');
+      if (!inp) return;
+      var st = {};
+      try { st = JSON.parse(localStorage.getItem(KALIB_KEY) || '{}') || {}; }
+      catch (e2) { st = {}; }
+      if (inp.checked) st[inp.getAttribute('data-kalib')] = 1;
+      else delete st[inp.getAttribute('data-kalib')];
+      try { localStorage.setItem(KALIB_KEY, JSON.stringify(st)); } catch (e3) {}
+    });
+  }
+
+  var toolsCtl = { showCat: function () {}, openTool: function () {} };
+
+  function openToolById(id) {
+    var el = document.getElementById(id);
+    if (!el) return false;
+    closeHome();
+    if (window.__p2sShow) window.__p2sShow('tools');
+    var cat = el.getAttribute('data-tool-cat') || 'warsztat';
+    toolsCtl.showCat(cat);
+    toolsCtl.openTool(el);
+    return true;
+  }
+
+  function bindHomeSkroty() {
+    var root = document.getElementById('t0HomeSkroty') || document.getElementById('studioHome');
+    if (!root || root.getAttribute('data-home-skroty') === '1') return;
+    root.setAttribute('data-home-skroty', '1');
+    root.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-home-tool]');
+      if (!b) return;
+      openToolById(b.getAttribute('data-home-tool'));
+    });
   }
 
   /* ---------- Aktualizuj ---------- */
@@ -597,7 +653,21 @@
     });
     var hint = $('syncTrescHint');
     if (hint) {
-      hint.textContent = 'GitHub APK = 4.0.14; sideload/debug bywa 4.2.33; treść = Pages.';
+      var tresc = '';
+      try { tresc = window.__P2S_TRESJ_JSON || ''; } catch (eT) {}
+      if (!tresc) {
+        try { tresc = (window.__P2S_META && window.__P2S_META.wersja) || ''; } catch (eM) {}
+      }
+      if (!tresc) tresc = window.P2S_VER_NAME || '?';
+      var shell = window.P2S_SHELL_NAME || '';
+      try {
+        if (window.P2SNative && typeof window.P2SNative.versionName === 'function') {
+          var nv = window.P2SNative.versionName();
+          if (nv) shell = nv;
+        }
+      } catch (eN) {}
+      if (!shell) shell = '?';
+      hint.textContent = 'OTA GitHub 4.0.14 · shell (version.properties) ' + shell + ' · treść (wersja.json) ' + tresc + '.';
     }
     showP('apka');
   }
@@ -617,6 +687,7 @@
     syncAiGate();
     kbOpen();
     syncHead();
+    if (v === 'ai') syncAiTryb();
     if (v === 'projekt') wrapPjPanels();
     if (v === 'przerobka') wrapReform();
   }
@@ -663,8 +734,14 @@
     wrapPjPanels();
     wrapReform();
     bindAiGate();
+    bindAiTryb();
     enhanceAdvisor();
     bindTools();
+    bindKalibKolejnosc();
+    if (window.P2S_t0 && typeof window.P2S_t0.mount === 'function') window.P2S_t0.mount();
+    if (window.P2S_szpule && typeof window.P2S_szpule.mount === 'function') window.P2S_szpule.mount();
+    if (window.P2S_hms && typeof window.P2S_hms.mount === 'function') window.P2S_hms.mount();
+    bindHomeSkroty();
     bindSync();
     wrapShow();
     bindHomeBtn();
@@ -677,12 +754,14 @@
       openHome();
     }
     syncAiGate();
+    syncAiTryb();
     readSat();
     syncHead();
     window.__p2sStudio = {
       openHome: openHome,
       showChapter: showChapter,
       openChapterById: openChapterById,
+      openToolById: openToolById,
       kb: kbOpen
     };
   }

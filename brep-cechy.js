@@ -34,7 +34,23 @@
 
   function wasmIndexZakazany(html) {
     if (!html) return true;
-    return !/occt-wasm|libcascade|opencascade\.js/i.test(String(html));
+    var s = String(html);
+    // Zakaz: occt-wasm / libcascade / opencascade.js jako skrypt lub import.
+    // Słowa w prozie Treści („brak WASM libcascade”) są dozwolone.
+    var m;
+    var srcRe = /<script\b[^>]*\bsrc\s*=\s*(["'])([^"']*)\1/gi;
+    while ((m = srcRe.exec(s))) {
+      if (/occt-wasm|libcascade|opencascade\.js/i.test(m[2])) return false;
+    }
+    var fromRe = /\b(?:import|export)\s+[^;'"\n]*from\s*(["'])([^"']*)\1/gi;
+    while ((m = fromRe.exec(s))) {
+      if (/occt-wasm|libcascade|opencascade\.js/i.test(m[2])) return false;
+    }
+    var dynRe = /\bimport\s*\(\s*(["'])([^"']*)\1\s*\)/gi;
+    while ((m = dynRe.exec(s))) {
+      if (/occt-wasm|libcascade|opencascade\.js/i.test(m[2])) return false;
+    }
+    return true;
   }
 
   function dostepne() {

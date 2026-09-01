@@ -24,13 +24,17 @@ Na komputerze możesz otworzyć index.html lokalnie. Na Androidzie projekt ma
 osobny kontener APK: origin `https://appassets.androidplatform.net` jest stały,
 treść schodzi z Pages do katalogu wewnętrznego.
 
-Numery (zmierzone 31.08.2026; treść 4.2.42):
-  GitHub APK = 4.0.14; sideload/debug bywa 4.2.42; treść = Pages.
-  Pages / treść:     4.2.42  (lokalnie; Pages jeszcze nie publikowano)
-  Paczka GitHub:     4.0.14  (apk/version.json, versionCode 40014015)
-                     — to trigger updatera APK. Nie podbijaj bez nowej paczki
-                     na raw.githubusercontent.com/.../PrzewodnikP2S-latest.apk.
-  Sideload debug:    bywa 4.2.33 (versionCode 40233000) — to shell, nie Pages.
+Numery (zmierzone 31.08.2026; nie mylić kanałów):
+  Treść kanon Desktop:  4.2.42  (Przewodnik_P2S_aplikacja (1)/wersja.json, lokalnie).
+                        Pages publiczny zapas jest starszy: 4.2.35 (GET 31.08.2026).
+                        4.2.42 nie publikowano na Pages.
+  GitHub APK OTA:       4.0.14  (raw.githubusercontent.com/.../apk/version.json,
+                        versionCode 40014015). Nie podbijaj bez nowej paczki
+                        PrzewodnikP2S-latest.apk pod tym samym URL.
+  Canonical apk/version.json (lokalny trigger w PWA/apk/): 4.2.15 / 40215000.
+                        Nietknięty. To nie jest numer treści ani sideload shell.
+  Sideload shell:       VERSION_NAME=4.2.42, VERSION_CODE_BASE=40233000
+                        (legacy code z 4.2.33). Nie wymyślaj nowego versionCode.
 
 PWA z Pages zostaje jako zapas (Chrome → Dodaj do ekranu głównego; iPhone).
 PWA wymaga https://.
