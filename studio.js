@@ -514,7 +514,7 @@
     { id: 'modele', label: 'Modele', heads: ['Szukanie modeli', 'Licencja', 'Karta modelu', 'Kreator briefu'] },
     { id: 'analiza', label: 'Analiza', heads: ['Analiza modelu'] },
     { id: 'uslugi', label: 'Usługi', heads: ['Usługi zewnętrzne', 'Odczyt LAN'] },
-    { id: 'warsztat', label: 'Warsztat', heads: ['T-0 start wydruku', 'Kolejność kalibracji', 'Szpule KALIBROWANE', 'Dekoder HMS'] }
+    { id: 'warsztat', label: 'Warsztat', heads: ['T-0 start wydruku', 'Kolejność kalibracji', 'Szpule KALIBROWANE', 'Dekoder HMS', 'Ocena nauki agenta'] }
   ];
 
   function bindTools() {

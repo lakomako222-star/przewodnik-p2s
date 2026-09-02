@@ -6,6 +6,7 @@ import { initEngine, buildAndGate, specDiff, meshToVF, normalizujJednostki, wali
 import { mesh3MF, mesh3MFWiele, tekstDeklaracji, nazwa3mf, checklistaDruku } from './export3mf.js';
 import { WIDOKI, rzutuj, rysuj, etykietaGabarytu } from './preview.js';
 import { wyciagnijSzukaj, szukajSieci, hostDozwolony, tekstWynikowSzukania } from './szukaj.js';
+import { ladujPackNauki, szukajNauki, tekstKontekstuNauki } from './nauka-rag.js';
 import {
   nowyProjectId, modelCzytaObraz, uzyjFlashDoOpisu, hintWizji, mockOpisZdjecia,
   parseScalePercent, zapiszNitke, wczytajNitke, skrotRozmowy, kompresujZdjecie,
@@ -170,7 +171,19 @@ WYNIK 3MF — CO MUSI BYĆ PRAWDA (nie przepis kształtu)
 3) Dziesiątki powłok przegrywają ze spójną topologią.
 4) Zwis, który JEST funkcją (noga haka, daszek, zatrzask), zostaje. Cantilever w Studio to brief na pole podpory w SPEC, nie usterka do naprawy geometrią. Funkcja nie znika i nie ląduje na osobnej części po to, by nawis był 0%.
 5) Przy tym samym gabarycie lżejsza bryła wygrywa. Nie dokładaj mięsa.
-6) 3MF bez project_settings. Podpory dorysowuje Studio. Checklista: TYP i DLACZEGO. „Podpory: nie” przy zwisie-funkcji to udawanie slicera.
+6) Ścianka pudła <2,0 mm w SPEC → ostrzeż „cienkie ścianki FDM — ryzyko lichości na łączeniach, rozważ ≥2 mm” (nie cicho buduj 1,6 mm).
+7) 3MF bez project_settings. Podpory dorysowuje Studio. Checklista: TYP i DLACZEGO. „Podpory: nie” przy zwisie-funkcji to udawanie slicera.
+
+SUFIT PRODUKTU — CO MUSI BYĆ PRAWDA (bramki aplikacji, zero przykładów CAD)
+1) Max 8 części w jednym SPEC 1.1 — schema maxItems i builder odrzucą 9.
+2) Każda część ≤256 mm na każdej osi — bramka PLYTA. Brief >250 mm = podział na części, nie skala w dół ani jeden gigant.
+3) Gdy są bryły: orientacja_druku + podpory + brim obowiązkowe — schema allOf i walidujPlanDruku; brak = odrzucenie SPEC, nie ciche budowanie.
+4) podpory.wymagane true|false + uzasadnienie + typ (gdy true). „Podpory: nie” przy zwisie-funkcji bez decyzji = udawanie slicera; bramka ostrzega PODPORY, ale schema musi złapać brak pola.
+5) 3MF = dokładnie 3 wpisy ZIP (geometria unit=millimeter), bez project_settings ani model_settings — profil KALIBROWANE wybiera człowiek w Studio.
+6) derivedFrom=estimated / pochodzenie_wymiaru=szacunek = eksperymentalny werdykt, nie PASS produkcyjny.
+7) Projekt: N=96 (okręgi). Przerób: N=192. Nie mieszaj kanałów ani liczby boków.
+8) Przerób w tej wersji: walec tak; szczelina i kieszeń nie.
+9) B-Rep (faza/zaokrąglenie) domyślnie wyłączone — faza/zaokrąglenie idzie CSG jak dziś.
 
 KOLEJNOŚĆ
 0) Jednym zdaniem: CO MA SIĘ FIZYCZNIE WYDARZYĆ, kiedy ta rzecz działa poprawnie. Jeśli nie umiesz — dopytaj.
@@ -178,6 +191,9 @@ KOLEJNOŚĆ
 2) 2–3 sposoby i jedna rekomendacja — zanim poprosisz o pełny rysunek.
 3) Przy sprzęcie albo obcej klasie [[SZUKAJ]], potem rysunek. Nie odwrotnie.
 4) Po 3MF: oceń WYNIK 3MF. 2–3 poprawki jako rada (ścianka, orientacja, kubek) — nie cicha zmiana siatki.
+
+BAZA NAUKI
+Gdy w kontekście jest blok „BAZA NAUKI” — to pomiary i oceny właściciela z podobnych projektów. Ucz się z fail/ostrzeżeń (np. cienkie ścianki). NIE kopiuj cudzego CAD ani nie powielaj FAIL-ów.
 
 BRIEF PEŁNY, TYLKO prosty klips/haczyk/podstawka z mm (USB 5 mm, haczyk 18 mm): pomiń 1–2. Zera nie pomijaj (CO SIĘ DZIEJE). W tej turze plan druku i [[RYSUJ]]. Bez dopytywania o rasę kota. Brak filamentu: klips/haczyk/uchwyt/podstawka → PETG; figurka/pionek/topper/napis → PLA — napisz wybór przy BRIM.
 
@@ -682,6 +698,45 @@ function setWarn(werdykt, extra) {
     const k = w.poziom === 'blad' ? 'pj-err' : 'pj-warn';
     return '<div class="' + k + '">' + (w.poziom === 'blad' ? '⛔ ' : '⚠ ') + escapeHtml(w.tekst || w) + '</div>';
   }).join('');
+}
+
+/** Pudło CSG: kosz + wnetrze → grubość ściany z różnicy wymiarów/pozycji. */
+function pjGruboscSciankiZSpec(spec) {
+  const PROG = 2.0;
+  let min = Infinity;
+  const czesci = (spec && spec.czesci) || [];
+  for (const cz of czesci) {
+    const bryly = cz.bryly || [];
+    const outer = bryly.find((b) => b.operacja === 'dodaj' && b.ksztalt
+      && b.ksztalt.typ === 'prostopadloscian' && /kosz/i.test(String(b.id || '')));
+    const inner = bryly.find((b) => b.operacja === 'odejmij' && b.ksztalt
+      && b.ksztalt.typ === 'prostopadloscian' && /wnetrze/i.test(String(b.id || '')));
+    if (!outer || !inner) continue;
+    const ox = outer.ksztalt.x_mm, oy = outer.ksztalt.y_mm;
+    const ix = inner.ksztalt.x_mm, iy = inner.ksztalt.y_mm;
+    const px = (outer.pozycja_mm || [])[0] || 0;
+    const py = (outer.pozycja_mm || [])[1] || 0;
+    const ipx = (inner.pozycja_mm || [])[0] || 0;
+    const ipy = (inner.pozycja_mm || [])[1] || 0;
+    const wx = ((px + ox - (ipx + ix)) + (ipx - px)) / 2;
+    const wy = ((py + oy - (ipy + iy)) + (ipy - py)) / 2;
+    min = Math.min(min, wx, wy);
+  }
+  if (!Number.isFinite(min)) return null;
+  return { mm: +min.toFixed(3), prog: PROG, cienka: min < PROG - 1e-6 };
+}
+
+function pjOstrzCienkieSciankiSpec(spec, werdykt) {
+  const g = pjGruboscSciankiZSpec(spec);
+  if (!g || !g.cienka) return werdykt;
+  const wpis = {
+    poziom: 'ostrzezenie',
+    kod: 'SCIANKA_CIENKA',
+    tekst: 'Cienkie ścianki FDM (' + g.mm + ' mm < ' + g.prog + ' mm) — ryzyko lichości na łączeniach; rozważ ≥2 mm albo więcej obwodów.'
+  };
+  const wpisy = ((werdykt && werdykt.wpisy) || []).slice();
+  if (!wpisy.some((w) => w.kod === 'SCIANKA_CIENKA')) wpisy.unshift(wpis);
+  return Object.assign({}, werdykt || {}, { wpisy });
 }
 
 function escapeHtml(s) {
@@ -1605,6 +1660,8 @@ async function zbuduj(spec, note, prev, context, opts) {
   }
   rysujAktualna();
   fillCzesciSwitch();
+  const werdyktOstrz = pjOstrzCienkieSciankiSpec(r.spec, r.werdykt);
+  if (werdyktOstrz !== r.werdykt) r.werdykt = werdyktOstrz;
   setWarn(r.werdykt);
   syncExport(r.werdykt);
   pushHist({ spec: r.spec, deklaracja: r.deklaracja, note: note || '', when: Date.now() });
@@ -1621,6 +1678,12 @@ async function pjRozmowaZSzukaniem(text, imgs) {
   const lancuch = lancuchMozgu(talkId, MOZGI_TALK);
   let userContent = (window.__p2sWzorTekst ? (window.__p2sWzorTekst + '\n\n') : '') + text
     + '\n\nKontekst rozmowy:\n' + pjChatBlob().slice(-2500);
+  try {
+    await ladujPackNauki(false);
+    const hits = await szukajNauki(text, 5);
+    const baza = tekstKontekstuNauki(hits);
+    if (baza) userContent += '\n\n' + baza;
+  } catch (e) { /* brak packa = bez RAG */ }
   if (photos.length && modelCzytaObraz(talkId)) {
     userContent = trescZZdjeciami(userContent, photos);
   }
@@ -2054,6 +2117,9 @@ if (typeof window !== 'undefined') {
   window.P2S.wyciagnijSzukaj = wyciagnijSzukaj;
   window.P2S.hostDozwolony = hostDozwolony;
   window.P2S.tekstWynikowSzukania = tekstWynikowSzukania;
+  window.P2S.szukajNauki = szukajNauki;
+  window.P2S.tekstKontekstuNauki = tekstKontekstuNauki;
+  window.P2S.ladujPackNauki = ladujPackNauki;
   window.P2S.pjZapiszNitke = pjZapiszNitke;
   window.P2S.pjPrzerobTo = pjPrzerobTo;
   window.P2S.pjOpisZdjeciaFlash = pjOpisZdjeciaFlash;
