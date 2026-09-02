@@ -1,6 +1,6 @@
 {
-  "wersja": "4.2.47",
-  "stempel": "0cbab3be",
+  "wersja": "4.2.48",
+  "stempel": "949060f2",
   "krytyczne": [
     "index.html",
     "engine/manifold.js",
@@ -27,6 +27,9 @@
     "modele_guard.js",
     "modele-rura.js",
     "szukaj.js",
+    "nauka-rag.js",
+    "nauka-pack.json",
+    "nauka-ocena.js",
     "nitka.js",
     "spec-validate.js",
     "font-skrypt.js",

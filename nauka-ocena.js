@@ -1,7 +1,7 @@
 /**
  * Kreator oceny nauki agenta (karta-oceny.json) — checki, Dalej, eksport JSON.
  * Zapis: localStorage p2s.nauka.ocen.<id>. Eksport → e2e-projekt/nauka-modele/ocen/
- * Karta = przegląd jednego projektu druku (tytuł, opis, co system uważa, Twoja ocena).
+ * Karta = podgląd + „Co agentowi nie pasuje” (1–3 konkrety) + Twoja ocena.
  */
 (function (global) {
   'use strict';
@@ -63,6 +63,18 @@
     GWINT_LUB_NIEWALEC: 'Wygląda na gwint albo niewalec — nie wpisuj jednej średnicy',
     USZKODZONY: 'Plik/siatka wygląda na uszkodzoną albo nieczytelną',
     BLAD: 'Ogólny błąd detektora / pipeline'
+  };
+
+  var KOD_GLOSS = {
+    unit_mm: 'Jednostki w pliku wyglądają na metry zamiast mm (ryzyko skali 1000×)',
+    gabaryt_aabb: 'Gabaryt poza limitem płyty P2S (część dłuższa niż ~256 mm)',
+    WARN_liczba_czesci: 'Za dużo obiektów w pliku względem limitu czytelnego podziału',
+    WARN_project_settings: 'Obcy eksport Bambu Studio (project_settings w ZIP)',
+    WARN_tri_objetosc: 'Bardzo duża / podejrzana siatka (trójkąty lub objętość)',
+    WARN_bramka_objetosc: 'Objętość modelu przekracza bramkę harnessu',
+    WARN_bbox_crosscheck: 'Niespójność bbox 3MF vs pomiar (możliwy niezapisany transform)',
+    WARN_normalnosc: 'Gabaryt mikroskopijny / podejrzana normalność siatki',
+    AUTO_czesci_max_8: 'Automat: więcej niż 8 części — podział trudny do ogarnięcia'
   };
 
   var KAT_PL = {
@@ -180,27 +192,67 @@
     return 'Kod odmowy detektora — oceń, czy decyzja była słuszna';
   }
 
-  /** 2–4 bullets po polsku: z packa albo fallback z kodów. */
-  function bulletsSystem(w) {
-    if (w && Array.isArray(w.werdykt_po_ludzku) && w.werdykt_po_ludzku.length) {
-      return w.werdykt_po_ludzku.slice(0, 4).map(String);
+  /** 1–3 konkretne zastrzeżenia agenta (odmowy + FAIL/WARN). */
+  function zastrzezeniaZ(w) {
+    if (w && Array.isArray(w.zastrzezenia) && w.zastrzezenia.length) {
+      return w.zastrzezenia.slice(0, 3).map(function (z, i) {
+        return {
+          n: i + 1,
+          kod: z.kod || '',
+          badge: z.badge || 'uwaga',
+          tytul: z.tytul || z.kod || 'Zastrzeżenie',
+          opis: z.opis || String(z)
+        };
+      });
     }
-    var bits = [];
-    var odm = listaOdmow(w);
-    odm.forEach(function (kod) {
-      bits.push(glossOdmowy(kod) + ' (' + kod + ').');
+    var out = [];
+    var seen = {};
+    function dodaj(kod, badge, tytul, opis) {
+      var key = String(kod || tytul || opis).slice(0, 48);
+      if (seen[key] || out.length >= 3) return;
+      seen[key] = 1;
+      out.push({ n: out.length + 1, kod: kod || '', badge: badge, tytul: tytul, opis: opis });
+    }
+    listaOdmow(w).forEach(function (kod) {
+      dodaj(kod, 'odmowa', kod, glossOdmowy(kod) + '.');
     });
     var t = techNorm(w);
-    if (t === 'fail') bits.push('Harness: FAIL — automat uznał model/plik za zły.');
-    else if (t === 'warn') bits.push('Harness: WARN — coś podejrzanego, ale nie twarde FAIL.');
-    if (w && Array.isArray(w.problemy) && w.problemy.length) {
-      bits.push('Problem: ' + String(w.problemy[0]).slice(0, 120));
+    if (t === 'fail') {
+      dodaj('FAIL', 'fail', 'FAIL harnessu', 'Automat uznał plik/model za zły do dalszej pracy bez poprawek.');
+    } else if (t === 'warn') {
+      dodaj('WARN', 'warn', 'WARN harnessu', 'Coś podejrzanego, ale nie twarde FAIL.');
     }
-    if (w && Array.isArray(w.ostrzezenia) && w.ostrzezenia.length && bits.length < 4) {
-      bits.push(String(w.ostrzezenia[0]).replace(/^[^:]+:\s*/, '').replace(/^"|"$/g, '').slice(0, 140));
+    (w && w.kody ? w.kody : []).forEach(function (kod) {
+      if (KOD_GLOSS[kod]) dodaj(kod, t === 'fail' ? 'fail' : 'warn', kod, KOD_GLOSS[kod] + '.');
+    });
+    if (w && Array.isArray(w.problemy)) {
+      w.problemy.slice(0, 2).forEach(function (p) {
+        var s = String(p);
+        if (/gabaryt_aabb/i.test(s)) {
+          var mm = s.match(/max_mm["\s:]*([\d.]+)/);
+          dodaj('gabaryt_aabb', 'fail', 'Gabaryt poza płytą',
+            mm ? 'Najdłuższy wymiar ~' + mm[1] + ' mm — powyżej limitu płyty (~256 mm).'
+              : 'Gabaryt poza limitem płyty P2S.');
+        } else if (/unit_mm/i.test(s)) {
+          dodaj('unit_mm', 'fail', 'Zła jednostka', 'Plik deklaruje metry zamiast mm — skala prawdopodobnie zła.');
+        }
+      });
     }
-    if (!bits.length) bits.push('Brak automatycznej odmowy ani FAIL w paczce — oceń samodzielnie.');
-    return bits.slice(0, 4);
+    if (!out.length && w && Array.isArray(w.werdykt_po_ludzku)) {
+      w.werdykt_po_ludzku.slice(0, 3).forEach(function (b) {
+        dodaj('', 'uwaga', 'Uwaga agenta', String(b));
+      });
+    }
+    if (!out.length) {
+      dodaj('', 'ok', 'Brak twardego zastrzeżenia',
+        'Brak automatycznej odmowy ani FAIL/WARN w paczce — oceń rozmowę agenta samodzielnie.');
+    }
+    return out.slice(0, 3);
+  }
+
+  function urlPodgladu(w) {
+    if (!w) return '';
+    return String(w.podglad_url || w.thumbnail || '').trim();
   }
 
   function opisModelu(w) {
@@ -362,7 +414,7 @@
         stat.textContent =
           'W bazie: ' + p3d + ' P3D · ' + gold + ' GOLD · ' + tre + ' TRE · ' + lib + ' LIB · ' +
           odm + ' z odmową (' + blad + ' BLAD_POMIARU) · ' + failWarn + ' FAIL/WARN. ' +
-          'Karta = jeden projekt: co to jest → co system uważa → Twoja ocena.';
+          'Karta: podgląd + co agentowi nie pasuje (1–3 konkrety) → Twoja ocena.';
       }
     }
     pokazBiezacy();
@@ -381,51 +433,52 @@
     return html;
   }
 
-  function blokPodglad(w) {
+  function blokNiePasuje(w) {
+    var issues = zastrzezeniaZ(w);
     var fmt = formatPliku(w);
     var meta = [];
     if (w.gabaryt) meta.push(escapHtml(w.gabaryt));
     if (w.n_czesci != null) meta.push(w.n_czesci + ' części');
     if (fmt) meta.push(escapHtml(fmt));
-    if (w.tri != null) meta.push(w.tri + ' tri');
-
-    var html = '<section class="nauka-card-sec">';
-    html += '<p class="nauka-sec-label">Podgląd modelu</p>';
-    if (w.thumbnail) {
-      html += '<div class="nauka-thumb"><img src="' + escapHtml(w.thumbnail) + '" alt=""></div>';
-    } else {
-      html += '<div class="nauka-placeholder">';
-      html += '<div class="nauka-placeholder-ico" aria-hidden="true">⧉</div>';
-      if (w.sylwetka) {
-        html += '<p class="nauka-sylwetka">' + escapHtml(w.sylwetka) + '</p>';
-      } else {
-        html += '<p class="nauka-sylwetka">Brak podglądu 3D na telefonie</p>';
-      }
-      if (meta.length) html += '<p class="nauka-meta-line">' + meta.join(' · ') + '</p>';
-      html += '<p class="nauka-placeholder-hint">Pełna siatka (3MF/STL) jest lokalnie na PC w folderze trening — nie pakujemy jej do PWA.</p>';
-      html += '</div>';
-    }
-    html += '</section>';
-    return html;
-  }
-
-  function blokSystem(w) {
-    var bullets = bulletsSystem(w);
+    var img = urlPodgladu(w);
     var t = techNorm(w);
     var badge = '';
-    if (t === 'fail') badge = '<span class="nauka-badge nauka-fail">system: FAIL</span>';
-    else if (t === 'warn') badge = '<span class="nauka-badge nauka-warn">system: WARN</span>';
-    else if (listaOdmow(w).length) badge = '<span class="nauka-badge nauka-warn">system: odmowa</span>';
-    else if (t === 'ok') badge = '<span class="nauka-badge nauka-ok">system: OK</span>';
+    if (t === 'fail') badge = '<span class="nauka-badge nauka-fail">FAIL</span>';
+    else if (t === 'warn') badge = '<span class="nauka-badge nauka-warn">WARN</span>';
+    else if (listaOdmow(w).length) badge = '<span class="nauka-badge nauka-warn">odmowa</span>';
+    else if (t === 'ok') badge = '<span class="nauka-badge nauka-ok">OK</span>';
 
     var html = '<section class="nauka-card-sec nauka-system">';
-    html += '<p class="nauka-sec-label">Co system uważa</p>';
+    html += '<p class="nauka-sec-label">Co agentowi nie pasuje</p>';
     if (badge) html += '<div class="nauka-harness">' + badge + '</div>';
-    html += '<ul class="nauka-ludzkie">';
-    bullets.forEach(function (b) {
-      html += '<li>' + escapHtml(b) + '</li>';
+
+    html += '<div class="nauka-viewer">';
+    if (img) {
+      html += '<img class="nauka-viewer-img" src="' + escapHtml(img) + '" alt="" loading="lazy" referrerpolicy="no-referrer">';
+    } else {
+      html += '<div class="nauka-placeholder nauka-viewer-ph">';
+      html += '<p class="nauka-sylwetka">' + escapHtml(w.sylwetka || 'Brak podglądu zdjęcia') + '</p>';
+      html += '</div>';
+    }
+    html += '<ol class="nauka-markery" aria-hidden="true">';
+    issues.forEach(function (z) {
+      html += '<li class="nauka-marker nauka-marker-' + escapHtml(z.badge) + '">' + z.n + '</li>';
     });
-    html += '</ul></section>';
+    html += '</ol></div>';
+    if (meta.length) html += '<p class="nauka-meta-line">' + meta.join(' · ') + '</p>';
+
+    html += '<ol class="nauka-zastrzezenia">';
+    issues.forEach(function (z) {
+      html += '<li><span class="nauka-nr">' + z.n + '</span>' +
+        '<div class="nauka-z-body"><p class="nauka-z-t">' + escapHtml(z.tytul) + '</p>' +
+        '<p class="nauka-z-d">' + escapHtml(z.opis) + '</p></div></li>';
+    });
+    html += '</ol>';
+    if (w.printables_url) {
+      html += '<p class="nauka-printables"><a href="' + escapHtml(w.printables_url) +
+        '" target="_blank" rel="noopener">Model na Printables</a></p>';
+    }
+    html += '</section>';
     return html;
   }
 
@@ -478,7 +531,7 @@
   }
 
   function zbudujFormularz(w, oc) {
-    return blokCoToJest(w) + blokPodglad(w) + blokSystem(w) + blokTwojaOcena(w, oc);
+    return blokCoToJest(w) + blokNiePasuje(w) + blokTwojaOcena(w, oc);
   }
 
   function zFormularza(w, override) {
@@ -665,6 +718,6 @@
     listaOdmow: listaOdmow,
     tytulCzytelny: tytulCzytelny,
     nazwaPliku: nazwaPliku,
-    bulletsSystem: bulletsSystem
+    zastrzezeniaZ: zastrzezeniaZ
   };
 })(typeof window !== 'undefined' ? window : global);
