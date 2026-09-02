@@ -1,8 +1,7 @@
 /**
  * Kreator oceny nauki agenta (karta-oceny.json) — checki, Dalej, eksport JSON.
- * Zapis: localStorage p2s.nauka.ocen.<id>. Eksport → pobranie pliku do e2e-projekt/nauka-modele/ocen/
- * Domyślna seria: OCENA (odmowy / FAIL harnessu / nieocenione do etykiety człowieka).
- * Karta ma być czytelna na telefonie: model, kontekst odmowy, co zrobić.
+ * Zapis: localStorage p2s.nauka.ocen.<id>. Eksport → e2e-projekt/nauka-modele/ocen/
+ * Karta = przegląd jednego projektu druku (tytuł, opis, co system uważa, Twoja ocena).
  */
 (function (global) {
   'use strict';
@@ -32,34 +31,55 @@
     { id: 'project_settings', t: 'Polega na project_settings obcego 3MF' }
   ];
 
-  var ODM_ETYKIETY = [
-    { id: 'sluszna', t: 'Słuszna' },
-    { id: 'falszywa', t: 'Fałszywa' },
-    { id: 'niepewne', t: 'Niepewne' }
+  /** Mapowanie prostych przycisków → odmowa_etykieta + werdykt (karta-oceny.json). */
+  var OCENA_PROSTA = [
+    {
+      id: 'zgoda',
+      t: 'Zgadzam się z systemem',
+      hint: 'Odmowa / FAIL słuszne',
+      odmowa_etykieta: 'sluszna',
+      werdykt: 'ok'
+    },
+    {
+      id: 'myli',
+      t: 'System się myli',
+      hint: 'Fałszywa odmowa / niepotrzebny FAIL',
+      odmowa_etykieta: 'falszywa',
+      werdykt: 'fail'
+    },
+    {
+      id: 'niepewn',
+      t: 'Nie jestem pewien',
+      hint: 'Zostawiam do późniejszej decyzji',
+      odmowa_etykieta: 'niepewne',
+      werdykt: 'oczekuje'
+    }
   ];
 
-  /** Plain-Polish gloss for detektor odmowa codes. */
   var ODM_GLOSS = {
-    BLAD_POMIARU: 'Detektor nie zmierzył cechy (gniazdo/czop/…); oceń czy odmowa słuszna.',
-    'BŁĄD_POMIARU': 'Detektor nie zmierzył cechy (gniazdo/czop/…); oceń czy odmowa słuszna.',
-    NIE_WALEC: 'Przekrój nie jest gładkim walcem (zmienia się wzdłuż osi) — nie edytuj jak zwykłego otworu.',
-    GWINT_LUB_NIEWALEC: 'Wygląda na gwint albo niewalec — nie wpisuj jednej średnicy; zmierz gwint / użyj przepustu.',
-    USZKODZONY: 'Plik/siatka wygląda na uszkodzoną albo nieczytelną dla detektora.',
-    BLAD: 'Ogólny błąd detektora / pipeline — sprawdź notatkę i kody harnessu.'
+    BLAD_POMIARU: 'Detektor znalazł coś jak otwór/gniazdo, ale nie umiał zmierzyć — odmówił',
+    'BŁĄD_POMIARU': 'Detektor znalazł coś jak otwór/gniazdo, ale nie umiał zmierzyć — odmówił',
+    NIE_WALEC: 'Przekrój nie jest gładkim walcem — nie edytuj jak zwykłego otworu',
+    GWINT_LUB_NIEWALEC: 'Wygląda na gwint albo niewalec — nie wpisuj jednej średnicy',
+    USZKODZONY: 'Plik/siatka wygląda na uszkodzoną albo nieczytelną',
+    BLAD: 'Ogólny błąd detektora / pipeline'
   };
 
-  var HARNESS_ZNACZENIE = {
-    ok: 'Harness OK — automatyczne checki przeszły.',
-    warn: 'Harness WARN — coś podejrzanego, ale nie twarde FAIL.',
-    fail: 'Harness FAIL — automat uznał model/plik za zły (jednostki, gabaryt, siatka…).'
+  var KAT_PL = {
+    MECHANIKA: 'Mechanika',
+    TOYS: 'Zabawki',
+    DIY_HOME: 'DIY / dom',
+    LIB: 'LIB',
+    TRE: 'TRE',
+    P3D: 'P3D',
+    GOLD: 'GOLD'
   };
 
   var stan = {
     pack: null,
     kolejka: [],
     i: 0,
-    biezacy: null,
-    szybkie: {}
+    biezacy: null
   };
 
   function $(id) { return document.getElementById(id); }
@@ -80,6 +100,11 @@
 
   function oceniona(o) {
     return !!(o && o.werdykt && o.werdykt !== 'oczekuje');
+  }
+
+  /** Ma wybór człowieka (w tym „niepewne” z etykietą). */
+  function maWyborCzlowieka(o) {
+    return !!(o && (oceniona(o) || o.odmowa_etykieta));
   }
 
   function listaOdmow(w) {
@@ -122,12 +147,16 @@
     return n || '—';
   }
 
-  function rozszerzeniePliku(nazwa) {
-    var m = String(nazwa || '').match(/\.([a-z0-9]{2,5})$/i);
-    return m ? ('.' + m[1].toLowerCase()) : '';
+  function tytulCzytelny(w) {
+    if (w && w.tytul_czytelny) return String(w.tytul_czytelny);
+    var n = nazwaPliku(w);
+    n = n.replace(/\.(3mf|stl|obj|pdf)$/i, '');
+    n = n.replace(/_\d{5,}$/g, '').replace(/\+/g, ' ').replace(/_/g, ' ');
+    return n.trim() || (w && w.id) || '—';
   }
 
   function kategoriaZWpisu(w) {
+    if (w && w.kategoria) return String(w.kategoria).toUpperCase();
     var blob = [(w && w.notatka) || '', (w && w.tekst) || '', (w && w.zrodlo) || ''].join(' ');
     var m = blob.match(/\bkat:\s*([A-Za-z0-9_/-]+)/i);
     if (m) return m[1].toUpperCase();
@@ -139,59 +168,68 @@
     return '';
   }
 
-  function skrotZrodla(w) {
-    var z = String((w && w.zrodlo) || '').trim();
-    if (!z) return '';
-    if (/^paczka trening/i.test(z)) return z;
-    z = z.replace(/\\/g, '/');
-    var parts = z.split('/').filter(Boolean);
-    if (parts.length <= 2) return z;
-    return '…/' + parts.slice(-2).join('/');
+  function formatPliku(w) {
+    if (w && w.format) return String(w.format).toUpperCase();
+    var m = String(nazwaPliku(w) || '').match(/\.([a-z0-9]{2,5})$/i);
+    return m ? m[1].toUpperCase() : '';
   }
 
   function glossOdmowy(kod) {
     var k = String(kod || '').trim();
     if (ODM_GLOSS[k]) return ODM_GLOSS[k];
-    return 'Kod odmowy detektora — oceń, czy decyzja pipeline’u była słuszna.';
+    return 'Kod odmowy detektora — oceń, czy decyzja była słuszna';
   }
 
-  function znaczenieHarness(t) {
-    if (!t) return 'Brak werdyktu harnessu w paczce.';
-    return HARNESS_ZNACZENIE[t] || ('Harness: ' + t);
-  }
-
-  /** Jedno zdanie: co człowiek ma zrobić na tej karcie. */
-  function instrukcjaKarty(w) {
-    var odm = listaOdmow(w);
-    var t = techNorm(w);
-    if (maBladPomiaru(w)) {
-      return 'Czy ta odmowa pomiaru jest słuszna? (słuszna / fałszywa / niepewne)';
+  /** 2–4 bullets po polsku: z packa albo fallback z kodów. */
+  function bulletsSystem(w) {
+    if (w && Array.isArray(w.werdykt_po_ludzku) && w.werdykt_po_ludzku.length) {
+      return w.werdykt_po_ludzku.slice(0, 4).map(String);
     }
-    if (odm.length) {
-      return 'Czy ta odmowa detektora jest słuszna? (słuszna / fałszywa / niepewne)';
-    }
-    if (t === 'fail') {
-      return 'Harness FAIL — oceń czy agent/pipeline powinien to złapać';
-    }
-    if (t === 'warn') {
-      return 'Harness WARN — oceń czy ostrzeżenie ma sens i czy agent powinien zareagować';
-    }
-    return 'Oceń odpowiedź agenta (checki poniżej), potem OK / FAIL.';
-  }
-
-  function podsumowanieCech(w) {
-    /* Paczka nie ma osobnego pola cechy[] — zbieramy z kody/problemy jeśli coś jest. */
     var bits = [];
-    if (w && Array.isArray(w.kody) && w.kody.length) {
-      bits.push('kody harness: ' + w.kody.join(', '));
-    }
+    var odm = listaOdmow(w);
+    odm.forEach(function (kod) {
+      bits.push(glossOdmowy(kod) + ' (' + kod + ').');
+    });
+    var t = techNorm(w);
+    if (t === 'fail') bits.push('Harness: FAIL — automat uznał model/plik za zły.');
+    else if (t === 'warn') bits.push('Harness: WARN — coś podejrzanego, ale nie twarde FAIL.');
     if (w && Array.isArray(w.problemy) && w.problemy.length) {
-      bits.push('problemy: ' + w.problemy.slice(0, 3).join('; '));
+      bits.push('Problem: ' + String(w.problemy[0]).slice(0, 120));
     }
-    if (w && Array.isArray(w.ostrzezenia) && w.ostrzezenia.length) {
-      bits.push('ostrzeżenia: ' + w.ostrzezenia.slice(0, 2).join('; '));
+    if (w && Array.isArray(w.ostrzezenia) && w.ostrzezenia.length && bits.length < 4) {
+      bits.push(String(w.ostrzezenia[0]).replace(/^[^:]+:\s*/, '').replace(/^"|"$/g, '').slice(0, 140));
     }
-    return bits;
+    if (!bits.length) bits.push('Brak automatycznej odmowy ani FAIL w paczce — oceń samodzielnie.');
+    return bits.slice(0, 4);
+  }
+
+  function opisModelu(w) {
+    if (w && w.opis_krotki) return String(w.opis_krotki);
+    var tyt = tytulCzytelny(w);
+    var kat = kategoriaZWpisu(w);
+    var katPl = KAT_PL[kat] || kat;
+    var s = 'Wygląda na: ' + tyt;
+    if (katPl) s += ' — kategoria ' + katPl.toLowerCase();
+    s += '.';
+    if (w && w.sylwetka) s += ' ' + w.sylwetka + '.';
+    else if (w && w.gabaryt) s += ' Gabaryt: ' + w.gabaryt + '.';
+    return s;
+  }
+
+  function aktywnaOcenaProsta(oc) {
+    if (!oc) return null;
+    for (var i = 0; i < OCENA_PROSTA.length; i++) {
+      var p = OCENA_PROSTA[i];
+      if (oc.odmowa_etykieta === p.odmowa_etykieta && oc.werdykt === p.werdykt) return p.id;
+      // kompatybilność: stara etykieta bez dokładnego werdyktu
+      if (oc.odmowa_etykieta === p.odmowa_etykieta && !oc.werdykt) return p.id;
+    }
+    if (oc.odmowa_etykieta === 'sluszna') return 'zgoda';
+    if (oc.odmowa_etykieta === 'falszywa') return 'myli';
+    if (oc.odmowa_etykieta === 'niepewne') return 'niepewn';
+    if (oc.werdykt === 'ok' && !oc.odmowa_etykieta) return 'zgoda';
+    if (oc.werdykt === 'fail' && !oc.odmowa_etykieta) return 'myli';
+    return null;
   }
 
   function domyslnaOcena(w) {
@@ -215,7 +253,6 @@
     };
   }
 
-  /** Eksport zgodny z karta-oceny.json (+ when praktyczne; import kopiuje plik 1:1). */
   function doEksportu(oc) {
     return {
       id: oc.id,
@@ -253,7 +290,7 @@
         if (w.id.indexOf('P3D-') !== 0 && w.id.indexOf('GOLD-') !== 0 && w.id !== 'O-01') return false;
       } else if (seria === 'ALL') { /* wszystkie */ }
       if (tylko) {
-        if (oceniona(czytajOcene(w.id))) return false;
+        if (maWyborCzlowieka(czytajOcene(w.id))) return false;
       }
       return true;
     });
@@ -297,7 +334,7 @@
   function policzOcenioneWKolejce(kolejka) {
     var n = 0;
     kolejka.forEach(function (w) {
-      if (oceniona(czytajOcene(w.id))) n += 1;
+      if (maWyborCzlowieka(czytajOcene(w.id))) n += 1;
     });
     return n;
   }
@@ -311,13 +348,12 @@
     if (stan.pack && stan.pack.wpisy) {
       var stat = $('naukaStat');
       if (stat) {
-        var p3d = 0, tre = 0, lib = 0, gold = 0, moje = 0, odm = 0, failWarn = 0, blad = 0;
+        var p3d = 0, tre = 0, lib = 0, gold = 0, odm = 0, failWarn = 0, blad = 0;
         stan.pack.wpisy.forEach(function (w) {
           if (w.id.indexOf('P3D-') === 0) p3d += 1;
           else if (w.id.indexOf('TRE-') === 0) tre += 1;
           else if (w.id.indexOf('LIB-') === 0) lib += 1;
           else if (w.id.indexOf('GOLD-') === 0) gold += 1;
-          if (w.id.indexOf('P3D-') === 0 || w.id.indexOf('GOLD-') === 0 || w.id === 'O-01') moje += 1;
           if (listaOdmow(w).length) odm += 1;
           if (maBladPomiaru(w)) blad += 1;
           var t = techNorm(w);
@@ -325,130 +361,148 @@
         });
         stat.textContent =
           'W bazie: ' + p3d + ' P3D · ' + gold + ' GOLD · ' + tre + ' TRE · ' + lib + ' LIB · ' +
-          odm + ' z odmową (' + blad + ' BLAD_POMIARU) · ' + failWarn + ' FAIL/WARN harness. ' +
-          'Seria „Do oceny” = odmowy + FAIL/WARN.';
+          odm + ' z odmową (' + blad + ' BLAD_POMIARU) · ' + failWarn + ' FAIL/WARN. ' +
+          'Karta = jeden projekt: co to jest → co system uważa → Twoja ocena.';
       }
     }
     pokazBiezacy();
   }
 
-  function badgeTech(w) {
-    var t = techNorm(w);
-    if (!t) return '<span class="nauka-badge nauka-warn">harness: —</span>';
-    var cls = t === 'ok' ? 'ok' : (t === 'fail' ? 'fail' : 'warn');
-    return '<span class="nauka-badge nauka-' + cls + '">harness: ' + escapHtml(t).toUpperCase() + '</span>';
-  }
-
-  function blokModelu(w) {
-    var plik = nazwaPliku(w);
+  function blokCoToJest(w) {
     var kat = kategoriaZWpisu(w);
-    var ext = rozszerzeniePliku(plik);
-    var zrodlo = skrotZrodla(w);
+    var katPl = KAT_PL[kat] || kat;
+    var html = '<section class="nauka-card-sec">';
+    html += '<p class="nauka-sec-label">Co to jest</p>';
+    html += '<h2 class="nauka-tytul">' + escapHtml(tytulCzytelny(w)) + '</h2>';
+    if (katPl) html += '<div class="nauka-harness"><span class="nauka-kat">' + escapHtml(katPl) + '</span></div>';
+    html += '<p class="nauka-opis">' + escapHtml(opisModelu(w)) + '</p>';
+    html += '<p class="nauka-id-sek">' + escapHtml(w.id) + ' · ' + escapHtml(nazwaPliku(w)) + '</p>';
+    html += '</section>';
+    return html;
+  }
+
+  function blokPodglad(w) {
+    var fmt = formatPliku(w);
     var meta = [];
-    if (kat) meta.push('<span class="nauka-kat">' + escapHtml(kat) + '</span>');
-    if (ext) meta.push('<span class="nauka-meta">' + escapHtml(ext) + '</span>');
-    if (w.gabaryt) meta.push('<span class="nauka-meta">' + escapHtml(w.gabaryt) + '</span>');
-    if (w.n_czesci != null) meta.push('<span class="nauka-meta">' + w.n_czesci + ' części</span>');
-    if (w.tri != null) meta.push('<span class="nauka-meta">' + w.tri + ' tri</span>');
+    if (w.gabaryt) meta.push(escapHtml(w.gabaryt));
+    if (w.n_czesci != null) meta.push(w.n_czesci + ' części');
+    if (fmt) meta.push(escapHtml(fmt));
+    if (w.tri != null) meta.push(w.tri + ' tri');
 
-    var html = '<div class="nauka-model">';
-    html += '<div class="nauka-tytul">' + escapHtml(plik) + '</div>';
-    html += '<div class="nauka-id-sek">' + escapHtml(w.id) + '</div>';
-    if (meta.length) html += '<div class="nauka-harness">' + meta.join(' ') + '</div>';
-    if (zrodlo) html += '<div class="nauka-zrodlo">' + escapHtml(zrodlo) + '</div>';
-    html += '</div>';
+    var html = '<section class="nauka-card-sec">';
+    html += '<p class="nauka-sec-label">Podgląd modelu</p>';
+    if (w.thumbnail) {
+      html += '<div class="nauka-thumb"><img src="' + escapHtml(w.thumbnail) + '" alt=""></div>';
+    } else {
+      html += '<div class="nauka-placeholder">';
+      html += '<div class="nauka-placeholder-ico" aria-hidden="true">⧉</div>';
+      if (w.sylwetka) {
+        html += '<p class="nauka-sylwetka">' + escapHtml(w.sylwetka) + '</p>';
+      } else {
+        html += '<p class="nauka-sylwetka">Brak podglądu 3D na telefonie</p>';
+      }
+      if (meta.length) html += '<p class="nauka-meta-line">' + meta.join(' · ') + '</p>';
+      html += '<p class="nauka-placeholder-hint">Pełna siatka (3MF/STL) jest lokalnie na PC w folderze trening — nie pakujemy jej do PWA.</p>';
+      html += '</div>';
+    }
+    html += '</section>';
     return html;
   }
 
-  function blokHarnessWyjasnienie(w) {
+  function blokSystem(w) {
+    var bullets = bulletsSystem(w);
     var t = techNorm(w);
-    var html = '<div class="nauka-harness-wyjasnij">';
-    html += badgeTech(w);
-    html += '<p class="nauka-gloss">' + escapHtml(znaczenieHarness(t)) + '</p>';
-    var cechy = podsumowanieCech(w);
-    if (cechy.length) {
-      html += '<ul class="nauka-auto">';
-      cechy.forEach(function (a) { html += '<li>' + escapHtml(a) + '</li>'; });
-      html += '</ul>';
-    }
+    var badge = '';
+    if (t === 'fail') badge = '<span class="nauka-badge nauka-fail">system: FAIL</span>';
+    else if (t === 'warn') badge = '<span class="nauka-badge nauka-warn">system: WARN</span>';
+    else if (listaOdmow(w).length) badge = '<span class="nauka-badge nauka-warn">system: odmowa</span>';
+    else if (t === 'ok') badge = '<span class="nauka-badge nauka-ok">system: OK</span>';
+
+    var html = '<section class="nauka-card-sec nauka-system">';
+    html += '<p class="nauka-sec-label">Co system uważa</p>';
+    if (badge) html += '<div class="nauka-harness">' + badge + '</div>';
+    html += '<ul class="nauka-ludzkie">';
+    bullets.forEach(function (b) {
+      html += '<li>' + escapHtml(b) + '</li>';
+    });
+    html += '</ul></section>';
+    return html;
+  }
+
+  function blokTwojaOcena(w, oc) {
+    var akt = aktywnaOcenaProsta(oc);
+    var html = '<section class="nauka-card-sec">';
+    html += '<p class="nauka-sec-label">Twoja ocena</p>';
+    html += '<div class="nauka-ocena-prosta" id="naukaOcenaProsta">';
+    OCENA_PROSTA.forEach(function (p) {
+      var on = akt === p.id;
+      html += '<button type="button" class="nauka-btn-big' + (on ? ' on' : '') +
+        '" data-ocena-prosta="' + p.id + '">' +
+        '<span class="nauka-btn-t">' + escapHtml(p.t) + '</span>' +
+        '<span class="nauka-btn-h">' + escapHtml(p.hint) + '</span></button>';
+    });
     html += '</div>';
-    return html;
-  }
+    html += '<label class="nauka-notatka-lab">Co jest źle / co jest dobrze' +
+      '<textarea id="naukaNotatka" rows="3" placeholder="Krótko własnymi słowami…">' +
+      escapHtml(oc.notatka || '') + '</textarea></label>';
 
-  function blokOdmowy(w, oc) {
-    var odm = listaOdmow(w);
-    if (!odm.length) return '';
-    var html = '<div class="nauka-sekcja nauka-odmowa-box">';
-    html += '<p class="th"><strong>Odmowa detektora</strong></p>';
-    html += '<ul class="nauka-odm-lista">';
-    odm.forEach(function (kod) {
-      html += '<li><code>' + escapHtml(kod) + '</code> — ' + escapHtml(glossOdmowy(kod)) + '</li>';
-    });
-    html += '</ul>';
-    html += '<p class="th">Oznacz etykietę:</p>';
-    html += '<div class="row nauka-odm-tagi" id="naukaOdmEtykiety">';
-    ODM_ETYKIETY.forEach(function (e) {
-      var on = oc.odmowa_etykieta === e.id;
-      html += '<button type="button" class="nauka-btn nauka-tag' + (on ? ' on' : '') + '" data-odm-etykieta="' + e.id + '">' + e.t + '</button>';
-    });
-    html += '</div></div>';
-    return html;
-  }
-
-  function listaAuto(w) {
-    var bits = [];
-    if (w.miesci_na_plycie === false) bits.push('>256 mm (nie mieści się na płycie)');
-    if (w.notatka && !czytajOcene(w.id)) bits.push('manifest: ' + w.notatka);
-    return bits;
-  }
-
-  function zbudujFormularz(w, oc) {
-    var auto = listaAuto(w);
-    var html = '';
-    html += '<div class="nauka-instrukcja">' + escapHtml(instrukcjaKarty(w)) + '</div>';
-    html += blokModelu(w);
-    html += blokHarnessWyjasnienie(w);
-    if (auto.length) {
-      html += '<ul class="nauka-auto">';
-      auto.forEach(function (a) { html += '<li>' + escapHtml(a) + '</li>'; });
-      html += '</ul>';
-    }
-    html += blokOdmowy(w, oc);
-    html += '<p class="th">Po rozmowie z agentem Projekt/Przerób — zaznacz checki. Na końcu pobierz JSON do folderu <code>ocen/</code>.</p>';
-
+    html += '<details class="nauka-adv"><summary>Zaawansowane (postawy 1–6, checki)</summary>';
     html += '<div class="nauka-sekcja"><div class="t0-lista">';
-    html += '<div class="t0-wiersz"><label><input type="checkbox" id="naukaP0" ' + (oc.punkt0_zdanie ? 'checked' : '') + '><span>Punkt 0 — agent powiedział jednym zdaniem co się fizycznie dzieje</span></label></div>';
-    html += '<div class="t0-wiersz"><label><input type="checkbox" id="naukaPyt" ' + (oc.pytania_agenta === true ? 'checked' : '') + '><span>Pytał zanim budował (nie yes-man)</span></label></div>';
+    html += '<div class="t0-wiersz"><label><input type="checkbox" id="naukaP0" ' +
+      (oc.punkt0_zdanie ? 'checked' : '') +
+      '><span>Punkt 0 — agent powiedział jednym zdaniem co się fizycznie dzieje</span></label></div>';
+    html += '<div class="t0-wiersz"><label><input type="checkbox" id="naukaPyt" ' +
+      (oc.pytania_agenta === true ? 'checked' : '') +
+      '><span>Pytał zanim budował (nie yes-man)</span></label></div>';
     html += '</div></div>';
-    html += '<div class="nauka-sekcja"><p class="th">Postawy SYS_TALK (zaznacz które realnie zastosował):</p><div class="t0-lista" id="naukaPostawy">';
+    html += '<div class="nauka-sekcja"><p class="th">Postawy SYS_TALK:</p><div class="t0-lista" id="naukaPostawy">';
     POSTAWY.forEach(function (p) {
       var on = oc.postawy_1_6 && oc.postawy_1_6.indexOf(p.n) >= 0;
-      html += '<div class="t0-wiersz"><label><input type="checkbox" data-postawa="' + p.n + '" ' + (on ? 'checked' : '') + '><span>' + p.t + '</span></label></div>';
+      html += '<div class="t0-wiersz"><label><input type="checkbox" data-postawa="' + p.n + '" ' +
+        (on ? 'checked' : '') + '><span>' + p.t + '</span></label></div>';
     });
     html += '</div></div>';
     html += '<div class="nauka-sekcja"><p class="th">Szybkie problemy (dopisują notatkę):</p><div class="t0-lista" id="naukaSzybkie">';
     SZYBKIE.forEach(function (s) {
-      html += '<div class="t0-wiersz"><label><input type="checkbox" data-szybki="' + s.id + '"><span>' + s.t + '</span></label></div>';
+      html += '<div class="t0-wiersz"><label><input type="checkbox" data-szybki="' + s.id +
+        '"><span>' + s.t + '</span></label></div>';
     });
-    html += '</div></div>';
-    html += '<div class="nauka-sekcja"><label>Notatka własnymi słowami<textarea id="naukaNotatka" rows="3" placeholder="np. fałszywy BLAD_POMIARU — otwór realny, detektor się myli…">' + escapHtml(oc.notatka || '') + '</textarea></label></div>';
-    html += '<div class="nauka-sekcja row nauka-werdykt">';
-    html += '<button type="button" class="nauka-btn ok" id="naukaOk">OK — gotowe</button>';
-    html += '<button type="button" class="nauka-btn fail" id="naukaFail">FAIL — do poprawy</button>';
-    html += '<button type="button" class="nauka-btn" id="naukaPomin">Pomiń (oczekuje)</button>';
-    html += '</div>';
+    html += '</div></div></details>';
+
     html += '<div class="nauka-sekcja row">';
     html += '<button type="button" id="naukaWstecz">← Wstecz</button>';
-    html += '<button type="button" id="naukaDalej">Dalej →</button>';
-    html += '<button type="button" id="naukaPobierz">Pobierz ten JSON</button>';
-    html += '</div>';
+    html += '<button type="button" class="nauka-btn ok" id="naukaZapiszDalej">Zapisz i dalej →</button>';
+    html += '<button type="button" id="naukaPobierz">Pobierz JSON</button>';
+    html += '</div></section>';
     return html;
   }
 
-  function zFormularza(w, werdykt) {
+  function zbudujFormularz(w, oc) {
+    return blokCoToJest(w) + blokPodglad(w) + blokSystem(w) + blokTwojaOcena(w, oc);
+  }
+
+  function zFormularza(w, override) {
     var oc = czytajOcene(w.id) || domyslnaOcena(w);
-    oc.werdykt = werdykt || oc.werdykt;
     oc.when = new Date().toISOString();
+
+    var prostaRoot = $('naukaOcenaProsta');
+    var prostaId = null;
+    if (override && override.ocenaProsta) {
+      prostaId = override.ocenaProsta;
+    } else if (prostaRoot) {
+      var onBtn = prostaRoot.querySelector('.nauka-btn-big.on');
+      if (onBtn) prostaId = onBtn.getAttribute('data-ocena-prosta');
+    }
+    if (prostaId) {
+      var map = OCENA_PROSTA.filter(function (x) { return x.id === prostaId; })[0];
+      if (map) {
+        oc.odmowa_etykieta = map.odmowa_etykieta;
+        oc.werdykt = map.werdykt;
+      }
+    } else if (override && override.werdykt) {
+      oc.werdykt = override.werdykt;
+    }
+
     var p0 = $('naukaP0');
     var pyt = $('naukaPyt');
     if (p0 && p0.checked) oc.punkt0_zdanie = oc.punkt0_zdanie || '(zaznaczone w kreatorze — uzupełnij cytat jeśli chcesz)';
@@ -461,21 +515,15 @@
         oc.postawy_1_6.push(parseInt(inp.getAttribute('data-postawa'), 10));
       });
     }
-    var odmRoot = $('naukaOdmEtykiety');
-    if (odmRoot) {
-      var onBtn = odmRoot.querySelector('.nauka-tag.on');
-      oc.odmowa_etykieta = onBtn ? onBtn.getAttribute('data-odm-etykieta') : (oc.odmowa_etykieta || null);
-    } else if (!listaOdmow(w).length) {
-      oc.odmowa_etykieta = null;
-    }
     if (listaOdmow(w).length) oc.przerob_odmowa_kod = true;
+
     var not = ($('naukaNotatka') && $('naukaNotatka').value || '').trim();
     var dopiski = [];
     var szyb = $('naukaSzybkie');
     if (szyb) {
       szyb.querySelectorAll('input[data-szybki]:checked').forEach(function (inp) {
-        var id = inp.getAttribute('data-szybki');
-        var s = SZYBKIE.filter(function (x) { return x.id === id; })[0];
+        var sid = inp.getAttribute('data-szybki');
+        var s = SZYBKIE.filter(function (x) { return x.id === sid; })[0];
         if (s) dopiski.push(s.t);
       });
     }
@@ -493,6 +541,19 @@
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 500);
   }
 
+  function idzDalejPoZapisie() {
+    if (stan.i < stan.kolejka.length - 1) {
+      stan.i += 1;
+      pokazBiezacy();
+      return;
+    }
+    var tylko = $('naukaTylkoNowe') && $('naukaTylkoNowe').checked;
+    if (tylko) odswiezKolejke();
+    else pokazBiezacy();
+    var st = $('naukaStan');
+    if (st) st.textContent = 'Koniec serii — pobierz JSON-y przyciskiem poniżej.';
+  }
+
   function pokazBiezacy() {
     var postep = $('naukaPostep');
     var karta = $('naukaOcenaKarta');
@@ -507,58 +568,42 @@
     var ocenionych = policzOcenioneWKolejce(stan.kolejka);
     if (postep) {
       postep.textContent =
-        (stan.i + 1) + ' / ' + stan.kolejka.length + ' · ' + nazwaPliku(w) + ' (' + w.id + ')' +
+        (stan.i + 1) + ' / ' + stan.kolejka.length + ' · ' + tytulCzytelny(w) +
         ' · ocenionych: ' + ocenionych + ' / ' + stan.kolejka.length;
     }
     var oc = czytajOcene(w.id) || domyslnaOcena(w);
     karta.innerHTML = zbudujFormularz(w, oc);
     localStorage.setItem(LS_IDX, String(stan.i));
-    var ok = $('naukaOk');
-    var fail = $('naukaFail');
-    var pomin = $('naukaPomin');
-    var dalej = $('naukaDalej');
-    var wstecz = $('naukaWstecz');
-    var pob = $('naukaPobierz');
-    var odmRoot = $('naukaOdmEtykiety');
-    if (odmRoot) {
-      odmRoot.querySelectorAll('[data-odm-etykieta]').forEach(function (btn) {
+
+    var prostaRoot = $('naukaOcenaProsta');
+    if (prostaRoot) {
+      prostaRoot.querySelectorAll('[data-ocena-prosta]').forEach(function (btn) {
         btn.addEventListener('click', function () {
-          odmRoot.querySelectorAll('.nauka-tag').forEach(function (b) { b.classList.remove('on'); });
+          prostaRoot.querySelectorAll('.nauka-btn-big').forEach(function (b) { b.classList.remove('on'); });
           btn.classList.add('on');
         });
       });
     }
-    function zapiszIdz(werdykt) {
-      zapiszOcene(w.id, zFormularza(w, werdykt));
-      if (stan.i < stan.kolejka.length - 1) {
-        stan.i += 1;
-        pokazBiezacy();
-      } else {
-        var tylko = $('naukaTylkoNowe') && $('naukaTylkoNowe').checked;
-        if (tylko) {
-          odswiezKolejke();
-        } else {
-          pokazBiezacy();
-        }
-        var st = $('naukaStan');
-        if (st && stan.i >= stan.kolejka.length - 1 && !tylko) {
-          st.textContent = 'Koniec serii — pobierz JSON-y przyciskiem poniżej.';
-        }
-      }
-    }
-    if (ok) ok.addEventListener('click', function () { zapiszIdz('ok'); });
-    if (fail) fail.addEventListener('click', function () { zapiszIdz('fail'); });
-    if (pomin) pomin.addEventListener('click', function () { zapiszIdz('oczekuje'); });
+
+    var dalej = $('naukaZapiszDalej');
+    var wstecz = $('naukaWstecz');
+    var pob = $('naukaPobierz');
     if (dalej) dalej.addEventListener('click', function () {
-      zapiszOcene(w.id, zFormularza(w, oc.werdykt || 'oczekuje'));
-      if (stan.i < stan.kolejka.length - 1) { stan.i++; pokazBiezacy(); }
+      var o = zFormularza(w);
+      if (!o.odmowa_etykieta && o.werdykt === 'oczekuje') {
+        var st = $('naukaStan');
+        if (st) st.textContent = 'Wybierz jedną z trzech ocen (Zgadzam się / System się myli / Nie jestem pewien), potem Zapisz i dalej.';
+        return;
+      }
+      zapiszOcene(w.id, o);
+      idzDalejPoZapisie();
     });
     if (wstecz) wstecz.addEventListener('click', function () {
-      zapiszOcene(w.id, zFormularza(w, oc.werdykt || 'oczekuje'));
+      zapiszOcene(w.id, zFormularza(w));
       if (stan.i > 0) { stan.i--; pokazBiezacy(); }
     });
     if (pob) pob.addEventListener('click', function () {
-      pobierzJson(w.id, zFormularza(w, oc.werdykt || 'oczekuje'));
+      pobierzJson(w.id, zFormularza(w));
     });
   }
 
@@ -567,15 +612,15 @@
     var n = 0;
     stan.pack.wpisy.forEach(function (w) {
       var o = czytajOcene(w.id);
-      if (!oceniona(o)) return;
+      if (!maWyborCzlowieka(o)) return;
       setTimeout(function () { pobierzJson(w.id, o); }, n * 300);
       n += 1;
     });
     var st = $('naukaStan');
     if (st) {
       st.textContent = n
-        ? ('Pobieram ' + n + ' ukończonych ocen (OK/FAIL) — zapisz do e2e-projekt/nauka-modele/ocen/, potem: node _import-ocen-pobrane.mjs')
-        : 'Brak ukończonych ocen (OK/FAIL) w tej przeglądarce.';
+        ? ('Pobieram ' + n + ' ocen — zapisz do e2e-projekt/nauka-modele/ocen/, potem: node _import-ocen-pobrane.mjs')
+        : 'Brak zapisanych ocen w tej przeglądarce.';
     }
   }
 
@@ -618,7 +663,8 @@
     czytaj: czytajOcene,
     doOceny: doOceny,
     listaOdmow: listaOdmow,
-    instrukcjaKarty: instrukcjaKarty,
-    nazwaPliku: nazwaPliku
+    tytulCzytelny: tytulCzytelny,
+    nazwaPliku: nazwaPliku,
+    bulletsSystem: bulletsSystem
   };
 })(typeof window !== 'undefined' ? window : global);

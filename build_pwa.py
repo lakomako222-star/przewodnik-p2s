@@ -297,8 +297,10 @@ def _strip_esm_projekt(src: str) -> str:
 
 
 def _expected_projekt_ui_block() -> str:
+    # Ta sama kolejność co _sync_inlined_projekt_ui.py (nitka+szukaj+nauka-rag+validate+body).
     src = (ROOT / "projekt-ui.js").read_text(encoding="utf-8")
     szukaj = _strip_esm_projekt((ROOT / "szukaj.js").read_text(encoding="utf-8"))
+    nauka = _strip_esm_projekt((ROOT / "nauka-rag.js").read_text(encoding="utf-8"))
     nitka = _strip_esm_projekt((ROOT / "nitka.js").read_text(encoding="utf-8"))
     validate = _strip_esm_projekt((ROOT / "spec-validate.js").read_text(encoding="utf-8"))
     body = _strip_esm_projekt(src)
@@ -310,7 +312,9 @@ def _expected_projekt_ui_block() -> str:
         "mesh3MF, mesh3MFWiele, tekstDeklaracji, nazwa3mf, checklistaDruku, WIDOKI, rzutuj, rysuj, etykietaGabarytu, "
         "ocenScienkeOtwor, ocenOrientacjeNaSztorc } = window.P2S;\n"
     )
-    wrapped = header + nitka + "\n" + szukaj + "\n" + validate + "\n" + body + "})();\n"
+    wrapped = (
+        header + nitka + "\n" + szukaj + "\n" + nauka + "\n" + validate + "\n" + body + "})();\n"
+    )
     return "/* inlined projekt-ui.js */\n" + wrapped + "</script>\n\n<script>\n"
 
 
