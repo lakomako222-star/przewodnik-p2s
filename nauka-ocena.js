@@ -2,6 +2,7 @@
  * Kreator oceny nauki agenta (karta-oceny.json) — checki, Dalej, eksport JSON.
  * Zapis: localStorage p2s.nauka.ocen.<id>. Eksport → pobranie pliku do e2e-projekt/nauka-modele/ocen/
  * Domyślna seria: OCENA (odmowy / FAIL harnessu / nieocenione do etykiety człowieka).
+ * Karta ma być czytelna na telefonie: model, kontekst odmowy, co zrobić.
  */
 (function (global) {
   'use strict';
@@ -32,10 +33,26 @@
   ];
 
   var ODM_ETYKIETY = [
-    { id: 'sluszna', t: 'Słuszna odmowa' },
-    { id: 'falszywa', t: 'Fałszywa odmowa' },
+    { id: 'sluszna', t: 'Słuszna' },
+    { id: 'falszywa', t: 'Fałszywa' },
     { id: 'niepewne', t: 'Niepewne' }
   ];
+
+  /** Plain-Polish gloss for detektor odmowa codes. */
+  var ODM_GLOSS = {
+    BLAD_POMIARU: 'Detektor nie zmierzył cechy (gniazdo/czop/…); oceń czy odmowa słuszna.',
+    'BŁĄD_POMIARU': 'Detektor nie zmierzył cechy (gniazdo/czop/…); oceń czy odmowa słuszna.',
+    NIE_WALEC: 'Przekrój nie jest gładkim walcem (zmienia się wzdłuż osi) — nie edytuj jak zwykłego otworu.',
+    GWINT_LUB_NIEWALEC: 'Wygląda na gwint albo niewalec — nie wpisuj jednej średnicy; zmierz gwint / użyj przepustu.',
+    USZKODZONY: 'Plik/siatka wygląda na uszkodzoną albo nieczytelną dla detektora.',
+    BLAD: 'Ogólny błąd detektora / pipeline — sprawdź notatkę i kody harnessu.'
+  };
+
+  var HARNESS_ZNACZENIE = {
+    ok: 'Harness OK — automatyczne checki przeszły.',
+    warn: 'Harness WARN — coś podejrzanego, ale nie twarde FAIL.',
+    fail: 'Harness FAIL — automat uznał model/plik za zły (jednostki, gabaryt, siatka…).'
+  };
 
   var stan = {
     pack: null,
@@ -73,7 +90,8 @@
   }
 
   function maBladPomiaru(w) {
-    return listaOdmow(w).indexOf('BLAD_POMIARU') >= 0;
+    var odm = listaOdmow(w);
+    return odm.indexOf('BLAD_POMIARU') >= 0 || odm.indexOf('BŁĄD_POMIARU') >= 0;
   }
 
   function techNorm(w) {
@@ -93,6 +111,87 @@
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  }
+
+  function nazwaPliku(w) {
+    var n = String((w && w.nazwa) || '').trim();
+    if (!n) return '—';
+    n = n.replace(/\\/g, '/');
+    var slash = n.lastIndexOf('/');
+    if (slash >= 0) n = n.slice(slash + 1);
+    return n || '—';
+  }
+
+  function rozszerzeniePliku(nazwa) {
+    var m = String(nazwa || '').match(/\.([a-z0-9]{2,5})$/i);
+    return m ? ('.' + m[1].toLowerCase()) : '';
+  }
+
+  function kategoriaZWpisu(w) {
+    var blob = [(w && w.notatka) || '', (w && w.tekst) || '', (w && w.zrodlo) || ''].join(' ');
+    var m = blob.match(/\bkat:\s*([A-Za-z0-9_/-]+)/i);
+    if (m) return m[1].toUpperCase();
+    var id = String((w && w.id) || '');
+    if (id.indexOf('LIB-') === 0) return 'LIB';
+    if (id.indexOf('TRE-') === 0) return 'TRE';
+    if (id.indexOf('P3D-') === 0) return 'P3D';
+    if (id.indexOf('GOLD-') === 0) return 'GOLD';
+    return '';
+  }
+
+  function skrotZrodla(w) {
+    var z = String((w && w.zrodlo) || '').trim();
+    if (!z) return '';
+    if (/^paczka trening/i.test(z)) return z;
+    z = z.replace(/\\/g, '/');
+    var parts = z.split('/').filter(Boolean);
+    if (parts.length <= 2) return z;
+    return '…/' + parts.slice(-2).join('/');
+  }
+
+  function glossOdmowy(kod) {
+    var k = String(kod || '').trim();
+    if (ODM_GLOSS[k]) return ODM_GLOSS[k];
+    return 'Kod odmowy detektora — oceń, czy decyzja pipeline’u była słuszna.';
+  }
+
+  function znaczenieHarness(t) {
+    if (!t) return 'Brak werdyktu harnessu w paczce.';
+    return HARNESS_ZNACZENIE[t] || ('Harness: ' + t);
+  }
+
+  /** Jedno zdanie: co człowiek ma zrobić na tej karcie. */
+  function instrukcjaKarty(w) {
+    var odm = listaOdmow(w);
+    var t = techNorm(w);
+    if (maBladPomiaru(w)) {
+      return 'Czy ta odmowa pomiaru jest słuszna? (słuszna / fałszywa / niepewne)';
+    }
+    if (odm.length) {
+      return 'Czy ta odmowa detektora jest słuszna? (słuszna / fałszywa / niepewne)';
+    }
+    if (t === 'fail') {
+      return 'Harness FAIL — oceń czy agent/pipeline powinien to złapać';
+    }
+    if (t === 'warn') {
+      return 'Harness WARN — oceń czy ostrzeżenie ma sens i czy agent powinien zareagować';
+    }
+    return 'Oceń odpowiedź agenta (checki poniżej), potem OK / FAIL.';
+  }
+
+  function podsumowanieCech(w) {
+    /* Paczka nie ma osobnego pola cechy[] — zbieramy z kody/problemy jeśli coś jest. */
+    var bits = [];
+    if (w && Array.isArray(w.kody) && w.kody.length) {
+      bits.push('kody harness: ' + w.kody.join(', '));
+    }
+    if (w && Array.isArray(w.problemy) && w.problemy.length) {
+      bits.push('problemy: ' + w.problemy.slice(0, 3).join('; '));
+    }
+    if (w && Array.isArray(w.ostrzezenia) && w.ostrzezenia.length) {
+      bits.push('ostrzeżenia: ' + w.ostrzezenia.slice(0, 2).join('; '));
+    }
+    return bits;
   }
 
   function domyslnaOcena(w) {
@@ -240,56 +339,82 @@
     return '<span class="nauka-badge nauka-' + cls + '">harness: ' + escapHtml(t).toUpperCase() + '</span>';
   }
 
-  function podsumowanieHarness(w) {
-    var bits = [];
-    bits.push(badgeTech(w));
-    if (w.n_czesci != null) bits.push('<span class="nauka-meta">' + w.n_czesci + ' części</span>');
-    if (w.gabaryt) bits.push('<span class="nauka-meta">' + escapHtml(w.gabaryt) + '</span>');
-    if (w.tri != null) bits.push('<span class="nauka-meta">' + w.tri + ' tri</span>');
-    var odm = listaOdmow(w);
-    if (odm.length) {
-      bits.push('<span class="nauka-badge nauka-fail">odmowy: ' + escapHtml(odm.join(', ')) + '</span>');
-    } else {
-      bits.push('<span class="nauka-meta">odmowy: brak</span>');
+  function blokModelu(w) {
+    var plik = nazwaPliku(w);
+    var kat = kategoriaZWpisu(w);
+    var ext = rozszerzeniePliku(plik);
+    var zrodlo = skrotZrodla(w);
+    var meta = [];
+    if (kat) meta.push('<span class="nauka-kat">' + escapHtml(kat) + '</span>');
+    if (ext) meta.push('<span class="nauka-meta">' + escapHtml(ext) + '</span>');
+    if (w.gabaryt) meta.push('<span class="nauka-meta">' + escapHtml(w.gabaryt) + '</span>');
+    if (w.n_czesci != null) meta.push('<span class="nauka-meta">' + w.n_czesci + ' części</span>');
+    if (w.tri != null) meta.push('<span class="nauka-meta">' + w.tri + ' tri</span>');
+
+    var html = '<div class="nauka-model">';
+    html += '<div class="nauka-tytul">' + escapHtml(plik) + '</div>';
+    html += '<div class="nauka-id-sek">' + escapHtml(w.id) + '</div>';
+    if (meta.length) html += '<div class="nauka-harness">' + meta.join(' ') + '</div>';
+    if (zrodlo) html += '<div class="nauka-zrodlo">' + escapHtml(zrodlo) + '</div>';
+    html += '</div>';
+    return html;
+  }
+
+  function blokHarnessWyjasnienie(w) {
+    var t = techNorm(w);
+    var html = '<div class="nauka-harness-wyjasnij">';
+    html += badgeTech(w);
+    html += '<p class="nauka-gloss">' + escapHtml(znaczenieHarness(t)) + '</p>';
+    var cechy = podsumowanieCech(w);
+    if (cechy.length) {
+      html += '<ul class="nauka-auto">';
+      cechy.forEach(function (a) { html += '<li>' + escapHtml(a) + '</li>'; });
+      html += '</ul>';
     }
-    return '<div class="nauka-harness">' + bits.join(' ') + '</div>';
+    html += '</div>';
+    return html;
+  }
+
+  function blokOdmowy(w, oc) {
+    var odm = listaOdmow(w);
+    if (!odm.length) return '';
+    var html = '<div class="nauka-sekcja nauka-odmowa-box">';
+    html += '<p class="th"><strong>Odmowa detektora</strong></p>';
+    html += '<ul class="nauka-odm-lista">';
+    odm.forEach(function (kod) {
+      html += '<li><code>' + escapHtml(kod) + '</code> — ' + escapHtml(glossOdmowy(kod)) + '</li>';
+    });
+    html += '</ul>';
+    html += '<p class="th">Oznacz etykietę:</p>';
+    html += '<div class="row nauka-odm-tagi" id="naukaOdmEtykiety">';
+    ODM_ETYKIETY.forEach(function (e) {
+      var on = oc.odmowa_etykieta === e.id;
+      html += '<button type="button" class="nauka-btn nauka-tag' + (on ? ' on' : '') + '" data-odm-etykieta="' + e.id + '">' + e.t + '</button>';
+    });
+    html += '</div></div>';
+    return html;
   }
 
   function listaAuto(w) {
     var bits = [];
-    if (w.miesci_na_plycie === false) bits.push('>256 mm');
-    if (w.kody && w.kody.length) bits.push('kody: ' + w.kody.join(', '));
-    if (w.problemy && w.problemy.length) bits.push.apply(bits, w.problemy.slice(0, 3));
-    if (w.ostrzezenia && w.ostrzezenia.length) bits.push.apply(bits, w.ostrzezenia.slice(0, 2));
+    if (w.miesci_na_plycie === false) bits.push('>256 mm (nie mieści się na płycie)');
     if (w.notatka && !czytajOcene(w.id)) bits.push('manifest: ' + w.notatka);
     return bits;
   }
 
   function zbudujFormularz(w, oc) {
     var auto = listaAuto(w);
-    var odm = listaOdmow(w);
     var html = '';
-    html += '<div class="nauka-naglowek"><strong>' + escapHtml(w.id) + '</strong> ';
-    html += '<div class="nauka-plik">' + escapHtml(w.nazwa || '—') + '</div>';
-    html += podsumowanieHarness(w);
+    html += '<div class="nauka-instrukcja">' + escapHtml(instrukcjaKarty(w)) + '</div>';
+    html += blokModelu(w);
+    html += blokHarnessWyjasnienie(w);
     if (auto.length) {
       html += '<ul class="nauka-auto">';
       auto.forEach(function (a) { html += '<li>' + escapHtml(a) + '</li>'; });
       html += '</ul>';
     }
+    html += blokOdmowy(w, oc);
     html += '<p class="th">Po rozmowie z agentem Projekt/Przerób — zaznacz checki. Na końcu pobierz JSON do folderu <code>ocen/</code>.</p>';
-
-    if (odm.length) {
-      html += '<div class="nauka-sekcja nauka-odmowa-box">';
-      html += '<p class="th"><strong>Odmowa detektora:</strong> ' + escapHtml(odm.join(', ')) + '</p>';
-      html += '<p class="th">Czy odmowa' + (maBladPomiaru(w) ? ' BLAD_POMIARU' : '') + ' / detektora była słuszna?</p>';
-      html += '<div class="row nauka-odm-tagi" id="naukaOdmEtykiety">';
-      ODM_ETYKIETY.forEach(function (e) {
-        var on = oc.odmowa_etykieta === e.id;
-        html += '<button type="button" class="nauka-btn nauka-tag' + (on ? ' on' : '') + '" data-odm-etykieta="' + e.id + '">' + e.t + '</button>';
-      });
-      html += '</div></div>';
-    }
 
     html += '<div class="nauka-sekcja"><div class="t0-lista">';
     html += '<div class="t0-wiersz"><label><input type="checkbox" id="naukaP0" ' + (oc.punkt0_zdanie ? 'checked' : '') + '><span>Punkt 0 — agent powiedział jednym zdaniem co się fizycznie dzieje</span></label></div>';
@@ -382,7 +507,7 @@
     var ocenionych = policzOcenioneWKolejce(stan.kolejka);
     if (postep) {
       postep.textContent =
-        (stan.i + 1) + ' / ' + stan.kolejka.length + ' · ' + w.id +
+        (stan.i + 1) + ' / ' + stan.kolejka.length + ' · ' + nazwaPliku(w) + ' (' + w.id + ')' +
         ' · ocenionych: ' + ocenionych + ' / ' + stan.kolejka.length;
     }
     var oc = czytajOcene(w.id) || domyslnaOcena(w);
@@ -492,6 +617,8 @@
     odswiez: odswiezKolejke,
     czytaj: czytajOcene,
     doOceny: doOceny,
-    listaOdmow: listaOdmow
+    listaOdmow: listaOdmow,
+    instrukcjaKarty: instrukcjaKarty,
+    nazwaPliku: nazwaPliku
   };
 })(typeof window !== 'undefined' ? window : global);

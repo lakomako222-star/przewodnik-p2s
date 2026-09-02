@@ -1,7 +1,7 @@
 // Service worker - HTML najpierw z sieci (online-first).
 // CACHE wypełnia build_pwa.py z SHA-256 index.html. Nie wpisuj ręcznie.
 // Doradca, diagnostyka i checklisty są w index.html i w cache — działają bez sieci.
-const CACHE = 'p2s-guide-v4.2.45-d0e2341d';
+const CACHE = 'p2s-guide-v4.2.46-81354a6d';
 
 // addAll jest atomowe: jeden 404 odrzuca całą instalację SW i offline pada po cichu.
 // Krytyczne (przewodnik + silnik) muszą być kompletne. Reszta: allSettled.
