@@ -1,6 +1,6 @@
 {
   "wersja": "4.2.51",
-  "stempel": "ec168316",
+  "stempel": "95ba41f8",
   "krytyczne": [
     "index.html",
     "engine/manifold.js",
@@ -28,6 +28,7 @@
     "modele-rura.js",
     "szukaj.js",
     "nauka-rag.js",
+    "nauka-szablony.js",
     "nauka-pack.json",
     "nauka-ocena.js",
     "nitka.js",

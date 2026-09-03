@@ -353,6 +353,18 @@
       el.textContent = 'Wzorce: ' + wz + ' · wpisów: ' + wp.length + ' · kategorii: ' + nKat
         + '. Pamięć katalogu w Projekcie — 5 trafień co turę (tagi + opis z 3MF). To nie trening GPU.';
     }
+    var cwEl = $('naukaKatalogCwicz');
+    var cw = (stan.pack && stan.pack.cwicz) || null;
+    if (cwEl) {
+      if (cw && cw.n) {
+        cwEl.textContent = 'Ćwiczenie katalogu (trafienia pamięci): '
+          + cw.self_hit + '/' + cw.n + ' (' + cw.self_hit_pct + '%) self-hit@5'
+          + (cw.miss ? (' · pudła ' + cw.miss) : '')
+          + '. Katalog przypomina siebie. Wagi LLM bez zmian.';
+      } else {
+        cwEl.textContent = 'Ćwiczenie katalogu: brak wyniku (odpal _cwicz-katalog.mjs).';
+      }
+    }
     if (traf) {
       var last = null;
       try { last = JSON.parse(localStorage.getItem('p2s.nauka.rag.ostatnie') || 'null'); } catch (e) { last = null; }
@@ -365,6 +377,9 @@
             if (h.tagi && h.tagi.length) bit += ' {' + h.tagi.slice(0, 4).join(',') + '}';
             return bit;
           }).join(' · ');
+      } else if (cw && cw.n) {
+        traf.textContent = 'Ostatnie ćwiczenie katalogu: ' + cw.self_hit + '/' + cw.n
+          + ' (' + cw.self_hit_pct + '%) — wyślij wiadomość w Projekcie, żeby zobaczyć 5 bieżących trafień.';
       } else {
         traf.textContent = 'Trafienia pamięci: brak (wyślij wiadomość w Projekcie).';
       }

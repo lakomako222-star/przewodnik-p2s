@@ -6,7 +6,8 @@ import { initEngine, buildAndGate, specDiff, meshToVF, normalizujJednostki, wali
 import { mesh3MF, mesh3MFWiele, tekstDeklaracji, nazwa3mf, checklistaDruku } from './export3mf.js';
 import { WIDOKI, rzutuj, rysuj, etykietaGabarytu } from './preview.js';
 import { wyciagnijSzukaj, szukajSieci, hostDozwolony, tekstWynikowSzukania } from './szukaj.js';
-import { ladujPackNauki, szukajNauki, tekstKontekstuNauki } from './nauka-rag.js';
+import { ladujPackNauki, szukajNauki, tekstKontekstuNauki, tagiZQuery } from './nauka-rag.js';
+import { dopasujSzablony, tekstSzablonow, SZABLONY } from './nauka-szablony.js';
 import {
   nowyProjectId, modelCzytaObraz, uzyjFlashDoOpisu, hintWizji, mockOpisZdjecia,
   parseScalePercent, zapiszNitke, wczytajNitke, skrotRozmowy, kompresujZdjecie,
@@ -192,8 +193,15 @@ KOLEJNOŚĆ
 3) Przy sprzęcie albo obcej klasie [[SZUKAJ]], potem rysunek. Nie odwrotnie.
 4) Po 3MF: oceń WYNIK 3MF. 2–3 poprawki jako rada (ścianka, orientacja, kubek) — nie cicha zmiana siatki.
 
+SZABLONY PARAMETRYCZNE
+Gdy w kontekście pojawi się blok „SZABLONY PARAMETRYCZNE", masz gotowe funkcje CSG. Zamiast opisywać bryły od zera, użyj znacznika [[SZABLON:id(parametry)]] — aplikacja wygeneruje SPEC automatycznie.
+Przykład: użytkownik pisze „zrób rurę F80 pod kątem 90 stopni" → Ty odpowiadasz z planem druku i kończysz [[SZABLON:rurKolanko(80,90,2)]].
+Szablon sam wypełnia bryły, cechy, materiał, uwagi. Ty musisz tylko podać ORIENTACJA/PODPORY/BRIM jak zwykle.
+Gdy szablon nie pasuje idealnie lub użytkownik chce coś niestandardowego — rysuj klasycznie ([[RYSUJ]]).
+
 BAZA NAUKI — PAMIĘĆ KATALOGU (NAZWANE CZĘŚCI)
 W każdej Twojej turze aplikacja dokłada blok „PAMIĘĆ KATALOGU” / „BAZA NAUKI” z 5 najbliższymi wzorcami. To POSSEGREGOWANE DOBRE modele, które już oglądałeś: tytuły, tagi (rura/kolanko/90/Fi) i opis wyciągnięty z pliku 3MF (metadata Title/Description, nazwy części) albo z folderu gdy STL. Nie kolejka odrzutów i nie trening GPU. Gdy brief ma rurę / Fi / F80 / DN / kolanko / 90°, NAJPIERW weź te trafienia, nie zgaduj od zera. Naśladuj strukturę i funkcję najbliższych nazw. Nie kopiuj cudzego CAD. BLAD_POMIARU = dziura pomiaru, nie „zły model”. Folder ocen/ pusty. Działa z dowolnym modelem z ⚙ Asystent.
+Katalog LIB/TRE/GOLD jest PRZEĆWICZONY (retrieval self-hit, nie LoRA): traktuj go jako pamięć już widzianych projektów. Ćwiczył ten katalog: gdy ktoś prosi o X, masz wzorzec Y (już widziany). Wagi modelu się nie zmieniają.
 
 BRIEF PEŁNY, TYLKO prosty klips/haczyk/podstawka z mm (USB 5 mm, haczyk 18 mm): pomiń 1–2. Zera nie pomijaj (CO SIĘ DZIEJE). W tej turze plan druku i [[RYSUJ]]. Bez dopytywania o rasę kota. Brak filamentu: klips/haczyk/uchwyt/podstawka → PETG; figurka/pionek/topper/napis → PLA — napisz wybór przy BRIM.
 
@@ -260,7 +268,8 @@ Gdy człowiek dołączy zdjęcie (klamka, drzwi, wanna): zapytaj, KTÓRE wymiary
 KONIEC ODPOWIEDZI — dokładnie jeden znacznik (aplikacja go odetnie):
 [[SZUKAJ]] hasło — gdy potrzebujesz faktów z sieci.
 [[CZEKAM]] gdy brakuje wyboru sposobu, kształtu, pomiarów albo człowiek ma się zdecydować — NIE gdy brief już ma funkcję i mm.
-[[RYSUJ]] gdy wybrał sposób, są mm albo pytania SPEC je zbiorą, podałeś ORIENTACJA/PODPORY/BRIM. Nie zgadujesz Ø z fotki.`;
+[[RYSUJ]] gdy wybrał sposób, są mm albo pytania SPEC je zbiorą, podałeś ORIENTACJA/PODPORY/BRIM. Nie zgadujesz Ø z fotki.
+[[SZABLON:id(parametry)]] gdy szablon z kontekstu pasuje idealnie — aplikacja sama zbuduje SPEC z podanych parametrów. Plan druku (ORIENTACJA/PODPORY/BRIM) obowiązkowy jak przy [[RYSUJ]].`;
 
 let schema = null;
 let last = null;
@@ -295,7 +304,10 @@ async function pjKontekstNauki(text) {
   try {
     await ladujPackNauki(false);
     const hits = await szukajNauki(text, 5);
-    return tekstKontekstuNauki(hits, text);
+    const ragTagi = (hits || []).flatMap(h => Array.isArray(h.tagi) ? h.tagi : []);
+    const szablony = dopasujSzablony(text, ragTagi);
+    const szablonyTekst = tekstSzablonow(szablony);
+    return tekstKontekstuNauki(hits, text, szablonyTekst);
   } catch (e) {
     return '';
   }
@@ -810,6 +822,9 @@ function pjGotoweDoSpec(talk, text, prev) {
   if (/\[\[CZEKAM\]\]/i.test(talk)) return false;
   if (!prev && pjWymagaSzukania(text) && !pjByloSzukanie()) return false;
   if (pjBriefZaCienki(text) && !prev) return false;
+  if (/\[\[SZABLON:\w+\([^)]*\)\]\]/i.test(talk)) {
+    return true;
+  }
   if (/\[\[RYSUJ\]\]/i.test(talk)) {
     if (!prev && !pjTalkMaPlanDruku(talk)) return false;
     if (!prev && !pjUserMaMm(text) && !pjSzacunekZFotki(text)) return false;
@@ -1814,7 +1829,43 @@ async function zrob() {
     };
     let spec;
     let shardBledy = [];
-    if (!prev && wykryjSharding(talk + '\n' + text)) {
+    // [[SZABLON:id(params)]] — generuj SPEC z szablonu bez wywołania LLM
+    const szablonMatch = /\[\[SZABLON:(\w+)\(([^)]*)\)\]\]/i.exec(talk);
+    if (szablonMatch && !prev) {
+      const szId = szablonMatch[1];
+      const szDef = SZABLONY.find(s => s.id === szId);
+      if (szDef) {
+        try {
+          const args = szablonMatch[2].split(',').map(a => {
+            const t = a.trim();
+            if (/^\[/.test(t)) return JSON.parse(t);
+            const n = Number(t);
+            return isNaN(n) ? t : n;
+          });
+          const szabSpec = szDef.fn.apply(null, args);
+          spec = {
+            spec_version: '1.0',
+            nazwa: szabSpec.nazwa,
+            material: szabSpec.material || 'PETG',
+            bryly: szabSpec.bryly,
+            cechy: szabSpec.cechy || [],
+            pytania: [],
+            uwagi_do_druku: szabSpec.uwagi_do_druku || '',
+            orientacja_druku: {
+              obrot_xyz_deg: [0, 0, 0],
+              sciana_na_plycie: 'spód',
+              uzasadnienie: 'Szablon — druk pionowo lub płasko wg uwag.'
+            },
+            podpory: { wymagane: false, uzasadnienie: 'Szablon prosty — bez nawisów.', typ: 'brak' },
+            brim: { wymagany: false, uzasadnienie: 'Szablon — stabilna podstawa.' }
+          };
+          chatLine('ai', '🔧 Użyto szablon: ' + szDef.nazwa + ' z parametrami (' + szablonMatch[2] + ')');
+        } catch (e) {
+          chatLine('ai', '⚠ Błąd szablonu ' + szId + ': ' + (e && e.message || e));
+        }
+      }
+    }
+    if (!spec && !prev && wykryjSharding(talk + '\n' + text)) {
       spec = await pjSpecSharded(talk, text, userB);
       shardBledy = spec._shardBledy || [];
       delete spec._shardBledy;
@@ -2133,6 +2184,8 @@ if (typeof window !== 'undefined') {
   window.P2S.tekstKontekstuNauki = tekstKontekstuNauki;
   window.P2S.ladujPackNauki = ladujPackNauki;
   window.P2S.pjKontekstNauki = pjKontekstNauki;
+  window.P2S.SZABLONY = SZABLONY;
+  window.P2S.dopasujSzablony = dopasujSzablony;
   window.P2S.pjZapiszNitke = pjZapiszNitke;
   window.P2S.pjPrzerobTo = pjPrzerobTo;
   window.P2S.pjOpisZdjeciaFlash = pjOpisZdjeciaFlash;
