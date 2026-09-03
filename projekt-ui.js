@@ -192,8 +192,8 @@ KOLEJNOŚĆ
 3) Przy sprzęcie albo obcej klasie [[SZUKAJ]], potem rysunek. Nie odwrotnie.
 4) Po 3MF: oceń WYNIK 3MF. 2–3 poprawki jako rada (ścianka, orientacja, kubek) — nie cicha zmiana siatki.
 
-BAZA NAUKI
-Gdy w kontekście jest blok „BAZA NAUKI” — to posegregowane DOBRE przykłady (LIB/TRE/GOLD, folder trening: MECHANIKA, TOYS, DIY…). Każdy taki model jest wzorcem: tytuł i opis mówią, co to jest; ucz się kształtu i kategorii. BLAD_POMIARU / FAIL harnessu = detektor nie zmierzył walca, NIE że 3MF jest zły. Nie kopiuj CAD. Nie powielaj odmowy pomiaru jako „odrzuć ten typ części”.
+BAZA NAUKI — ZAMKNIĘTY KATALOG LOKALNY
+W każdej Twojej turze aplikacja dokłada blok „BAZA NAUKI” z 5 najbliższymi wzorcami z lokalnego katalogu (LIB/TRE/GOLD, foldery MECHANIKA / TOYS / DIY…). To POSSEGREGOWANE DOBRE modele — nie kolejka odrzutów. Tytuł i kategoria mówią, co to jest. Naśladuj strukturę i funkcję najbliższych trafień: części FDM podobne do tych nazw (uchwyt jak uchwyt, tuleja jak tuleja). Nie kopiuj cudzego CAD. Nie odmawiaj rysowania dlatego, że detektor nie zmierzył otworu — BLAD_POMIARU / FAIL harnessu = dziura pomiaru, NIE werdykt że 3MF jest zły. Katalog to RAG (podpowiedź w czacie), nie trening wag: folder ocen/ jest pusty, brak par rozmowa→SPEC do LoRA. Działa z dowolnym modelem z ⚙ Asystent (OpenRouter).
 
 BRIEF PEŁNY, TYLKO prosty klips/haczyk/podstawka z mm (USB 5 mm, haczyk 18 mm): pomiń 1–2. Zera nie pomijaj (CO SIĘ DZIEJE). W tej turze plan druku i [[RYSUJ]]. Bez dopytywania o rasę kota. Brak filamentu: klips/haczyk/uchwyt/podstawka → PETG; figurka/pionek/topper/napis → PLA — napisz wybór przy BRIM.
 
@@ -289,6 +289,16 @@ function pjFaktDomu() {
 }
 function pjSysTalk() {
   return SYS_TALK + '\n\nPROFIL DOMU (fakt, nie pytanie):\n' + pjFaktDomu();
+}
+/** Każda tura Projekt: 5 najbliższych wzorców z lokalnego katalogu (RAG, nie LoRA). */
+async function pjKontekstNauki(text) {
+  try {
+    await ladujPackNauki(false);
+    const hits = await szukajNauki(text, 5);
+    return tekstKontekstuNauki(hits, text);
+  } catch (e) {
+    return '';
+  }
 }
 function pjSysSpec() {
   return SYS_SPEC + '\n\nPROFIL DOMU (fakt, nie pytanie — nie dodawaj pytania o dzieci ani o 45 mm):\n' + pjFaktDomu();
@@ -1679,9 +1689,7 @@ async function pjRozmowaZSzukaniem(text, imgs) {
   let userContent = (window.__p2sWzorTekst ? (window.__p2sWzorTekst + '\n\n') : '') + text
     + '\n\nKontekst rozmowy:\n' + pjChatBlob().slice(-2500);
   try {
-    await ladujPackNauki(false);
-    const hits = await szukajNauki(text, 5);
-    const baza = tekstKontekstuNauki(hits);
+    const baza = await pjKontekstNauki(text);
     if (baza) userContent += '\n\n' + baza;
   } catch (e) { /* brak packa = bez RAG */ }
   if (photos.length && modelCzytaObraz(talkId)) {
@@ -1788,6 +1796,10 @@ async function zrob() {
         + (kontrakt ? '\n\n' + kontrakt : ''))
       : ((wzor ? (wzor + '\n\n') : '') + text + '\n\nUstalenia z rozmowy:\n' + pjObetnijZnacznik(talk)
         + (kontrakt ? '\n\n' + kontrakt : ''));
+    try {
+      const bazaSpec = await pjKontekstNauki(text);
+      if (bazaSpec) userB += '\n\n' + bazaSpec;
+    } catch (e) { /* pack opcjonalny */ }
     if (/\[\[RYSUJ\]\]/i.test(talk)) {
       userB += '\n\nPO RYSUJ Z ROZMOWY: bryły i czesci[].bryly nie mogą być puste; jaskółczy ogon = kieszeń + luz 0,4.';
     }
@@ -2120,6 +2132,7 @@ if (typeof window !== 'undefined') {
   window.P2S.szukajNauki = szukajNauki;
   window.P2S.tekstKontekstuNauki = tekstKontekstuNauki;
   window.P2S.ladujPackNauki = ladujPackNauki;
+  window.P2S.pjKontekstNauki = pjKontekstNauki;
   window.P2S.pjZapiszNitke = pjZapiszNitke;
   window.P2S.pjPrzerobTo = pjPrzerobTo;
   window.P2S.pjOpisZdjeciaFlash = pjOpisZdjeciaFlash;

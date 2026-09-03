@@ -336,6 +336,37 @@
     return n;
   }
 
+  function wypelnijKatalog() {
+    var el = $('naukaKatalogStat');
+    var traf = $('naukaKatalogTrafienia');
+    if (!el && !traf) return;
+    var wp = (stan.pack && stan.pack.wpisy) || [];
+    var kat = {};
+    var wz = 0;
+    wp.forEach(function (w) {
+      if (jestWzorzec(w)) wz += 1;
+      var k = String(w.kategoria || '?');
+      kat[k] = (kat[k] || 0) + 1;
+    });
+    var nKat = Object.keys(kat).length;
+    if (el) {
+      el.textContent = 'Wzorce: ' + wz + ' · wpisów: ' + wp.length + ' · kategorii: ' + nKat
+        + '. RAG w Projekcie — 5 najbliższych co turę. Folder ocen/ pusty = brak fine-tune wag.';
+    }
+    if (traf) {
+      var last = null;
+      try { last = JSON.parse(localStorage.getItem('p2s.nauka.rag.ostatnie') || 'null'); } catch (e) { last = null; }
+      if (last && last.hits && last.hits.length) {
+        traf.textContent = 'Ostatnie RAG („' + String(last.query || '').slice(0, 60) + '”): '
+          + last.hits.map(function (h) {
+            return (h.tytul || '?') + (h.kategoria ? (' [' + h.kategoria + ']') : '');
+          }).join(' · ');
+      } else {
+        traf.textContent = 'Ostatnie trafienia RAG: brak (wyślij wiadomość w Projekcie).';
+      }
+    }
+  }
+
   function odswiezKolejke() {
     stan.kolejka = filtrujKolejke();
     var saved = parseInt(localStorage.getItem(LS_IDX) || '0', 10);
@@ -361,6 +392,7 @@
           'Karta: tytuł + opis → ucz się kształtu.';
       }
     }
+    wypelnijKatalog();
     pokazBiezacy();
   }
 
@@ -650,6 +682,7 @@
       var k = $('naukaOcenaKarta');
       if (k) k.innerHTML = '<p class="tout fail">Brak nauka-pack.json — uruchom build PWA.</p>';
     });
+    document.addEventListener('p2s-nauka-rag', function () { wypelnijKatalog(); });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
