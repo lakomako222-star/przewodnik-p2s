@@ -11479,21 +11479,43 @@ const KAT_ALIAS = [
   [/dom|wieszak|organizer|kuchn|home|diy|haczyk|wiesz|polk|szuflad/i, 'DIY_HOME']
 ];
 
+/** PL brief → słowa z tytułów Printables (holder, hook, …). */
+const SYN = {
+  uchwyt: ['holder', 'hook', 'mount', 'handle', 'bracket'],
+  uchwyty: ['holder', 'hook', 'mount', 'handle'],
+  haczyk: ['hook'],
+  wieszak: ['hanger', 'hook'],
+  wanna: ['bath', 'bathtub', 'tub'],
+  wanny: ['bath', 'bathtub', 'tub'],
+  zabawka: ['toy', 'toys'],
+  figurka: ['figure', 'figurine', 'toy'],
+  tuleja: ['bushing', 'sleeve', 'spacer'],
+  klamra: ['clamp', 'clip'],
+  podstawka: ['stand', 'base'],
+  organizer: ['organizer', 'tray'],
+  gwint: ['thread', 'screw'],
+  lozysko: ['bearing'],
+  nakretka: ['nut'],
+  sruba: ['screw', 'bolt']
+};
+
 function termy(raw) {
   const parts = norm(raw).split(/[^a-z0-9]+/).filter((t) => t.length >= 3 && !STOP[t]);
   const out = [];
   const seen = {};
-  for (let i = 0; i < parts.length; i++) {
-    const t = parts[i];
-    if (seen[t]) continue;
+  function add(t) {
+    if (!t || seen[t] || STOP[t]) return;
     seen[t] = 1;
     out.push(t);
+  }
+  for (let i = 0; i < parts.length; i++) {
+    const t = parts[i];
+    add(t);
+    const syn = SYN[t];
+    if (syn) for (let j = 0; j < syn.length; j++) add(syn[j]);
     if (t.length >= 5) {
       const stem = t.replace(/(es|ed|ing|ow|ach|ami)$/g, '').replace(/[yiiea]$/, '');
-      if (stem.length >= 3 && stem !== t && !seen[stem] && !STOP[stem]) {
-        seen[stem] = 1;
-        out.push(stem);
-      }
+      if (stem.length >= 3 && stem !== t) add(stem);
     }
   }
   return out;
@@ -11622,10 +11644,10 @@ function szukajNaukiSync(query, limit) {
     sc += 0.75 * score(q, w.opis_printables);
     sc += 0.85 * score(q, Array.isArray(w.slowa_kluczowe) ? w.slowa_kluczowe.join(' ') : '');
     sc += 0.55 * score(q, poleKatalogu(w));
+    if (sc <= 0) continue;
     if (katHint && String(w.kategoria || '').toUpperCase() === katHint) sc += 0.22;
     if (w.rola === 'wzorzec') sc += 0.28;
     else sc *= 0.55;
-    if (sc <= 0) continue;
     scored.push({ sc, w });
   }
   scored.sort((a, b) => b.sc - a.sc);
