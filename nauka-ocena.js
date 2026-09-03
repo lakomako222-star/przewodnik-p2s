@@ -351,18 +351,22 @@
     var nKat = Object.keys(kat).length;
     if (el) {
       el.textContent = 'Wzorce: ' + wz + ' · wpisów: ' + wp.length + ' · kategorii: ' + nKat
-        + '. RAG w Projekcie — 5 najbliższych co turę. Folder ocen/ pusty = brak fine-tune wag.';
+        + '. Pamięć katalogu w Projekcie — 5 trafień co turę (tagi + opis z 3MF). To nie trening GPU.';
     }
     if (traf) {
       var last = null;
       try { last = JSON.parse(localStorage.getItem('p2s.nauka.rag.ostatnie') || 'null'); } catch (e) { last = null; }
       if (last && last.hits && last.hits.length) {
-        traf.textContent = 'Ostatnie RAG („' + String(last.query || '').slice(0, 60) + '”): '
+        traf.textContent = 'Trafienia pamięci („' + String(last.query || '').slice(0, 60) + '”): '
           + last.hits.map(function (h) {
-            return (h.tytul || '?') + (h.kategoria ? (' [' + h.kategoria + ']') : '');
+            var bit = (h.id ? (h.id + ' ') : '') + (h.tytul || '?')
+              + (h.kategoria ? (' [' + h.kategoria + ']') : '')
+              + (h.gabaryt ? (' ' + h.gabaryt) : '');
+            if (h.tagi && h.tagi.length) bit += ' {' + h.tagi.slice(0, 4).join(',') + '}';
+            return bit;
           }).join(' · ');
       } else {
-        traf.textContent = 'Ostatnie trafienia RAG: brak (wyślij wiadomość w Projekcie).';
+        traf.textContent = 'Trafienia pamięci: brak (wyślij wiadomość w Projekcie).';
       }
     }
   }

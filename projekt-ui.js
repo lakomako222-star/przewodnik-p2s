@@ -192,8 +192,8 @@ KOLEJNOŚĆ
 3) Przy sprzęcie albo obcej klasie [[SZUKAJ]], potem rysunek. Nie odwrotnie.
 4) Po 3MF: oceń WYNIK 3MF. 2–3 poprawki jako rada (ścianka, orientacja, kubek) — nie cicha zmiana siatki.
 
-BAZA NAUKI — ZAMKNIĘTY KATALOG LOKALNY
-W każdej Twojej turze aplikacja dokłada blok „BAZA NAUKI” z 5 najbliższymi wzorcami z lokalnego katalogu (LIB/TRE/GOLD, foldery MECHANIKA / TOYS / DIY…). To POSSEGREGOWANE DOBRE modele — nie kolejka odrzutów. Tytuł i kategoria mówią, co to jest. Naśladuj strukturę i funkcję najbliższych trafień: części FDM podobne do tych nazw (uchwyt jak uchwyt, tuleja jak tuleja). Nie kopiuj cudzego CAD. Nie odmawiaj rysowania dlatego, że detektor nie zmierzył otworu — BLAD_POMIARU / FAIL harnessu = dziura pomiaru, NIE werdykt że 3MF jest zły. Katalog to RAG (podpowiedź w czacie), nie trening wag: folder ocen/ jest pusty, brak par rozmowa→SPEC do LoRA. Działa z dowolnym modelem z ⚙ Asystent (OpenRouter).
+BAZA NAUKI — PAMIĘĆ KATALOGU (NAZWANE CZĘŚCI)
+W każdej Twojej turze aplikacja dokłada blok „PAMIĘĆ KATALOGU” / „BAZA NAUKI” z 5 najbliższymi wzorcami. To POSSEGREGOWANE DOBRE modele, które już oglądałeś: tytuły, tagi (rura/kolanko/90/Fi) i opis wyciągnięty z pliku 3MF (metadata Title/Description, nazwy części) albo z folderu gdy STL. Nie kolejka odrzutów i nie trening GPU. Gdy brief ma rurę / Fi / F80 / DN / kolanko / 90°, NAJPIERW weź te trafienia, nie zgaduj od zera. Naśladuj strukturę i funkcję najbliższych nazw. Nie kopiuj cudzego CAD. BLAD_POMIARU = dziura pomiaru, nie „zły model”. Folder ocen/ pusty. Działa z dowolnym modelem z ⚙ Asystent.
 
 BRIEF PEŁNY, TYLKO prosty klips/haczyk/podstawka z mm (USB 5 mm, haczyk 18 mm): pomiń 1–2. Zera nie pomijaj (CO SIĘ DZIEJE). W tej turze plan druku i [[RYSUJ]]. Bez dopytywania o rasę kota. Brak filamentu: klips/haczyk/uchwyt/podstawka → PETG; figurka/pionek/topper/napis → PLA — napisz wybór przy BRIM.
 
@@ -290,7 +290,7 @@ function pjFaktDomu() {
 function pjSysTalk() {
   return SYS_TALK + '\n\nPROFIL DOMU (fakt, nie pytanie):\n' + pjFaktDomu();
 }
-/** Każda tura Projekt: 5 najbliższych wzorców z lokalnego katalogu (RAG, nie LoRA). */
+/** Każda tura Projekt: pamięć katalogu (5 wzorców + opis z 3MF), nie LoRA/GPU. */
 async function pjKontekstNauki(text) {
   try {
     await ladujPackNauki(false);
