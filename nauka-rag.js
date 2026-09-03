@@ -84,7 +84,9 @@ export function szukajNaukiSync(query, limit) {
     const w = _pack.wpisy[i];
     let sc = score(q, w.tekst);
     if (w.notatka) sc += 0.15 * score(q, w.notatka);
-    if (w.werdykt_rozmowy === 'fail' && score(q, w.notatka || w.tekst) > 0) sc += 0.1;
+    if (w.tytul_czytelny) sc += 0.2 * score(q, w.tytul_czytelny);
+    if (w.opis_printables) sc += 0.15 * score(q, w.opis_printables);
+    if (w.rola === 'wzorzec') sc += 0.08;
     if (sc <= 0) continue;
     scored.push({ sc, w });
   }
@@ -100,17 +102,20 @@ export async function szukajNauki(query, limit) {
 export function tekstKontekstuNauki(hits) {
   if (!hits || !hits.length) return '';
   const lines = [
-    'BAZA NAUKI (podobne przypadki z pomiarów / ocen właściciela — NIE kopiuj CAD, tylko ucz się z ostrzeżeń i werdyktów):'
+    'BAZA NAUKI (wzorce): folder trening + LIB/TRE/GOLD to POSSEGREGOWANE DOBRE przykłady. Każdy model jest dobry. Tytuł, kategoria i opis mówią, co to jest — ucz się kształtu i funkcji. Kod BLAD_POMIARU / FAIL harnessu to dziura detektora (nie zmierzył walca), NIE werdykt że 3MF jest zły. NIE kopiuj cudzego CAD. NIE powielaj odmowy pomiaru jako „zły model”.'
   ];
   for (let i = 0; i < hits.length; i++) {
     const h = hits[i];
     const bits = [
       h.id,
-      h.nazwa || '',
+      h.rola === 'wzorzec' ? 'rola=wzorzec' : (h.rola ? ('rola=' + h.rola) : ''),
+      h.tytul_czytelny || h.nazwa || '',
+      h.kategoria || '',
       h.gabaryt || '',
-      h.werdykt_techniczny ? ('tech=' + h.werdykt_techniczny) : '',
-      h.werdykt_rozmowy ? ('rozmowa=' + h.werdykt_rozmowy) : '',
-      (h.kody && h.kody.length) ? ('kody=' + h.kody.join(',')) : '',
+      h.n_czesci != null ? (h.n_czesci + ' części') : '',
+      h.opis_printables ? ('opis: ' + h.opis_printables) : '',
+      h.powod_po_ludzku ? h.powod_po_ludzku : '',
+      h.przerob_odmowy ? ('detektor=' + h.przerob_odmowy + ' (dziura pomiaru, nie wada modelu)') : '',
       h.notatka ? ('notatka: ' + h.notatka) : ''
     ].filter(Boolean);
     lines.push('- ' + bits.join(' | '));

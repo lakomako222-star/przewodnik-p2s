@@ -10,7 +10,7 @@
     {
       id: 'pla_plus',
       slot: 'A2',
-      nazwa_studio: 'KALIBROWANE SUNLU PLA+ CUSTOM @BBL P2S',
+      nazwa_studio: 'FROSTBITE - KALIBROWANE SUNLU PLA+ CUSTOM @BBL P2S',
       nazwa_karty: 'KALIBROWANE SUNLU PLA+ CUSTOM Frostbite',
       material: 'PLA+',
       flow: '0.8645',
@@ -18,7 +18,7 @@
       dysza_mm: '0.4',
       dysze_profilu: ['0.4', '0.6', '0.8'],
       stol_frostbite_C: [40, 40],
-      stol_profil_hot_plate_C: 65,
+      stol_profil_hot_plate_C: 40,
       plyta: 'Frostbite',
       plyta_nie: 'czapa',
       nozzle_C_lisc: null,
@@ -27,7 +27,7 @@
     {
       id: 'classic',
       slot: 'A3',
-      nazwa_studio: 'KALIBROWANE SUNLU PLA Classic Słoneczny @BBL P2S',
+      nazwa_studio: 'FROSTBITE - KALIBROWANE SUNLU PLA Classic Słoneczny @BBL P2S',
       nazwa_karty: 'KALIBROWANE SUNLU PLA Classic Słoneczny Frostbite',
       material: 'PLA Classic',
       flow: '0.99813',
@@ -35,7 +35,7 @@
       dysza_mm: '0.4',
       dysze_profilu: ['0.4', '0.6', '0.8'],
       stol_frostbite_C: [40, 40],
-      stol_profil_hot_plate_C: 55,
+      stol_profil_hot_plate_C: 40,
       plyta: 'Frostbite',
       plyta_nie: 'czapa',
       nozzle_C_lisc: [220, 210],
@@ -44,7 +44,7 @@
     {
       id: 'petg',
       slot: 'A4',
-      nazwa_studio: 'KALIBROWANE SUNLU PETG @BBL P2S',
+      nazwa_studio: 'FROSTBITE - KALIBROWANE SUNLU PETG @BBL P2S',
       nazwa_karty: 'KALIBROWANE SUNLU PETG Frostbite',
       material: 'PETG',
       flow: '0.967575',
@@ -52,7 +52,7 @@
       dysza_mm: '0.4',
       dysze_profilu: ['0.4', '0.6', '0.8'],
       stol_frostbite_C: [60, 60],
-      stol_profil_hot_plate_C: null,
+      stol_profil_hot_plate_C: 60,
       plyta: 'Frostbite',
       plyta_nie: 'czapa',
       nozzle_C_lisc: null,
@@ -97,19 +97,20 @@
     var hot = s.stol_profil_hot_plate_C == null
       ? '<li>hot_plate w profilu: brak w liściu — nie zgaduję.</li>'
       : '<li>hot_plate w profilu: ' + s.stol_profil_hot_plate_C
-        + '°C <span class="dowod">[ODCZYTANE · pułapka vs Frostbite]</span></li>';
+        + '°C <span class="dowod">[ODCZYTANE · liść FROSTBITE]</span></li>';
     return '<article class="szpula-karta" data-szpula="' + s.id + '">'
       + '<h4>' + s.nazwa_karty + '</h4>'
       + '<p class="szpula-slot">Slot ' + s.slot + ' · ' + s.material + ' · płyta ' + s.plyta
       + ', nie ' + s.plyta_nie + '</p>'
       + '<ul>'
+      + '<li>Studio: <code>' + s.nazwa_studio + '</code></li>'
       + '<li>Flow ' + String(s.flow).replace('.', ',') + ' <span class="dowod">[' + s.dowod_flow + ' · liść profilu]</span></li>'
       + '<li>K ' + s.k + ' <span class="dowod">[ODCZYTANE]</span></li>'
       + '<li>Stół Frostbite ' + etykietaC(s.stol_frostbite_C) + ' <span class="dowod">[przewodnik 7.3]</span></li>'
       + hot
       + nozzle
       + '</ul>'
-      + '<p class="szpula-uwaga">To karta w apce. Presetu KALIBROWANE w Studio nie nadpisujemy.</p>'
+      + '<p class="szpula-uwaga">To karta w apce. Presetu FROSTBITE - KALIBROWANE w Studio/Handy nie nadpisujemy z tej karty.</p>'
       + '</article>';
   }
 

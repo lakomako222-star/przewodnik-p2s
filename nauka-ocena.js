@@ -1,15 +1,14 @@
 /**
- * Kreator oceny nauki agenta (karta-oceny.json) — checki, Dalej, eksport JSON.
- * Zapis: localStorage p2s.nauka.ocen.<id>. Eksport → e2e-projekt/nauka-modele/ocen/
- * Karta = podgląd + „Co agentowi nie pasuje” (1–3 konkrety) + Twoja ocena.
+ * Nauka z wzorców (karta-oceny.json). LIB/TRE/GOLD = dobre przykłady, nie odrzuty.
+ * Odmowa pomiaru = dziura detektora. Zapis: localStorage p2s.nauka.ocen.<id>.
  */
 (function (global) {
   'use strict';
 
   var LS_PREF = 'p2s.nauka.ocen.';
   var LS_IDX = 'p2s.nauka.ocena.idx';
-  var LS_SERIA = 'p2s.nauka.ocena.seria.v2';
-  var DOMYSLNA_SERIA = 'OCENA';
+  var LS_SERIA = 'p2s.nauka.ocena.seria.v3';
+  var DOMYSLNA_SERIA = 'WZORCE';
 
   var POSTAWY = [
     { n: 1, t: '1 — Dlaczego istniejące zawodzi' },
@@ -31,21 +30,15 @@
     { id: 'project_settings', t: 'Polega na project_settings obcego 3MF' }
   ];
 
-  /** Mapowanie prostych przycisków → odmowa_etykieta + werdykt (karta-oceny.json). */
+  /** Główna akcja: to dobry przykład. Śmieć = rzadkość. */
   var OCENA_PROSTA = [
     {
-      id: 'zgoda',
-      t: 'Zgadzam się z systemem',
-      hint: 'Odmowa / FAIL słuszne',
-      odmowa_etykieta: 'sluszna',
-      werdykt: 'ok'
-    },
-    {
-      id: 'myli',
-      t: 'System się myli',
-      hint: 'Fałszywa odmowa / niepotrzebny FAIL',
+      id: 'wzorzec',
+      t: 'Zgadzam się że to dobry przykład',
+      hint: 'Ucz się kształtu i kategorii — model jest OK',
       odmowa_etykieta: 'falszywa',
-      werdykt: 'fail'
+      werdykt: 'ok',
+      priorytet: true
     },
     {
       id: 'niepewn',
@@ -53,29 +46,15 @@
       hint: 'Zostawiam do późniejszej decyzji',
       odmowa_etykieta: 'niepewne',
       werdykt: 'oczekuje'
+    },
+    {
+      id: 'smiec',
+      t: 'Ten wpis jest śmieciem',
+      hint: 'Rzadko: zła nazwa, zepsuty plik — nie uczyć się z tego',
+      odmowa_etykieta: 'smiec',
+      werdykt: 'fail'
     }
   ];
-
-  var ODM_GLOSS = {
-    BLAD_POMIARU: 'Detektor znalazł coś jak otwór/gniazdo, ale nie umiał zmierzyć — odmówił',
-    'BŁĄD_POMIARU': 'Detektor znalazł coś jak otwór/gniazdo, ale nie umiał zmierzyć — odmówił',
-    NIE_WALEC: 'Przekrój nie jest gładkim walcem — nie edytuj jak zwykłego otworu',
-    GWINT_LUB_NIEWALEC: 'Wygląda na gwint albo niewalec — nie wpisuj jednej średnicy',
-    USZKODZONY: 'Plik/siatka wygląda na uszkodzoną albo nieczytelną',
-    BLAD: 'Ogólny błąd detektora / pipeline'
-  };
-
-  var KOD_GLOSS = {
-    unit_mm: 'Jednostki w pliku wyglądają na metry zamiast mm (ryzyko skali 1000×)',
-    gabaryt_aabb: 'Gabaryt poza limitem płyty P2S (część dłuższa niż ~256 mm)',
-    WARN_liczba_czesci: 'Za dużo obiektów w pliku względem limitu czytelnego podziału',
-    WARN_project_settings: 'Obcy eksport Bambu Studio (project_settings w ZIP)',
-    WARN_tri_objetosc: 'Bardzo duża / podejrzana siatka (trójkąty lub objętość)',
-    WARN_bramka_objetosc: 'Objętość modelu przekracza bramkę harnessu',
-    WARN_bbox_crosscheck: 'Niespójność bbox 3MF vs pomiar (możliwy niezapisany transform)',
-    WARN_normalnosc: 'Gabaryt mikroskopijny / podejrzana normalność siatki',
-    AUTO_czesci_max_8: 'Automat: więcej niż 8 części — podział trudny do ogarnięcia'
-  };
 
   var KAT_PL = {
     MECHANIKA: 'Mechanika',
@@ -114,7 +93,6 @@
     return !!(o && o.werdykt && o.werdykt !== 'oczekuje');
   }
 
-  /** Ma wybór człowieka (w tym „niepewne” z etykietą). */
   function maWyborCzlowieka(o) {
     return !!(o && (oceniona(o) || o.odmowa_etykieta));
   }
@@ -126,20 +104,23 @@
     }).filter(Boolean);
   }
 
+  function jestBladPomiaruKod(kod) {
+    return kod === 'BLAD_POMIARU' || kod === 'BŁĄD_POMIARU';
+  }
+
   function maBladPomiaru(w) {
-    var odm = listaOdmow(w);
-    return odm.indexOf('BLAD_POMIARU') >= 0 || odm.indexOf('BŁĄD_POMIARU') >= 0;
+    return listaOdmow(w).some(jestBladPomiaruKod);
   }
 
   function techNorm(w) {
     return String((w && w.werdykt_techniczny) || '').toLowerCase();
   }
 
-  function doOceny(w) {
-    var t = techNorm(w);
-    if (t === 'fail' || t === 'warn') return true;
-    if (listaOdmow(w).length) return true;
-    return false;
+  function jestWzorzec(w) {
+    if (!w) return false;
+    if (w.rola === 'wzorzec') return true;
+    var id = String(w.id || '');
+    return id.indexOf('LIB-') === 0 || id.indexOf('TRE-') === 0 || id.indexOf('GOLD-') === 0;
   }
 
   function escapHtml(s) {
@@ -148,6 +129,10 @@
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  }
+
+  function escapMd(s) {
+    return escapHtml(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   }
 
   function nazwaPliku(w) {
@@ -160,6 +145,7 @@
   }
 
   function tytulCzytelny(w) {
+    if (w && w.tytul_printables) return String(w.tytul_printables);
     if (w && w.tytul_czytelny) return String(w.tytul_czytelny);
     var n = nazwaPliku(w);
     n = n.replace(/\.(3mf|stl|obj|pdf)$/i, '');
@@ -169,9 +155,6 @@
 
   function kategoriaZWpisu(w) {
     if (w && w.kategoria) return String(w.kategoria).toUpperCase();
-    var blob = [(w && w.notatka) || '', (w && w.tekst) || '', (w && w.zrodlo) || ''].join(' ');
-    var m = blob.match(/\bkat:\s*([A-Za-z0-9_/-]+)/i);
-    if (m) return m[1].toUpperCase();
     var id = String((w && w.id) || '');
     if (id.indexOf('LIB-') === 0) return 'LIB';
     if (id.indexOf('TRE-') === 0) return 'TRE';
@@ -186,68 +169,16 @@
     return m ? m[1].toUpperCase() : '';
   }
 
-  function glossOdmowy(kod) {
-    var k = String(kod || '').trim();
-    if (ODM_GLOSS[k]) return ODM_GLOSS[k];
-    return 'Kod odmowy detektora — oceń, czy decyzja była słuszna';
-  }
-
-  /** 1–3 konkretne zastrzeżenia agenta (odmowy + FAIL/WARN). */
-  function zastrzezeniaZ(w) {
-    if (w && Array.isArray(w.zastrzezenia) && w.zastrzezenia.length) {
-      return w.zastrzezenia.slice(0, 3).map(function (z, i) {
-        return {
-          n: i + 1,
-          kod: z.kod || '',
-          badge: z.badge || 'uwaga',
-          tytul: z.tytul || z.kod || 'Zastrzeżenie',
-          opis: z.opis || String(z)
-        };
-      });
+  function zdanieOpisu(w) {
+    if (w && w.opis_printables) return String(w.opis_printables);
+    if (w && w.opis_krotki) {
+      var k = String(w.opis_krotki);
+      var m = k.match(/^[\s\S]{12,240}?[.!?]/);
+      var cut = m ? m[0] : k;
+      return cut.length > 280 ? cut.slice(0, 277) + '…' : cut;
     }
-    var out = [];
-    var seen = {};
-    function dodaj(kod, badge, tytul, opis) {
-      var key = String(kod || tytul || opis).slice(0, 48);
-      if (seen[key] || out.length >= 3) return;
-      seen[key] = 1;
-      out.push({ n: out.length + 1, kod: kod || '', badge: badge, tytul: tytul, opis: opis });
-    }
-    listaOdmow(w).forEach(function (kod) {
-      dodaj(kod, 'odmowa', kod, glossOdmowy(kod) + '.');
-    });
-    var t = techNorm(w);
-    if (t === 'fail') {
-      dodaj('FAIL', 'fail', 'FAIL harnessu', 'Automat uznał plik/model za zły do dalszej pracy bez poprawek.');
-    } else if (t === 'warn') {
-      dodaj('WARN', 'warn', 'WARN harnessu', 'Coś podejrzanego, ale nie twarde FAIL.');
-    }
-    (w && w.kody ? w.kody : []).forEach(function (kod) {
-      if (KOD_GLOSS[kod]) dodaj(kod, t === 'fail' ? 'fail' : 'warn', kod, KOD_GLOSS[kod] + '.');
-    });
-    if (w && Array.isArray(w.problemy)) {
-      w.problemy.slice(0, 2).forEach(function (p) {
-        var s = String(p);
-        if (/gabaryt_aabb/i.test(s)) {
-          var mm = s.match(/max_mm["\s:]*([\d.]+)/);
-          dodaj('gabaryt_aabb', 'fail', 'Gabaryt poza płytą',
-            mm ? 'Najdłuższy wymiar ~' + mm[1] + ' mm — powyżej limitu płyty (~256 mm).'
-              : 'Gabaryt poza limitem płyty P2S.');
-        } else if (/unit_mm/i.test(s)) {
-          dodaj('unit_mm', 'fail', 'Zła jednostka', 'Plik deklaruje metry zamiast mm — skala prawdopodobnie zła.');
-        }
-      });
-    }
-    if (!out.length && w && Array.isArray(w.werdykt_po_ludzku)) {
-      w.werdykt_po_ludzku.slice(0, 3).forEach(function (b) {
-        dodaj('', 'uwaga', 'Uwaga agenta', String(b));
-      });
-    }
-    if (!out.length) {
-      dodaj('', 'ok', 'Brak twardego zastrzeżenia',
-        'Brak automatycznej odmowy ani FAIL/WARN w paczce — oceń rozmowę agenta samodzielnie.');
-    }
-    return out.slice(0, 3);
+    if (w && w.sylwetka) return 'Sylwetka z pomiaru: ' + w.sylwetka + '.';
+    return 'Nazwa i kategoria już mówią, co to jest.';
   }
 
   function urlPodgladu(w) {
@@ -255,17 +186,43 @@
     return String(w.podglad_url || w.thumbnail || '').trim();
   }
 
-  function opisModelu(w) {
-    if (w && w.opis_krotki) return String(w.opis_krotki);
-    var tyt = tytulCzytelny(w);
-    var kat = kategoriaZWpisu(w);
-    var katPl = KAT_PL[kat] || kat;
-    var s = 'Wygląda na: ' + tyt;
-    if (katPl) s += ' — kategoria ' + katPl.toLowerCase();
-    s += '.';
-    if (w && w.sylwetka) s += ' ' + w.sylwetka + '.';
-    else if (w && w.gabaryt) s += ' Gabaryt: ' + w.gabaryt + '.';
-    return s;
+  /** Punkty nauki — nie lista wad modelu. */
+  function punktyNauki(w) {
+    var out = [];
+    function dodaj(kod, badge, tytul, opis) {
+      if (out.length >= 3) return;
+      out.push({ n: out.length + 1, kod: kod || '', badge: badge, tytul: tytul, opis: opis });
+    }
+
+    if (w && w.powod_po_ludzku && !/odrzu|zły model|za zły/i.test(String(w.powod_po_ludzku))) {
+      dodaj('wzorzec', 'ok', 'Wzorzec — ucz się z tego', String(w.powod_po_ludzku));
+    } else {
+      dodaj('wzorzec', 'ok', 'Wzorzec (dobry model)',
+        'To jest: ' + tytulCzytelny(w) + '. ' + zdanieOpisu(w) +
+        ' Ucz się kształtu i kategorii. Plik jest przykładem, nie odrzutem.');
+    }
+
+    if (maBladPomiaru(w)) {
+      dodaj('BLAD_POMIARU', 'falszywa', 'Dziura detektora (nie wada modelu)',
+        'Detektor nie zmierzył otworu/gniazda automatycznie. To **nie** przeczy nazwie ani opisowi — plik i tak jest OK.');
+    }
+
+    if (w && Array.isArray(w.problemy)) {
+      w.problemy.slice(0, 1).forEach(function (p) {
+        var s = String(p);
+        if (/gabaryt_aabb/i.test(s)) {
+          var mm = s.match(/max_mm["\s:]*([\d.]+)/);
+          dodaj('gabaryt_aabb', 'warn', 'Na P2S dziel (nadal wzorzec)',
+            (mm ? 'Najdłuższy wymiar ~' + mm[1] + ' mm' : 'Gabaryt powyżej 256 mm') +
+            ' — na płycie P2S trzeba dzielić. To nadal dobry przykład tego, jak obiekt wygląda.');
+        }
+      });
+    } else if (w && w.n_czesci != null && w.n_czesci > 8) {
+      dodaj('czesci', 'warn', 'Wiele części w paczce',
+        w.n_czesci + ' części — ucz się podziału, nie odrzucaj całego wpisu jako złego modelu.');
+    }
+
+    return out.slice(0, 3);
   }
 
   function aktywnaOcenaProsta(oc) {
@@ -273,14 +230,13 @@
     for (var i = 0; i < OCENA_PROSTA.length; i++) {
       var p = OCENA_PROSTA[i];
       if (oc.odmowa_etykieta === p.odmowa_etykieta && oc.werdykt === p.werdykt) return p.id;
-      // kompatybilność: stara etykieta bez dokładnego werdyktu
       if (oc.odmowa_etykieta === p.odmowa_etykieta && !oc.werdykt) return p.id;
     }
-    if (oc.odmowa_etykieta === 'sluszna') return 'zgoda';
-    if (oc.odmowa_etykieta === 'falszywa') return 'myli';
+    if (oc.odmowa_etykieta === 'falszywa') return 'wzorzec';
+    if (oc.odmowa_etykieta === 'smiec' || oc.odmowa_etykieta === 'sluszna') return 'smiec';
     if (oc.odmowa_etykieta === 'niepewne') return 'niepewn';
-    if (oc.werdykt === 'ok' && !oc.odmowa_etykieta) return 'zgoda';
-    if (oc.werdykt === 'fail' && !oc.odmowa_etykieta) return 'myli';
+    if (oc.werdykt === 'ok') return 'wzorzec';
+    if (oc.werdykt === 'fail') return 'smiec';
     return null;
   }
 
@@ -330,10 +286,10 @@
     var seria = ($('naukaSeria') && $('naukaSeria').value) || DOMYSLNA_SERIA;
     var tylko = $('naukaTylkoNowe') && $('naukaTylkoNowe').checked;
     var lista = stan.pack.wpisy.filter(function (w) {
-      if (seria === 'OCENA') {
-        if (!doOceny(w)) return false;
-      } else if (seria === 'ODMOWY') {
-        if (!listaOdmow(w).length) return false;
+      if (seria === 'WZORCE') {
+        if (!jestWzorzec(w)) return false;
+      } else if (seria === 'OCENA' || seria === 'ODMOWY') {
+        if (!listaOdmow(w).length && techNorm(w) !== 'fail' && techNorm(w) !== 'warn') return false;
       } else if (seria === 'TRE' && w.id.indexOf('TRE-') !== 0) return false;
       else if (seria === 'LIB' && w.id.indexOf('LIB-') !== 0) return false;
       else if (seria === 'P3D' && w.id.indexOf('P3D-') !== 0) return false;
@@ -346,37 +302,26 @@
       }
       return true;
     });
-    var priorytet = function (w) {
-      var id = w.id;
-      var t = techNorm(w);
-      var blad = maBladPomiaru(w);
-      var odm = listaOdmow(w).length > 0;
-      var baza = 0;
-      if (seria === 'OCENA' || seria === 'ODMOWY') {
-        if (t === 'fail') baza = 0;
-        else if (blad) baza = 1000;
-        else if (t === 'warn') baza = 2000;
-        else if (odm) baza = 3000;
-        else baza = 4000;
-      } else {
-        if (id.indexOf('GOLD-') === 0) baza = 0;
-        else if (id === 'O-01') baza = 1;
-        else if (id.indexOf('P3D-') === 0) {
-          var n = parseInt(id.replace(/^P3D-/, ''), 10);
-          baza = 100 + (isFinite(n) ? n : 999);
-        } else if (id.indexOf('TRE-') === 0) {
-          var tr = parseInt(id.replace(/^TRE-/, ''), 10);
-          baza = 10000 + (isFinite(tr) ? tr : 999);
-        } else if (id.indexOf('LIB-') === 0) {
-          var l = parseInt(id.replace(/^LIB-/, ''), 10);
-          baza = 20000 + (isFinite(l) ? l : 999);
-        } else baza = 50000;
-      }
-      return baza;
-    };
     lista.sort(function (a, b) {
-      var pa = priorytet(a);
-      var pb = priorytet(b);
+      function baza(w) {
+        var id = w.id;
+        if (id.indexOf('GOLD-') === 0) return 0;
+        if (id.indexOf('LIB-') === 0) {
+          var l = parseInt(id.replace(/^LIB-/, ''), 10);
+          return 1000 + (isFinite(l) ? l : 999);
+        }
+        if (id.indexOf('TRE-') === 0) {
+          var tr = parseInt(id.replace(/^TRE-/, ''), 10);
+          return 10000 + (isFinite(tr) ? tr : 999);
+        }
+        if (id.indexOf('P3D-') === 0) {
+          var n = parseInt(id.replace(/^P3D-/, ''), 10);
+          return 20000 + (isFinite(n) ? n : 999);
+        }
+        return 50000;
+      }
+      var pa = baza(a);
+      var pb = baza(b);
       if (pa !== pb) return pa - pb;
       return a.id.localeCompare(b.id);
     });
@@ -400,80 +345,77 @@
     if (stan.pack && stan.pack.wpisy) {
       var stat = $('naukaStat');
       if (stat) {
-        var p3d = 0, tre = 0, lib = 0, gold = 0, odm = 0, failWarn = 0, blad = 0;
+        var p3d = 0, tre = 0, lib = 0, gold = 0, wz = 0, blad = 0;
         stan.pack.wpisy.forEach(function (w) {
           if (w.id.indexOf('P3D-') === 0) p3d += 1;
           else if (w.id.indexOf('TRE-') === 0) tre += 1;
           else if (w.id.indexOf('LIB-') === 0) lib += 1;
           else if (w.id.indexOf('GOLD-') === 0) gold += 1;
-          if (listaOdmow(w).length) odm += 1;
+          if (jestWzorzec(w)) wz += 1;
           if (maBladPomiaru(w)) blad += 1;
-          var t = techNorm(w);
-          if (t === 'fail' || t === 'warn') failWarn += 1;
         });
         stat.textContent =
-          'W bazie: ' + p3d + ' P3D · ' + gold + ' GOLD · ' + tre + ' TRE · ' + lib + ' LIB · ' +
-          odm + ' z odmową (' + blad + ' BLAD_POMIARU) · ' + failWarn + ' FAIL/WARN. ' +
-          'Karta: podgląd + co agentowi nie pasuje (1–3 konkrety) → Twoja ocena.';
+          'Wzorce do nauki: ' + wz + ' (LIB ' + lib + ' · TRE ' + tre + ' · GOLD ' + gold +
+          ') · P3D ' + p3d + '. ' + blad +
+          ' razy detektor nie zmierzył otworu — to dziura detektora, nie 552 złe pliki. ' +
+          'Karta: tytuł + opis → ucz się kształtu.';
       }
     }
     pokazBiezacy();
   }
 
-  function blokCoToJest(w) {
+  function blokWzorzec(w) {
     var kat = kategoriaZWpisu(w);
     var katPl = KAT_PL[kat] || kat;
-    var html = '<section class="nauka-card-sec">';
-    html += '<p class="nauka-sec-label">Co to jest</p>';
+    var html = '<section class="nauka-card-sec nauka-wzorzec-sec">';
+    html += '<p class="nauka-sec-label">Wzorzec (dobry model)</p>';
     html += '<h2 class="nauka-tytul">' + escapHtml(tytulCzytelny(w)) + '</h2>';
-    if (katPl) html += '<div class="nauka-harness"><span class="nauka-kat">' + escapHtml(katPl) + '</span></div>';
-    html += '<p class="nauka-opis">' + escapHtml(opisModelu(w)) + '</p>';
+    html += '<div class="nauka-harness">';
+    html += '<span class="nauka-badge nauka-ok">wzorzec</span>';
+    if (katPl) html += '<span class="nauka-kat">' + escapHtml(katPl) + '</span>';
+    html += '</div>';
+    html += '<p class="nauka-lead">To jest: <strong>' + escapHtml(tytulCzytelny(w)) +
+      '</strong>. ' + escapHtml(zdanieOpisu(w)) + '</p>';
+    html += '<p class="nauka-ramka">Ucz się kształtu i kategorii. Tytuł i opis (jak na Printables) już mówią, co to. ' +
+      'Cała baza treningowa jest <strong>dobra</strong> — nie odrzucaj jej.</p>';
     html += '<p class="nauka-id-sek">' + escapHtml(w.id) + ' · ' + escapHtml(nazwaPliku(w)) + '</p>';
-    html += '</section>';
-    return html;
+    return html + '</section>';
   }
 
-  function blokNiePasuje(w) {
-    var issues = zastrzezeniaZ(w);
+  function blokDetektor(w) {
+    var punkty = punktyNauki(w);
     var fmt = formatPliku(w);
     var meta = [];
     if (w.gabaryt) meta.push(escapHtml(w.gabaryt));
-    if (w.n_czesci != null) meta.push(w.n_czesci + ' części');
+    if (w.n_czesci != null) meta.push(w.n_czesci + (w.n_czesci === 1 ? ' część' : ' części'));
     if (fmt) meta.push(escapHtml(fmt));
     var img = urlPodgladu(w);
-    var t = techNorm(w);
-    var badge = '';
-    if (t === 'fail') badge = '<span class="nauka-badge nauka-fail">FAIL</span>';
-    else if (t === 'warn') badge = '<span class="nauka-badge nauka-warn">WARN</span>';
-    else if (listaOdmow(w).length) badge = '<span class="nauka-badge nauka-warn">odmowa</span>';
-    else if (t === 'ok') badge = '<span class="nauka-badge nauka-ok">OK</span>';
 
     var html = '<section class="nauka-card-sec nauka-system">';
-    html += '<p class="nauka-sec-label">Co agentowi nie pasuje</p>';
-    if (badge) html += '<div class="nauka-harness">' + badge + '</div>';
-
+    html += '<p class="nauka-sec-label">Czego się uczyć</p>';
     html += '<div class="nauka-viewer">';
     if (img) {
-      html += '<img class="nauka-viewer-img" src="' + escapHtml(img) + '" alt="" loading="lazy" referrerpolicy="no-referrer">';
+      html += '<img class="nauka-viewer-img" src="' + escapHtml(img) +
+        '" alt="' + escapHtml(tytulCzytelny(w)) + '" loading="lazy" referrerpolicy="no-referrer">';
     } else {
       html += '<div class="nauka-placeholder nauka-viewer-ph">';
       html += '<p class="nauka-sylwetka">' + escapHtml(w.sylwetka || 'Brak podglądu zdjęcia') + '</p>';
       html += '</div>';
     }
-    html += '<ol class="nauka-markery" aria-hidden="true">';
-    issues.forEach(function (z) {
-      html += '<li class="nauka-marker nauka-marker-' + escapHtml(z.badge) + '">' + z.n + '</li>';
-    });
-    html += '</ol></div>';
+    html += '</div>';
     if (meta.length) html += '<p class="nauka-meta-line">' + meta.join(' · ') + '</p>';
 
     html += '<ol class="nauka-zastrzezenia">';
-    issues.forEach(function (z) {
-      html += '<li><span class="nauka-nr">' + z.n + '</span>' +
+    punkty.forEach(function (z) {
+      html += '<li><span class="nauka-nr nauka-nr-' + escapHtml(z.badge) + '">' + z.n + '</span>' +
         '<div class="nauka-z-body"><p class="nauka-z-t">' + escapHtml(z.tytul) + '</p>' +
-        '<p class="nauka-z-d">' + escapHtml(z.opis) + '</p></div></li>';
+        '<p class="nauka-z-d">' + escapMd(z.opis) + '</p></div></li>';
     });
     html += '</ol>';
+    if (maBladPomiaru(w)) {
+      html += '<p class="nauka-ramka">Detektor nie zmierzył walca automatycznie. To <strong>nie</strong> znaczy, ' +
+        'że model jest zły — nazwa już go opisuje.</p>';
+    }
     if (w.printables_url) {
       html += '<p class="nauka-printables"><a href="' + escapHtml(w.printables_url) +
         '" target="_blank" rel="noopener">Model na Printables</a></p>';
@@ -490,16 +432,17 @@
     OCENA_PROSTA.forEach(function (p) {
       var on = akt === p.id;
       html += '<button type="button" class="nauka-btn-big' + (on ? ' on' : '') +
+        (p.priorytet ? ' nauka-btn-priorytet' : '') +
         '" data-ocena-prosta="' + p.id + '">' +
         '<span class="nauka-btn-t">' + escapHtml(p.t) + '</span>' +
         '<span class="nauka-btn-h">' + escapHtml(p.hint) + '</span></button>';
     });
     html += '</div>';
-    html += '<label class="nauka-notatka-lab">Co jest źle / co jest dobrze' +
-      '<textarea id="naukaNotatka" rows="3" placeholder="Krótko własnymi słowami…">' +
+    html += '<label class="nauka-notatka-lab">Notatka do nauki (opcjonalnie)' +
+      '<textarea id="naukaNotatka" rows="3" placeholder="Np. typowy adapter 2040, ucz się gniazda baterii…">' +
       escapHtml(oc.notatka || '') + '</textarea></label>';
 
-    html += '<details class="nauka-adv"><summary>Zaawansowane (postawy 1–6, checki)</summary>';
+    html += '<details class="nauka-adv"><summary>Zaawansowane (postawy 1–6, checki rozmowy)</summary>';
     html += '<div class="nauka-sekcja"><div class="t0-lista">';
     html += '<div class="t0-wiersz"><label><input type="checkbox" id="naukaP0" ' +
       (oc.punkt0_zdanie ? 'checked' : '') +
@@ -515,7 +458,7 @@
         (on ? 'checked' : '') + '><span>' + p.t + '</span></label></div>';
     });
     html += '</div></div>';
-    html += '<div class="nauka-sekcja"><p class="th">Szybkie problemy (dopisują notatkę):</p><div class="t0-lista" id="naukaSzybkie">';
+    html += '<div class="nauka-sekcja"><p class="th">Szybkie problemy rozmowy (dopisują notatkę):</p><div class="t0-lista" id="naukaSzybkie">';
     SZYBKIE.forEach(function (s) {
       html += '<div class="t0-wiersz"><label><input type="checkbox" data-szybki="' + s.id +
         '"><span>' + s.t + '</span></label></div>';
@@ -531,7 +474,7 @@
   }
 
   function zbudujFormularz(w, oc) {
-    return blokCoToJest(w) + blokNiePasuje(w) + blokTwojaOcena(w, oc);
+    return blokWzorzec(w) + blokDetektor(w) + blokTwojaOcena(w, oc);
   }
 
   function zFormularza(w, override) {
@@ -612,8 +555,8 @@
     var karta = $('naukaOcenaKarta');
     if (!karta) return;
     if (!stan.kolejka.length) {
-      karta.innerHTML = '<p class="tout">Brak wpisów w tej serii (albo wszystkie już ocenione). Zmień filtr u góry.</p>';
-      if (postep) postep.textContent = '0 ocenionych / 0 w kolejce';
+      karta.innerHTML = '<p class="tout">Brak wpisów w tej serii (albo wszystkie już oznaczone). Zmień filtr u góry.</p>';
+      if (postep) postep.textContent = '0 oznaczonych / 0 w kolejce';
       return;
     }
     var w = stan.kolejka[stan.i];
@@ -622,7 +565,7 @@
     if (postep) {
       postep.textContent =
         (stan.i + 1) + ' / ' + stan.kolejka.length + ' · ' + tytulCzytelny(w) +
-        ' · ocenionych: ' + ocenionych + ' / ' + stan.kolejka.length;
+        ' · oznaczonych: ' + ocenionych + ' / ' + stan.kolejka.length;
     }
     var oc = czytajOcene(w.id) || domyslnaOcena(w);
     karta.innerHTML = zbudujFormularz(w, oc);
@@ -645,7 +588,7 @@
       var o = zFormularza(w);
       if (!o.odmowa_etykieta && o.werdykt === 'oczekuje') {
         var st = $('naukaStan');
-        if (st) st.textContent = 'Wybierz jedną z trzech ocen (Zgadzam się / System się myli / Nie jestem pewien), potem Zapisz i dalej.';
+        if (st) st.textContent = 'Wybierz: dobry przykład / niepewny / śmieć, potem Zapisz i dalej.';
         return;
       }
       zapiszOcene(w.id, o);
@@ -687,6 +630,7 @@
       if (seria) {
         var savedSeria = localStorage.getItem(LS_SERIA);
         var val = savedSeria || DOMYSLNA_SERIA;
+        if (val === 'OCENA' || val === 'ODMOWY') val = DOMYSLNA_SERIA;
         if (![].some.call(seria.options, function (o) { return o.value === val; })) val = DOMYSLNA_SERIA;
         seria.value = val;
         localStorage.setItem(LS_SERIA, val);
@@ -714,10 +658,10 @@
   global.__p2sNaukaOcena = {
     odswiez: odswiezKolejke,
     czytaj: czytajOcene,
-    doOceny: doOceny,
     listaOdmow: listaOdmow,
     tytulCzytelny: tytulCzytelny,
     nazwaPliku: nazwaPliku,
-    zastrzezeniaZ: zastrzezeniaZ
+    jestWzorzec: jestWzorzec,
+    punktyNauki: punktyNauki
   };
 })(typeof window !== 'undefined' ? window : global);
