@@ -1,0 +1,3860 @@
+{
+  "when": "2026-09-04T12:03:20Z",
+  "zrodlo": "etykiety.jsonl (nazwy + korekta właściciela, ADDENDUM 2026-09-04)",
+  "wybor_when": "2026-09-04T04:47:21.749Z",
+  "prog_archetypu": 8,
+  "wpisy": [
+    {
+      "id": "zabawka",
+      "klasa": "zabawka",
+      "opis": "Klasa obejmuje drukowane przestrzennie przedmioty przeznaczone do zabawy, kolekcjonowania lub odgrywania scenek.",
+      "synonimy": [
+        "figurką",
+        "figurine",
+        "ludzik",
+        "little figure",
+        "figurką kolekcjonerska",
+        "collectible figure",
+        "figurka akcji",
+        "action figure",
+        "miniatura",
+        "miniature",
+        "model",
+        "model do zabawy"
+      ],
+      "geometryczny": false,
+      "n_modeli": 391,
+      "zrodla_etykiet": {
+        "wlasciciel": 4,
+        "regula": 379,
+        "llm": 8
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0355",
+        "0380",
+        "0387",
+        "1094",
+        "1095",
+        "1096",
+        "1097",
+        "1098",
+        "1099",
+        "1100",
+        "1101",
+        "1102",
+        "1103",
+        "1104",
+        "1105",
+        "1106",
+        "1107",
+        "1108",
+        "1109",
+        "1110",
+        "1111",
+        "1112",
+        "1113",
+        "1114",
+        "1115",
+        "1116",
+        "1117",
+        "1118",
+        "1119",
+        "1120",
+        "1121",
+        "1122",
+        "1123",
+        "1124",
+        "1125",
+        "1126",
+        "1127",
+        "1128",
+        "1129",
+        "1130"
+      ],
+      "zakresy": {},
+      "zakresy_n": {},
+      "statystyki": {},
+      "schemat_parametrow": null,
+      "szablon_id": null,
+      "n_wierszy_zakresow": 0,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "sruba",
+      "klasa": "śruba",
+      "opis": "Element z gwintem, służący do skręcania, mocowania lub dociskania części, często współpracujący z nakrętką albo otworem gwintowanym.",
+      "synonimy": [
+        "wkręt",
+        "element gwintowany",
+        "łącznik gwintowany",
+        "trzpień gwintowany",
+        "bolt",
+        "screw",
+        "machine screw",
+        "threaded fastener",
+        "threaded rod",
+        "stud"
+      ],
+      "geometryczny": true,
+      "n_modeli": 256,
+      "zrodla_etykiet": {
+        "wlasciciel": 71,
+        "regula": 185
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0009",
+        "0268",
+        "0512",
+        "0518",
+        "0519",
+        "0544",
+        "0546",
+        "0548",
+        "0549",
+        "0550",
+        "0551",
+        "0552",
+        "0553",
+        "0555",
+        "0556",
+        "0558",
+        "0560",
+        "0564",
+        "0565",
+        "0566",
+        "0567",
+        "0568",
+        "0570",
+        "0572",
+        "0573",
+        "0574",
+        "0575",
+        "0577",
+        "0578",
+        "0580",
+        "0582",
+        "0583",
+        "0638",
+        "0752",
+        "0753",
+        "0754",
+        "0755",
+        "0756",
+        "0757",
+        "0758"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          2.427,
+          236.393
+        ],
+        "bbox_M": [
+          1.758,
+          184.381
+        ],
+        "bbox_S": [
+          0.6,
+          67.74
+        ],
+        "fill": [
+          0.09,
+          0.923
+        ],
+        "genus": [
+          -53.0,
+          54.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 240,
+        "bbox_M": 240,
+        "bbox_S": 240,
+        "fill": 126,
+        "genus": 240
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 22.075,
+          "p10": 3.592,
+          "p90": 100.371,
+          "n": 240
+        },
+        "bbox_M": {
+          "mediana": 10.036,
+          "p10": 3.59,
+          "p90": 65.193,
+          "n": 240
+        },
+        "bbox_S": {
+          "mediana": 8.619,
+          "p10": 0.86,
+          "p90": 17.778,
+          "n": 240
+        },
+        "fill": {
+          "mediana": 0.299,
+          "p10": 0.196,
+          "p90": 0.594,
+          "n": 126
+        },
+        "genus": {
+          "mediana": 0.0,
+          "p10": 0.0,
+          "p90": 1.0,
+          "n": 240
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 2.427,
+            "maximum": 236.393
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 1.758,
+            "maximum": 184.381
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 0.6,
+            "maximum": 67.74
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.09,
+            "maximum": 0.923
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -53.0,
+            "maximum": 54.0
+          }
+        },
+        "required": []
+      },
+      "szablon_id": null,
+      "n_wierszy_zakresow": 240,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "lozysko",
+      "klasa": "łożysko",
+      "opis": "Element mechaniczny służący do podtrzymywania ruchomych osi i redukcji tarcia w mechanizmach drukarki 3D.",
+      "synonimy": [
+        "bearing",
+        "ball bearing",
+        "linear bearing",
+        "tuleja ślizgowa",
+        "łożysko kulkowe",
+        "łożysko liniowe",
+        "608ZZ",
+        "LM8UU",
+        "roller bearing"
+      ],
+      "geometryczny": true,
+      "n_modeli": 176,
+      "zrodla_etykiet": {
+        "regula": 176
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0289",
+        "0291",
+        "0292",
+        "0294",
+        "0295",
+        "0296",
+        "0297",
+        "0298",
+        "0301",
+        "0302_b",
+        "0302_c",
+        "0302_e",
+        "0304",
+        "0306",
+        "0307",
+        "0309",
+        "0311",
+        "0313",
+        "0314",
+        "0316",
+        "0317",
+        "0318",
+        "0320",
+        "0321",
+        "0322",
+        "0323",
+        "0328",
+        "0330",
+        "0331",
+        "0332",
+        "0333",
+        "0334",
+        "0336",
+        "0337",
+        "0338",
+        "0339",
+        "0340",
+        "0341",
+        "0342",
+        "0343"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          10.1,
+          219.178
+        ],
+        "bbox_M": [
+          6.0,
+          197.843
+        ],
+        "bbox_S": [
+          2.2,
+          90.903
+        ],
+        "fill": [
+          0.054,
+          0.874
+        ],
+        "genus": [
+          -15.0,
+          86.5
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 159,
+        "bbox_M": 159,
+        "bbox_S": 159,
+        "fill": 58,
+        "genus": 159
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 47.981,
+          "p10": 21.039,
+          "p90": 130.316,
+          "n": 159
+        },
+        "bbox_M": {
+          "mediana": 26.159,
+          "p10": 12.027,
+          "p90": 82.768,
+          "n": 159
+        },
+        "bbox_S": {
+          "mediana": 17.063,
+          "p10": 7.0,
+          "p90": 38.65,
+          "n": 159
+        },
+        "fill": {
+          "mediana": 0.33,
+          "p10": 0.141,
+          "p90": 0.612,
+          "n": 58
+        },
+        "genus": {
+          "mediana": 1.0,
+          "p10": -1.0,
+          "p90": 6.0,
+          "n": 159
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 10.1,
+            "maximum": 219.178
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 6.0,
+            "maximum": 197.843
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 2.2,
+            "maximum": 90.903
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.054,
+            "maximum": 0.874
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -15.0,
+            "maximum": 86.5
+          }
+        },
+        "required": []
+      },
+      "szablon_id": null,
+      "n_wierszy_zakresow": 159,
+      "synonimy_model": "google/gemini-3.7-flash"
+    },
+    {
+      "id": "organizer",
+      "klasa": "organizer",
+      "opis": "Klasa obejmuje części służące do przechowywania, sortowania i porządkowania drobnych przedmiotów w przegródkach lub pojemnikach.",
+      "synonimy": [
+        "przybornik",
+        "sortownik",
+        "tacka na drobiazgi",
+        "wkładka",
+        "pojemnik z przegródkami",
+        "szufladka",
+        "storage tray",
+        "parts bin",
+        "compartment tray",
+        "drawer insert",
+        "divider tray"
+      ],
+      "geometryczny": true,
+      "n_modeli": 104,
+      "zrodla_etykiet": {
+        "regula": 104
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0080",
+        "0081",
+        "0083",
+        "0084",
+        "0085",
+        "0086",
+        "0087",
+        "0088",
+        "0089",
+        "0090",
+        "0091",
+        "0092_a",
+        "0092_b",
+        "0092_c",
+        "0092_d",
+        "0092_e",
+        "0092_f",
+        "0092_g",
+        "0092_h",
+        "0092_i",
+        "0092_j",
+        "0092_k",
+        "0092_l",
+        "0092_m",
+        "0092_n",
+        "0092_o",
+        "0092_p",
+        "0092_q",
+        "0092_r",
+        "0092_s",
+        "0092_t",
+        "0092_u",
+        "0092_v",
+        "0093_a",
+        "0093_b",
+        "0093_c",
+        "0093_d",
+        "0093_e",
+        "0093_f",
+        "0093_g"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          6.9,
+          246.64
+        ],
+        "bbox_M": [
+          4.7,
+          193.908
+        ],
+        "bbox_S": [
+          1.8,
+          185.891
+        ],
+        "fill": [
+          0.116,
+          1.0
+        ],
+        "genus": [
+          -6.0,
+          60.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 81,
+        "bbox_M": 81,
+        "bbox_S": 81,
+        "fill": 19,
+        "genus": 81
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 64.508,
+          "p10": 6.9,
+          "p90": 203.005,
+          "n": 81
+        },
+        "bbox_M": {
+          "mediana": 7.8,
+          "p10": 6.899,
+          "p90": 180.642,
+          "n": 81
+        },
+        "bbox_S": {
+          "mediana": 6.8,
+          "p10": 1.8,
+          "p90": 23.103,
+          "n": 81
+        },
+        "fill": {
+          "mediana": 0.391,
+          "p10": 0.123,
+          "p90": 1.0,
+          "n": 19
+        },
+        "genus": {
+          "mediana": 0.0,
+          "p10": 0.0,
+          "p90": 4.0,
+          "n": 81
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 6.9,
+            "maximum": 246.64
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 4.7,
+            "maximum": 193.908
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 1.8,
+            "maximum": 185.891
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.116,
+            "maximum": 1.0
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -6.0,
+            "maximum": 60.0
+          }
+        },
+        "required": []
+      },
+      "szablon_id": null,
+      "n_wierszy_zakresow": 81,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "rura",
+      "klasa": "rura",
+      "opis": "Klasa obejmuje części o wydłużonym, zwykle cylindrycznym kształcie, z jednym lub większą liczbą przelotowych kanałów.",
+      "synonimy": [
+        "przewód",
+        "tuba",
+        "tuleja rurowa",
+        "przewód rurowy",
+        "kanał rurowy",
+        "element cylindryczny",
+        "pipe",
+        "tube",
+        "tubing",
+        "conduit",
+        "cylindrical tube",
+        "hollow cylinder"
+      ],
+      "geometryczny": true,
+      "n_modeli": 102,
+      "zrodla_etykiet": {
+        "wlasciciel": 12,
+        "regula": 90
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0019",
+        "0230",
+        "0232",
+        "0273",
+        "0299",
+        "0310",
+        "0405",
+        "0656",
+        "0657",
+        "0658",
+        "0659",
+        "0660",
+        "0661",
+        "0662",
+        "0663",
+        "0664",
+        "0665",
+        "0666",
+        "0667",
+        "0668",
+        "0669",
+        "0670",
+        "0671",
+        "0672",
+        "0673",
+        "0674",
+        "0675",
+        "0676",
+        "0677",
+        "0678",
+        "0679",
+        "0680",
+        "0681",
+        "0682",
+        "0683",
+        "0684",
+        "0685",
+        "0686",
+        "0687",
+        "0688"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          0.052,
+          214.535
+        ],
+        "bbox_M": [
+          0.038,
+          156.809
+        ],
+        "bbox_S": [
+          0.025,
+          138.991
+        ],
+        "fill": [
+          0.055,
+          1.262
+        ],
+        "genus": [
+          -1.0,
+          332.5
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 93,
+        "bbox_M": 93,
+        "bbox_S": 93,
+        "fill": 48,
+        "genus": 93
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 61.169,
+          "p10": 3.007,
+          "p90": 127.848,
+          "n": 93
+        },
+        "bbox_M": {
+          "mediana": 49.595,
+          "p10": 2.151,
+          "p90": 90.0,
+          "n": 93
+        },
+        "bbox_S": {
+          "mediana": 28.719,
+          "p10": 0.764,
+          "p90": 66.936,
+          "n": 93
+        },
+        "fill": {
+          "mediana": 0.217,
+          "p10": 0.093,
+          "p90": 0.401,
+          "n": 48
+        },
+        "genus": {
+          "mediana": 1.0,
+          "p10": 0.0,
+          "p90": 8.0,
+          "n": 93
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 0.052,
+            "maximum": 214.535
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 0.038,
+            "maximum": 156.809
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 0.025,
+            "maximum": 138.991
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.055,
+            "maximum": 1.262
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -1.0,
+            "maximum": 332.5
+          },
+          "fi": {
+            "type": "number"
+          },
+          "dl": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "fi",
+          "dl"
+        ]
+      },
+      "szablon_id": "ruraProsta",
+      "n_wierszy_zakresow": 93,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "uchwyt",
+      "klasa": "uchwyt",
+      "opis": "Element przeznaczony do trzymania, przenoszenia, mocowania lub manipulowania inną częścią albo urządzeniem.",
+      "synonimy": [
+        "rączka",
+        "rękojeść",
+        "chwyt",
+        "gałka",
+        "podparcie",
+        "handle",
+        "grip",
+        "mount",
+        "bracket",
+        "knob"
+      ],
+      "geometryczny": true,
+      "n_modeli": 91,
+      "zrodla_etykiet": {
+        "wlasciciel": 26,
+        "regula": 63,
+        "llm": 2
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0060",
+        "0070",
+        "0174",
+        "0175",
+        "0176",
+        "0177",
+        "0178",
+        "0179",
+        "0180",
+        "0181",
+        "0182",
+        "0183",
+        "0184",
+        "0185",
+        "0186",
+        "0187",
+        "0188",
+        "0189",
+        "0190",
+        "0191",
+        "0192",
+        "0193",
+        "0194",
+        "0195",
+        "0196",
+        "0197",
+        "0198",
+        "0199",
+        "0200",
+        "0201",
+        "0202",
+        "0203",
+        "0204",
+        "0205",
+        "0206",
+        "0234",
+        "0235",
+        "0302_a",
+        "0302_d",
+        "0303"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          3.8,
+          252.329
+        ],
+        "bbox_M": [
+          1.219,
+          121.636
+        ],
+        "bbox_S": [
+          0.61,
+          101.907
+        ],
+        "fill": [
+          0.076,
+          0.899
+        ],
+        "genus": [
+          -2.0,
+          67.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 80,
+        "bbox_M": 80,
+        "bbox_S": 80,
+        "fill": 50,
+        "genus": 80
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 74.53,
+          "p10": 15.609,
+          "p90": 159.093,
+          "n": 80
+        },
+        "bbox_M": {
+          "mediana": 40.619,
+          "p10": 12.408,
+          "p90": 81.036,
+          "n": 80
+        },
+        "bbox_S": {
+          "mediana": 18.505,
+          "p10": 7.655,
+          "p90": 48.922,
+          "n": 80
+        },
+        "fill": {
+          "mediana": 0.28,
+          "p10": 0.117,
+          "p90": 0.607,
+          "n": 50
+        },
+        "genus": {
+          "mediana": 1.0,
+          "p10": 0.0,
+          "p90": 5.0,
+          "n": 80
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 3.8,
+            "maximum": 252.329
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 1.219,
+            "maximum": 121.636
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 0.61,
+            "maximum": 101.907
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.076,
+            "maximum": 0.899
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -2.0,
+            "maximum": 67.0
+          },
+          "fi": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "fi",
+          "h"
+        ]
+      },
+      "szablon_id": "uchwytZLaczem",
+      "n_wierszy_zakresow": 80,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "pudelko",
+      "klasa": "pudełko",
+      "opis": "Klasa obejmuje drukowane części tworzące zamknięty lub częściowo zamknięty pojemnik do przechowywania, ochrony albo organizowania innych elementów.",
+      "synonimy": [
+        "pojemnik",
+        "skrzynka",
+        "obudowa",
+        "korpus",
+        "zasobnik",
+        "container",
+        "case",
+        "enclosure",
+        "housing",
+        "bin"
+      ],
+      "geometryczny": true,
+      "n_modeli": 80,
+      "zrodla_etykiet": {
+        "wlasciciel": 42,
+        "regula": 37,
+        "llm": 1
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0055",
+        "0082",
+        "0098",
+        "0101_c",
+        "0102_a",
+        "0110_i",
+        "0112_a",
+        "0124",
+        "0125",
+        "0126",
+        "0127",
+        "0128",
+        "0129",
+        "0130",
+        "0131",
+        "0132",
+        "0133",
+        "0134",
+        "0135",
+        "0136",
+        "0137",
+        "0138",
+        "0139",
+        "0140",
+        "0141",
+        "0142",
+        "0143",
+        "0144",
+        "0145",
+        "0146",
+        "0147",
+        "0148",
+        "0149",
+        "0150",
+        "0151",
+        "0152",
+        "0153",
+        "0154",
+        "0155",
+        "0156"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          19.8,
+          314.0
+        ],
+        "bbox_M": [
+          5.099,
+          272.817
+        ],
+        "bbox_S": [
+          0.85,
+          112.428
+        ],
+        "fill": [
+          0.065,
+          0.996
+        ],
+        "genus": [
+          -1.0,
+          129.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 80,
+        "bbox_M": 80,
+        "bbox_S": 80,
+        "fill": 57,
+        "genus": 80
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 188.0,
+          "p10": 67.5,
+          "p90": 272.0,
+          "n": 80
+        },
+        "bbox_M": {
+          "mediana": 116.966,
+          "p10": 24.5,
+          "p90": 230.354,
+          "n": 80
+        },
+        "bbox_S": {
+          "mediana": 48.172,
+          "p10": 1.329,
+          "p90": 90.93,
+          "n": 80
+        },
+        "fill": {
+          "mediana": 0.129,
+          "p10": 0.099,
+          "p90": 0.594,
+          "n": 57
+        },
+        "genus": {
+          "mediana": 8.0,
+          "p10": 0.0,
+          "p90": 16.0,
+          "n": 80
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 19.8,
+            "maximum": 314.0
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 5.099,
+            "maximum": 272.817
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 0.85,
+            "maximum": 112.428
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.065,
+            "maximum": 0.996
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -1.0,
+            "maximum": 129.0
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "z": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "z"
+        ]
+      },
+      "szablon_id": "pudelko",
+      "n_wierszy_zakresow": 80,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "nakretka",
+      "klasa": "nakrętka",
+      "opis": "Element z wewnętrznym gwintem, nakręcany na śrubę lub pręt gwintowany w celu łączenia i dociskania części.",
+      "synonimy": [
+        "nut",
+        "hex nut",
+        "threaded nut",
+        "fastener nut",
+        "locknut",
+        "jam nut",
+        "nakrętka sześciokątna",
+        "nakrętka gwintowana",
+        "nakrętka mocująca",
+        "nakrętka kontrująca"
+      ],
+      "geometryczny": true,
+      "n_modeli": 74,
+      "zrodla_etykiet": {
+        "wlasciciel": 31,
+        "regula": 43
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0109_b",
+        "0112_e",
+        "0223",
+        "0224",
+        "0335",
+        "0345",
+        "0438",
+        "0472",
+        "0487",
+        "0493_g",
+        "0511",
+        "0513",
+        "0514",
+        "0515",
+        "0516",
+        "0517",
+        "0520",
+        "0521",
+        "0522",
+        "0523",
+        "0524",
+        "0525",
+        "0527",
+        "0528",
+        "0529",
+        "0530",
+        "0531",
+        "0532",
+        "0533",
+        "0534",
+        "0535",
+        "0536",
+        "0537",
+        "0538",
+        "0539",
+        "0540",
+        "0541",
+        "0542",
+        "0543",
+        "0545"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          4.564,
+          160.001
+        ],
+        "bbox_M": [
+          4.19,
+          80.995
+        ],
+        "bbox_S": [
+          0.831,
+          29.541
+        ],
+        "fill": [
+          0.106,
+          0.589
+        ],
+        "genus": [
+          -8.0,
+          4.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 71,
+        "bbox_M": 71,
+        "bbox_S": 71,
+        "fill": 39,
+        "genus": 71
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 18.299,
+          "p10": 6.32,
+          "p90": 76.689,
+          "n": 71
+        },
+        "bbox_M": {
+          "mediana": 12.093,
+          "p10": 5.5,
+          "p90": 36.006,
+          "n": 71
+        },
+        "bbox_S": {
+          "mediana": 6.43,
+          "p10": 3.0,
+          "p90": 19.656,
+          "n": 71
+        },
+        "fill": {
+          "mediana": 0.399,
+          "p10": 0.182,
+          "p90": 0.533,
+          "n": 39
+        },
+        "genus": {
+          "mediana": 1.0,
+          "p10": 0.0,
+          "p90": 2.0,
+          "n": 71
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 4.564,
+            "maximum": 160.001
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 4.19,
+            "maximum": 80.995
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 0.831,
+            "maximum": 29.541
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.106,
+            "maximum": 0.589
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -8.0,
+            "maximum": 4.0
+          }
+        },
+        "required": []
+      },
+      "szablon_id": null,
+      "n_wierszy_zakresow": 71,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "adapter",
+      "klasa": "adapter",
+      "opis": "Część pośrednia służąca do połączenia elementów o różnych wymiarach, kształtach, standardach lub sposobach mocowania.",
+      "synonimy": [
+        "przejściówka",
+        "złączka",
+        "łącznik",
+        "konwerter",
+        "przejściówka montażowa",
+        "converter",
+        "coupler",
+        "connector",
+        "interface piece",
+        "mounting interface"
+      ],
+      "geometryczny": true,
+      "n_modeli": 57,
+      "zrodla_etykiet": {
+        "regula": 49,
+        "llm": 8
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0001",
+        "0002",
+        "0003",
+        "0004",
+        "0006",
+        "0007",
+        "0011",
+        "0013",
+        "0014",
+        "0015",
+        "0016",
+        "0017",
+        "0018",
+        "0020",
+        "0022",
+        "0025",
+        "0026",
+        "0028",
+        "0029",
+        "0030",
+        "0031",
+        "0032",
+        "0033",
+        "0037",
+        "0038",
+        "0039",
+        "0040",
+        "0043",
+        "0046",
+        "0050",
+        "0051",
+        "0056",
+        "0062",
+        "0063",
+        "0064",
+        "0074",
+        "0079",
+        "0228",
+        "0229",
+        "0231"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          1.614,
+          330.923
+        ],
+        "bbox_M": [
+          1.579,
+          162.553
+        ],
+        "bbox_S": [
+          1.273,
+          113.118
+        ],
+        "fill": [
+          0.132,
+          0.719
+        ],
+        "genus": [
+          -1.0,
+          16.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 43,
+        "bbox_M": 43,
+        "bbox_S": 43,
+        "fill": 9,
+        "genus": 43
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 69.963,
+          "p10": 25.0,
+          "p90": 143.051,
+          "n": 43
+        },
+        "bbox_M": {
+          "mediana": 43.522,
+          "p10": 15.204,
+          "p90": 102.064,
+          "n": 43
+        },
+        "bbox_S": {
+          "mediana": 27.781,
+          "p10": 6.002,
+          "p90": 67.17,
+          "n": 43
+        },
+        "fill": {
+          "mediana": 0.254,
+          "p10": 0.132,
+          "p90": 0.31,
+          "n": 9
+        },
+        "genus": {
+          "mediana": 2.0,
+          "p10": 1.0,
+          "p90": 9.0,
+          "n": 43
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 1.614,
+            "maximum": 330.923
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 1.579,
+            "maximum": 162.553
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 1.273,
+            "maximum": 113.118
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.132,
+            "maximum": 0.719
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -1.0,
+            "maximum": 16.0
+          },
+          "w": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
+          },
+          "otwory": {
+            "type": "array"
+          }
+        },
+        "required": [
+          "w",
+          "h"
+        ]
+      },
+      "szablon_id": "adapterPlyta",
+      "n_wierszy_zakresow": 43,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "podkladka",
+      "klasa": "podkładka",
+      "opis": "Cienki element z otworem, który rozkłada nacisk, ustala odstęp lub zabezpiecza połączenie śrubowe.",
+      "synonimy": [
+        "krążek dystansowy",
+        "pierścień dystansowy",
+        "pierścień oporowy",
+        "krążek oporowy",
+        "przekładka",
+        "element dystansujący",
+        "shim",
+        "spacer ring",
+        "thrust ring",
+        "backing ring",
+        "flat ring",
+        "spacing disc"
+      ],
+      "geometryczny": true,
+      "n_modeli": 34,
+      "zrodla_etykiet": {
+        "regula": 34
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0591",
+        "0592",
+        "0593",
+        "0598",
+        "0603",
+        "0604",
+        "0605",
+        "0606",
+        "0607",
+        "0608",
+        "0609",
+        "0610",
+        "0611",
+        "0612",
+        "0613",
+        "0614",
+        "0615",
+        "0617",
+        "0623",
+        "0624",
+        "0625",
+        "0626",
+        "0627",
+        "0628",
+        "0629",
+        "0630",
+        "0631",
+        "0632",
+        "0634",
+        "0635",
+        "0636",
+        "0637",
+        "0639",
+        "0640"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          0.154,
+          185.567
+        ],
+        "bbox_M": [
+          0.101,
+          134.338
+        ],
+        "bbox_S": [
+          0.083,
+          104.643
+        ],
+        "fill": [
+          0.057,
+          0.493
+        ],
+        "genus": [
+          0.0,
+          29.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 33,
+        "bbox_M": 33,
+        "bbox_S": 33,
+        "fill": 2,
+        "genus": 33
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 126.267,
+          "p10": 30.007,
+          "p90": 136.424,
+          "n": 33
+        },
+        "bbox_M": {
+          "mediana": 91.565,
+          "p10": 17.996,
+          "p90": 117.805,
+          "n": 33
+        },
+        "bbox_S": {
+          "mediana": 46.867,
+          "p10": 14.682,
+          "p90": 92.852,
+          "n": 33
+        },
+        "fill": {
+          "mediana": 0.275,
+          "p10": 0.057,
+          "p90": 0.493,
+          "n": 2
+        },
+        "genus": {
+          "mediana": 16.0,
+          "p10": 0.0,
+          "p90": 24.0,
+          "n": 33
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 0.154,
+            "maximum": 185.567
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 0.101,
+            "maximum": 134.338
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 0.083,
+            "maximum": 104.643
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.057,
+            "maximum": 0.493
+          },
+          "genus": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 29.0
+          },
+          "fi": {
+            "type": "number"
+          },
+          "fiZ": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "fi",
+          "fiZ"
+        ]
+      },
+      "szablon_id": "podkladka",
+      "n_wierszy_zakresow": 33,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "kolo-zebate",
+      "klasa": "koło zębate",
+      "opis": "To część z wystającymi zębami, która przenosi napęd i ruch obrotowy przez zazębienie z innym elementem.",
+      "synonimy": [
+        "zębatka",
+        "tryb",
+        "zębnik",
+        "zębate koło",
+        "element zębaty",
+        "gear",
+        "cogwheel",
+        "toothed wheel",
+        "spur gear",
+        "pinion",
+        "gear wheel"
+      ],
+      "geometryczny": true,
+      "n_modeli": 22,
+      "zrodla_etykiet": {
+        "regula": 22
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0243",
+        "0244",
+        "0245",
+        "0246",
+        "0247",
+        "0248",
+        "0249",
+        "0250",
+        "0251",
+        "0252",
+        "0254",
+        "0255",
+        "0258",
+        "0262",
+        "0263",
+        "0265",
+        "0266",
+        "0267",
+        "0641",
+        "0642",
+        "0979",
+        "0980"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          7.998,
+          134.322
+        ],
+        "bbox_M": [
+          5.9,
+          130.216
+        ],
+        "bbox_S": [
+          4.016,
+          74.398
+        ],
+        "fill": [
+          0.619,
+          0.619
+        ],
+        "genus": [
+          -4.0,
+          6.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 10,
+        "bbox_M": 10,
+        "bbox_S": 10,
+        "fill": 1,
+        "genus": 10
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 80.346,
+          "p10": 7.998,
+          "p90": 123.273,
+          "n": 10
+        },
+        "bbox_M": {
+          "mediana": 80.191,
+          "p10": 5.9,
+          "p90": 100.52,
+          "n": 10
+        },
+        "bbox_S": {
+          "mediana": 9.072,
+          "p10": 4.016,
+          "p90": 38.009,
+          "n": 10
+        },
+        "fill": {
+          "mediana": 0.619,
+          "p10": 0.619,
+          "p90": 0.619,
+          "n": 1
+        },
+        "genus": {
+          "mediana": 1.0,
+          "p10": -4.0,
+          "p90": 3.0,
+          "n": 10
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 7.998,
+            "maximum": 134.322
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 5.9,
+            "maximum": 130.216
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 4.016,
+            "maximum": 74.398
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.619,
+            "maximum": 0.619
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -4.0,
+            "maximum": 6.0
+          }
+        },
+        "required": []
+      },
+      "szablon_id": null,
+      "n_wierszy_zakresow": 10,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "kolanko",
+      "klasa": "kolanko",
+      "opis": "Element łączący dwa odcinki pod kątem, najczęściej stosowany w przewodach, rurach i kanałach.",
+      "synonimy": [
+        "złączka kątowa",
+        "łącznik kątowy",
+        "kształtka łukowa",
+        "łuk łączący",
+        "gięty łącznik",
+        "adapter kątowy",
+        "elbow fitting",
+        "pipe elbow",
+        "angle connector",
+        "bent joint",
+        "elbow adapter",
+        "angled coupling"
+      ],
+      "geometryczny": true,
+      "n_modeli": 20,
+      "zrodla_etykiet": {
+        "llm": 7,
+        "regula": 12,
+        "wlasciciel": 1
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0061",
+        "0066",
+        "0071",
+        "0072",
+        "0075",
+        "0078",
+        "0233",
+        "0269",
+        "0270",
+        "0272",
+        "0274",
+        "0275",
+        "0277",
+        "0278",
+        "0279",
+        "0280",
+        "0281",
+        "0282",
+        "0283",
+        "0285"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          24.455,
+          129.865
+        ],
+        "bbox_M": [
+          23.703,
+          102.525
+        ],
+        "bbox_S": [
+          12.574,
+          73.485
+        ],
+        "fill": [
+          0.087,
+          0.39
+        ],
+        "genus": [
+          0.0,
+          7.5
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 20,
+        "bbox_M": 20,
+        "bbox_S": 20,
+        "fill": 8,
+        "genus": 20
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 79.475,
+          "p10": 39.137,
+          "p90": 104.39,
+          "n": 20
+        },
+        "bbox_M": {
+          "mediana": 55.205,
+          "p10": 33.323,
+          "p90": 81.12,
+          "n": 20
+        },
+        "bbox_S": {
+          "mediana": 31.948,
+          "p10": 19.961,
+          "p90": 67.245,
+          "n": 20
+        },
+        "fill": {
+          "mediana": 0.215,
+          "p10": 0.087,
+          "p90": 0.344,
+          "n": 8
+        },
+        "genus": {
+          "mediana": 1.0,
+          "p10": 0.0,
+          "p90": 2.0,
+          "n": 20
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 24.455,
+            "maximum": 129.865
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 23.703,
+            "maximum": 102.525
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 12.574,
+            "maximum": 73.485
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.087,
+            "maximum": 0.39
+          },
+          "genus": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 7.5
+          },
+          "fi": {
+            "type": "number"
+          },
+          "kat": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
+          },
+          "dl": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "fi"
+        ]
+      },
+      "szablon_id": "kolankoTorus",
+      "n_wierszy_zakresow": 20,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "redukcja",
+      "klasa": "redukcja",
+      "opis": "Część łącząca elementy o różnych średnicach lub przekrojach, zwykle umożliwiająca przejście z większego rozmiaru na mniejszy.",
+      "synonimy": [
+        "zwężka",
+        "łącznik redukcyjny",
+        "przejściówka średnic",
+        "adapter średnic",
+        "tuleja redukcyjna",
+        "reduktor",
+        "reducing adapter",
+        "reducer fitting",
+        "diameter adapter",
+        "step-down adapter",
+        "reducing sleeve"
+      ],
+      "geometryczny": true,
+      "n_modeli": 17,
+      "zrodla_etykiet": {
+        "wlasciciel": 1,
+        "regula": 16
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0312",
+        "0375",
+        "0643",
+        "0644",
+        "0645",
+        "0646",
+        "0647",
+        "0648",
+        "0649",
+        "0650",
+        "0651",
+        "0652",
+        "0653",
+        "0654",
+        "0655",
+        "0983",
+        "0984"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          25.507,
+          164.906
+        ],
+        "bbox_M": [
+          20.295,
+          158.752
+        ],
+        "bbox_S": [
+          4.2,
+          124.442
+        ],
+        "fill": [
+          0.06,
+          0.585
+        ],
+        "genus": [
+          -5.0,
+          23.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 17,
+        "bbox_M": 17,
+        "bbox_S": 17,
+        "fill": 7,
+        "genus": 17
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 90.0,
+          "p10": 34.0,
+          "p90": 139.7,
+          "n": 17
+        },
+        "bbox_M": {
+          "mediana": 46.3,
+          "p10": 20.539,
+          "p90": 117.005,
+          "n": 17
+        },
+        "bbox_S": {
+          "mediana": 35.06,
+          "p10": 4.204,
+          "p90": 59.98,
+          "n": 17
+        },
+        "fill": {
+          "mediana": 0.235,
+          "p10": 0.06,
+          "p90": 0.458,
+          "n": 7
+        },
+        "genus": {
+          "mediana": 1.0,
+          "p10": 1.0,
+          "p90": 7.0,
+          "n": 17
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 25.507,
+            "maximum": 164.906
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 20.295,
+            "maximum": 158.752
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 4.2,
+            "maximum": 124.442
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.06,
+            "maximum": 0.585
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -5.0,
+            "maximum": 23.0
+          },
+          "fi1": {
+            "type": "number"
+          },
+          "fi2": {
+            "type": "number"
+          },
+          "dl": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "fi1",
+          "fi2"
+        ]
+      },
+      "szablon_id": "zlaczka",
+      "n_wierszy_zakresow": 17,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "forma",
+      "klasa": "forma",
+      "opis": "Klasa obejmuje części służące do nadawania innym materiałom określonego kształtu, zwykle jako matryce, negatywy lub narzędzia formujące.",
+      "synonimy": [
+        "matryca",
+        "foremka",
+        "narzędzie formujące",
+        "forma odlewnicza",
+        "negatyw",
+        "mold",
+        "mould",
+        "die",
+        "forming tool",
+        "casting mold"
+      ],
+      "geometryczny": true,
+      "n_modeli": 16,
+      "zrodla_etykiet": {
+        "regula": 16
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "1015",
+        "1016",
+        "1018",
+        "1019",
+        "1020",
+        "1021",
+        "1022",
+        "1024",
+        "1025",
+        "1026",
+        "1027",
+        "1028",
+        "1029",
+        "1031",
+        "1032",
+        "1033"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          0.019,
+          186.541
+        ],
+        "bbox_M": [
+          0.013,
+          180.0
+        ],
+        "bbox_S": [
+          0.007,
+          130.01
+        ],
+        "fill": [
+          0.065,
+          0.113
+        ],
+        "genus": [
+          -3.0,
+          5.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 10,
+        "bbox_M": 10,
+        "bbox_S": 10,
+        "fill": 2,
+        "genus": 10
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 123.262,
+          "p10": 0.019,
+          "p90": 186.025,
+          "n": 10
+        },
+        "bbox_M": {
+          "mediana": 82.305,
+          "p10": 0.013,
+          "p90": 180.0,
+          "n": 10
+        },
+        "bbox_S": {
+          "mediana": 32.91,
+          "p10": 0.007,
+          "p90": 120.04,
+          "n": 10
+        },
+        "fill": {
+          "mediana": 0.089,
+          "p10": 0.065,
+          "p90": 0.113,
+          "n": 2
+        },
+        "genus": {
+          "mediana": 0.0,
+          "p10": -3.0,
+          "p90": 1.0,
+          "n": 10
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 0.019,
+            "maximum": 186.541
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 0.013,
+            "maximum": 180.0
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 0.007,
+            "maximum": 130.01
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.065,
+            "maximum": 0.113
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -3.0,
+            "maximum": 5.0
+          }
+        },
+        "required": []
+      },
+      "szablon_id": null,
+      "n_wierszy_zakresow": 10,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "klucz",
+      "klasa": "klucz",
+      "opis": "Część lub narzędzie służące do chwytania, dokręcania i odkręcania śrub oraz nakrętek.",
+      "synonimy": [
+        "narzędzie do nakrętek",
+        "wrench",
+        "spanner",
+        "klucz płaski",
+        "open-end wrench",
+        "klucz oczkowy",
+        "box-end wrench",
+        "klucz nasadowy",
+        "socket wrench",
+        "imbus",
+        "Allen key",
+        "hex key"
+      ],
+      "geometryczny": true,
+      "n_modeli": 15,
+      "zrodla_etykiet": {
+        "regula": 15
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "1055",
+        "1057",
+        "1058",
+        "1059",
+        "1060",
+        "1061",
+        "1063",
+        "1064",
+        "1066",
+        "1067",
+        "1068",
+        "1069",
+        "1070",
+        "1071",
+        "1072"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          21.006,
+          247.263
+        ],
+        "bbox_M": [
+          3.988,
+          239.092
+        ],
+        "bbox_S": [
+          1.051,
+          76.025
+        ],
+        "fill": [
+          0.052,
+          0.169
+        ],
+        "genus": [
+          0.0,
+          16.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 13,
+        "bbox_M": 13,
+        "bbox_S": 13,
+        "fill": 4,
+        "genus": 13
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 201.226,
+          "p10": 54.253,
+          "p90": 238.077,
+          "n": 13
+        },
+        "bbox_M": {
+          "mediana": 106.891,
+          "p10": 15.083,
+          "p90": 221.507,
+          "n": 13
+        },
+        "bbox_S": {
+          "mediana": 58.222,
+          "p10": 3.0,
+          "p90": 75.034,
+          "n": 13
+        },
+        "fill": {
+          "mediana": 0.099,
+          "p10": 0.052,
+          "p90": 0.169,
+          "n": 4
+        },
+        "genus": {
+          "mediana": 1.0,
+          "p10": 0.0,
+          "p90": 14.0,
+          "n": 13
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 21.006,
+            "maximum": 247.263
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 3.988,
+            "maximum": 239.092
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 1.051,
+            "maximum": 76.025
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.052,
+            "maximum": 0.169
+          },
+          "genus": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 16.0
+          }
+        },
+        "required": []
+      },
+      "szablon_id": null,
+      "n_wierszy_zakresow": 13,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "klips",
+      "klasa": "klips",
+      "opis": "Część służąca do szybkiego, zwykle sprężystego łączenia, przytrzymywania lub mocowania innych elementów.",
+      "synonimy": [
+        "spinka",
+        "zatrzask",
+        "uchwyt zatrzaskowy",
+        "mocowanie sprężyste",
+        "element dociskowy",
+        "clamp",
+        "fastener",
+        "snap-fit",
+        "retainer",
+        "clasp",
+        "spring clamp"
+      ],
+      "geometryczny": true,
+      "n_modeli": 13,
+      "zrodla_etykiet": {
+        "wlasciciel": 1,
+        "regula": 12
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0065",
+        "0992",
+        "0993",
+        "0994",
+        "0995",
+        "0996",
+        "0997",
+        "0998",
+        "0999",
+        "1000",
+        "1001",
+        "1002",
+        "1003"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          81.004,
+          190.991
+        ],
+        "bbox_M": [
+          18.896,
+          44.203
+        ],
+        "bbox_S": [
+          10.372,
+          20.0
+        ],
+        "fill": [
+          0.389,
+          0.457
+        ],
+        "genus": [
+          0.0,
+          2.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 13,
+        "bbox_M": 13,
+        "bbox_S": 13,
+        "fill": 2,
+        "genus": 13
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 130.993,
+          "p10": 81.005,
+          "p90": 190.974,
+          "n": 13
+        },
+        "bbox_M": {
+          "mediana": 27.77,
+          "p10": 19.273,
+          "p90": 31.199,
+          "n": 13
+        },
+        "bbox_S": {
+          "mediana": 10.99,
+          "p10": 10.519,
+          "p90": 12.992,
+          "n": 13
+        },
+        "fill": {
+          "mediana": 0.423,
+          "p10": 0.389,
+          "p90": 0.457,
+          "n": 2
+        },
+        "genus": {
+          "mediana": 2.0,
+          "p10": 2.0,
+          "p90": 2.0,
+          "n": 13
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 81.004,
+            "maximum": 190.991
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 18.896,
+            "maximum": 44.203
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 10.372,
+            "maximum": 20.0
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.389,
+            "maximum": 0.457
+          },
+          "genus": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 2.0
+          }
+        },
+        "required": []
+      },
+      "szablon_id": null,
+      "n_wierszy_zakresow": 13,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "tuleja",
+      "klasa": "tuleja",
+      "opis": "Cylindryczna część wsuwana w otwór, służąca do prowadzenia wału, zmniejszania tarcia, ochrony materiału lub ustalania odstępu.",
+      "synonimy": [
+        "tulejka",
+        "wkładka rurowa",
+        "pierścień ślizgowy",
+        "dystans rurowy",
+        "sleeve",
+        "bearing insert",
+        "spacer sleeve"
+      ],
+      "geometryczny": true,
+      "n_modeli": 11,
+      "zrodla_etykiet": {
+        "regula": 11
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0968",
+        "0969",
+        "0970",
+        "0971",
+        "0972",
+        "0973",
+        "0974",
+        "0975",
+        "0976",
+        "0977",
+        "0978"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          0.047,
+          65.163
+        ],
+        "bbox_M": [
+          0.025,
+          28.937
+        ],
+        "bbox_S": [
+          0.008,
+          23.592
+        ],
+        "fill": [
+          0.161,
+          0.596
+        ],
+        "genus": [
+          0.0,
+          1.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 10,
+        "bbox_M": 10,
+        "bbox_S": 10,
+        "fill": 5,
+        "genus": 10
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 26.9,
+          "p10": 0.047,
+          "p90": 29.003,
+          "n": 10
+        },
+        "bbox_M": {
+          "mediana": 26.508,
+          "p10": 0.025,
+          "p90": 28.937,
+          "n": 10
+        },
+        "bbox_S": {
+          "mediana": 16.0,
+          "p10": 0.008,
+          "p90": 23.592,
+          "n": 10
+        },
+        "fill": {
+          "mediana": 0.198,
+          "p10": 0.161,
+          "p90": 0.596,
+          "n": 5
+        },
+        "genus": {
+          "mediana": 0.0,
+          "p10": 0.0,
+          "p90": 1.0,
+          "n": 10
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 0.047,
+            "maximum": 65.163
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 0.025,
+            "maximum": 28.937
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 0.008,
+            "maximum": 23.592
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.161,
+            "maximum": 0.596
+          },
+          "genus": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          },
+          "fi": {
+            "type": "number"
+          },
+          "dl": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "fi",
+          "dl"
+        ]
+      },
+      "szablon_id": "tuleja",
+      "n_wierszy_zakresow": 10,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "prowadnica",
+      "klasa": "prowadnica",
+      "opis": "Element wymuszający i stabilizujący ruch innej części wzdłuż określonego toru, zwykle liniowego.",
+      "synonimy": [
+        "szyna prowadząca",
+        "listwa prowadząca",
+        "prowadnik",
+        "tor prowadzący",
+        "prowadzenie liniowe",
+        "szyna liniowa",
+        "guide rail",
+        "linear guide",
+        "linear rail",
+        "guideway",
+        "slide rail",
+        "guiding track"
+      ],
+      "geometryczny": true,
+      "n_modeli": 10,
+      "zrodla_etykiet": {
+        "regula": 10
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0119",
+        "0120",
+        "0121",
+        "0122",
+        "0123",
+        "0324",
+        "0325",
+        "1074",
+        "1075",
+        "1076"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          25.0,
+          425.0
+        ],
+        "bbox_M": [
+          6.126,
+          42.294
+        ],
+        "bbox_S": [
+          1.2,
+          30.669
+        ],
+        "fill": [
+          0.454,
+          0.678
+        ],
+        "genus": [
+          0.0,
+          4.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 9,
+        "bbox_M": 9,
+        "bbox_S": 9,
+        "fill": 4,
+        "genus": 9
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 100.478,
+          "p10": 25.0,
+          "p90": 310.0,
+          "n": 9
+        },
+        "bbox_M": {
+          "mediana": 16.0,
+          "p10": 6.126,
+          "p90": 25.0,
+          "n": 9
+        },
+        "bbox_S": {
+          "mediana": 5.0,
+          "p10": 1.2,
+          "p90": 15.5,
+          "n": 9
+        },
+        "fill": {
+          "mediana": 0.553,
+          "p10": 0.454,
+          "p90": 0.678,
+          "n": 4
+        },
+        "genus": {
+          "mediana": 0.0,
+          "p10": 0.0,
+          "p90": 3.0,
+          "n": 9
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 25.0,
+            "maximum": 425.0
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 6.126,
+            "maximum": 42.294
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 1.2,
+            "maximum": 30.669
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.454,
+            "maximum": 0.678
+          },
+          "genus": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 4.0
+          }
+        },
+        "required": []
+      },
+      "szablon_id": null,
+      "n_wierszy_zakresow": 9,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "wieszak",
+      "klasa": "wieszak",
+      "opis": "Część przeznaczona do zawieszania przedmiotów na ścianie, panelu lub innej powierzchni.",
+      "synonimy": [
+        "hak",
+        "haczyk",
+        "uchwyt ścienny",
+        "wieszak ścienny",
+        "kołek",
+        "hook",
+        "wall hook",
+        "peg",
+        "mounting hook",
+        "wall mount",
+        "挂钩"
+      ],
+      "geometryczny": true,
+      "n_modeli": 10,
+      "zrodla_etykiet": {
+        "regula": 10
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0207",
+        "0208",
+        "0209",
+        "0210",
+        "0211",
+        "0212",
+        "0213",
+        "0214",
+        "0215",
+        "0216"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          27.548,
+          240.401
+        ],
+        "bbox_M": [
+          15.262,
+          79.288
+        ],
+        "bbox_S": [
+          10.0,
+          55.451
+        ],
+        "fill": [
+          0.2,
+          0.434
+        ],
+        "genus": [
+          -2.0,
+          31.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 10,
+        "bbox_M": 10,
+        "bbox_S": 10,
+        "fill": 4,
+        "genus": 10
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 70.332,
+          "p10": 27.548,
+          "p90": 240.401,
+          "n": 10
+        },
+        "bbox_M": {
+          "mediana": 48.871,
+          "p10": 15.262,
+          "p90": 75.661,
+          "n": 10
+        },
+        "bbox_S": {
+          "mediana": 20.267,
+          "p10": 10.0,
+          "p90": 46.879,
+          "n": 10
+        },
+        "fill": {
+          "mediana": 0.291,
+          "p10": 0.2,
+          "p90": 0.434,
+          "n": 4
+        },
+        "genus": {
+          "mediana": 1.5,
+          "p10": -2.0,
+          "p90": 27.0,
+          "n": 10
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 27.548,
+            "maximum": 240.401
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 15.262,
+            "maximum": 79.288
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 10.0,
+            "maximum": 55.451
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.2,
+            "maximum": 0.434
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -2.0,
+            "maximum": 31.0
+          }
+        },
+        "required": []
+      },
+      "szablon_id": null,
+      "n_wierszy_zakresow": 10,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "zaslepka",
+      "klasa": "zaślepka",
+      "opis": "Część służąca do zamykania otworu, końca profilu lub obudowy oraz ochrony wnętrza przed zabrudzeniem i uszkodzeniem.",
+      "synonimy": [
+        "korek",
+        "nakładka",
+        "pokrywka",
+        "osłona końcowa",
+        "zamknięcie",
+        "korek uszczelniający",
+        "cap",
+        "plug",
+        "end cap",
+        "cover",
+        "blanking plug",
+        "dust cap"
+      ],
+      "geometryczny": true,
+      "n_modeli": 10,
+      "zrodla_etykiet": {
+        "regula": 10
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0217",
+        "0218",
+        "0219",
+        "0220",
+        "0221",
+        "0222",
+        "0225",
+        "0226",
+        "0360",
+        "0361"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          12.45,
+          168.226
+        ],
+        "bbox_M": [
+          8.5,
+          144.588
+        ],
+        "bbox_S": [
+          6.58,
+          138.499
+        ],
+        "fill": [
+          0.02,
+          0.381
+        ],
+        "genus": [
+          -2.0,
+          4.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 10,
+        "bbox_M": 10,
+        "bbox_S": 10,
+        "fill": 5,
+        "genus": 10
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 17.173,
+          "p10": 12.45,
+          "p90": 161.843,
+          "n": 10
+        },
+        "bbox_M": {
+          "mediana": 13.93,
+          "p10": 8.5,
+          "p90": 138.485,
+          "n": 10
+        },
+        "bbox_S": {
+          "mediana": 12.737,
+          "p10": 6.58,
+          "p90": 136.635,
+          "n": 10
+        },
+        "fill": {
+          "mediana": 0.265,
+          "p10": 0.02,
+          "p90": 0.381,
+          "n": 5
+        },
+        "genus": {
+          "mediana": 0.0,
+          "p10": -2.0,
+          "p90": 0.0,
+          "n": 10
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 12.45,
+            "maximum": 168.226
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 8.5,
+            "maximum": 144.588
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 6.58,
+            "maximum": 138.499
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.02,
+            "maximum": 0.381
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -2.0,
+            "maximum": 4.0
+          },
+          "fi": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
+          },
+          "luz": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "fi",
+          "h"
+        ]
+      },
+      "szablon_id": "zaslepka",
+      "n_wierszy_zakresow": 10,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "przyrzad",
+      "klasa": "przyrząd",
+      "opis": "Klasa obejmuje drukowane elementy ułatwiające wykonywanie, ustawianie, mocowanie lub kontrolowanie innych prac i części.",
+      "synonimy": [
+        "narzędzie",
+        "przystawka",
+        "oprzyrządowanie",
+        "pomoc warsztatowa",
+        "szablon",
+        "przyrząd pomiarowy",
+        "tool",
+        "jig",
+        "fixture",
+        "gauge",
+        "device"
+      ],
+      "geometryczny": true,
+      "n_modeli": 10,
+      "zrodla_etykiet": {
+        "regula": 10
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "1043",
+        "1045",
+        "1046",
+        "1047",
+        "1048",
+        "1049",
+        "1050",
+        "1051",
+        "1052",
+        "1053"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          24.0,
+          122.577
+        ],
+        "bbox_M": [
+          14.699,
+          68.17
+        ],
+        "bbox_S": [
+          10.0,
+          48.26
+        ],
+        "fill": [
+          0.405,
+          0.574
+        ],
+        "genus": [
+          0.0,
+          16.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 7,
+        "bbox_M": 7,
+        "bbox_S": 7,
+        "fill": 2,
+        "genus": 7
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 32.261,
+          "p10": 24.0,
+          "p90": 122.479,
+          "n": 7
+        },
+        "bbox_M": {
+          "mediana": 23.901,
+          "p10": 14.699,
+          "p90": 67.918,
+          "n": 7
+        },
+        "bbox_S": {
+          "mediana": 23.901,
+          "p10": 10.0,
+          "p90": 27.462,
+          "n": 7
+        },
+        "fill": {
+          "mediana": 0.49,
+          "p10": 0.405,
+          "p90": 0.574,
+          "n": 2
+        },
+        "genus": {
+          "mediana": 7.0,
+          "p10": 0.0,
+          "p90": 16.0,
+          "n": 7
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 24.0,
+            "maximum": 122.577
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 14.699,
+            "maximum": 68.17
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 10.0,
+            "maximum": 48.26
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.405,
+            "maximum": 0.574
+          },
+          "genus": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 16.0
+          }
+        },
+        "required": []
+      },
+      "szablon_id": null,
+      "n_wierszy_zakresow": 7,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "kolnierz",
+      "klasa": "kołnierz",
+      "opis": "Klasa obejmuje części w formie występującego pierścienia lub obrzeża, które służą do łączenia, podparcia, ustalania albo uszczelniania innych elementów.",
+      "synonimy": [
+        "kryza",
+        "opaska",
+        "pierścień mocujący",
+        "kołnierz montażowy",
+        "wieniec",
+        "collar",
+        "mounting ring",
+        "mounting flange",
+        "flange ring",
+        "shoulder"
+      ],
+      "geometryczny": true,
+      "n_modeli": 9,
+      "zrodla_etykiet": {
+        "wlasciciel": 7,
+        "regula": 2
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0047",
+        "0048",
+        "0236",
+        "0237",
+        "0260",
+        "0276",
+        "0288",
+        "0987",
+        "0988"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          20.0,
+          80.0
+        ],
+        "bbox_M": [
+          20.0,
+          79.975
+        ],
+        "bbox_S": [
+          6.1,
+          50.0
+        ],
+        "fill": [
+          0.039,
+          0.571
+        ],
+        "genus": [
+          -5.0,
+          7.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 9,
+        "bbox_M": 9,
+        "bbox_S": 9,
+        "fill": 7,
+        "genus": 9
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 59.998,
+          "p10": 20.0,
+          "p90": 80.0,
+          "n": 9
+        },
+        "bbox_M": {
+          "mediana": 59.998,
+          "p10": 20.0,
+          "p90": 79.975,
+          "n": 9
+        },
+        "bbox_S": {
+          "mediana": 25.0,
+          "p10": 6.1,
+          "p90": 40.0,
+          "n": 9
+        },
+        "fill": {
+          "mediana": 0.166,
+          "p10": 0.039,
+          "p90": 0.261,
+          "n": 7
+        },
+        "genus": {
+          "mediana": 4.0,
+          "p10": -5.0,
+          "p90": 7.0,
+          "n": 9
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 20.0,
+            "maximum": 80.0
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 20.0,
+            "maximum": 79.975
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 6.1,
+            "maximum": 50.0
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.039,
+            "maximum": 0.571
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -5.0,
+            "maximum": 7.0
+          },
+          "fi": {
+            "type": "number"
+          },
+          "fiZ": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
+          },
+          "otwory": {
+            "type": "array"
+          }
+        },
+        "required": [
+          "fi",
+          "fiZ"
+        ]
+      },
+      "szablon_id": "kolnierz",
+      "n_wierszy_zakresow": 9,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "ramka",
+      "klasa": "ramka",
+      "opis": "Klasa obejmuje części tworzące sztywną konstrukcję obwodową, która podtrzymuje, otacza lub ustala inne elementy.",
+      "synonimy": [
+        "rama",
+        "oprawa",
+        "stelaż",
+        "szkielet",
+        "obramowanie",
+        "konstrukcja nośna",
+        "oprawka",
+        "support frame",
+        "mounting frame",
+        "chassis"
+      ],
+      "geometryczny": true,
+      "n_modeli": 8,
+      "zrodla_etykiet": {
+        "wlasciciel": 8
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0008",
+        "0010",
+        "0012",
+        "0021",
+        "0023",
+        "0024",
+        "0053",
+        "0054"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          21.623,
+          146.354
+        ],
+        "bbox_M": [
+          19.118,
+          112.148
+        ],
+        "bbox_S": [
+          5.298,
+          55.456
+        ],
+        "fill": [
+          0.049,
+          0.519
+        ],
+        "genus": [
+          1.0,
+          21.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 8,
+        "bbox_M": 8,
+        "bbox_S": 8,
+        "fill": 8,
+        "genus": 8
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 113.737,
+          "p10": 21.623,
+          "p90": 135.792,
+          "n": 8
+        },
+        "bbox_M": {
+          "mediana": 105.188,
+          "p10": 19.118,
+          "p90": 112.144,
+          "n": 8
+        },
+        "bbox_S": {
+          "mediana": 10.214,
+          "p10": 5.298,
+          "p90": 26.501,
+          "n": 8
+        },
+        "fill": {
+          "mediana": 0.402,
+          "p10": 0.049,
+          "p90": 0.488,
+          "n": 8
+        },
+        "genus": {
+          "mediana": 4.5,
+          "p10": 1.0,
+          "p90": 13.0,
+          "n": 8
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 21.623,
+            "maximum": 146.354
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 19.118,
+            "maximum": 112.148
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 5.298,
+            "maximum": 55.456
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.049,
+            "maximum": 0.519
+          },
+          "genus": {
+            "type": "number",
+            "minimum": 1.0,
+            "maximum": 21.0
+          }
+        },
+        "required": []
+      },
+      "szablon_id": null,
+      "n_wierszy_zakresow": 8,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "imadlo",
+      "klasa": "imadło",
+      "opis": "Klasa obejmuje części służące do unieruchamiania przedmiotów między regulowanymi szczękami lub powierzchniami zaciskowymi.",
+      "synonimy": [
+        "ścisk warsztatowy",
+        "bench clamp",
+        "zacisk szczękowy",
+        "jaw clamp",
+        "uchwyt szczękowy",
+        "jaw holder",
+        "przyrząd zaciskowy",
+        "clamping fixture",
+        "przyrząd mocujący",
+        "workholding fixture",
+        "zacisk stołowy",
+        "table clamp"
+      ],
+      "geometryczny": true,
+      "n_modeli": 8,
+      "zrodla_etykiet": {
+        "regula": 8
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "1035",
+        "1036",
+        "1037",
+        "1038",
+        "1039",
+        "1040",
+        "1041",
+        "1042"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          43.033,
+          143.132
+        ],
+        "bbox_M": [
+          24.407,
+          143.124
+        ],
+        "bbox_S": [
+          11.031,
+          121.196
+        ],
+        "fill": [
+          0.179,
+          0.488
+        ],
+        "genus": [
+          0.0,
+          4.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 6,
+        "bbox_M": 6,
+        "bbox_S": 6,
+        "fill": 2,
+        "genus": 6
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 97.401,
+          "p10": 43.033,
+          "p90": 143.126,
+          "n": 6
+        },
+        "bbox_M": {
+          "mediana": 63.817,
+          "p10": 24.407,
+          "p90": 142.93,
+          "n": 6
+        },
+        "bbox_S": {
+          "mediana": 28.755,
+          "p10": 11.031,
+          "p90": 103.355,
+          "n": 6
+        },
+        "fill": {
+          "mediana": 0.333,
+          "p10": 0.179,
+          "p90": 0.488,
+          "n": 2
+        },
+        "genus": {
+          "mediana": 1.0,
+          "p10": 0.0,
+          "p90": 2.0,
+          "n": 6
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 43.033,
+            "maximum": 143.132
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 24.407,
+            "maximum": 143.124
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 11.031,
+            "maximum": 121.196
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.179,
+            "maximum": 0.488
+          },
+          "genus": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 4.0
+          }
+        },
+        "required": []
+      },
+      "szablon_id": null,
+      "n_wierszy_zakresow": 6,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "trojnik",
+      "klasa": "trójnik",
+      "opis": "Element łączący trzy odcinki lub profile, zwykle pod kątem prostym, tworząc rozgałęzienie w kształcie litery T.",
+      "synonimy": [
+        "złączka T",
+        "łącznik T",
+        "rozgałęźnik T",
+        "łącznik trójramienny",
+        "element rozdzielający",
+        "tee connector",
+        "T-joint",
+        "T-fitting",
+        "three-way connector",
+        "branch connector"
+      ],
+      "geometryczny": true,
+      "n_modeli": 3,
+      "zrodla_etykiet": {
+        "llm": 2,
+        "wlasciciel": 1
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0073",
+        "0076",
+        "0271"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          91.14,
+          91.921
+        ],
+        "bbox_M": [
+          61.598,
+          82.122
+        ],
+        "bbox_S": [
+          32.454,
+          67.235
+        ],
+        "fill": [
+          0.106,
+          0.106
+        ],
+        "genus": [
+          -13.0,
+          3.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 3,
+        "bbox_M": 3,
+        "bbox_S": 3,
+        "fill": 1,
+        "genus": 3
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 91.283,
+          "p10": 91.14,
+          "p90": 91.921,
+          "n": 3
+        },
+        "bbox_M": {
+          "mediana": 64.691,
+          "p10": 61.598,
+          "p90": 82.122,
+          "n": 3
+        },
+        "bbox_S": {
+          "mediana": 32.863,
+          "p10": 32.454,
+          "p90": 67.235,
+          "n": 3
+        },
+        "fill": {
+          "mediana": 0.106,
+          "p10": 0.106,
+          "p90": 0.106,
+          "n": 1
+        },
+        "genus": {
+          "mediana": 3.0,
+          "p10": -13.0,
+          "p90": 3.0,
+          "n": 3
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 91.14,
+            "maximum": 91.921
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 61.598,
+            "maximum": 82.122
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 32.454,
+            "maximum": 67.235
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.106,
+            "maximum": 0.106
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -13.0,
+            "maximum": 3.0
+          },
+          "fi": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
+          },
+          "dl": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "fi"
+        ]
+      },
+      "szablon_id": "trojnik",
+      "n_wierszy_zakresow": 3,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "krzyz",
+      "klasa": "krzyż",
+      "opis": "Część łącząca cztery odcinki lub profile w jednym punkcie, zwykle pod kątem prostym względem siebie.",
+      "synonimy": [
+        "łącznik czterodrożny",
+        "złączka czterodrożna",
+        "węzeł czteroramienny",
+        "rozgałęźnik czterokierunkowy",
+        "złącze wieloramienne",
+        "four-way connector",
+        "four-way joint",
+        "four-arm junction",
+        "four-port fitting",
+        "four-way coupling",
+        "X-junction",
+        "four-direction connector"
+      ],
+      "geometryczny": true,
+      "n_modeli": 2,
+      "zrodla_etykiet": {
+        "wlasciciel": 1,
+        "llm": 1
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0059",
+        "0077"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          77.907,
+          138.971
+        ],
+        "bbox_M": [
+          77.782,
+          138.97
+        ],
+        "bbox_S": [
+          22.037,
+          32.347
+        ],
+        "fill": [
+          0.215,
+          0.215
+        ],
+        "genus": [
+          4.0,
+          13.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 2,
+        "bbox_M": 2,
+        "bbox_S": 2,
+        "fill": 1,
+        "genus": 2
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 108.439,
+          "p10": 77.907,
+          "p90": 138.971,
+          "n": 2
+        },
+        "bbox_M": {
+          "mediana": 108.376,
+          "p10": 77.782,
+          "p90": 138.97,
+          "n": 2
+        },
+        "bbox_S": {
+          "mediana": 27.192,
+          "p10": 22.037,
+          "p90": 32.347,
+          "n": 2
+        },
+        "fill": {
+          "mediana": 0.215,
+          "p10": 0.215,
+          "p90": 0.215,
+          "n": 1
+        },
+        "genus": {
+          "mediana": 8.5,
+          "p10": 4.0,
+          "p90": 13.0,
+          "n": 2
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 77.907,
+            "maximum": 138.971
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 77.782,
+            "maximum": 138.97
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 22.037,
+            "maximum": 32.347
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.215,
+            "maximum": 0.215
+          },
+          "genus": {
+            "type": "number",
+            "minimum": 4.0,
+            "maximum": 13.0
+          }
+        },
+        "required": []
+      },
+      "szablon_id": null,
+      "n_wierszy_zakresow": 2,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    }
+  ],
+  "n": 26,
+  "notatka": "Klasy z nazw (etykiety-z-nazw.py) + korekta właściciela nadrzędna. Archetyp: ≥8 modeli albo nazwana wprost. szablon_id z mapy klas na nauka-szablony.js + szablony-obrotowe.js; brak → brak_buildera (MATCH→NEW). geometryczny:false = bez schematu parametrów. Zakresy wyłącznie z liczb indeksu."
+}

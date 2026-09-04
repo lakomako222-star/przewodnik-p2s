@@ -1,0 +1,7 @@
+{
+  "prog_pewnosci_klasy": null,
+  "prog_dystansu_do_wszystkich": null,
+  "when": "2026-09-04T14:20:00Z",
+  "_pomiar": "v5: p fałszywych MATCH 0,62–0,93 pokrywa się z poprawnymi 0,62–1,0; brak rozdzielczości, próg wyłączony",
+  "notatka": "PWA: zastosujMatch filtruje MATCH→NEW tylko gdy prog_pewnosci_klasy jest liczbą. null = brak filtra. Dystans leksykalny w pliku historycznym, nie stosowany."
+}

@@ -3,7 +3,7 @@
  * Node: Ajv gdy jest w node_modules; inaczej ten walidator.
  * Nie bundlujemy Ajv do index.html (file://).
  */
-import { ocenScienkeOtwor, ocenOrientacjeNaSztorc } from './gate.js';
+import { ocenScienkeOtwor, ocenOrientacjeNaSztorc, pytaniaZKodowBramki } from './gate.js';
 
 
 export function bledySpecSchema(data, schema, path) {
@@ -533,6 +533,42 @@ export async function processShardWithRepair(spec, opts) {
 export function komunikatPrzyciecia(shard, finishReason, limit) {
   return 'SHARD_TRUNCATED: kawałek ' + (shard || '?')
     + ' urwany (finish_reason=' + (finishReason || 'json') + ', limit ' + limit + ' tokenów).';
+}
+
+function bledyWerdyktu(r) {
+  return ((r && r.werdykt && r.werdykt.wpisy) || []).filter(function (w) {
+    return w && w.poziom === 'blad';
+  });
+}
+
+/**
+ * Autokorekta ×3 przed pytaniami z mapy kod→pytanie.
+ * `napraw` to istniejąca ścieżka (LLM / processShardWithRepair). Bez LLM w testach: mock.
+ */
+export async function petlaAutokorekty(spec, opts) {
+  opts = opts || {};
+  const maxIter = opts.maxIter == null ? 3 : opts.maxIter;
+  const buduj = opts.buduj;
+  const napraw = opts.napraw;
+  if (typeof buduj !== 'function') throw new Error('petlaAutokorekty: brak buduj');
+  let current = spec;
+  let iteracje = 0;
+  let r = buduj(current);
+  while (r && !(r.pytania && r.pytania.length && !r.mesh) && bledyWerdyktu(r).length) {
+    if (iteracje >= maxIter || typeof napraw !== 'function') break;
+    iteracje += 1;
+    current = await napraw(current, r.werdykt, iteracje);
+    r = buduj(current);
+  }
+  const bledy = bledyWerdyktu(r);
+  const pytania = bledy.length ? pytaniaZKodowBramki(bledy) : [];
+  return {
+    spec: current,
+    wynik: r,
+    iteracje: iteracje,
+    pytania: pytania,
+    stop: bledy.length ? 'pytania' : 'ok'
+  };
 }
 
 export function specPusteBryly(spec) {

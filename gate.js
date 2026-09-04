@@ -128,6 +128,61 @@ function wpis(poziom, kod, tekst, liczba) {
 }
 
 /**
+ * Pytania po 3 nieudanych autokorektach — mapa kod bramki → pytanie (bez LLM).
+ */
+export const MAPA_PYTAN_BRAMKI = {
+  SCIANKA: 'Która ścianka może być grubsza (min 0,8 mm)?',
+  OTWOR_MALY: 'Jaka średnica otworu (min 2 mm)?',
+  BRYLY: 'Ma być jedna część czy zestaw?',
+  PLYTA: 'Zmniejszyć gabaryt do 256 mm?'
+};
+
+export function pytaniaZKodowBramki(wpisy) {
+  const seen = {};
+  const out = [];
+  const lista = Array.isArray(wpisy) ? wpisy : [];
+  for (let i = 0; i < lista.length; i++) {
+    const w = lista[i];
+    if (!w || w.poziom !== 'blad') continue;
+    const kod = w.kod;
+    if (!MAPA_PYTAN_BRAMKI[kod] || seen[kod]) continue;
+    seen[kod] = 1;
+    out.push(MAPA_PYTAN_BRAMKI[kod]);
+    if (out.length >= 3) break;
+  }
+  return out;
+}
+
+function statusManifoldNoError(status) {
+  if (status == null || status === '') return null;
+  if (status === 'NoError' || status === 0) return true;
+  return false;
+}
+
+function propozycjaOrientacjiTekst(part, spec, opts) {
+  const fn = (opts && typeof opts.wybierzOrientacjeBezPodpor === 'function')
+    ? opts.wybierzOrientacjeBezPodpor
+    : (typeof globalThis !== 'undefined' && globalThis.P2S
+      && typeof globalThis.P2S.wybierzOrientacjeBezPodpor === 'function'
+      && globalThis.P2S.wybierzOrientacjeBezPodpor);
+  if (!fn) return '';
+  try {
+    const mesh = part && typeof part.getMesh === 'function' ? part.getMesh() : part;
+    if (!mesh || !mesh.vertProperties) return '';
+    const sug = fn(mesh, (spec && spec.cechy) || [], opts && opts.orientacjaOpcje);
+    if (!sug || !Array.isArray(sug.obrot_xyz_deg)) return '';
+    const os = sug.obrot_xyz_deg.map(function (n) { return Number(n) || 0; }).join(', ');
+    let t = ' Propozycja obrotu (bez automatycznego zastosowania): [' + os + ']°';
+    if (sug.przesuniecie_z_mm != null && Number.isFinite(Number(sug.przesuniecie_z_mm))) {
+      t += ', przesunięcie Z ' + Number(sug.przesuniecie_z_mm).toFixed(2) + ' mm';
+    }
+    return t + '.';
+  } catch (e) {
+    return '';
+  }
+}
+
+/**
  * Jedyny korzeń progów ścianki — obie zakładki biorą stąd.
  *
  * Obie liczby są ZGADNIĘTE do czasu wydruku kuponu 6.15 (ścianki 0,4 / 0,8 / 1,2 / 1,6 mm,
@@ -607,6 +662,32 @@ export function sprawdzBramke(part, dekl, spec, opts = {}) {
   const vol = part.volume();
   if (vol <= 0) blad('OBJETOSC', 'Objętość zero lub ujemna.');
 
+  // Self-intersection: Manifold gwarantuje rozmaitość wyniku CSG — nie liczymy
+  // przecięć siatki osobno. Szczelność / błąd topologii = part.status()
+  // (enum bundli: string "NoError" albo kod ManifoldError, np. "NotManifold").
+  const topo = (dekl && dekl.topologia) || {};
+  const zamierzona = (spec && Array.isArray(spec.czesci) && spec.czesci.length)
+    ? spec.czesci.length
+    : 1;
+  const czesciN = (typeof topo.czesci_n === 'number' && Number.isFinite(topo.czesci_n))
+    ? topo.czesci_n
+    : null;
+  if (czesciN != null && czesciN !== zamierzona) {
+    blad('BRYLY',
+      'Liczba brył ' + czesciN + ' ≠ zamierzona ' + zamierzona
+      + (zamierzona === 1
+        ? ' (jedna część). Rozłączne powłoki to zestaw — podziel SPEC na czesci albo złącz geometrię.'
+        : ' (zestaw).'),
+      czesciN);
+  }
+  const stOk = statusManifoldNoError(topo.status);
+  if (stOk === false) {
+    blad('TOPOLOGIA',
+      'Manifold.status() = ' + String(topo.status) + ' (oczekiwane NoError). '
+      + 'Nie liczę self-intersection osobno — bundla rzuca ManifoldError albo zwraca ten status.',
+      0);
+  }
+
   const g = gabaryt(part);
   const tol = (dekl && typeof dekl.tolerance_mm === 'number') ? dekl.tolerance_mm : 0.2;
   if (dekl && dekl.bbox) {
@@ -647,6 +728,13 @@ export function sprawdzBramke(part, dekl, spec, opts = {}) {
       `Nawis ${nw.najgorszy}° pod półką, ${nw.procentZlych}% powierzchni — dodaj żebro albo podpory / fazę 45°.`,
       nw.najgorszy);
   }
+  if (nw.najgorszy > 50) {
+    ostrz('NAWIS_50',
+      'Nawis ' + nw.najgorszy + '° (próg 50°).'
+      + propozycjaOrientacjiTekst(part, spec, opts)
+      + ' Modelu nie obracam automatycznie.',
+      nw.najgorszy);
+  }
   if (nw.krytyczny) {
     ostrz('NAWIS_SPOJNY',
       `Spójny płat nawisu ma ${nw.najwiekszySpojny.toFixed(1)} mm² — sprawdź orientację w slicerze. ` +
@@ -682,6 +770,11 @@ export function sprawdzBramke(part, dekl, spec, opts = {}) {
   for (const c of cechy) {
     if (c.typ === 'otwor' || c.typ === 'otwor_pod_wkladke' || c.typ === 'poglebienie' || c.typ === 'poglebienie_stozkowe') {
       const d = c.srednica_mm || c.srednica_otworu_mm;
+      if (d && d < 2.0) {
+        blad('OTWOR_MALY',
+          'Średnica otworu ' + d.toFixed(2) + ' mm < 2,0 mm — za mała na P2S (błąd, nie ostrzeżenie).',
+          d);
+      }
       if (d && (d < 1.5 || d > 30)) {
         ostrz('OTWOR', `Średnica otworu ${d.toFixed(2)} mm poza zakresem 1,5–30 mm.`);
       }

@@ -654,7 +654,7 @@ td{padding:10px 12px;line-height:1.5}
 .pj-err{border-left-color:#c0392b;background:color-mix(in srgb,#c0392b 9%,var(--bg))}
 .pj-line{font-size:.88rem;margin:0 0 6px;white-space:pre-wrap}
 .pj-line.me{color:var(--g);font-weight:650}
-#pjDl3mf:disabled,#pjAnal:disabled{opacity:.45;cursor:not-allowed}
+#pjDl3mf:disabled,#pjAnal:disabled,#pjAkceptuj:disabled,#prAkceptuj:disabled{opacity:.45;cursor:not-allowed}
 .pj-czesci{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
 .pj-czesci .btn{font-size:.85rem;min-width:auto}
 
@@ -2707,6 +2707,7 @@ h3[data-sprawdzono="2026-08-23"]::after{
 <div class="tw"><table><colgroup><col style="width:34.0%"><col style="width:66.0%"></colgroup><thead><tr><th>Kategoria</th><th>Co z niej pochodzi</th></tr></thead><tbody><tr><td data-l="Kategoria">Arkusz specyfikacji i blog Bambu Lab</td><td data-l="Co z niej pochodzi">Parametry P2S, obszar roboczy, temperatury graniczne, wyposażenie</td></tr><tr><td data-l="Kategoria">Bambu Lab Wiki</td><td data-l="Co z niej pochodzi">Procedury obsługi, konserwacji, kalibracji, suszenia i druku TPU</td></tr><tr><td data-l="Kategoria">Karty TDS Bambu Lab</td><td data-l="Co z niej pochodzi">Temperatury i suszenie TPU 95A HF oraz TPU for AMS</td></tr><tr><td data-l="Kategoria">Profile w repozytorium Bambu Studio</td><td data-l="Co z niej pochodzi">Nazwy płyt, limity przepływu, temperatury profilu P2S</td></tr><tr><td data-l="Kategoria">Strony produktowe SUNLU</td><td data-l="Co z niej pochodzi">Zakresy temperatur i prędkości dla PLA, PETG i TPU</td></tr><tr><td data-l="Kategoria">Poradniki SUNLU</td><td data-l="Co z niej pochodzi">Parametry i czasy suszenia</td></tr><tr><td data-l="Kategoria">Materiały BIQU i sprzedawców</td><td data-l="Co z niej pochodzi">Specyfikacja, temperatury i czyszczenie CryoGrip Pro Frostbite oraz Glacier</td></tr><tr><td data-l="Kategoria">Forum Bambu Lab i społeczność</td><td data-l="Co z niej pochodzi">Rozdział 26 - znane pułapki, słabe punkty, praktyka użytkowników</td></tr><tr><td data-l="Kategoria">MakerWorld i Printables</td><td data-l="Co z niej pochodzi">Rozdział 27 - modele akcesoriów i doświadczenia z doborem materiału</td></tr><tr><td data-l="Kategoria">Karta techniczna desykantu</td><td data-l="Co z niej pochodzi">Temperatura i czas regeneracji żelu krzemionkowego</td></tr></tbody></table></div>
 <h2 id="r-33-zrodla-wersja-i-zastrzezenia-33-3a-zrodla-pierwotne">Źródła pierwotne sprawdzone 21.08.2026</h2>
 <ul><li><a href="https://csm.bblcdn.com/hub/011651bed7b4405cb2c57da72ca8300c.pdf" target="_blank" rel="noopener noreferrer">Bambu Lab P2S — specyfikacja PDF</a></li><li><a href="https://us.store.bambulab.com/products/ams-2-pro?from=home_web" target="_blank" rel="noopener noreferrer">Bambu Lab AMS 2 Pro — zgodność materiałów i suszenie</a></li><li><a href="https://jp.store.bambulab.com/en/products/bambu-high-flow-hotend-h2d" target="_blank" rel="noopener noreferrer">Bambu High Flow Hotend — tabela H2/P2S</a></li><li><a href="https://github.com/bambulab/BambuStudio/releases/tag/v02.08.02.61" target="_blank" rel="noopener noreferrer">Bambu Studio 2.8.2 v02.08.02.61</a></li><li><a href="https://uk.store.bambulab.com/products/tpu-95a-hf?modelId=661571&amp;skr=yes" target="_blank" rel="noopener noreferrer">Bambu TPU 95A HF</a></li><li><a href="https://us.store.bambulab.com/products/tpu-for-ams" target="_blank" rel="noopener noreferrer">Bambu TPU for AMS</a></li><li><a href="https://www.sunlu.com/products/petg-3d-printing-filament" target="_blank" rel="noopener noreferrer">SUNLU PETG</a></li><li><a href="https://www.sunlu.com/products/tpu-95a-flexible-filament" target="_blank" rel="noopener noreferrer">SUNLU TPU 95A</a></li><li><a href="https://www.sunlu.com/wiki/filament-usage-guide" target="_blank" rel="noopener noreferrer">SUNLU Filament Usage Guide</a></li><li><a href="https://www.sunlu.com/de/wiki/fdm-performance-comparison" target="_blank" rel="noopener noreferrer">SUNLU FDM performance comparison — źródło rozbieżności High Speed Matte PETG</a></li><li><a href="https://biqu.equipment/products/biqu-panda-buildplate-cryogrip-pro?variant=42456105123938" target="_blank" rel="noopener noreferrer">BIQU Panda CryoGrip Pro</a></li></ul>
+<div class="box info"><div class="box-t">Treść 4.2.52</div><p>04.09.2026. Silnik archetypów: MATCH z dopytaniem, warstwa deterministyczna (słowo+liczba, sprzeczność, rozbieżność), kat z bramką, progi wyłączone. T-08 6/6 szablonów obrotowych w Bambu Studio (mm, 1:1). <code>apk/version.json</code> nietknięty. Wersja treści przewodnika 3.3.</p></div>
 <div class="box info"><div class="box-t">Treść 4.2.51</div><p>03.09.2026. Pamięć katalogu: tagi kształtów (rura/kolanko/90/Fi) i opis z każdego 3MF w manifeście (metadata, nazwy części — bez siatek w PWA). STL = tytuł folderu. Agent dostaje blok PAMIĘĆ KATALOGU co turę. To nie trening GPU. <code>apk/version.json</code> nietknięty. Wersja treści przewodnika 3.3.</p></div>
 <div class="box info"><div class="box-t">Treść 4.2.50</div><p>03.09.2026. Zamknięty katalog nauki (RAG): każda tura Projekt dostaje 5 najbliższych wzorców (tytuł, kategoria, sylwetka). LIB/TRE/GOLD = dobre przykłady, nie odrzuty. BLAD_POMIARU ≠ odmawiaj rysunku. To nie fine-tune wag (<code>ocen/</code> puste). <code>apk/version.json</code> nietknięty. Wersja treści przewodnika 3.3.</p></div>
 <div class="box info"><div class="box-t">Treść 4.2.49</div><p>03.09.2026. Nauka z wzorców: LIB/TRE/GOLD to dobre przykłady (tytuł+opis). BLAD_POMIARU = dziura detektora, nie wada modelu. Kolejka domyślna: Wzorce. <code>apk/version.json</code> nietknięty. Wersja treści przewodnika 3.3.</p></div>
@@ -2768,7 +2769,7 @@ h3[data-sprawdzono="2026-08-23"]::after{
 <ul class="check"><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-0-nazwe-i-liste-profili-pl"><span>Nazwę i listę profili płyt</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-1-temperatury-w-profilach"><span>Temperatury w profilach filamentów dla P2S</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-2-nazwy-i-lokalizacje-kali"><span>Nazwy i lokalizację kalibracji w menu</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-3-sposob-mapowania-i-synch"><span>Sposób mapowania i synchronizacji AMS</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-4-funkcje-i-limity-suszeni"><span>Funkcje i limity suszenia w AMS 2 Pro</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-5-procedure-kalibracji-pie"><span>Procedurę kalibracji pierwszej warstwy na ekranie</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-6-harmonogram-i-procedury"><span>Harmonogram i procedury konserwacji</span></label></li></ul>
 <p>Nie przenoś starych, niestandardowych presetów bez porównania z nowym profilem bazowym P2S. Zapisz stary profil pod inną nazwą, zamiast go nadpisywać.</p>
 <div class="box tip"><div class="box-t">Jak utrzymać ten dokument żywy</div><p>Trzymaj dziennik z rozdziału 29 razem z wydrukowanym przewodnikiem. Za każdym razem, gdy tabela w przewodniku okaże się nieaktualna, dopisz poprawkę na marginesie i datę. Po roku będziesz mieć wersję dopasowaną do własnego sprzętu i własnych materiałów.</p></div></section>
-  <div class="foot">Przewodnik 3.3 · treść 4.2.51 · stan na 31.08.2026<br>Etykieta szpuli i komunikat na ekranie drukarki mają pierwszeństwo przed tym przewodnikiem.</div>
+  <div class="foot">Przewodnik 3.3 · treść 4.2.52 · stan na 31.08.2026<br>Etykieta szpuli i komunikat na ekranie drukarki mają pierwszeństwo przed tym przewodnikiem.</div>
 </main>
 
 <!-- ===== DORADCA + NARZĘDZIA: wstrzykiwane przez build-html.js ===== -->
@@ -3275,6 +3276,7 @@ h3[data-sprawdzono="2026-08-23"]::after{
     <button type="button" data-sync="tresc">Treść</button>
   </nav>
   <div id="syncTrescBox" hidden>
+    <div class="box info"><div class="box-t">Treść 4.2.52</div><p>04.09.2026. Silnik archetypów: MATCH z dopytaniem, warstwa deterministyczna, kat z bramką, progi wyłączone. T-08 6/6. Paczka GitHub zostaje 4.0.14.</p></div>
     <div class="box info"><div class="box-t">Treść 4.2.50</div><p>03.09.2026. Zamknięty katalog nauki (RAG): 5 wzorców co turę Projekt. Paczka GitHub zostaje 4.0.14.</p></div>
     <div class="box info"><div class="box-t">Treść 4.2.49</div><p>03.09.2026. Nauka z wzorców: baza treningowa = dobre przykłady. Paczka GitHub zostaje 4.0.14.</p></div>
     <div class="box info"><div class="box-t">Treść 4.2.48</div><p>03.09.2026. Ocena nauki: co agentowi nie pasuje (1–3 konkrety + podgląd). Paczka GitHub zostaje 4.0.14.</p></div>
@@ -3392,6 +3394,7 @@ h3[data-sprawdzono="2026-08-23"]::after{
   <div id="pjDrukLista" class="pj-druk" hidden></div>
   <div id="pjDiff" class="pj-diff" hidden></div>
   <div class="btnrow">
+    <button type="button" class="btn pri" id="pjAkceptuj" disabled>Akceptuję — widziałem 4 rzuty</button>
     <button type="button" class="btn pri" id="pjDl3mf" disabled>Pobierz 3MF</button>
     <button type="button" class="btn pri" id="pjPrzerobTo" disabled>Przerób to</button>
     <button type="button" class="btn" id="pjAnal" disabled>Do analizatora</button>
@@ -3399,6 +3402,7 @@ h3[data-sprawdzono="2026-08-23"]::after{
   </div>
   <p class="tnote" id="pjStudioHint">Plik 3MF zawiera geometrię i wskazówkę w metadanych (proces 0.20 Standard, nazwa KALIBROWANE) — to <b>nie</b> są ustawienia slicera. Studio ich nie zastosuje; Twój profil zostaje. Skopiuj checklistę przyciskiem „Kopiuj — wyślij do Studio”, otwórz 3MF, odhacz. Albo Plik → Importuj → Importuj 3MF/STL.</p>
   <label class="chk"><input id="pjMimo" type="checkbox"> wiem, co robię — eksport mimo błędów bramki</label>
+  <label class="chk"><input id="pjNowaKlasa" type="checkbox"> To nowa klasa, nie wariant</label>
   <div id="pjPytanieWrap" hidden>
     <p id="pjPytanie"></p>
     <div class="pj-compose">
@@ -3491,6 +3495,7 @@ h3[data-sprawdzono="2026-08-23"]::after{
         <input id="prNowa" type="text" inputmode="decimal">
         <div id="prLuz"></div>
         <button type="button" class="pr-pri" id="prZrob">Zmiana — przelicz</button>
+        <button type="button" class="pr-pri" id="prAkceptuj" disabled>Akceptuję — widziałem 4 rzuty</button>
         <button type="button" class="pr-pri" id="prPobierz" disabled>Eksport — pobierz 3MF</button>
       </div>
     </div>
@@ -7759,9 +7764,9 @@ if ('serviceWorker' in navigator) {
 
 </script>
 <script>
-window.P2S_VER_NAME='4.2.51';
+window.P2S_VER_NAME='4.2.52';
 window.P2S_SHELL_NAME='4.2.42';
-window.__P2S_META={wersja:'4.2.51',talk_ms:300000,spec_ms:600000,shell:'4.2.42'};
+window.__P2S_META={wersja:'4.2.52',talk_ms:300000,spec_ms:600000,shell:'4.2.42'};
 window.__P2S_DECISION="DECYZJA 4.2.22: bramka SCIENKA_OTWOR na kawałku SPEC po schemacie i próbnym buildzie geometrii, przed sklejeniem; 1 lokalna naprawa tylko wadliwego shardu, bez retry całego T5 i bez monolitu. DECYZJA 4.2.21: topper z napisem to jeden płaski wykrój 2D wyciągnięty na grubość — litery spina mostek 3 mm pod linią bazową i ramka 4,2 mm po obrysie (liczby z pomiaru wzorcowego toppera 142×153×2,8 mm), nóżki to płaskie trapezy 9,5→5,0 mm zamiast walców położonych na boku (te robiły z napisu 3 mm gabaryt 4,2 mm), font liczy szerokość znaku po zapalonych kolumnach, a poprzeczki w połowie liter zniknęły; nowe bramki NAPIS_BELKA / NAPIS_POZA_OBRYSEM (dołożona bryła przecina litery albo wychodzi >2 mm poza obrys), TACA_BEZ_RANTU (przekrój w 60% wysokości bez zamkniętej dziury ≥35% obrysu = płyta, nie wanienka) i STOJAK_BEZ_ZEBER (<6 żeber przy nazwie obiecującej żebrowanie) wracają do mózgu istniejącą ścieżką SPEC_GEOMETRIA; SYS_SPEC zakazuje dokładania własnych belek do napisu i podaje przepis na tacę-wanienkę oraz konstrukcję wzorca Towel_Holder_Ribbed. DECYZJA 4.2.20: strumień SSE dla każdego shardu SPEC — bufor do końca, potem schema (talk/plan/monolit bez zmian); max_tokens 26000 (powtórka 40000) + jawne reasoning.max_tokens 10000 zamiast effort:max, bo effort u Anthropica to część max_tokens; telemetria liczy tokeny myślenia i wyjścia; kawałek po schemacie przechodzi próbny build (SPEC_GEOMETRIA wraca do mózgu); finish_reason=length lub urwany JSON = SHARD_TRUNCATED + jedna powtórka; OR_BUSY dopisuje powód. DECYZJA 4.2.19: spec-sharding T5/T6 (N× SPEC 1.0 → czesci 1.1); plan json_object 120s; niepełny shard = nie PASS; schema PL bez shards[]. DECYZJA 4.2.18: wersja.json + SW hash; talk 300s / SPEC 600s; 408/429 backoff; Grok tylko profil eksperymentalny; SPEC schema przed 3MF; derivedFrom estimated. DECYZJA 4.2.17: timeout talk 300s / SPEC 600s; retry Opus; SPEC mm 1:1; zakaz pustych brył po RYSUJ; napis bbox. DECYZJA 4.2.16: mózg Claude Opus 5 max; zapas Grok 4.6 xhigh / Sol Pro / DeepSeek V4 Pro; pinnedId puszcza Anthropic; [[SZUKAJ]] wymuszone przy marce. DECYZJA 4.2.15: napis FDM+traktor; dziurka breloka uszkiem; spaw 0,05; skala XYZ; wydłuż uchwyty; 8 części i podział P2S; bez publikacji. DECYZJA 4.2.14: figurka CSG nie pudełko; brief z mm → RYSUJ; drop bez SPEC; alias otworu; retry bramki SCIENKA_OTWOR; bez publikacji. DECYZJA 4.2.13: Przerób — obwód obręczy ΔC (5 cm=50 mm) przesunięciem promieniowym + ramiona, nie skala całego bbox; bez publikacji. DECYZJA 4.2.12: nitka Projekt→Przerób (SPEC+siatka+checklista, localStorage); zdjęcie Flash-gdy-brak-wizji; scaleLiveMesh % na żywym modelu; bez publikacji. DECYZJA 4.2.11: picker Sol/Grok/Flash/Luna w Projekcie (lista OpenRouter); 3MF hint bez project_settings + Kopiuj do Studio; strona Sufit produktu; bez publikacji. DECYZJA 4.2.10: Projekt — [[SZUKAJ]] Wikipedia/DuckDuckGo bez klucza, dopytaj mm przed RYSUJ, po 3MF poprawki+checklista Studio; Asystent punkt 12; ściągi 5.17/5.18/6.8/5.15; bez publikacji. DECYZJA 4.2.9: Projekt — orientacja/podpory/brim w rozmowie i SPEC, checklista po 3MF (geometria bez project_settings); bramka 4.2.7 bez podpór zostaje; bez publikacji. DECYZJA 4.2.8: 5.17 nowa szpula (KALIBROWANE / nowe / Classic = Słoneczny); 5.18 proces 0.20 Standard na co dzień, 0.16 HQ, 0.24 test; bez publikacji. DECYZJA 4.2.7: plik bez podpór musi mieć fizycznie zapisaną orientację, stabilny styk i zero krytycznego nawisu w cechach mierzonych; stary 3MF FAIL, nowy PASS lokalnego gate; potwierdzenie ostrzeżenia Bambu i pomiar fizyczny pozostają otwarte; bez publikacji. DECYZJA 4.2.6: sufit programowy lokalnie; Projekt N=96, Przerób N=192 z r/cos(pi/N); N-14 z siatki 69,79–75; pełny sufit dopiero po wydruku i suwmiarce; bez publikacji. DECYZJA 4.2.5: 5.13 pułapka JSON \"nil\" (BambuStudio #10583); 3MF e2e przywrócony lokalnie; Pages zostaje 4.2.1 do słowa publikuj. DECYZJA 4.2.4: zakładka Projekt — wynalazca: dopytaj (wanna/rant), 2–3 sposoby, poleć jeden, extras jako propozycje, „lepiej nie” przy słabym briefie; SPEC JSON po wyborze; paste-SPEC zostaje. DECYZJA 4.2.3: zakładka Projekt — dopytaj rant/kształt, zaproponuj przyssawki z nazwą kubka (Qinuo QNSC-M40), searchPlan+OpenRouter web, potem SPEC; paste-SPEC zostaje. DECYZJA 4.2.2: N-12 kompensacja apotemy z N silnika (nie 96) i bez +0,02; N-13 zakres world-Y w rekordzie cechy; N-14 krótki współosiowy Ø56, zakres z siatki (nie 68–73); N-15 profil y→Ø(y) krok 0,2 maxDev 0,010; asercja N przy budowie walca. DECYZJA 4.2.1: zakładka Przerób/Przeróbka w UI, ten sam potok co Node 4.2 (bez przepisywania detektora/operacji/bramki). Silnik na wątku głównym z wklejonym Manifold (file://, jak Projekt). Pole aDens type=text inputmode=decimal. DECYZJA 4.2.0: modele P0 wg WYTYCZNE 4.2 (luna / gemini-3.7-flash / terra-pro). Detektor przeróbki w Node. Silnik Manifold wklejony jako base64 + UI jako zwykły skrypt (decyzja 4.1.1 zostaje). DECYZJA 4.1.1: silnik Manifold wklejony jako base64 + UI jako zwykły skrypt, nie jako pliki boczne. Powód: przewodnik jest jednym plikiem otwieranym z dysku; moduły ES i fetch .wasm są zablokowane przy file://. Pliki engine/ zostają obok dla PWA (cache SW) i testów Node.";
 
 window.__P2S_SILNIK='base64';
@@ -7908,6 +7913,61 @@ function wpis(poziom, kod, tekst, liczba) {
   const o = { poziom, kod, tekst };
   if (liczba != null) o.liczba = liczba;
   return o;
+}
+
+/**
+ * Pytania po 3 nieudanych autokorektach — mapa kod bramki → pytanie (bez LLM).
+ */
+const MAPA_PYTAN_BRAMKI = {
+  SCIANKA: 'Która ścianka może być grubsza (min 0,8 mm)?',
+  OTWOR_MALY: 'Jaka średnica otworu (min 2 mm)?',
+  BRYLY: 'Ma być jedna część czy zestaw?',
+  PLYTA: 'Zmniejszyć gabaryt do 256 mm?'
+};
+
+function pytaniaZKodowBramki(wpisy) {
+  const seen = {};
+  const out = [];
+  const lista = Array.isArray(wpisy) ? wpisy : [];
+  for (let i = 0; i < lista.length; i++) {
+    const w = lista[i];
+    if (!w || w.poziom !== 'blad') continue;
+    const kod = w.kod;
+    if (!MAPA_PYTAN_BRAMKI[kod] || seen[kod]) continue;
+    seen[kod] = 1;
+    out.push(MAPA_PYTAN_BRAMKI[kod]);
+    if (out.length >= 3) break;
+  }
+  return out;
+}
+
+function statusManifoldNoError(status) {
+  if (status == null || status === '') return null;
+  if (status === 'NoError' || status === 0) return true;
+  return false;
+}
+
+function propozycjaOrientacjiTekst(part, spec, opts) {
+  const fn = (opts && typeof opts.wybierzOrientacjeBezPodpor === 'function')
+    ? opts.wybierzOrientacjeBezPodpor
+    : (typeof globalThis !== 'undefined' && globalThis.P2S
+      && typeof globalThis.P2S.wybierzOrientacjeBezPodpor === 'function'
+      && globalThis.P2S.wybierzOrientacjeBezPodpor);
+  if (!fn) return '';
+  try {
+    const mesh = part && typeof part.getMesh === 'function' ? part.getMesh() : part;
+    if (!mesh || !mesh.vertProperties) return '';
+    const sug = fn(mesh, (spec && spec.cechy) || [], opts && opts.orientacjaOpcje);
+    if (!sug || !Array.isArray(sug.obrot_xyz_deg)) return '';
+    const os = sug.obrot_xyz_deg.map(function (n) { return Number(n) || 0; }).join(', ');
+    let t = ' Propozycja obrotu (bez automatycznego zastosowania): [' + os + ']°';
+    if (sug.przesuniecie_z_mm != null && Number.isFinite(Number(sug.przesuniecie_z_mm))) {
+      t += ', przesunięcie Z ' + Number(sug.przesuniecie_z_mm).toFixed(2) + ' mm';
+    }
+    return t + '.';
+  } catch (e) {
+    return '';
+  }
 }
 
 /**
@@ -8390,6 +8450,32 @@ function sprawdzBramke(part, dekl, spec, opts = {}) {
   const vol = part.volume();
   if (vol <= 0) blad('OBJETOSC', 'Objętość zero lub ujemna.');
 
+  // Self-intersection: Manifold gwarantuje rozmaitość wyniku CSG — nie liczymy
+  // przecięć siatki osobno. Szczelność / błąd topologii = part.status()
+  // (enum bundli: string "NoError" albo kod ManifoldError, np. "NotManifold").
+  const topo = (dekl && dekl.topologia) || {};
+  const zamierzona = (spec && Array.isArray(spec.czesci) && spec.czesci.length)
+    ? spec.czesci.length
+    : 1;
+  const czesciN = (typeof topo.czesci_n === 'number' && Number.isFinite(topo.czesci_n))
+    ? topo.czesci_n
+    : null;
+  if (czesciN != null && czesciN !== zamierzona) {
+    blad('BRYLY',
+      'Liczba brył ' + czesciN + ' ≠ zamierzona ' + zamierzona
+      + (zamierzona === 1
+        ? ' (jedna część). Rozłączne powłoki to zestaw — podziel SPEC na czesci albo złącz geometrię.'
+        : ' (zestaw).'),
+      czesciN);
+  }
+  const stOk = statusManifoldNoError(topo.status);
+  if (stOk === false) {
+    blad('TOPOLOGIA',
+      'Manifold.status() = ' + String(topo.status) + ' (oczekiwane NoError). '
+      + 'Nie liczę self-intersection osobno — bundla rzuca ManifoldError albo zwraca ten status.',
+      0);
+  }
+
   const g = gabaryt(part);
   const tol = (dekl && typeof dekl.tolerance_mm === 'number') ? dekl.tolerance_mm : 0.2;
   if (dekl && dekl.bbox) {
@@ -8430,6 +8516,13 @@ function sprawdzBramke(part, dekl, spec, opts = {}) {
       `Nawis ${nw.najgorszy}° pod półką, ${nw.procentZlych}% powierzchni — dodaj żebro albo podpory / fazę 45°.`,
       nw.najgorszy);
   }
+  if (nw.najgorszy > 50) {
+    ostrz('NAWIS_50',
+      'Nawis ' + nw.najgorszy + '° (próg 50°).'
+      + propozycjaOrientacjiTekst(part, spec, opts)
+      + ' Modelu nie obracam automatycznie.',
+      nw.najgorszy);
+  }
   if (nw.krytyczny) {
     ostrz('NAWIS_SPOJNY',
       `Spójny płat nawisu ma ${nw.najwiekszySpojny.toFixed(1)} mm² — sprawdź orientację w slicerze. ` +
@@ -8465,6 +8558,11 @@ function sprawdzBramke(part, dekl, spec, opts = {}) {
   for (const c of cechy) {
     if (c.typ === 'otwor' || c.typ === 'otwor_pod_wkladke' || c.typ === 'poglebienie' || c.typ === 'poglebienie_stozkowe') {
       const d = c.srednica_mm || c.srednica_otworu_mm;
+      if (d && d < 2.0) {
+        blad('OTWOR_MALY',
+          'Średnica otworu ' + d.toFixed(2) + ' mm < 2,0 mm — za mała na P2S (błąd, nie ostrzeżenie).',
+          d);
+      }
       if (d && (d < 1.5 || d > 30)) {
         ostrz('OTWOR', `Średnica otworu ${d.toFixed(2)} mm poza zakresem 1,5–30 mm.`);
       }
@@ -8513,7 +8611,7 @@ function sprawdzBramke(part, dekl, spec, opts = {}) {
   return { wpisy: out, eksportOk: !maBlad, nawisy: nw, cienkie, gabaryt: g, objetosc_mm3: vol };
 }
 
-Object.assign(window.P2S, { gabaryt, cienkieScianki, nawisy, SCIANKA_DRUKOWALNA_MM, SCIANKA_WOKOL_OTWORU_MM, PROMIEN_DYSZY_MM, wymaganaSciankaDrukowalna, pomiarFizycznyNiemozliwy, promienCechyNiemozliwy, sciankaPonadGabaryt, zmierzMarginesyOtworow, ocenScienkeOtwor, ocenOrientacjeNaSztorc, sprawdzDodatkiNapisu, sprawdzTace, sprawdzZebrowanie, sprawdzBramke });
+Object.assign(window.P2S, { gabaryt, cienkieScianki, nawisy, MAPA_PYTAN_BRAMKI, pytaniaZKodowBramki, SCIANKA_DRUKOWALNA_MM, SCIANKA_WOKOL_OTWORU_MM, PROMIEN_DYSZY_MM, wymaganaSciankaDrukowalna, pomiarFizycznyNiemozliwy, promienCechyNiemozliwy, sciankaPonadGabaryt, zmierzMarginesyOtworow, ocenScienkeOtwor, ocenOrientacjeNaSztorc, sprawdzDodatkiNapisu, sprawdzTace, sprawdzZebrowanie, sprawdzBramke });
 })();
 
 /* inlined builder.js */
@@ -9729,6 +9827,36 @@ function snapshotMesh(part) {
   };
 }
 
+/**
+ * Topologia na ŻYWYM Manifoldzie, w arenie, przed snapshotem.
+ * genus: w pliku engine/manifold.js nie ma stringa "genus" (embind nie wkleja nazwy
+ * do glue), ale runtime: typeof part.genus === 'function' — wołamy wtedy.
+ * status: bundla woła part.status() i porównuje do stringa "NoError".
+ */
+function zmierzTopologie(part, keep) {
+  let czesci_n = 1;
+  try {
+    if (part && typeof part.decompose === 'function') {
+      const kaw = part.decompose();
+      czesci_n = kaw && kaw.length != null ? kaw.length : 1;
+      if (kaw && kaw.length) {
+        for (let i = 0; i < kaw.length; i++) keep(kaw[i]);
+      }
+    }
+  } catch (e) {
+    czesci_n = 1;
+  }
+  let genus = null;
+  if (part && typeof part.genus === 'function') {
+    try { genus = part.genus(); } catch (e) { genus = null; }
+  }
+  let status = null;
+  if (part && typeof part.status === 'function') {
+    try { status = part.status(); } catch (e) { status = null; }
+  }
+  return { czesci_n: czesci_n, genus: genus, status: status };
+}
+
 function zlozBryly(spec, keep, opts) {
   let part = null;
   const ctx = {};
@@ -9804,6 +9932,7 @@ function buildOnePart(specWe, opts) {
     spec.deklaracja.bbox = { x: +g.x.toFixed(4), y: +g.y.toFixed(4), z: +g.z.toFixed(4) };
     spec.deklaracja.tolerance_mm = spec.deklaracja.tolerance_mm || 0.2;
     spec.deklaracja.objetosc_mm3 = +part.volume().toFixed(2);
+    spec.deklaracja.topologia = zmierzTopologie(part, keep);
     const werdykt = sprawdzBramke(part, spec.deklaracja, spec, opts || {});
     for (const t of spec._ostrzezeniaNorm || []) {
       werdykt.wpisy.push({ poziom: 'ostrzezenie', kod: 'NORM', tekst: t });
@@ -10941,7 +11070,8 @@ Object.assign(window.P2S, { WIDOKI, rzutuj, rysuj, etykietaGabarytu });
 /* inlined projekt-ui.js */
 (function(){
 window.P2S = window.P2S || {};
-const { initEngine, buildAndGate, specDiff, meshToVF, normalizujJednostki, walidujPlanDruku, scaleLiveMesh, scaleSpecNumeric, ocenBrimPoSkali, mesh3MF, mesh3MFWiele, tekstDeklaracji, nazwa3mf, checklistaDruku, WIDOKI, rzutuj, rysuj, etykietaGabarytu, ocenScienkeOtwor, ocenOrientacjeNaSztorc } = window.P2S;
+const { initEngine, buildAndGate, specDiff, meshToVF, normalizujJednostki, walidujPlanDruku, scaleLiveMesh, scaleSpecNumeric, ocenBrimPoSkali, mesh3MF, mesh3MFWiele, tekstDeklaracji, nazwa3mf, checklistaDruku, WIDOKI, rzutuj, rysuj, etykietaGabarytu, ocenScienkeOtwor, ocenOrientacjeNaSztorc, pytaniaZKodowBramki, MAPA_PYTAN_BRAMKI, sprawdzBramke } = window.P2S;
+
 /**
  * Nitka Projekt → Przerób: handoff SPEC/siatki, zdjęcia, skala %.
  * Bez importów — działa w Node i w inlinie index.html.
@@ -12293,6 +12423,1436 @@ function tekstSzablonow(szablony) {
 }
 
 /**
+ * Szablony obrotowe (podkładka, tuleja, kołnierz, zaślepka).
+ * nauka-szablony.js jest zamrożony — ten plik ma ten sam kontrakt SPEC.
+ * Zero imputacji wymiarów definiujących; grubość ścianki / luz mają jawną domyślną.
+ */
+'use strict';
+
+/**
+ * Podkładka / washer — krótka rura (wysokość = grubość tarczy).
+ * @param {number} fi  — średnica otworu [mm]
+ * @param {number} fiZ — średnica zewnętrzna [mm]
+ * @param {number} grub — grubość tarczy [mm], domyślnie 2
+ */
+function podkladka(fi, fiZ, grub) {
+  const g = grub || 2;
+  return {
+    nazwa: 'Podkładka Fi' + fi + '/' + fiZ,
+    material: 'PETG',
+    bryly: [{
+      id: 'tarcza', operacja: 'dodaj',
+      ksztalt: { typ: 'rura', wysokosc_mm: g, srednica_zewn_mm: fiZ, srednica_wewn_mm: fi },
+      pozycja_mm: [0, 0, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    }],
+    cechy: [],
+    uwagi_do_druku: 'Podkładka z szablonu podkladka. Grubość ' + g + ' mm. Drukuj płasko na płycie.'
+  };
+}
+
+/**
+ * Tuleja / bushing — rura, fi = średnica wewnętrzna.
+ * @param {number} fi — średnica wewnętrzna [mm]
+ * @param {number} dl — długość [mm]
+ * @param {number} grub — ścianka [mm], domyślnie 2
+ */
+function tuleja(fi, dl, grub) {
+  const g = grub || 2;
+  const fiZ = fi + 2 * g;
+  return {
+    nazwa: 'Tuleja Fi' + fi + ' L' + dl,
+    material: 'PETG',
+    bryly: [{
+      id: 'tuleja', operacja: 'dodaj',
+      ksztalt: { typ: 'rura', wysokosc_mm: dl, srednica_zewn_mm: fiZ, srednica_wewn_mm: fi },
+      pozycja_mm: [0, 0, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    }],
+    cechy: [],
+    uwagi_do_druku: 'Tuleja z szablonu tuleja. Ścianka ' + g + ' mm.'
+  };
+}
+
+/**
+ * Kołnierz / flange — szyjka rura + tarcza rura + otwory walec odejmij.
+ * @param {number} fi — średnica wewnętrzna [mm]
+ * @param {number} fiZ — średnica tarczy [mm]
+ * @param {number} grub — grubość tarczy [mm], domyślnie 4
+ * @param {number} h — wysokość szyjki [mm], domyślnie max(fi, 12)
+ * @param {Array} otwory — [{x,y,d}] pozycje i średnice otworów w tarczy
+ */
+function kolnierz(fi, fiZ, grub, h, otwory) {
+  const g = grub || 4;
+  const H = h || Math.max(fi, 12);
+  const fiSzyjki = fi + 2 * g;
+  const bryly = [
+    {
+      id: 'tarcza', operacja: 'dodaj',
+      ksztalt: { typ: 'rura', wysokosc_mm: g, srednica_zewn_mm: fiZ, srednica_wewn_mm: fi },
+      pozycja_mm: [0, 0, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    },
+    {
+      id: 'szyjka', operacja: 'dodaj',
+      ksztalt: { typ: 'rura', wysokosc_mm: H, srednica_zewn_mm: fiSzyjki, srednica_wewn_mm: fi },
+      pozycja_mm: [0, 0, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    }
+  ];
+  if (Array.isArray(otwory)) {
+    otwory.forEach(function (o, i) {
+      const d = o.d || 4;
+      bryly.push({
+        id: 'otwor_' + i, operacja: 'odejmij',
+        ksztalt: { typ: 'walec', wysokosc_mm: g + 2, srednica_dolna_mm: d, srednica_gorna_mm: d },
+        pozycja_mm: [o.x, o.y, -1], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+      });
+    });
+  }
+  return {
+    nazwa: 'Kołnierz Fi' + fi + '/' + fiZ,
+    material: 'PETG',
+    bryly, cechy: [],
+    uwagi_do_druku: 'Kołnierz z szablonu kolnierz. Tarcza ' + g + ' mm, szyjka ' + H + ' mm. Drukuj tarczą na płycie.'
+  };
+}
+
+/**
+ * Koło w XY: środek (cx, 0), promień r. Manifold.revolve — X = promień, Y = wysokość, oś Y.
+ * @param {number} cx
+ * @param {number} r
+ * @param {number} n
+ * @returns {number[][]}
+ */
+function profilKola(cx, r, n) {
+  const pts = [];
+  const nn = n || 48;
+  for (let i = 0; i < nn; i++) {
+    const a = (2 * Math.PI * i) / nn;
+    pts.push([cx + r * Math.cos(a), r * Math.sin(a)]);
+  }
+  return pts;
+}
+
+/**
+ * Uchwyt z uszkiem wpuszczonym w ściankę (jedna bryła). Stary uchwyt() zostaje w nauka-szablony.js.
+ * @param {number} fi — średnica wewnętrzna [mm]
+ * @param {number} h — wysokość tulei [mm]
+ * @param {number} grub — ścianka [mm], domyślnie 3
+ */
+function uchwytZLaczem(fi, h, grub) {
+  const g = grub || 3;
+  const fiZ = fi + 2 * g;
+  const uszkoW = fiZ;
+  const uszkoH = 12;
+  const bryly = [
+    {
+      id: 'tuleja', operacja: 'dodaj',
+      ksztalt: { typ: 'rura', wysokosc_mm: h, srednica_zewn_mm: fiZ, srednica_wewn_mm: fi },
+      pozycja_mm: [0, 0, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    },
+    {
+      id: 'uszko', operacja: 'dodaj',
+      ksztalt: { typ: 'prostopadloscian', x_mm: uszkoW, y_mm: uszkoH, z_mm: h },
+      pozycja_mm: [-(uszkoW / 2), fiZ / 2 - g, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    }
+  ];
+  const cechy = [{
+    typ: 'otwor', punkt_mm: [0, (fiZ / 2 - g) + uszkoH / 2, h / 2],
+    os: 'z', srednica_mm: 4, przez: true
+  }];
+  return {
+    nazwa: 'Uchwyt z łączem Fi' + fi,
+    material: 'PETG',
+    bryly, cechy,
+    uwagi_do_druku: 'Uchwyt z szablonu uchwytZLaczem. Uszko wpuszczone w ściankę, otwór M4.'
+  };
+}
+
+/**
+ * Kolanko toroidalne: łuk = różnica dwóch obrotów, ramiona = rura na końcach.
+ * @param {number} fi — średnica zewnętrzna [mm]
+ * @param {number} kat — kąt zagięcia [°], domyślnie 90
+ * @param {number} grub — ścianka [mm], domyślnie 2
+ * @param {number} dl — długość ramion [mm], domyślnie 2×fi
+ */
+function kolankoTorus(fi, kat, grub, dl) {
+  const k = kat || 90;
+  const g = grub || 2;
+  const L = dl || Math.max(fi * 2, 30);
+  const R = fi * 1.5;
+  const fiWewn = fi - 2 * g;
+  const rZ = fi / 2;
+  const rW = fiWewn / 2;
+  const o = 1;
+  const th = k * Math.PI / 180;
+  const fiWRury = Math.max(fiWewn, 0.4);
+  // Manifold.revolve: profil XY wokół Y, potem Y→Z. Łuk leży w XY; oś rury na starcie = Y, na końcu styczna.
+  const posA = [R, o, 0];
+  const posB = [
+    R * Math.cos(th) + o * Math.sin(th),
+    R * Math.sin(th) - o * Math.cos(th),
+    0
+  ];
+  const bryly = [
+    {
+      id: 'luk_zewn', operacja: 'dodaj',
+      ksztalt: { typ: 'obrot', profil: profilKola(R, rZ, 48), kat_deg: k },
+      pozycja_mm: [0, 0, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    }
+  ];
+  if (rW > 0.2) {
+    bryly.push({
+      id: 'luk_wewn', operacja: 'odejmij',
+      ksztalt: { typ: 'obrot', profil: profilKola(R, rW, 48), kat_deg: k },
+      pozycja_mm: [0, 0, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    });
+  }
+  bryly.push(
+    {
+      id: 'ramie_a', operacja: 'dodaj',
+      ksztalt: { typ: 'rura', wysokosc_mm: L + o, srednica_zewn_mm: fi, srednica_wewn_mm: fiWRury },
+      pozycja_mm: posA, obrot_deg: [90, 0, 0], srodkowanie: 'brak'
+    },
+    {
+      id: 'ramie_b', operacja: 'dodaj',
+      ksztalt: { typ: 'rura', wysokosc_mm: L + o, srednica_zewn_mm: fi, srednica_wewn_mm: fiWRury },
+      pozycja_mm: posB, obrot_deg: [0, -k, 0], srodkowanie: 'brak'
+    }
+  );
+  return {
+    nazwa: 'Kolanko torus Fi' + fi + ' ' + k + '°',
+    material: 'PETG',
+    bryly, cechy: [],
+    uwagi_do_druku: 'Kolanko z szablonu kolankoTorus. Łuk toroidalny, ścianka ' + g + ' mm. Drukuj ramieniem A na płycie.'
+  };
+}
+
+/**
+ * Zaślepka / cap — denko + czop.
+ * @param {number} fi — średnica nominalna otworu, na który wchodzi czop [mm]
+ * @param {number} h — wysokość czopa [mm]
+ * @param {number} grub — grubość denka [mm], domyślnie 2
+ * @param {number} luz — luz czopa względem fi [mm], domyślnie 0,2 (jawny, nie ukryty)
+ */
+function zaslepka(fi, h, grub, luz) {
+  const g = grub || 2;
+  const luzMm = (luz == null || luz === '') ? 0.2 : luz;
+  const fiDenka = fi + 2 * g;
+  const fiCzopa = fi - luzMm;
+  const bryly = [
+    {
+      id: 'denko', operacja: 'dodaj',
+      ksztalt: { typ: 'walec', wysokosc_mm: g, srednica_dolna_mm: fiDenka, srednica_gorna_mm: fiDenka },
+      pozycja_mm: [0, 0, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    },
+    {
+      id: 'czop', operacja: 'dodaj',
+      ksztalt: { typ: 'walec', wysokosc_mm: h, srednica_dolna_mm: fiCzopa, srednica_gorna_mm: fiCzopa },
+      pozycja_mm: [0, 0, g - 0.2], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    }
+  ];
+  return {
+    nazwa: 'Zaślepka Fi' + fi,
+    material: 'PETG',
+    bryly, cechy: [],
+    uwagi_do_druku: 'Zaślepka z szablonu zaslepka. Denko ' + g + ' mm, czop ' + h + ' mm, luz ' + luzMm + ' mm. Drukuj denkiem na płycie.'
+  };
+}
+
+const SZABLONY_OBROTOWE = [
+  {
+    id: 'podkladka',
+    nazwa: 'Podkładka (washer)',
+    tagi: ['podkladka', 'washer', 'pierscien'],
+    parametry: 'fi, fiZ, grub',
+    fn: podkladka,
+    przyklad: 'podkladka(8, 16, 2) → podkładka otwór Ø8 zewn. Ø16',
+    opis: 'Wymagane: fi (otwór), fiZ (zewnętrzna). grub domyślnie 2 mm.'
+  },
+  {
+    id: 'tuleja',
+    nazwa: 'Tuleja (bushing)',
+    tagi: ['tuleja', 'bushing', 'sleeve'],
+    parametry: 'fi, dl, grub',
+    fn: tuleja,
+    przyklad: 'tuleja(10, 20, 2) → tuleja wewn. Ø10 L20',
+    opis: 'Wymagane: fi (wewnętrzna), dl. grub ścianki domyślnie 2 mm; zewn. = fi+2·grub.'
+  },
+  {
+    id: 'kolnierz',
+    nazwa: 'Kołnierz (flange)',
+    tagi: ['kolnierz', 'flange'],
+    parametry: 'fi, fiZ, grub, h, otwory',
+    fn: kolnierz,
+    przyklad: 'kolnierz(20, 50, 4, 15, [{x:18,y:0,d:4}])',
+    opis: 'Wymagane: fi, fiZ. grub tarczy domyślnie 4 mm, h szyjki domyślnie max(fi,12). otwory opcjonalne, bez imputacji pozycji.'
+  },
+  {
+    id: 'zaslepka',
+    nazwa: 'Zaślepka (cap)',
+    tagi: ['zaslepka', 'cap', 'endcap'],
+    parametry: 'fi, h, grub, luz',
+    fn: zaslepka,
+    przyklad: 'zaslepka(20, 10, 2, 0.2) → denko + czop luz 0,2 mm',
+    opis: 'Wymagane: fi, h. grub denka domyślnie 2 mm. luz czopa domyślnie 0,2 mm (jawny parametr, nie ukryty).'
+  },
+  {
+    id: 'uchwytZLaczem',
+    nazwa: 'Uchwyt z łączem',
+    tagi: ['uchwyt', 'holder'],
+    parametry: 'fi, h, grub',
+    fn: uchwytZLaczem,
+    przyklad: 'uchwytZLaczem(20, 61, 3) → tuleja Ø20 H61 z uszkiem M4',
+    opis: 'Wymagane: fi (wewnętrzna), h. grub ścianki domyślnie 3 mm. Uszko wpuszczone w ściankę.'
+  },
+  {
+    id: 'kolankoTorus',
+    nazwa: 'Kolanko toroidalne',
+    tagi: ['kolanko', 'elbow'],
+    parametry: 'fi, kat, grub, dl',
+    fn: kolankoTorus,
+    przyklad: 'kolankoTorus(56, 90, 2) → kolanko Ø56 90°',
+    opis: 'Wymagane: fi (zewnętrzna). kat domyślnie 90°, grub 2 mm, dl 2×fi. Łuk = różnica obrotów.'
+  }
+];
+
+/**
+ * Jawne wymiary ze zdania (słowo + liczba). Zero imputacji: „170 na 19” bez słowa = nic.
+ * Prefiks wz_ — po inline do IIFE nie kolidować z archetypy/nauka-rag.
+ */
+'use strict';
+
+const WZ_POLA = ['fi', 'kat', 'dl', 'h', 'w', 'grub', 'fiZ', 'fi1', 'fi2', 'x', 'y', 'z'];
+const WZ_TOL = 0.05;
+
+const WZ_WZORCE = [
+  { pole: 'fi1', re: /\bfi1\s*(\d+(?:[.,]\d+)?)/g },
+  { pole: 'fi2', re: /\bfi2\s*(\d+(?:[.,]\d+)?)/g },
+  { pole: 'fiZ', re: /(?:\bfi|\bsrednic\w*)\s+zewnetrz\w*\s*(\d+(?:[.,]\d+)?)/g },
+  { pole: 'fi', re: /(?:\bfi|\bsrednic\w*)\s+wewnetrz\w*\s*(\d+(?:[.,]\d+)?)/g },
+  { pole: 'fiZ', re: /\bzewnetrz\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'fi', re: /\bwewnetrz\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'fi', re: /\bfi\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'fi', re: /\bsrednic\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'kat', re: /\bkat\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'dl', re: /\bdlugosc\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'dl', re: /\bdlug\w*\s+(?:na\s+)?(\d+(?:[.,]\d+)?)/g },
+  { pole: 'dl', re: /\bdl\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'h', re: /\bwysokosc\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'h', re: /\bwysokie\s+(?:na\s+)?(\d+(?:[.,]\d+)?)/g },
+  { pole: 'h', re: /\bh\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'w', re: /\bszerokosc\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'w', re: /\bw\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'grub', re: /\bgrubosc\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'grub', re: /\bgrub\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'x', re: /\bx\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'y', re: /\by\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'z', re: /\bz\s+(\d+(?:[.,]\d+)?)/g }
+];
+
+function wz_puste() {
+  const o = {};
+  for (let i = 0; i < WZ_POLA.length; i++) o[WZ_POLA[i]] = [];
+  return o;
+}
+
+function wz_bezOgonkow(s) {
+  return String(s == null ? '' : s).toLowerCase()
+    .replace(/ą/g, 'a').replace(/ć/g, 'c').replace(/ę/g, 'e').replace(/ł/g, 'l').replace(/ń/g, 'n')
+    .replace(/ó/g, 'o').replace(/ś/g, 's').replace(/ź/g, 'z').replace(/ż/g, 'z');
+}
+
+function wz_liczba(s) {
+  if (typeof s === 'number') return Number.isFinite(s) ? s : null;
+  const n = Number(String(s).replace(',', '.'));
+  return Number.isFinite(n) ? n : null;
+}
+
+function wz_unikalne(arr) {
+  const out = [];
+  const src = Array.isArray(arr) ? arr : [];
+  for (let i = 0; i < src.length; i++) {
+    const v = wz_liczba(src[i]);
+    if (v == null) continue;
+    let jest = false;
+    for (let j = 0; j < out.length; j++) {
+      if (Math.abs(out[j] - v) <= WZ_TOL) { jest = true; break; }
+    }
+    if (!jest) out.push(v);
+  }
+  return out;
+}
+
+function wz_wolny(used, a, b) {
+  for (let i = 0; i < used.length; i++) {
+    if (a < used[i].b && b > used[i].a) return false;
+  }
+  return true;
+}
+
+/** fi i fiZ to ten sam wymiar, gdy zdanie nie specyfikuje pary wewn./zewn. (korekta: „fi zewn. 50 … średnica 70”). */
+function wz_scalFiRodzina(wym, tekstNorm) {
+  const maWew = /wewnetrz/.test(tekstNorm);
+  const maZew = /zewnetrz/.test(tekstNorm);
+  if (maWew && maZew) return;
+  const fi = wym.fi;
+  const fiZ = wym.fiZ;
+  if (!fi.length || !fiZ.length) return;
+  for (let i = 0; i < fiZ.length; i++) {
+    const v = fiZ[i];
+    let jest = false;
+    for (let j = 0; j < fi.length; j++) {
+      if (Math.abs(fi[j] - v) <= WZ_TOL) { jest = true; break; }
+    }
+    if (!jest) fi.push(v);
+  }
+  wym.fiZ = [];
+}
+
+function wymiaryZeZdania(zdanie) {
+  const wym = wz_puste();
+  const raw = String(zdanie || '');
+  if (!raw) return wym;
+  const poJed = (typeof normalizujJednostki === 'function') ? normalizujJednostki(raw) : raw;
+  const t = wz_bezOgonkow(poJed);
+  const used = [];
+  for (let i = 0; i < WZ_WZORCE.length; i++) {
+    const w = WZ_WZORCE[i];
+    const re = w.re;
+    re.lastIndex = 0;
+    let m;
+    while ((m = re.exec(t))) {
+      const numStr = m[1];
+      const numIdx = m.index + m[0].lastIndexOf(numStr);
+      if (!wz_wolny(used, numIdx, numIdx + numStr.length)) continue;
+      const val = wz_liczba(numStr);
+      if (val == null) continue;
+      used.push({ a: numIdx, b: numIdx + numStr.length });
+      wym[w.pole].push(val);
+    }
+  }
+  wz_scalFiRodzina(wym, t);
+  return wym;
+}
+
+/** @returns {{ pole: string, wartosci: number[] }[]} */
+function sprzecznePola(wym) {
+  const o = wym && typeof wym === 'object' ? wym : {};
+  const out = [];
+  const keys = Object.keys(o);
+  for (let i = 0; i < keys.length; i++) {
+    const pole = keys[i];
+    const uniq = wz_unikalne(o[pole]);
+    if (uniq.length >= 2) out.push({ pole: pole, wartosci: uniq });
+  }
+  return out;
+}
+
+/** Pole ze zdania ma jedną jawną wartość, LLM inną. Brak pola u LLM to nie rozbieżność. */
+function rozbieznePola(wym, parametryLLM) {
+  const o = wym && typeof wym === 'object' ? wym : {};
+  const p = parametryLLM && typeof parametryLLM === 'object' ? parametryLLM : {};
+  const out = [];
+  const keys = Object.keys(o);
+  for (let i = 0; i < keys.length; i++) {
+    const pole = keys[i];
+    const uniq = wz_unikalne(o[pole]);
+    if (uniq.length !== 1) continue;
+    const vLlm = wz_liczba(p[pole]);
+    if (vLlm == null) continue;
+    if (Math.abs(vLlm - uniq[0]) > WZ_TOL) {
+      out.push({ pole: pole, zdanie: uniq[0], model: vLlm });
+    }
+  }
+  return out;
+}
+
+function wz_eksportP2S() {
+  if (typeof window === 'undefined') return;
+  window.P2S = window.P2S || {};
+  window.P2S.wymiaryZeZdania = wymiaryZeZdania;
+  window.P2S.sprzecznePola = sprzecznePola;
+  window.P2S.rozbieznePola = rozbieznePola;
+}
+wz_eksportP2S();
+
+/**
+ * Rejestr archetypów z wyboru człowieka (archetypy-rejestr.json).
+ * MATCH nigdy nie dopisuje do rejestru. Brak szablon_id → brak geometrii (nie zgadujemy).
+ * Szablony: nauka-szablony.js (zamrożony) + szablony-obrotowe.js.
+ */
+'use strict';
+
+const MATCH_NIE_PISZE_DO_REJESTRU = true;
+const MAX_PYTAN_MATCH = 3;
+
+const FN = {
+  rurKolanko, adapterPlyta, uchwyt, katownik, pudelko, zlaczka, trojnik, ruraProsta,
+  podkladka, tuleja, kolnierz, zaslepka, uchwytZLaczem, kolankoTorus
+};
+
+const SZABLON_WYMAGANE = {
+  rurKolanko: ['fi', 'kat'],
+  adapterPlyta: ['w', 'h'],
+  uchwyt: ['fi', 'h'],
+  katownik: ['a', 'b', 'w'],
+  pudelko: ['x', 'y', 'z'],
+  zlaczka: ['fi1', 'fi2'],
+  trojnik: ['fi'],
+  ruraProsta: ['fi', 'dl'],
+  podkladka: ['fi', 'fiZ'],
+  tuleja: ['fi', 'dl'],
+  kolnierz: ['fi', 'fiZ'],
+  zaslepka: ['fi', 'h'],
+  uchwytZLaczem: ['fi', 'h'],
+  kolankoTorus: ['fi', 'kat']
+};
+
+/** Źródła w kolejności; cel ustawiany tylko gdy pusty. Zero imputacji (brak źródła = brak pola). */
+const SZABLON_ALIASY = {
+  uchwyt: { h: ['z', 'dl'] },
+  adapterPlyta: { w: ['x'], h: ['y'], grub: ['z'] },
+  ruraProsta: { dl: ['z'] },
+  pudelko: { x: ['dl'], y: ['w'], z: ['h'] },
+  zlaczka: {},
+  rurKolanko: {},
+  trojnik: {},
+  katownik: {},
+  podkladka: {},
+  tuleja: { dl: ['z'] },
+  kolnierz: { h: ['z', 'dl'] },
+  zaslepka: { h: ['z', 'dl'] },
+  uchwytZLaczem: { h: ['z', 'dl'] },
+  kolankoTorus: {}
+};
+
+let _rejestr = { when: null, wpisy: [], n: 0, _powod: 'brak', _zaladowany: false };
+let _archLaduje = null;
+let _progi = { prog_pewnosci_klasy: null, prog_dystansu_do_wszystkich: null, _zaladowany: false };
+let _ladujeProgi = null;
+
+function urlRejestr() {
+  try {
+    if (typeof document !== 'undefined') {
+      const scripts = document.getElementsByTagName('script');
+      for (let i = scripts.length - 1; i >= 0; i--) {
+        const src = scripts[i].src || '';
+        if (/projekt-ui\.js(\?|$)/.test(src) || /archetypy\.js(\?|$)/.test(src) || /nauka-rag\.js(\?|$)/.test(src)) {
+          return src.replace(/[^/]+\.js(\?.*)?$/, 'archetypy-rejestr.json');
+        }
+      }
+    }
+  } catch (e) { /* ignore */ }
+  return './archetypy-rejestr.json';
+}
+
+function urlProgi() {
+  return urlRejestr().replace(/archetypy-rejestr\.json(\?.*)?$/, 'progi-klasyfikatora.json$1');
+}
+
+function ustawProgi(obj) {
+  const o = obj && typeof obj === 'object' ? obj : {};
+  const p = o.prog_pewnosci_klasy;
+  const d = o.prog_dystansu_do_wszystkich;
+  _progi = {
+    prog_pewnosci_klasy: (typeof p === 'number' && Number.isFinite(p)) ? p : null,
+    prog_dystansu_do_wszystkich: (typeof d === 'number' && Number.isFinite(d)) ? d : null,
+    _zaladowany: true
+  };
+  return _progi;
+}
+
+function progiAktualne() {
+  return {
+    prog_pewnosci_klasy: _progi.prog_pewnosci_klasy,
+    prog_dystansu_do_wszystkich: _progi.prog_dystansu_do_wszystkich,
+    _zaladowany: !!_progi._zaladowany
+  };
+}
+
+async function ladujProgi(force) {
+  if (_progi && _progi._zaladowany && !force) return _progi;
+  if (_ladujeProgi && !force) return _ladujeProgi;
+  _ladujeProgi = (async () => {
+    try {
+      const r = await fetch(urlProgi(), { cache: 'no-store' });
+      if (!r.ok) {
+        ustawProgi({});
+        return _progi;
+      }
+      ustawProgi(await r.json());
+      return _progi;
+    } catch (e) {
+      ustawProgi({});
+      return _progi;
+    } finally {
+      _ladujeProgi = null;
+    }
+  })();
+  return _ladujeProgi;
+}
+
+function pMaxKandydatow(wynik) {
+  let p = null;
+  const kand = wynik && wynik.kandydaci;
+  if (Array.isArray(kand)) {
+    for (let i = 0; i < kand.length; i++) {
+      const v = kand[i] && kand[i].p;
+      if (typeof v === 'number' && Number.isFinite(v) && (p == null || v > p)) p = v;
+    }
+  }
+  if (p == null && wynik && typeof wynik.p_klasy === 'number' && Number.isFinite(wynik.p_klasy)) {
+    p = wynik.p_klasy;
+  }
+  return p;
+}
+
+function zamrozWpis(w) {
+  return JSON.parse(JSON.stringify(w));
+}
+
+function ustawWewn(obj) {
+  const wpisy = Array.isArray(obj && obj.wpisy) ? obj.wpisy.map(zamrozWpis) : [];
+  Object.freeze(wpisy);
+  _rejestr = {
+    when: obj && obj.when != null ? obj.when : null,
+    wpisy,
+    n: wpisy.length,
+    notatka: obj && obj.notatka,
+    zrodlo: obj && obj.zrodlo,
+    _powod: wpisy.length ? 'ok' : 'pusty',
+    _zaladowany: true
+  };
+  return _rejestr;
+}
+
+function ustawRejestr(obj) {
+  return ustawWewn(obj && typeof obj === 'object' ? obj : { wpisy: [] });
+}
+
+async function ladujRejestr(force) {
+  if (_rejestr && _rejestr._zaladowany && !force) return _rejestr;
+  if (_archLaduje && !force) return _archLaduje;
+  _archLaduje = (async () => {
+    try {
+      const r = await fetch(urlRejestr(), { cache: 'no-store' });
+      if (!r.ok) {
+        ustawWewn({ wpisy: [] });
+        _rejestr._powod = 'http_' + r.status;
+        return _rejestr;
+      }
+      const data = await r.json();
+      ustawWewn(data);
+      return _rejestr;
+    } catch (e) {
+      ustawWewn({ wpisy: [] });
+      _rejestr._powod = (e && e.message) || 'fetch';
+      return _rejestr;
+    } finally {
+      _archLaduje = null;
+    }
+  })();
+  return _archLaduje;
+}
+
+function czyRejestrGotowy() {
+  return Array.isArray(_rejestr.wpisy) && _rejestr.wpisy.length > 0;
+}
+
+function lista() {
+  return (_rejestr.wpisy || []).map(zamrozWpis);
+}
+
+function norm(s) {
+  return String(s == null ? '' : s).toLowerCase()
+    .replace(/ą/g, 'a').replace(/ć/g, 'c').replace(/ę/g, 'e').replace(/ł/g, 'l').replace(/ń/g, 'n')
+    .replace(/ó/g, 'o').replace(/ś/g, 's').replace(/ź/g, 'z').replace(/ż/g, 'z');
+}
+
+function getArchetyp(id) {
+  if (id == null || id === '') return null;
+  const sid = String(id);
+  const n = norm(sid);
+  for (const w of _rejestr.wpisy || []) {
+    if (w.id === sid || norm(w.id) === n) return zamrozWpis(w);
+    if (w.klasa && norm(w.klasa) === n) return zamrozWpis(w);
+    const syn = w.synonimy || [];
+    for (let i = 0; i < syn.length; i++) {
+      if (norm(syn[i]) === n) return zamrozWpis(w);
+    }
+  }
+  return null;
+}
+
+/** Alias ESM. W PWA nazwa `get` koliduje z localStorage — wołaj getArchetyp. */
+function get(id) {
+  return getArchetyp(id);
+}
+
+function brakuje(params, pole) {
+  if (!params || typeof params !== 'object') return true;
+  const v = params[pole];
+  if (v == null || v === '') return true;
+  return false;
+}
+
+function znajdzSzablon(id) {
+  if (!id) return null;
+  let sz = SZABLONY.find(s => s.id === id);
+  if (sz) return sz;
+  return SZABLONY_OBROTOWE.find(s => s.id === id) || null;
+}
+
+/**
+ * Aliasy per szablon. Nie nadpisuje pola już ustawionego. Nie zgaduje brakujących liczb.
+ * zlaczka: fi1 ← fi tylko gdy fi2 już podane.
+ */
+function aliasujParametrySzablonu(szablonId, params) {
+  const o = Object.assign({}, params && typeof params === 'object' ? params : {});
+  const mapa = SZABLON_ALIASY[szablonId] || {};
+  const cele = Object.keys(mapa);
+  for (let i = 0; i < cele.length; i++) {
+    const cel = cele[i];
+    if (!brakuje(o, cel)) continue;
+    const zrodla = mapa[cel] || [];
+    for (let j = 0; j < zrodla.length; j++) {
+      const z = zrodla[j];
+      if (!brakuje(o, z)) {
+        o[cel] = o[z];
+        break;
+      }
+    }
+  }
+  if (szablonId === 'zlaczka' && brakuje(o, 'fi1') && !brakuje(o, 'fi') && !brakuje(o, 'fi2')) {
+    o.fi1 = o.fi;
+  }
+  return o;
+}
+
+/**
+ * @returns {{ ok: boolean, powod: string|null, pole?: string, brakujace_pole?: string }}
+ */
+function walidujParametry(id, params) {
+  const wpis = getArchetyp(id);
+  if (!wpis) return { ok: false, powod: 'brak_archetypu', pole: null };
+  const p = params && typeof params === 'object' ? params : {};
+  const schema = wpis.schemat_parametrow || {};
+  const required = Array.isArray(schema.required) ? schema.required.slice() : [];
+  const wymSz = SZABLON_WYMAGANE[wpis.szablon_id] || [];
+  for (let i = 0; i < wymSz.length; i++) {
+    if (required.indexOf(wymSz[i]) < 0) required.push(wymSz[i]);
+  }
+  for (let i = 0; i < required.length; i++) {
+    const pole = required[i];
+    if (brakuje(p, pole)) {
+      return { ok: false, powod: 'brak_pola', pole, brakujace_pole: pole };
+    }
+  }
+  const props = schema.properties || {};
+  const keys = Object.keys(props);
+  for (let i = 0; i < keys.length; i++) {
+    const pole = keys[i];
+    if (!Object.prototype.hasOwnProperty.call(p, pole)) continue;
+    const spec = props[pole] || {};
+    const v = p[pole];
+    if (spec.type === 'number') {
+      const n = typeof v === 'number' ? v : Number(v);
+      if (!Number.isFinite(n)) {
+        return { ok: false, powod: 'nie_liczba', pole };
+      }
+      if (typeof spec.minimum === 'number' && n < spec.minimum) {
+        return { ok: false, powod: 'ponizej_minimum', pole };
+      }
+      if (typeof spec.maximum === 'number' && n > spec.maximum) {
+        return { ok: false, powod: 'powyzej_maximum', pole };
+      }
+    }
+  }
+  return { ok: true, powod: null };
+}
+
+/**
+ * @returns {{ spec: object|null, powod: string|null, pole?: string }}
+ */
+function build(id, params) {
+  const wpis = getArchetyp(id);
+  if (!wpis) return { spec: null, powod: 'brak_archetypu' };
+  if (!wpis.szablon_id) return { spec: null, powod: 'brak_buildera' };
+  const fn = FN[wpis.szablon_id] || (znajdzSzablon(wpis.szablon_id) || {}).fn;
+  if (typeof fn !== 'function') return { spec: null, powod: 'brak_buildera' };
+  const p = aliasujParametrySzablonu(wpis.szablon_id, params);
+  const wal = walidujParametry(id, p);
+  if (!wal.ok) return { spec: null, powod: wal.powod, pole: wal.pole };
+  const sz = znajdzSzablon(wpis.szablon_id);
+  const names = String((sz && sz.parametry) || '').split(',').map(s => s.trim()).filter(Boolean);
+  const args = names.map(n => p[n]);
+  try {
+    const spec = fn.apply(null, args);
+    if (!spec || typeof spec !== 'object') return { spec: null, powod: 'brak_buildera' };
+    return {
+      spec: {
+        nazwa: spec.nazwa,
+        material: spec.material,
+        bryly: spec.bryly,
+        cechy: spec.cechy || [],
+        uwagi_do_druku: spec.uwagi_do_druku || ''
+      },
+      powod: null
+    };
+  } catch (e) {
+    return { spec: null, powod: 'brak_buildera' };
+  }
+}
+
+function dopiszDoRejestru() {
+  throw new Error('MATCH_NIGDY_NIE_DOPISUJE_DO_REJESTRU');
+}
+
+function pytanieOPole(pole, klasa) {
+  if (pole === 'kat') return 'Podaj kąt gięcia [stopnie] dla klasy ' + (klasa || '') + '.';
+  return 'Podaj ' + pole + ' [mm] dla klasy ' + (klasa || '') + '.';
+}
+
+function maLiczbe(params) {
+  const o = params && typeof params === 'object' ? params : {};
+  const keys = Object.keys(o);
+  for (let i = 0; i < keys.length; i++) {
+    const v = o[keys[i]];
+    if (typeof v === 'number' && Number.isFinite(v)) return true;
+    if (typeof v === 'string' && v !== '' && Number.isFinite(Number(v.replace(',', '.')))) return true;
+  }
+  return false;
+}
+
+function archDodajPytanie(pytania, q, znacznikPola) {
+  const juz = pytania.some(function (t) {
+    return String(t).indexOf(znacznikPola) >= 0;
+  });
+  if (!juz && pytania.length < MAX_PYTAN_MATCH) pytania.push(q);
+}
+
+function archUsunPolaSprzeczne(p, zdanie, out, pytania) {
+  if (zdanie == null || zdanie === '' || typeof wymiaryZeZdania !== 'function') return false;
+  const wym = wymiaryZeZdania(zdanie);
+  out.wymiary_zdanie = wym;
+  const sprz = sprzecznePola(wym);
+  const rozb = rozbieznePola(wym, p);
+  if (sprz.length) out.sprzeczne_pola = sprz;
+  if (rozb.length) out.rozbiezne_pola = rozb;
+  const brak = [];
+  for (let i = 0; i < sprz.length; i++) {
+    const pole = sprz[i].pole;
+    const vals = sprz[i].wartosci;
+    delete p[pole];
+    const jed = pole === 'kat' ? '°' : ' mm';
+    archDodajPytanie(pytania, pole + ': ' + vals.join(' czy ') + jed + '?', pole);
+    out.uzasadnienie = String(out.uzasadnienie || '') + ' [MATCH: sprzeczne_pole ' + pole + ' ' + vals.join('|') + ']';
+    if (brak.indexOf(pole) < 0) brak.push(pole);
+  }
+  for (let i = 0; i < rozb.length; i++) {
+    const pole = rozb[i].pole;
+    delete p[pole];
+    archDodajPytanie(
+      pytania,
+      'zdanie mówi ' + pole + ' ' + rozb[i].zdanie + ', model ' + rozb[i].model + ' — które?',
+      pole
+    );
+    out.uzasadnienie = String(out.uzasadnienie || '')
+      + ' [MATCH: rozbiezne_pole ' + pole + ' ' + rozb[i].zdanie + '|' + rozb[i].model + ']';
+    if (brak.indexOf(pole) < 0) brak.push(pole);
+  }
+  if (brak.length) out.brakujace_pola = brak;
+  return sprz.length > 0 || rozb.length > 0;
+}
+
+/**
+ * Post-processing decyzji LLM. Rejestr pusty → MATCH traktuj jako NEW.
+ * Rejestr niepusty + MATCH: walidujParametry; brak_pola + jest liczba → MATCH + pytanie;
+ * brak_pola bez żadnej liczby → REJECT brak_wymiaru. NIE dopisuje do rejestru.
+ * zdanie (opcjonalne): warstwa deterministyczna — sprzeczne/rozbieżne pole usuwane, pytanie.
+ */
+function zastosujMatch(wynik, zdanie) {
+  const out = wynik && typeof wynik === 'object' ? Object.assign({}, wynik) : { decyzja: 'NEW' };
+  const pytania = Array.isArray(out.pytania) ? out.pytania.slice(0, MAX_PYTAN_MATCH) : [];
+  const gotowy = czyRejestrGotowy();
+
+  if (!gotowy) {
+    if (out.decyzja === 'MATCH') {
+      out.decyzja = 'NEW';
+      out.uzasadnienie = String(out.uzasadnienie || '') + ' [MATCH→NEW: rejestr pusty/brak archetypów]';
+    }
+    out.pytania = pytania.slice(0, MAX_PYTAN_MATCH);
+    return out;
+  }
+
+  if (out.decyzja !== 'MATCH') {
+    out.pytania = pytania.slice(0, MAX_PYTAN_MATCH);
+    return out;
+  }
+
+  const wpis = getArchetyp(out.klasa);
+  if (!wpis) {
+    out.decyzja = 'NEW';
+    out.uzasadnienie = String(out.uzasadnienie || '') + ' [MATCH→NEW: klasa nie w rejestrze]';
+    out.pytania = pytania.slice(0, MAX_PYTAN_MATCH);
+    return out;
+  }
+
+  const progP = _progi.prog_pewnosci_klasy;
+  if (typeof progP === 'number') {
+    const pk = pMaxKandydatow(out);
+    if (pk != null && pk < progP) {
+      out.decyzja = 'NEW';
+      out.pytania = pytania.slice(0, MAX_PYTAN_MATCH);
+      out.uzasadnienie = String(out.uzasadnienie || '') + ' [MATCH→NEW: p=' + pk + '<prog]';
+      return out;
+    }
+  }
+
+  const p = aliasujParametrySzablonu(wpis.szablon_id, out.parametry || {});
+  out.parametry = p;
+  const bylaSprzeczka = archUsunPolaSprzeczne(p, zdanie, out, pytania);
+  const wal = walidujParametry(wpis.id, p);
+  if (!wal.ok) {
+    const pole = wal.brakujace_pole || wal.pole;
+    if (wal.powod === 'brak_pola' && !maLiczbe(p) && !bylaSprzeczka) {
+      out.decyzja = 'REJECT';
+      out.pytania = pytania.slice(0, MAX_PYTAN_MATCH);
+      out.uzasadnienie = String(out.uzasadnienie || '') + ' [REJECT: brak_wymiaru]';
+      return out;
+    }
+    if (wal.powod === 'brak_pola') {
+      if (pole) {
+        archDodajPytanie(pytania, pytanieOPole(pole, wpis.klasa || wpis.id), pole);
+        if (!out.brakujace_pola || !out.brakujace_pola.length) out.brakujace_pola = [pole];
+      }
+      out.decyzja = 'MATCH';
+      out.klasa = wpis.id;
+      out.pytania = pytania.slice(0, MAX_PYTAN_MATCH);
+      out.uzasadnienie = String(out.uzasadnienie || '') + ' [MATCH: brak_pola' + (pole ? ' ' + pole : '') + ']';
+      return out;
+    }
+    if (pole) {
+      archDodajPytanie(pytania, pytanieOPole(pole, wpis.klasa || wpis.id), pole);
+    }
+    out.decyzja = 'REJECT';
+    out.pytania = pytania.slice(0, MAX_PYTAN_MATCH);
+    out.uzasadnienie = String(out.uzasadnienie || '') + ' [REJECT: ' + wal.powod + (pole ? ' ' + pole : '') + ']';
+    return out;
+  }
+
+  out.klasa = wpis.id;
+  out.pytania = pytania.slice(0, MAX_PYTAN_MATCH);
+  return out;
+}
+
+function tekstArchetypow() {
+  const wp = _rejestr.wpisy || [];
+  if (!wp.length) {
+    return '======== ARCHETYPY ========\nRejestr pusty. MATCH niemożliwy — traktuj MATCH jako NEW. Nie wymyślaj klas.\n============================';
+  }
+  const lines = [
+    '======== ARCHETYPY (wybór człowieka, nie zgaduj nowych) ========',
+    'MATCH tylko gdy klasa jest na tej liście. Nie dopisuj do rejestru.'
+  ];
+  for (let i = 0; i < wp.length; i++) {
+    const w = wp[i];
+    lines.push(
+      'ID ' + w.id +
+      (w.klasa ? ' (' + w.klasa + ')' : '') +
+      (w.szablon_id ? ' szablon=' + w.szablon_id : ' szablon=brak_buildera') +
+      ' — ' + (w.opis || '')
+    );
+    if (w.synonimy && w.synonimy.length) lines.push('  synonimy: ' + w.synonimy.join(', '));
+  }
+  lines.push('================================================================');
+  return lines.join('\n');
+}
+
+function eksportP2S() {
+  if (typeof window === 'undefined') return;
+  window.P2S = window.P2S || {};
+  window.P2S.archetypy = {
+    ladujRejestr, lista, get: getArchetyp, getArchetyp, walidujParametry, build, zastosujMatch,
+    ustawRejestr, dopiszDoRejestru, MATCH_NIE_PISZE_DO_REJESTRU,
+    tekstArchetypow, czyRejestrGotowy, MAX_PYTAN_MATCH,
+    ustawProgi, ladujProgi, progiAktualne
+  };
+}
+eksportP2S();
+
+/**
+ * Pamięć instancji Projekt/Przerób — IndexedDB, fallback localStorage.
+ * Zapis TYLKO po akceptacji 4 rzutów (#pjAkceptuj / #prAkceptuj).
+ */
+const DB_NAME = 'p2s-instancje';
+const STORE = 'instancje';
+const LS_KEY = 'p2s.instancje.ls';
+const LS_LIMIT = 20;
+const JPEG_MAX_B = 40000;
+
+function lsGet() {
+  try {
+    const a = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+    return Array.isArray(a) ? a : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function lsSet(a) {
+  localStorage.setItem(LS_KEY, JSON.stringify(a));
+}
+
+function nowyId(when) {
+  return 'inst-' + (when || Date.now()) + '-' + Math.random().toString(36).slice(2, 8);
+}
+
+/** Szacunek bajtów z dataURL; cel ~40 kB JPEG. */
+function jpegZCanvas(canvas, maxB) {
+  const limit = maxB == null ? JPEG_MAX_B : maxB;
+  if (!canvas || typeof canvas.toDataURL !== 'function') return '';
+  let q = 0.7;
+  let url = '';
+  try { url = canvas.toDataURL('image/jpeg', q); } catch (e) { return ''; }
+  function bajty(u) {
+    const i = String(u).indexOf(',');
+    const b64 = i >= 0 ? String(u).slice(i + 1) : String(u);
+    return Math.floor(b64.length * 0.75);
+  }
+  while (url && bajty(url) > limit && q > 0.35) {
+    q = Math.round((q - 0.1) * 10) / 10;
+    try { url = canvas.toDataURL('image/jpeg', q); } catch (e2) { break; }
+  }
+  if (url && bajty(url) > limit * 1.2) {
+    try {
+      const c2 = document.createElement('canvas');
+      const w = Math.max(80, Math.round((canvas.width || 280) * 0.55));
+      const h = Math.max(60, Math.round((canvas.height || 200) * 0.55));
+      c2.width = w;
+      c2.height = h;
+      const ctx = c2.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(canvas, 0, 0, w, h);
+        url = c2.toDataURL('image/jpeg', 0.55);
+      }
+    } catch (e3) { /* zostaw poprzedni */ }
+  }
+  return url || '';
+}
+
+function tokenyQuery(query) {
+  const raw = String(query || '');
+  let tags = [];
+  try {
+    if (typeof tagiZQuery === 'function') tags = tagiZQuery(raw) || [];
+  } catch (e) { tags = []; }
+  const n = raw.toLowerCase()
+    .replace(/ł/g, 'l').replace(/ó/g, 'o').replace(/ą/g, 'a').replace(/ę/g, 'e')
+    .replace(/ś/g, 's').replace(/ć/g, 'c').replace(/ń/g, 'n').replace(/[żź]/g, 'z');
+  const parts = n.split(/[^a-z0-9]+/).filter(function (t) { return t.length >= 2; });
+  const seen = {};
+  const out = [];
+  function add(t) {
+    const x = String(t || '').toLowerCase();
+    if (!x || seen[x]) return;
+    seen[x] = 1;
+    out.push(x);
+  }
+  for (let i = 0; i < tags.length; i++) add(tags[i]);
+  for (let i = 0; i < parts.length; i++) add(parts[i]);
+  return out;
+}
+
+function blobRekordu(rec) {
+  return [
+    rec && rec.zdanie,
+    rec && rec.klasa,
+    rec && rec.decyzja,
+    rec && rec.parametry && JSON.stringify(rec.parametry)
+  ].filter(Boolean).join(' ');
+}
+
+function szukajWLiscie(rekordy, query, k) {
+  const ile = k == null ? 5 : k;
+  const q = tokenyQuery(query);
+  const lista = Array.isArray(rekordy) ? rekordy : [];
+  if (!q.length) {
+    return lista.slice().sort(function (a, b) {
+      return (b.when || 0) - (a.when || 0);
+    }).slice(0, ile);
+  }
+  const scored = lista.map(function (rec) {
+    const blob = blobRekordu(rec).toLowerCase()
+      .replace(/ł/g, 'l').replace(/ó/g, 'o').replace(/ą/g, 'a').replace(/ę/g, 'e')
+      .replace(/ś/g, 's').replace(/ć/g, 'c').replace(/ń/g, 'n').replace(/[żź]/g, 'z');
+    let hits = 0;
+    for (let i = 0; i < q.length; i++) {
+      if (blob.indexOf(q[i]) >= 0) hits += 1;
+    }
+    return { rec: rec, score: hits };
+  }).filter(function (x) { return x.score > 0; })
+    .sort(function (a, b) {
+      return b.score - a.score || (b.rec.when || 0) - (a.rec.when || 0);
+    });
+  return scored.slice(0, ile).map(function (x) { return x.rec; });
+}
+
+function openDb() {
+  return new Promise(function (resolve, reject) {
+    if (typeof indexedDB === 'undefined') {
+      reject(new Error('IDB_BRAK'));
+      return;
+    }
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onerror = function () { reject(req.error || new Error('IDB_OPEN')); };
+    req.onupgradeneeded = function (ev) {
+      const db = ev.target.result;
+      if (!db.objectStoreNames.contains(STORE)) {
+        const os = db.createObjectStore(STORE, { keyPath: 'id' });
+        os.createIndex('when', 'when', { unique: false });
+        os.createIndex('klasa', 'klasa', { unique: false });
+        os.createIndex('decyzja', 'decyzja', { unique: false });
+      }
+    };
+    req.onsuccess = function () { resolve(req.result); };
+  });
+}
+
+function idbGetAll(db) {
+  return new Promise(function (resolve, reject) {
+    const tx = db.transaction(STORE, 'readonly');
+    const os = tx.objectStore(STORE);
+    if (typeof os.getAll === 'function') {
+      const r = os.getAll();
+      r.onsuccess = function () { resolve(r.result || []); };
+      r.onerror = function () { reject(r.error); };
+      return;
+    }
+    const out = [];
+    const c = os.openCursor();
+    c.onsuccess = function (ev) {
+      const cur = ev.target.result;
+      if (cur) { out.push(cur.value); cur.continue(); }
+      else resolve(out);
+    };
+    c.onerror = function () { reject(c.error); };
+  });
+}
+
+function idbPut(db, rec) {
+  return new Promise(function (resolve, reject) {
+    const tx = db.transaction(STORE, 'readwrite');
+    const os = tx.objectStore(STORE);
+    const r = os.put(rec);
+    r.onsuccess = function () { resolve(rec); };
+    r.onerror = function () { reject(r.error); };
+  });
+}
+
+let _komunikatFallback = '';
+
+function komunikatInstancji() {
+  return _komunikatFallback;
+}
+
+function ustawKomunikat(t) {
+  _komunikatFallback = t || '';
+}
+
+function recNorm(wej, extra) {
+  extra = extra || {};
+  const when = wej && wej.when != null ? wej.when : Date.now();
+  const rec = {
+    id: (wej && wej.id) || nowyId(when),
+    when: when,
+    zdanie: (wej && wej.zdanie) || extra.zdanie || '',
+    decyzja: (wej && wej.decyzja) || extra.decyzja || 'NEW',
+    klasa: (wej && wej.klasa) || extra.klasa || '',
+    parametry: (wej && wej.parametry) || extra.parametry || {},
+    spec: (wej && wej.spec) || extra.spec || null,
+    bramka: (wej && wej.bramka) || extra.bramka || { eksportOk: false, wpisy: [], iteracje: 0 },
+    render_png: (wej && wej.render_png) || extra.render_png || '',
+    wersja_app: (wej && wej.wersja_app) || extra.wersja_app || '',
+    mimo: !!(wej && wej.mimo) || !!extra.mimo
+  };
+  return rec;
+}
+
+async function zapiszInstancje(wej, extra) {
+  const rec = recNorm(wej, extra);
+  ustawKomunikat('');
+  try {
+    const db = await openDb();
+    await idbPut(db, rec);
+    try { db.close(); } catch (e0) {}
+    return { ok: true, id: rec.id, fallback: false, rec: rec };
+  } catch (e) {
+    const msg = 'IndexedDB niedostępne (WebView?) — zapisuję instancję w localStorage, limit '
+      + LS_LIMIT + '.';
+    ustawKomunikat(msg);
+    try {
+      const a = lsGet();
+      a.push(rec);
+      while (a.length > LS_LIMIT) a.shift();
+      lsSet(a);
+      return { ok: true, id: rec.id, fallback: true, komunikat: msg, rec: rec };
+    } catch (e2) {
+      const fail = 'Nie zapisałem instancji (IDB i localStorage padły).';
+      ustawKomunikat(fail);
+      return { ok: false, fallback: true, komunikat: fail };
+    }
+  }
+}
+
+async function wszystkieInstancje() {
+  try {
+    const db = await openDb();
+    const all = await idbGetAll(db);
+    try { db.close(); } catch (e0) {}
+    return all || [];
+  } catch (e) {
+    return lsGet();
+  }
+}
+
+async function szukajInstancji(query, k) {
+  const all = await wszystkieInstancje();
+  return szukajWLiscie(all, query, k);
+}
+
+async function eksportInstancjiJSONL() {
+  const all = await wszystkieInstancje();
+  return all.map(function (r) { return JSON.stringify(r); }).join('\n') + (all.length ? '\n' : '');
+}
+
+async function importInstancji(jsonl) {
+  const text = String(jsonl || '');
+  const linie = text.split(/\r?\n/).map(function (s) { return s.trim(); }).filter(Boolean);
+  let n = 0;
+  const bledy = [];
+  for (let i = 0; i < linie.length; i++) {
+    try {
+      const obj = JSON.parse(linie[i]);
+      const out = await zapiszInstancje(obj);
+      if (out && out.ok) n += 1;
+      else bledy.push('wiersz ' + (i + 1));
+    } catch (e) {
+      bledy.push('wiersz ' + (i + 1) + ': ' + String((e && e.message) || e).slice(0, 80));
+    }
+  }
+  return { ok: bledy.length === 0, n: n, bledy: bledy };
+}
+
+if (typeof window !== 'undefined') {
+  window.P2S = window.P2S || {};
+  Object.assign(window.P2S, {
+    zapiszInstancje: zapiszInstancje,
+    szukajInstancji: szukajInstancji,
+    szukajWLiscie: szukajWLiscie,
+    eksportInstancjiJSONL: eksportInstancjiJSONL,
+    importInstancji: importInstancji,
+    jpegZCanvas: jpegZCanvas,
+    komunikatInstancji: komunikatInstancji,
+    wszystkieInstancje: wszystkieInstancje
+  });
+}
+
+/**
+ * Jedno wywołanie OpenRouter json_schema — ten sam orCall co Projekt (nie nowy klient HTTP).
+ * MATCH: rejestr pusty → NEW. Rejestr niepusty → walidujParametry; brak_pola + liczba → MATCH+pytanie.
+ * MATCH nigdy nie dopisuje do rejestru (archetypy.dopiszDoRejestru rzuca).
+ */
+const SYS_KLAS = `Jesteś klasyfikatorem zleceń druku 3D na Bambu Lab P2S. Tylko polski. Nie piszesz kodu ani SPEC.
+
+Oddaj JSON według schematu. decyzja:
+- NEW — nowa część z opisu (domyślna, gdy nie ma archetypu).
+- REMIX — człowiek ma już plik STL/3MF i chce zmianę wymiaru/cechy na istniejącym modelu.
+- REJECT — za mało danych albo to nie jest zlecenie części; wtedy pytania (max 3).
+- MATCH — tylko gdy w kontekście jest archetyp o tej samej klasie (id/synonim z listy). Bez archetypów NIE wybieraj MATCH (zostanie NEW).
+
+klasa: krótki identyfikator (np. haczyk, tuleja, ociekacz) albo pusty string.
+kandydaci: max 3 {klasa, p} z p w 0..1.
+parametry: znane mm — srednica_mm (wewnętrzna/nominalna), srednica_zewn_mm, dlugosc_mm, wysokosc_mm, szerokosc_mm, grubosc_mm; x/y/z_mm tylko dla pudełek/płyt. kat — kąt gięcia w stopniach (kolanko); fi1/fi2 — średnica wejścia/wyjścia (redukcja, dwie różne średnice); srednica_zewn_mm tylko gdy zdanie mówi wprost „zewnętrzna”.
+pytania: max 3, tylko przy REJECT.
+uzasadnienie: jedno–dwa zdania.`;
+
+const PROGI_KLASYFIKATORA_DOMYSLNE = {
+  prog_pewnosci_klasy: null,
+  prog_dystansu_do_wszystkich: null,
+  when: null,
+  notatka: 'Faza D ustali na 100 zdaniach'
+};
+
+const SCHEMAT_KLASYFIKATORA = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['decyzja', 'klasa', 'kandydaci', 'parametry', 'pytania', 'uzasadnienie'],
+  properties: {
+    decyzja: { type: 'string', enum: ['MATCH', 'REMIX', 'NEW', 'REJECT'] },
+    klasa: { type: 'string' },
+    kandydaci: {
+      type: 'array',
+      maxItems: 3,
+      items: {
+        type: 'object',
+        additionalProperties: false,
+        required: ['klasa', 'p'],
+        properties: {
+          klasa: { type: 'string' },
+          p: { type: 'number' }
+        }
+      }
+    },
+    parametry: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        srednica_mm: { type: ['number', 'null'] },
+        srednica_zewn_mm: { type: ['number', 'null'] },
+        srednica_wewn_mm: { type: ['number', 'null'] },
+        wysokosc_mm: { type: ['number', 'null'] },
+        szerokosc_mm: { type: ['number', 'null'] },
+        x_mm: { type: ['number', 'null'] },
+        y_mm: { type: ['number', 'null'] },
+        z_mm: { type: ['number', 'null'] },
+        grubosc_mm: { type: ['number', 'null'] },
+        dlugosc_mm: { type: ['number', 'null'] },
+        fi: { type: ['number', 'null'] },
+        fiZ: { type: ['number', 'null'] },
+        fi1: { type: ['number', 'null'] },
+        fi2: { type: ['number', 'null'] },
+        kat: { type: ['number', 'null'] },
+        grub: { type: ['number', 'null'] },
+        dl: { type: ['number', 'null'] },
+        w: { type: ['number', 'null'] },
+        h: { type: ['number', 'null'] },
+        a: { type: ['number', 'null'] },
+        b: { type: ['number', 'null'] },
+        x: { type: ['number', 'null'] },
+        y: { type: ['number', 'null'] },
+        z: { type: ['number', 'null'] }
+      }
+    },
+    pytania: { type: 'array', maxItems: 3, items: { type: 'string' } },
+    uzasadnienie: { type: 'string' }
+  }
+};
+
+function parsujJsonModelu(txt) {
+  const s = String(txt || '').trim();
+  const fence = s.match(/```(?:json)?\s*([\s\S]*?)```/);
+  const raw = fence ? fence[1] : s;
+  const i = raw.indexOf('{');
+  const j = raw.lastIndexOf('}');
+  if (i < 0 || j <= i) throw new Error('Brak JSON w odpowiedzi klasyfikatora');
+  return JSON.parse(raw.slice(i, j + 1));
+}
+
+function fewShotTekst(instancje, archetypy) {
+  const linie = [];
+  const inst = instancje || [];
+  for (let i = 0; i < inst.length; i++) {
+    const r = inst[i];
+    linie.push('- instancja ' + (r.decyzja || '') + ' klasa=' + (r.klasa || '?')
+      + ' „' + String(r.zdanie || '').slice(0, 120) + '”');
+  }
+  const arch = archetypy || [];
+  for (let i = 0; i < arch.length; i++) {
+    const a = arch[i];
+    linie.push('- archetyp klasa=' + (a.klasa || a.id || '?') + ' '
+      + String(a.opis || a.uzasadnienie || '').slice(0, 160));
+  }
+  return linie.length ? ('Kontekst (few-shot):\n' + linie.join('\n')) : 'Kontekst: brak instancji i archetypów.';
+}
+
+function aliasParametry(p) {
+  const o = Object.assign({}, p && typeof p === 'object' ? p : {});
+  if (o.fi == null && o.srednica_mm != null) o.fi = o.srednica_mm;
+  if (o.fi == null && o.srednica_wewn_mm != null) o.fi = o.srednica_wewn_mm;
+  if (o.fiZ == null && o.srednica_zewn_mm != null) o.fiZ = o.srednica_zewn_mm;
+  if (o.h == null && o.wysokosc_mm != null) o.h = o.wysokosc_mm;
+  if (o.w == null && o.szerokosc_mm != null) o.w = o.szerokosc_mm;
+  if (o.grub == null && o.grubosc_mm != null) o.grub = o.grubosc_mm;
+  if (o.dl == null && o.dlugosc_mm != null) o.dl = o.dlugosc_mm;
+  if (o.x == null && o.x_mm != null) o.x = o.x_mm;
+  if (o.y == null && o.y_mm != null) o.y = o.y_mm;
+  if (o.z == null && o.z_mm != null) o.z = o.z_mm;
+  return o;
+}
+
+function normalizujWynik(raw, zdanie) {
+  const out = {
+    decyzja: 'NEW',
+    klasa: '',
+    kandydaci: [],
+    parametry: {},
+    pytania: [],
+    uzasadnienie: ''
+  };
+  if (!raw || typeof raw !== 'object') return zastosujMatch(out, zdanie);
+  const d = String(raw.decyzja || 'NEW').toUpperCase();
+  out.decyzja = (d === 'MATCH' || d === 'REMIX' || d === 'NEW' || d === 'REJECT') ? d : 'NEW';
+  out.klasa = String(raw.klasa || '');
+  out.kandydaci = Array.isArray(raw.kandydaci) ? raw.kandydaci.slice(0, 3) : [];
+  out.parametry = aliasParametry(raw.parametry);
+  out.pytania = Array.isArray(raw.pytania)
+    ? raw.pytania.map(function (p) { return String(p); }).slice(0, 3).filter(Boolean)
+    : [];
+  out.uzasadnienie = String(raw.uzasadnienie || '');
+  return zastosujMatch(out, zdanie);
+}
+
+async function klasyfikujZdanie(zdanie, opts) {
+  opts = opts || {};
+  const call = opts.orCall || (typeof orCall === 'function' ? orCall : null);
+  if (typeof call !== 'function') throw new Error('klasyfikator: brak orCall (wpięcie w projekt-ui)');
+  const k = opts.k == null ? 5 : opts.k;
+  let inst = opts.instancje;
+  if (!inst && typeof szukajInstancji === 'function') {
+    try { inst = await szukajInstancji(zdanie, k); } catch (e) { inst = []; }
+  }
+  try { await ladujRejestr(false); } catch (e2) { /* fetch 404 = rejestr pusty */ }
+  try { await ladujProgi(false); } catch (eP) { /* brak progu = bez MATCH→NEW */ }
+  const arch = opts.archetypy || lista();
+  const user = 'Zdanie:\n' + String(zdanie || '') + '\n\n'
+    + fewShotTekst(inst, arch) + '\n\n' + tekstArchetypow();
+  const body = {
+    model: opts.model || (typeof pjModelRoli === 'function' ? pjModelRoli('talk') : undefined),
+    messages: [
+      { role: 'system', content: SYS_KLAS },
+      { role: 'user', content: user }
+    ],
+    max_tokens: opts.max_tokens || 1200,
+    response_format: {
+      type: 'json_schema',
+      json_schema: { name: 'klasyfikator_v1', strict: true, schema: SCHEMAT_KLASYFIKATORA }
+    }
+  };
+  let txt;
+  try {
+    txt = await call(body, opts.timeoutMs || 60000);
+  } catch (e) {
+    if (/json_schema|response_format/i.test(String((e && e.message) || e))) {
+      txt = await call(Object.assign({}, body, {
+        response_format: { type: 'json_object' }
+      }), opts.timeoutMs || 60000);
+    } else {
+      throw e;
+    }
+  }
+  return normalizujWynik(parsujJsonModelu(txt), opts.zdanieWymiary || zdanie);
+}
+
+if (typeof window !== 'undefined') {
+  window.P2S = window.P2S || {};
+  Object.assign(window.P2S, {
+    klasyfikujZdanie: klasyfikujZdanie,
+    SYS_KLAS: SYS_KLAS,
+    SCHEMAT_KLASYFIKATORA: SCHEMAT_KLASYFIKATORA,
+    PROGI_KLASYFIKATORA_DOMYSLNE: PROGI_KLASYFIKATORA_DOMYSLNE
+  });
+}
+
+/**
  * Kontrakt SPEC v1 — ten sam spacer w PWA i w CI.
  * Node: Ajv gdy jest w node_modules; inaczej ten walidator.
  * Nie bundlujemy Ajv do index.html (file://).
@@ -12826,6 +14386,42 @@ function komunikatPrzyciecia(shard, finishReason, limit) {
     + ' urwany (finish_reason=' + (finishReason || 'json') + ', limit ' + limit + ' tokenów).';
 }
 
+function bledyWerdyktu(r) {
+  return ((r && r.werdykt && r.werdykt.wpisy) || []).filter(function (w) {
+    return w && w.poziom === 'blad';
+  });
+}
+
+/**
+ * Autokorekta ×3 przed pytaniami z mapy kod→pytanie.
+ * `napraw` to istniejąca ścieżka (LLM / processShardWithRepair). Bez LLM w testach: mock.
+ */
+async function petlaAutokorekty(spec, opts) {
+  opts = opts || {};
+  const maxIter = opts.maxIter == null ? 3 : opts.maxIter;
+  const buduj = opts.buduj;
+  const napraw = opts.napraw;
+  if (typeof buduj !== 'function') throw new Error('petlaAutokorekty: brak buduj');
+  let current = spec;
+  let iteracje = 0;
+  let r = buduj(current);
+  while (r && !(r.pytania && r.pytania.length && !r.mesh) && bledyWerdyktu(r).length) {
+    if (iteracje >= maxIter || typeof napraw !== 'function') break;
+    iteracje += 1;
+    current = await napraw(current, r.werdykt, iteracje);
+    r = buduj(current);
+  }
+  const bledy = bledyWerdyktu(r);
+  const pytania = bledy.length ? pytaniaZKodowBramki(bledy) : [];
+  return {
+    spec: current,
+    wynik: r,
+    iteracje: iteracje,
+    pytania: pytania,
+    stop: bledy.length ? 'pytania' : 'ok'
+  };
+}
+
 function specPusteBryly(spec) {
   const b = ((spec && spec.bryly) || []).length;
   const c = ((spec && spec.czesci) || []).reduce(function (n, cz) {
@@ -13255,6 +14851,9 @@ let engineTried = false;
 let enginePromise = null;
 let pjPendingImgs = [];
 let pjProjectId = '';
+let pjOstatnieZdanie = '';
+let pjOstatniaKlasyfikacja = null;
+let pjOczekujacyMatch = null;
 
 function $(id) { return document.getElementById(id); }
 function get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } }
@@ -13278,11 +14877,14 @@ function pjSysTalk() {
 async function pjKontekstNauki(text) {
   try {
     await ladujPackNauki(false);
+    try { await ladujRejestr(false); } catch (eArch) { /* rejestr pusty = MATCH→NEW */ }
+    try { await ladujProgi(false); } catch (ePr) { /* brak progu = bez MATCH→NEW */ }
     const hits = await szukajNauki(text, 5);
     const ragTagi = (hits || []).flatMap(h => Array.isArray(h.tagi) ? h.tagi : []);
     const szablony = dopasujSzablony(text, ragTagi);
     const szablonyTekst = tekstSzablonow(szablony);
-    return tekstKontekstuNauki(hits, text, szablonyTekst);
+    const archTekst = tekstArchetypow();
+    return tekstKontekstuNauki(hits, text, szablonyTekst) + (archTekst ? '\n' + archTekst : '');
   } catch (e) {
     return '';
   }
@@ -13697,6 +15299,16 @@ function setWarn(werdykt, extra) {
   }).join('');
 }
 
+function pokazPytaniaBramki(pytania) {
+  const lista = (pytania || []).filter(Boolean).slice(0, 3);
+  if (!lista.length) return;
+  const wrap = $('pjPytanieWrap');
+  const el = $('pjPytanie');
+  if (wrap) wrap.hidden = false;
+  if (el) el.textContent = lista.join(' ');
+  chatLine('ai', lista.join(' '));
+}
+
 /** Pudło CSG: kosz + wnetrze → grubość ściany z różnicy wymiarów/pozycji. */
 function pjGruboscSciankiZSpec(spec) {
   const PROG = 2.0;
@@ -14018,13 +15630,23 @@ function rysujCztery(mesh, bbox) {
   });
   const bb = $('pjBbox');
   if (bb) bb.textContent = bbox.x.toFixed(0) + ' × ' + bbox.y.toFixed(0) + ' × ' + bbox.z.toFixed(0) + ' mm';
+  if (last) {
+    last._renderOk = !!(mesh && mesh.vertProperties && mesh.vertProperties.length
+      && !(mesh.isEmpty));
+  }
+}
+
+function watertightZTopologii(dekl) {
+  const st = dekl && dekl.topologia && dekl.topologia.status;
+  return st === 'NoError' || st === 0;
 }
 
 function pokazDecl(dekl, mesh) {
   const el = $('pjDecl'); if (!el) return;
   try { localStorage.setItem(DECL_KEY, JSON.stringify(dekl)); } catch (e) {}
+  const wt = watertightZTopologii(dekl);
   if (typeof window.aDeclHtml === 'function') {
-    el.innerHTML = window.aDeclHtml(mesh.bbox, [{ a: { watertight: true } }]);
+    el.innerHTML = window.aDeclHtml(mesh.bbox, [{ a: { watertight: wt } }]);
   } else {
     el.innerHTML = '<p>X ' + mesh.bbox.x.toFixed(2) + ' · Y ' + mesh.bbox.y.toFixed(2) + ' · Z ' + mesh.bbox.z.toFixed(2) + ' mm</p>';
   }
@@ -14035,13 +15657,16 @@ function pokazDecl(dekl, mesh) {
 
 function syncExport(werdykt) {
   const btn = $('pjDl3mf'), anal = $('pjAnal'), mimo = $('pjMimo');
+  const akc = $('pjAkceptuj');
   const eksper = last && (last.eksperymentalny || werdyktEksperymentalny(last.spec));
   const ok = werdykt && werdykt.eksportOk && !eksper;
   const force = mimo && mimo.checked;
+  const renderOk = !!(last && last.mesh && last._renderOk);
+  if (akc) akc.disabled = !renderOk;
   if (btn) {
-    btn.disabled = !(last && last.mesh) || (!ok && !force && !eksper);
-    if (eksper && last && last.mesh) {
-      btn.disabled = false;
+    const poAkceptacji = !!(last && last.akceptacja);
+    btn.disabled = !poAkceptacji || !(last && last.mesh) || (!ok && !force && !eksper);
+    if (eksper && last && last.mesh && poAkceptacji) {
       btn.textContent = 'Pobierz 3MF (eksperymentalny)';
     } else if (btn) {
       btn.textContent = 'Pobierz 3MF';
@@ -14606,7 +16231,14 @@ async function zbuduj(spec, note, prev, context, opts) {
   pjWalidujSpecWejscie(spec);
   pjPilnujUstalenSpec(spec, context || note);
   pjOdrzucHakaProstego(spec, note);
-  const r = buildAndGate(spec);
+  const petla = await petlaAutokorekty(spec, {
+    buduj: function (s) { return buildAndGate(s); },
+    napraw: opts.napraw,
+    maxIter: 3
+  });
+  spec = petla.spec;
+  const r = petla.wynik;
+  if (!r) throw new Error('brak wyniku bramki');
   if (r.pytania && r.pytania.length) {
     const lista = $('pjDrukLista');
     if (lista) { lista.hidden = true; lista.innerHTML = ''; }
@@ -14618,7 +16250,24 @@ async function zbuduj(spec, note, prev, context, opts) {
   }
   const bledyBramki = ((r.werdykt && r.werdykt.wpisy) || []).filter(w => w.poziom === 'blad');
   if (bledyBramki.length) {
-    throw new Error(bledyBramki.map(w => w.kod + ': ' + w.tekst).join('; '));
+    last = r;
+    lastIdx = 0;
+    last.iteracje = petla.iteracje;
+    last.akceptacja = false;
+    last._renderOk = false;
+    last.zdanie = pjOstatnieZdanie;
+    last.klasyfikacja = pjOstatniaKlasyfikacja;
+    if (r.mesh) {
+      rysujAktualna();
+      fillCzesciSwitch();
+    }
+    setWarn(r.werdykt);
+    syncExport(r.werdykt);
+    const pyt = (petla.pytania && petla.pytania.length)
+      ? petla.pytania
+      : bledyBramki.slice(0, 3).map(function (w) { return w.tekst; });
+    pokazPytaniaBramki(pyt);
+    return r;
   }
   if (typeof window !== 'undefined' && window.P2S
       && typeof window.P2S.flagaWizjaProjekt === 'function'
@@ -14635,6 +16284,11 @@ async function zbuduj(spec, note, prev, context, opts) {
   $('pjPytanieWrap').hidden = true;
   last = r;
   lastIdx = 0;
+  last.iteracje = petla.iteracje;
+  last.akceptacja = false;
+  last._renderOk = false;
+  last.zdanie = pjOstatnieZdanie;
+  last.klasyfikacja = pjOstatniaKlasyfikacja;
   last.eksperymentalny = werdyktEksperymentalny(r.spec) || !!opts.niepelnyShard;
   if (opts.niepelnyShard) last.shardBledy = opts.shardBledy || [];
   if (opts.niepelnyShard) {
@@ -14717,6 +16371,131 @@ async function pjRozmowaZSzukaniem(text, imgs) {
   return talk;
 }
 
+function pjFnKlasyfikuj() {
+  if (typeof window !== 'undefined' && window.P2S && typeof window.P2S.klasyfikujZdanie === 'function') {
+    return window.P2S.klasyfikujZdanie;
+  }
+  if (typeof klasyfikujZdanie === 'function') return klasyfikujZdanie;
+  return null;
+}
+
+function pjLiczbaZTekstu(text) {
+  const t = normalizujJednostki(String(text || ''));
+  const m = t.match(/(\d+(?:[.,]\d+)?)/);
+  if (!m) return null;
+  const n = Number(String(m[1]).replace(',', '.'));
+  return Number.isFinite(n) ? n : null;
+}
+
+function pjSpecZMatch(b) {
+  return {
+    spec_version: '1.0',
+    nazwa: b.spec.nazwa,
+    material: b.spec.material || 'PETG',
+    bryly: b.spec.bryly,
+    cechy: b.spec.cechy || [],
+    pytania: [],
+    uwagi_do_druku: b.spec.uwagi_do_druku || '',
+    orientacja_druku: {
+      obrot_xyz_deg: [0, 0, 0],
+      sciana_na_plycie: 'spód',
+      uzasadnienie: 'MATCH — szablon archetypu.'
+    },
+    podpory: { wymagane: false, uzasadnienie: 'Szablon archetypu.', typ: 'brak' },
+    brim: { wymagany: false, uzasadnienie: 'Szablon archetypu.' }
+  };
+}
+
+function pjPewnoscKl(kl) {
+  if (kl && typeof kl.p_klasy === 'number') return kl.p_klasy;
+  const k0 = kl && kl.kandydaci && kl.kandydaci[0];
+  if (k0 && typeof k0.p === 'number') return k0.p;
+  return null;
+}
+
+function pjFnBuildArchetyp() {
+  if (typeof buildArchetyp === 'function') return buildArchetyp;
+  return window.P2S && window.P2S.archetypy && window.P2S.archetypy.build;
+}
+
+/**
+ * MATCH z brakiem pola → pytanie (stan pjOczekujacyMatch). Komplet → zbuduj.
+ * @returns {Promise<'stop'|'dalej'>}
+ */
+async function pjObsluzMatchBuild(klasa, parametry, zdanie, kl) {
+  const bFn = pjFnBuildArchetyp();
+  if (typeof bFn !== 'function') return 'dalej';
+  try { await ladujRejestr(false); } catch (e) { /* ignore */ }
+  const b = bFn(klasa, parametry || {});
+  if (b && b.spec) {
+    pjOczekujacyMatch = null;
+    pjOstatnieZdanie = zdanie;
+    pjOstatniaKlasyfikacja = Object.assign({}, kl || {}, {
+      decyzja: 'MATCH', klasa: klasa, parametry: parametry || {}
+    });
+    if (!(await bootEngine())) return 'stop';
+    const pk = pjPewnoscKl(pjOstatniaKlasyfikacja);
+    chatLine('ai', 'MATCH ' + klasa + (pk != null ? (' (p ' + pk + ')') : '')
+      + (kl && kl.uzasadnienie ? (': ' + kl.uzasadnienie) : ''));
+    await zbuduj(pjSpecZMatch(b), zdanie.slice(0, 40), null, zdanie, {});
+    return 'stop';
+  }
+  if (b && b.powod === 'brak_pola') {
+    const n = (pjOczekujacyMatch && pjOczekujacyMatch.nPytan) || 0;
+    if (n >= 3) {
+      pjOczekujacyMatch = null;
+      return 'dalej';
+    }
+    const pole = b.pole;
+    const pyt = (kl && Array.isArray(kl.pytania) && kl.pytania.length)
+      ? kl.pytania
+      : ['Podaj ' + pole + ' [mm] dla klasy ' + klasa + '.'];
+    const pk = pjPewnoscKl(kl);
+    chatLine('ai', 'MATCH ' + klasa + (pk != null ? (' (p ' + pk + ')') : '')
+      + '. Brakuje ' + pole + ' — podaj w mm.');
+    pokazPytaniaBramki(pyt);
+    pjOczekujacyMatch = {
+      klasa: klasa,
+      parametry: Object.assign({}, parametry || {}),
+      brakujace_pola: pole ? [pole] : [],
+      zdanie: zdanie,
+      nPytan: n + 1,
+      kl: kl || {}
+    };
+    return 'stop';
+  }
+  if (b && b.powod === 'brak_buildera') {
+    pjOczekujacyMatch = null;
+    chatLine('ai', 'Klasa w rejestrze, ale brak buildera — ścieżka NEW (nie zgaduję geometrii).');
+    return 'dalej';
+  }
+  pjOczekujacyMatch = null;
+  return 'dalej';
+}
+
+/** @returns {Promise<'stop'|'dalej'>} */
+async function pjDomknijOczekujacyMatch(text0) {
+  const st = pjOczekujacyMatch;
+  if (!st) return 'dalej';
+  const num = pjLiczbaZTekstu(text0);
+  if (num == null) {
+    pjOczekujacyMatch = null;
+    return 'dalej';
+  }
+  const pole = (st.brakujace_pola || [])[0];
+  if (!pole) {
+    pjOczekujacyMatch = null;
+    return 'dalej';
+  }
+  const parametry = Object.assign({}, st.parametry || {});
+  parametry[pole] = num;
+  const zdanie = (st.zdanie || '') + ' | ' + text0;
+  const kl = Object.assign({}, st.kl || {}, {
+    decyzja: 'MATCH', klasa: st.klasa, parametry: parametry
+  });
+  return pjObsluzMatchBuild(st.klasa, parametry, zdanie, kl);
+}
+
 async function zrob() {
   if (pjOriginFile()) {
     chatLine('ai', PJ_FILE_ORIGIN_MSG);
@@ -14733,15 +16512,22 @@ async function zrob() {
   const hintEl = $('pjVisionHint');
   if (hintEl) hintEl.hidden = true;
   pjPokazResearch(text0);
-  if (!key()) {
+  if (pjOczekujacyMatch) {
+    const d = await pjDomknijOczekujacyMatch(text0);
+    if (d === 'stop') return;
+  }
+  const klasFnStart = pjFnKlasyfikuj();
+  if (!key() && typeof klasFnStart !== 'function') {
     chatLine('ai', 'Brak klucza API — wklej SPEC ręcznie poniżej. Budowanie, podgląd i 3MF działają offline. Linki do podobnych modeli są powyżej.');
     $('pjSpec').focus();
     return;
   }
-  const meta = pjMetaWersji();
-  chatLine('ai', 'Mózg: ' + pjModelRoli('talk') + ' · reasoning max · profil ' + pjProfil()
-    + ' · talk ' + (PJ_TIMEOUT_TALK_MS / 60000) + ' min / SPEC ' + (PJ_TIMEOUT_SPEC_MS / 60000)
-    + ' min · ' + meta.wersja + (meta.stamp ? (' · ' + meta.stamp) : '') + '.');
+  if (key()) {
+    const meta = pjMetaWersji();
+    chatLine('ai', 'Mózg: ' + pjModelRoli('talk') + ' · reasoning max · profil ' + pjProfil()
+      + ' · talk ' + (PJ_TIMEOUT_TALK_MS / 60000) + ' min / SPEC ' + (PJ_TIMEOUT_SPEC_MS / 60000)
+      + ' min · ' + meta.wersja + (meta.stamp ? (' · ' + meta.stamp) : '') + '.');
+  }
   try {
     let text = text0;
     if (imgs.length) {
@@ -14759,6 +16545,43 @@ async function zrob() {
           chatLine('ai', 'Nie odczytałem zdjęcia przez Flash. Opisz klamkę/drzwi słowami i podaj mm suwmiarką.');
         }
       }
+    }
+    pjOstatnieZdanie = text0;
+    try {
+      const klasFn = pjFnKlasyfikuj();
+      if (typeof klasFn === 'function') {
+        const kl = await klasFn(text, {
+          orCall: orCall,
+          model: pjModelRoli('talk'),
+          timeoutMs: 60000,
+          zdanieWymiary: text0
+        });
+        pjOstatniaKlasyfikacja = kl;
+        if (kl && kl.decyzja === 'REJECT') {
+          const pyt = (kl.pytania || []).filter(Boolean).slice(0, 3);
+          pokazPytaniaBramki(pyt.length ? pyt : ['Doprecyzuj zlecenie (max 3 pytania).']);
+          if (kl.uzasadnienie) chatLine('ai', kl.uzasadnienie);
+          return;
+        }
+        if (kl && kl.decyzja === 'REMIX') {
+          chatLine('ai', (kl.uzasadnienie ? (kl.uzasadnienie + ' ') : '')
+            + 'To wygląda na poprawkę istniejącego modelu — otwieram Przerób. Wgraj STL/3MF (nie biorę siatki z Projektu).');
+          const t = document.querySelector('#tabs .tab[data-v="przerobka"]');
+          if (t) t.click();
+          return;
+        }
+        if (kl && kl.decyzja === 'MATCH') {
+          const m = await pjObsluzMatchBuild(kl.klasa, kl.parametry || {}, text, kl);
+          if (m === 'stop') return;
+        }
+      }
+    } catch (ke) {
+      pjOstatniaKlasyfikacja = { decyzja: 'NEW', uzasadnienie: 'klasyfikator padł: ' + String((ke && ke.message) || ke).slice(0, 120) };
+    }
+    if (!key()) {
+      chatLine('ai', 'Brak klucza API — wklej SPEC ręcznie poniżej. Budowanie, podgląd i 3MF działają offline. Linki do podobnych modeli są powyżej.');
+      $('pjSpec').focus();
+      return;
     }
     const talk = await pjRozmowaZSzukaniem(text, uzyjFlashDoOpisu(pjModelRoli('talk')) ? [] : imgs);
     chatLine('ai', pjObetnijZnacznik(talk));
@@ -14804,6 +16627,30 @@ async function zrob() {
     };
     let spec;
     let shardBledy = [];
+    const naprawBramki = async function (zly, werdykt, iter) {
+      const bledy = ((werdykt && werdykt.wpisy) || []).filter(function (w) {
+        return w && w.poziom === 'blad';
+      });
+      const msg = bledy.map(function (w) { return w.kod + ': ' + w.tekst; }).join('; ');
+      try { chatLine('ai', 'Autokorekta ' + iter + '/3: ' + msg.slice(0, 220)); } catch (e2) {}
+      const popraw = Object.assign({}, body, {
+        messages: [
+          { role: 'system', content: pjSysSpec() },
+          {
+            role: 'user',
+            content: userB
+              + '\n\nPOPRZEDNI SPEC Z BŁĘDEM BRAMKI (iteracja ' + iter + '):\n' + JSON.stringify(zly)
+              + '\n\nBŁĄD BRAMKI:\n' + msg
+              + '\n\nOddaj cały poprawiony SPEC. Napraw wyłącznie wskazany błąd; nie dodawaj nowych cech.'
+          }
+        ],
+        reasoning: { effort: 'high' }
+      });
+      const s2 = pjDomknijSpec(parseSpec(await pjOdpowiedzSpec(popraw)), talk, text);
+      if (pjGotoweDoSpec(talk, text, prev)) pjOdrzucPustePoRysuj(s2, talk);
+      pjWalidujSpecWejscie(s2);
+      return s2;
+    };
     // [[SZABLON:id(params)]] — generuj SPEC z szablonu bez wywołania LLM
     const szablonMatch = /\[\[SZABLON:(\w+)\(([^)]*)\)\]\]/i.exec(talk);
     if (szablonMatch && !prev) {
@@ -14861,7 +16708,8 @@ async function zrob() {
       pjWalidujSpecWejscie(spec);
       await zbuduj(spec, text.slice(0, 40), prev && prev, userB, {
         niepelnyShard: shardBledy.length > 0,
-        shardBledy: shardBledy
+        shardBledy: shardBledy,
+        napraw: naprawBramki
       });
     } catch (first) {
       const msg1 = String((first && first.message) || first);
@@ -14891,7 +16739,7 @@ async function zrob() {
       spec = pjDomknijSpec(parseSpec(await pjOdpowiedzSpec(popraw)), talk, text);
       if (pjGotoweDoSpec(talk, text, prev)) pjOdrzucPustePoRysuj(spec, talk);
       pjWalidujSpecWejscie(spec);
-      await zbuduj(spec, text.slice(0, 40), prev && prev, userB);
+      await zbuduj(spec, text.slice(0, 40), prev && prev, userB, { napraw: naprawBramki });
     }
     pytanieRundy = 0;
   } catch (e) {
@@ -14912,6 +16760,87 @@ function offline() {
     if (inp) { inp.disabled = false; inp.placeholder = 'np. mydelniczka do wanny'; }
     if (btn) btn.disabled = false;
   }
+}
+
+function wersjaAppTekst() {
+  try {
+    if (typeof window !== 'undefined' && window.P2S_VER_NAME) return String(window.P2S_VER_NAME);
+  } catch (e) {}
+  try {
+    if (typeof window !== 'undefined' && window.__P2S_META && window.__P2S_META.wersja) {
+      return String(window.__P2S_META.wersja);
+    }
+  } catch (e2) {}
+  return '';
+}
+
+function pobierzKandydatArchetypu(rec) {
+  const when = rec && rec.when ? rec.when : Date.now();
+  const payload = {
+    when: when,
+    zdanie: rec && rec.zdanie,
+    klasa: rec && rec.klasa,
+    parametry: rec && rec.parametry,
+    spec: rec && rec.spec,
+    uzasadnienie: rec && rec.uzasadnienie,
+    notatka: 'kandydat — nie dopisany do rejestru archetypów (Faza C)'
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const nazwa = 'kandydat-archetypu-' + when + '.json';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = nazwa;
+  a.click();
+}
+
+async function onPjAkceptuj() {
+  if (!last || !last.mesh || !last._renderOk) return;
+  last.akceptacja = true;
+  const mimoEl = $('pjMimo');
+  const eksper = last.eksperymentalny || werdyktEksperymentalny(last.spec);
+  last.mimo = !!(mimoEl && mimoEl.checked) || !!eksper;
+  const canvas = $('pjIzo');
+  const jpegFn = (typeof jpegZCanvas === 'function')
+    ? jpegZCanvas
+    : (window.P2S && window.P2S.jpegZCanvas);
+  const png = typeof jpegFn === 'function' ? jpegFn(canvas) : '';
+  const kl = last.klasyfikacja || pjOstatniaKlasyfikacja || {};
+  const rec = {
+    when: Date.now(),
+    zdanie: last.zdanie || pjOstatnieZdanie || '',
+    decyzja: kl.decyzja || 'NEW',
+    klasa: kl.klasa || '',
+    parametry: kl.parametry || {},
+    spec: last.spec,
+    bramka: {
+      eksportOk: !!(last.werdykt && last.werdykt.eksportOk),
+      wpisy: (last.werdykt && last.werdykt.wpisy) || [],
+      iteracje: last.iteracje || 0
+    },
+    render_png: png,
+    wersja_app: wersjaAppTekst(),
+    mimo: !!last.mimo
+  };
+  const zapisz = (typeof zapiszInstancje === 'function')
+    ? zapiszInstancje
+    : (window.P2S && window.P2S.zapiszInstancje);
+  if (typeof zapisz === 'function') {
+    const out = await zapisz(rec);
+    if (out && out.komunikat) chatLine('ai', out.komunikat);
+    else chatLine('ai', 'Zapisano instancję (widziałem 4 rzuty).');
+  }
+  const cb = $('pjNowaKlasa');
+  if (cb && cb.checked && (kl.decyzja === 'NEW' || !kl.decyzja)) {
+    pobierzKandydatArchetypu({
+      when: rec.when,
+      zdanie: rec.zdanie,
+      klasa: rec.klasa,
+      parametry: rec.parametry,
+      spec: rec.spec,
+      uzasadnienie: kl.uzasadnienie
+    });
+  }
+  syncExport(last.werdykt);
 }
 
 function bind() {
@@ -14968,9 +16897,12 @@ function bind() {
       setWarn({ wpisy: [{ poziom: 'blad', kod: 'SPEC', tekst: e.message }] });
     }
   });
+  const akc = $('pjAkceptuj');
+  if (akc) akc.addEventListener('click', onPjAkceptuj);
   const dl = $('pjDl3mf');
   if (dl) dl.addEventListener('click', async () => {
     if (!last || !last.mesh) return;
+    if (!last.akceptacja) return;
     const eksper = last.eksperymentalny || werdyktEksperymentalny(last.spec);
     if (!last.werdykt.eksportOk && !eksper && !($('pjMimo') && $('pjMimo').checked)) return;
     if (!last.werdykt.eksportOk && !eksper) {
@@ -15060,6 +16992,8 @@ function bind() {
   if (wmin) wmin.addEventListener('change', async () => {
     if (!last || !last.spec) return;
     last = buildAndGate(last.spec, { wmin: wmin.checked ? 0.42 : 0.8 });
+    last.akceptacja = false;
+    last._renderOk = false;
     lastIdx = Math.min(lastIdx, (last.czesci && last.czesci.length ? last.czesci.length : 1) - 1);
     rysujAktualna();
     fillCzesciSwitch();
@@ -15178,6 +17112,8 @@ if (typeof window !== 'undefined') {
   window.P2S.orKomunikatBusy = orKomunikatBusy;
   window.P2S.werdyktEksperymentalny = werdyktEksperymentalny;
   window.P2S.pjProfil = pjProfil;
+  window.P2S.petlaAutokorekty = petlaAutokorekty;
+  window.P2S.orCall = orCall;
   window.P2S.PJ_TIMEOUT_TALK_MS = PJ_TIMEOUT_TALK_MS;
   window.P2S.PJ_TIMEOUT_SPEC_MS = PJ_TIMEOUT_SPEC_MS;
 }
@@ -18518,7 +20454,8 @@ window.P2S.przerobka = {
   inwentarz3mf, porownajInwentarz, tekstInwentarza,
   PRZEROBKA_CIRCULAR_SEGMENTS, sciankaMin,
   deltaRZobwodu, wybierzObrecz, powiekszObwodIRamiona,
-  dodajDziurkeBrelok, wydluzOsiowo, wydluzWszystkieCiala
+  dodajDziurkeBrelok, wydluzOsiowo, wydluzWszystkieCiala,
+  interpretujZdanie
 };
 })();
 </script>
@@ -18565,6 +20502,11 @@ window.P2S.przerobka = {
   var CIALA = null;
   var NAZWY_CIAL = null;
   var LIC_META = null;
+  var ZRODLO_UPLOAD = false;
+  var prAkceptacja = false;
+  var prRenderOk = false;
+  var prOstatnieZdanie = '';
+  var prOstatniWerdykt = null;
 
   function pokazLicencjePrzerobu() {
     var box = $('prLicencja');
@@ -18724,6 +20666,13 @@ window.P2S.przerobka = {
     var rys = window.P2S && window.P2S.rysuj;
     var keys = ['izo', 'przod', 'bok', 'gora'];
     var mesh = m ? meshZBryly(m) : MESH;
+    var ok = !!(mesh && mesh.vertProperties && mesh.vertProperties.length);
+    prRenderOk = ok;
+    if (!ok) prAkceptacja = false;
+    var akc = $('prAkceptuj');
+    if (akc) akc.disabled = !ok;
+    var pob = $('prPobierz');
+    if (pob && !prAkceptacja) pob.disabled = true;
     MESH = mesh;
     var i;
     if (mesh && rz && rys && W) {
@@ -18746,6 +20695,54 @@ window.P2S.przerobka = {
       }
       $('prGab').textContent = fmt(dx) + ' × ' + fmt(dy) + ' × ' + fmt(dz) + ' mm';
     }
+  }
+  function bramkaPoOperacji(part) {
+    var fn = window.P2S && window.P2S.sprawdzBramke;
+    if (!fn || !part || typeof part.boundingBox !== 'function') return null;
+    var dekl = {};
+    try {
+      var bb = part.boundingBox();
+      var mn = bb.min, mx = bb.max;
+      if (Array.isArray(mn)) {
+        dekl.bbox = { x: mx[0] - mn[0], y: mx[1] - mn[1], z: mx[2] - mn[2] };
+      }
+    } catch (e) {}
+    try {
+      var topo = { czesci_n: 1, genus: null, status: null };
+      if (typeof part.decompose === 'function') {
+        var kaw = part.decompose();
+        topo.czesci_n = kaw && kaw.length != null ? kaw.length : 1;
+        if (kaw) {
+          for (var i = 0; i < kaw.length; i++) {
+            try { kaw[i].delete(); } catch (e2) {}
+          }
+        }
+      }
+      if (typeof part.status === 'function') {
+        try { topo.status = part.status(); } catch (e3) { topo.status = null; }
+      }
+      dekl.topologia = topo;
+    } catch (e4) {}
+    try {
+      prOstatniWerdykt = fn(part, dekl, SPEC || {}, {});
+    } catch (e5) {
+      prOstatniWerdykt = { eksportOk: false, wpisy: [{ poziom: 'blad', kod: 'BRAMKA', tekst: String(e5 && e5.message || e5) }] };
+    }
+    if (prOstatniWerdykt && prOstatniWerdykt.wpisy && prOstatniWerdykt.wpisy.length && $('prWynik')) {
+      prOstatniWerdykt.wpisy.forEach(function (w) {
+        var d2 = el('div', w.poziom === 'blad' ? 'pr-blad' : 'pr-ostrz');
+        d2.appendChild(el('b', null, (w.kod || '') + ' '));
+        d2.appendChild(el('span', null, w.tekst || ''));
+        $('prWynik').appendChild(d2);
+      });
+    }
+    return prOstatniWerdykt;
+  }
+  function syncPrEksport() {
+    var akc = $('prAkceptuj');
+    if (akc) akc.disabled = !prRenderOk;
+    var pob = $('prPobierz');
+    if (pob) pob.disabled = !(prAkceptacja && (WYNIK || BIEZ));
   }
   function pokazCechy() {
     var box = $('prCechy');
@@ -18888,15 +20885,20 @@ window.P2S.przerobka = {
       out.appendChild(d2);
     });
   }
-  async function wczytaj(file) {
+  async function wczytaj(file, opts) {
+    opts = opts || {};
     var A = pipe();
     if (!A) { stan('Brak potoku przeróbki.'); return; }
     if ($('prWynik')) $('prWynik').innerHTML = '';
     if ($('prEdycja')) $('prEdycja').hidden = true;
     if ($('prPobierz')) $('prPobierz').disabled = true;
+    if ($('prAkceptuj')) $('prAkceptuj').disabled = true;
     if ($('prWskaz')) $('prWskaz').textContent = '';
     WYNIK = null;
     WYBRANA = null;
+    prAkceptacja = false;
+    prRenderOk = false;
+    if (!opts.zachowajZrodlo) ZRODLO_UPLOAD = !opts.zNitki;
     NAZWA = String(file.name || 'model').replace(/\.(stl|3mf)$/i, '');
     reformEtap('import');
     stan('wczytuję silnik…');
@@ -19008,10 +21010,12 @@ window.P2S.przerobka = {
     }
     WYNIK = out.wynik;
     BIEZ = out.wynik;
+    prAkceptacja = false;
     pokazBramke(out.bramka, KAT, out.katalogPo, d);
-    if ($('prWynik')) $('prWynik').appendChild(el('p', 'pr-ok', 'Przeszło wszystkie kontrole. Możesz pobrać.'));
-    if ($('prPobierz')) $('prPobierz').disabled = false;
+    bramkaPoOperacji(out.wynik);
+    if ($('prWynik')) $('prWynik').appendChild(el('p', 'pr-ok', 'Przeszło kontrole przeróbki. Zaakceptuj 4 rzuty, potem pobierz.'));
     odswiezPodglad();
+    syncPrEksport();
   }
   function wymagaNd() {
     if (window.P2S && typeof window.P2S.wymagaPotwierdzeniaNd === 'function') {
@@ -19022,6 +21026,10 @@ window.P2S.przerobka = {
   }
   async function pobierz() {
     if (!WYNIK || !window.P2S) return;
+    if (!prAkceptacja) {
+      prChat('ai', 'Najpierw akceptacja 4 rzutów.');
+      return;
+    }
     if (wymagaNd()) {
       var ok = window.confirm(
         'Licencja ND: wolno ciąć u siebie, nie publikować przeróbki. To nie jest porada prawna. Eksportować?'
@@ -19186,12 +21194,14 @@ window.P2S.przerobka = {
         var r = window.P2S.buildAndGate(SPEC);
         if (r && r.mesh && typeof window.P2S.mesh3MF === 'function') {
           var buf = await window.P2S.mesh3MF(r.mesh, { nazwa: NAZWA, spec: SPEC, licencja: LIC_META });
-          await wczytaj(asFile(buf, (NAZWA || 'projekt') + '_skala.3mf'));
+          await wczytaj(asFile(buf, (NAZWA || 'projekt') + '_skala.3mf'), { zachowajZrodlo: true });
           SPEC = r.spec || SPEC;
           odswiezCheckliste(window.P2S.ocenBrimPoSkali ? window.P2S.ocenBrimPoSkali(SPEC, r.mesh.bbox) : SPEC, r.werdykt);
           stan('');
           prChat('ai', 'Przeskalowałem SPEC ×' + factor + ' i złożyłem siatkę od nowa (bez wymyślania modelu). Orientacja zostaje.');
-          if ($('prPobierz')) $('prPobierz').disabled = false;
+          prAkceptacja = false;
+      if (BIEZ) bramkaPoOperacji(BIEZ);
+      syncPrEksport();
           WYNIK = BIEZ;
           return true;
         }
@@ -19205,7 +21215,9 @@ window.P2S.przerobka = {
         if (window.P2S.ocenBrimPoSkali) SPEC = window.P2S.ocenBrimPoSkali(SPEC, box);
         odswiezCheckliste(SPEC, null);
       }
-      if ($('prPobierz')) $('prPobierz').disabled = false;
+      prAkceptacja = false;
+      if (BIEZ) bramkaPoOperacji(BIEZ);
+      syncPrEksport();
       WYNIK = BIEZ;
       odswiezPodglad();
       stan('');
@@ -19260,7 +21272,9 @@ window.P2S.przerobka = {
         KAT._solid = out.wynik;
         pokazCechy();
       }
-      if ($('prPobierz')) $('prPobierz').disabled = false;
+      prAkceptacja = false;
+      if (BIEZ) bramkaPoOperacji(BIEZ);
+      syncPrEksport();
       odswiezPodglad();
       stan('');
       var msg = [];
@@ -19294,7 +21308,9 @@ window.P2S.przerobka = {
       var out = A.dodajDziurkeBrelok(BIEZ || ORG, { srednica_mm: plan.srednica_mm || 5.2 });
       if (BIEZ && BIEZ !== ORG) { try { BIEZ.delete(); } catch (e0) {} }
       BIEZ = out.wynik; ORG = out.wynik; WYNIK = out.wynik;
-      if ($('prPobierz')) $('prPobierz').disabled = false;
+      prAkceptacja = false;
+      if (BIEZ) bramkaPoOperacji(BIEZ);
+      syncPrEksport();
       odswiezPodglad();
       stan('');
       prChat('ai', 'Dziurka Ø' + fmt(out.srednica_mm, 1) + ' mm w osobnym uszku (ścianka ' + fmt(out.scianka_mm, 1) + ' mm). Nie ruszałem kafelkiem istniejących gniazd. Pobierz 3MF.');
@@ -19329,7 +21345,9 @@ window.P2S.przerobka = {
       var out = outs[0];
       if (BIEZ && BIEZ !== ORG && CIALA.indexOf(BIEZ) < 0) { try { BIEZ.delete(); } catch (e0) {} }
       BIEZ = out.wynik; ORG = out.wynik; WYNIK = out.wynik;
-      if ($('prPobierz')) $('prPobierz').disabled = false;
+      prAkceptacja = false;
+      if (BIEZ) bramkaPoOperacji(BIEZ);
+      syncPrEksport();
       odswiezPodglad();
       stan('');
       prChat('ai', 'Wydłużyłem ' + CIALA.length + ' części, oś ' + out.os + ' o ' + fmt(extra, 1) + ' mm z każdej strony (nie skala). Pobierz 3MF.');
@@ -19473,11 +21491,13 @@ window.P2S.przerobka = {
       var r = window.P2S.buildAndGate(spec);
       if (r && r.mesh && typeof window.P2S.mesh3MF === 'function') {
         var buf = await window.P2S.mesh3MF(r.mesh, { nazwa: spec.nazwa || NAZWA, spec: spec, licencja: LIC_META });
-        await wczytaj(asFile(buf, (spec.nazwa || NAZWA || 'projekt') + '_przerob.3mf'));
+        await wczytaj(asFile(buf, (spec.nazwa || NAZWA || 'projekt') + '_przerob.3mf'), { zachowajZrodlo: true });
         SPEC = r.spec || spec;
         odswiezCheckliste(SPEC, r.werdykt);
         WYNIK = BIEZ;
-        if ($('prPobierz')) $('prPobierz').disabled = false;
+        prAkceptacja = false;
+      if (BIEZ) bramkaPoOperacji(BIEZ);
+      syncPrEksport();
         prChat('ai', 'Wgrałem zmianę w SPEC na żywym modelu — nie zaczynałem od nowa.');
       }
     } else if (/\[\[\s*SPEC\s*\]\]/i.test(talk) && !SPEC) {
@@ -19526,6 +21546,37 @@ window.P2S.przerobka = {
       await wydluzZywa(wyd.extra_mm);
       return;
     }
+    prOstatnieZdanie = raw || '';
+    var Aint = pipe();
+    if (raw && Aint && typeof Aint.interpretujZdanie === 'function' && KAT) {
+      var iz = Aint.interpretujZdanie(raw, KAT, {
+        material: ($('prMat') && $('prMat').value) || 'PETG',
+        pasowanie: ($('prPas') && $('prPas').value) || 'przesuwne'
+      });
+      if (iz && iz.pytanie && !iz.wykonaj) {
+        prChat('ai', iz.pytanie);
+        return;
+      }
+      if (iz && iz.ok && iz.wykonaj && iz.cecha_id != null && iz.wymiar != null
+          && typeof Aint.wykonajPrzerobke === 'function') {
+        try {
+          var outIz = Aint.wykonajPrzerobke(KAT, iz.cecha_id, iz.wymiar, { klik: !!iz.klik });
+          if (outIz && outIz.ok && outIz.wynik) {
+            WYNIK = outIz.wynik;
+            BIEZ = outIz.wynik;
+            prAkceptacja = false;
+            bramkaPoOperacji(outIz.wynik);
+            odswiezPodglad();
+            syncPrEksport();
+            prChat('ai', 'Zinterpretowałem zdanie: Ø' + fmt(iz.wymiar) + ' mm. Zaakceptuj 4 rzuty.');
+            return;
+          }
+          if (iz.pytanie) { prChat('ai', iz.pytanie); return; }
+        } catch (eIz) {
+          prChat('ai', 'interpretujZdanie: ' + (eIz && eIz.message || eIz));
+        }
+      }
+    }
     if (!prKey()) {
       prChat('ai', 'Bez klucza: skala %, obwód obręczy / ramiona, wydłuż uchwyty, dziurka na klucz, albo kafelek Ø. Drop nie wymaga wklejania SPEC.');
       return;
@@ -19545,8 +21596,45 @@ window.P2S.przerobka = {
     }
     pokazNitke(pack);
     if (pack.blob) {
-      await wczytaj(asFile(pack.blob, (pack.nazwa || 'projekt') + '.3mf'));
+      await wczytaj(asFile(pack.blob, (pack.nazwa || 'projekt') + '.3mf'), { zNitki: true });
     }
+  }
+  async function onPrAkceptuj() {
+    if (!prRenderOk || !(WYNIK || BIEZ)) {
+      prChat('ai', 'Najpierw wczytaj model i zobacz 4 rzuty.');
+      return;
+    }
+    if (!ZRODLO_UPLOAD) {
+      prChat('ai', 'Instancja REMIX tylko z uploadu użytkownika — nie zapisuję nitki z Projektu.');
+      prAkceptacja = true;
+      syncPrEksport();
+      return;
+    }
+    prAkceptacja = true;
+    var jpegFn = window.P2S && window.P2S.jpegZCanvas;
+    var png = typeof jpegFn === 'function' ? jpegFn($('prCv0')) : '';
+    var zapisz = window.P2S && window.P2S.zapiszInstancje;
+    if (typeof zapisz === 'function') {
+      var out = await zapisz({
+        when: Date.now(),
+        zdanie: prOstatnieZdanie || NAZWA || '',
+        decyzja: 'REMIX',
+        klasa: '',
+        parametry: {},
+        spec: SPEC || null,
+        bramka: {
+          eksportOk: !!(prOstatniWerdykt && prOstatniWerdykt.eksportOk),
+          wpisy: (prOstatniWerdykt && prOstatniWerdykt.wpisy) || [],
+          iteracje: 0
+        },
+        render_png: png,
+        wersja_app: (typeof window !== 'undefined' && window.P2S_VER_NAME) ? String(window.P2S_VER_NAME) : '',
+        mimo: false
+      });
+      if (out && out.komunikat) prChat('ai', out.komunikat);
+      else prChat('ai', 'Zapisano instancję REMIX (upload).');
+    }
+    syncPrEksport();
   }
   function reformEtap(nazwa) {
     document.querySelectorAll('.reform-etapy [data-etap]').forEach(function (el) {
@@ -19570,6 +21658,7 @@ window.P2S.przerobka = {
       if (e.target.files[0]) wczytaj(e.target.files[0]);
     });
     if ($('prZrob')) $('prZrob').addEventListener('click', przelicz);
+    if ($('prAkceptuj')) $('prAkceptuj').addEventListener('click', onPrAkceptuj);
     if ($('prPobierz')) $('prPobierz').addEventListener('click', pobierz);
     if ($('prWyslij')) $('prWyslij').addEventListener('click', prWyslij);
     var prIn = $('prIn');

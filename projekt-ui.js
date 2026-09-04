@@ -8,6 +8,7 @@ import { WIDOKI, rzutuj, rysuj, etykietaGabarytu } from './preview.js';
 import { wyciagnijSzukaj, szukajSieci, hostDozwolony, tekstWynikowSzukania } from './szukaj.js';
 import { ladujPackNauki, szukajNauki, tekstKontekstuNauki, tagiZQuery } from './nauka-rag.js';
 import { dopasujSzablony, tekstSzablonow, SZABLONY } from './nauka-szablony.js';
+import { ladujRejestr, ladujProgi, tekstArchetypow, build as buildArchetyp } from './archetypy.js';
 import {
   nowyProjectId, modelCzytaObraz, uzyjFlashDoOpisu, hintWizji, mockOpisZdjecia,
   parseScalePercent, zapiszNitke, wczytajNitke, skrotRozmowy, kompresujZdjecie,
@@ -20,7 +21,7 @@ import {
   oznaczSzacunek, werdyktEksperymentalny,   wykryjSharding, planCzesciDomyslny,
   walidujPlanCzesci, zlepSpecCzesci, splaszczShardDo10,
   profilShardu, nowyParserSSE, czyPrzycieta, komunikatPrzyciecia, sprawdzGeometrieShardu,
-  tekstNaprawyKawalka, processShardWithRepair
+  tekstNaprawyKawalka, processShardWithRepair, petlaAutokorekty
 } from './spec-validate.js';
 
 const HIST_KEY = 'p2s.projekt.historia';
@@ -280,6 +281,9 @@ let engineTried = false;
 let enginePromise = null;
 let pjPendingImgs = [];
 let pjProjectId = '';
+let pjOstatnieZdanie = '';
+let pjOstatniaKlasyfikacja = null;
+let pjOczekujacyMatch = null;
 
 function $(id) { return document.getElementById(id); }
 function get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } }
@@ -303,11 +307,14 @@ function pjSysTalk() {
 async function pjKontekstNauki(text) {
   try {
     await ladujPackNauki(false);
+    try { await ladujRejestr(false); } catch (eArch) { /* rejestr pusty = MATCH→NEW */ }
+    try { await ladujProgi(false); } catch (ePr) { /* brak progu = bez MATCH→NEW */ }
     const hits = await szukajNauki(text, 5);
     const ragTagi = (hits || []).flatMap(h => Array.isArray(h.tagi) ? h.tagi : []);
     const szablony = dopasujSzablony(text, ragTagi);
     const szablonyTekst = tekstSzablonow(szablony);
-    return tekstKontekstuNauki(hits, text, szablonyTekst);
+    const archTekst = tekstArchetypow();
+    return tekstKontekstuNauki(hits, text, szablonyTekst) + (archTekst ? '\n' + archTekst : '');
   } catch (e) {
     return '';
   }
@@ -722,6 +729,16 @@ function setWarn(werdykt, extra) {
   }).join('');
 }
 
+function pokazPytaniaBramki(pytania) {
+  const lista = (pytania || []).filter(Boolean).slice(0, 3);
+  if (!lista.length) return;
+  const wrap = $('pjPytanieWrap');
+  const el = $('pjPytanie');
+  if (wrap) wrap.hidden = false;
+  if (el) el.textContent = lista.join(' ');
+  chatLine('ai', lista.join(' '));
+}
+
 /** Pudło CSG: kosz + wnetrze → grubość ściany z różnicy wymiarów/pozycji. */
 function pjGruboscSciankiZSpec(spec) {
   const PROG = 2.0;
@@ -1043,13 +1060,23 @@ function rysujCztery(mesh, bbox) {
   });
   const bb = $('pjBbox');
   if (bb) bb.textContent = bbox.x.toFixed(0) + ' × ' + bbox.y.toFixed(0) + ' × ' + bbox.z.toFixed(0) + ' mm';
+  if (last) {
+    last._renderOk = !!(mesh && mesh.vertProperties && mesh.vertProperties.length
+      && !(mesh.isEmpty));
+  }
+}
+
+function watertightZTopologii(dekl) {
+  const st = dekl && dekl.topologia && dekl.topologia.status;
+  return st === 'NoError' || st === 0;
 }
 
 function pokazDecl(dekl, mesh) {
   const el = $('pjDecl'); if (!el) return;
   try { localStorage.setItem(DECL_KEY, JSON.stringify(dekl)); } catch (e) {}
+  const wt = watertightZTopologii(dekl);
   if (typeof window.aDeclHtml === 'function') {
-    el.innerHTML = window.aDeclHtml(mesh.bbox, [{ a: { watertight: true } }]);
+    el.innerHTML = window.aDeclHtml(mesh.bbox, [{ a: { watertight: wt } }]);
   } else {
     el.innerHTML = '<p>X ' + mesh.bbox.x.toFixed(2) + ' · Y ' + mesh.bbox.y.toFixed(2) + ' · Z ' + mesh.bbox.z.toFixed(2) + ' mm</p>';
   }
@@ -1060,13 +1087,16 @@ function pokazDecl(dekl, mesh) {
 
 function syncExport(werdykt) {
   const btn = $('pjDl3mf'), anal = $('pjAnal'), mimo = $('pjMimo');
+  const akc = $('pjAkceptuj');
   const eksper = last && (last.eksperymentalny || werdyktEksperymentalny(last.spec));
   const ok = werdykt && werdykt.eksportOk && !eksper;
   const force = mimo && mimo.checked;
+  const renderOk = !!(last && last.mesh && last._renderOk);
+  if (akc) akc.disabled = !renderOk;
   if (btn) {
-    btn.disabled = !(last && last.mesh) || (!ok && !force && !eksper);
-    if (eksper && last && last.mesh) {
-      btn.disabled = false;
+    const poAkceptacji = !!(last && last.akceptacja);
+    btn.disabled = !poAkceptacji || !(last && last.mesh) || (!ok && !force && !eksper);
+    if (eksper && last && last.mesh && poAkceptacji) {
       btn.textContent = 'Pobierz 3MF (eksperymentalny)';
     } else if (btn) {
       btn.textContent = 'Pobierz 3MF';
@@ -1631,7 +1661,14 @@ async function zbuduj(spec, note, prev, context, opts) {
   pjWalidujSpecWejscie(spec);
   pjPilnujUstalenSpec(spec, context || note);
   pjOdrzucHakaProstego(spec, note);
-  const r = buildAndGate(spec);
+  const petla = await petlaAutokorekty(spec, {
+    buduj: function (s) { return buildAndGate(s); },
+    napraw: opts.napraw,
+    maxIter: 3
+  });
+  spec = petla.spec;
+  const r = petla.wynik;
+  if (!r) throw new Error('brak wyniku bramki');
   if (r.pytania && r.pytania.length) {
     const lista = $('pjDrukLista');
     if (lista) { lista.hidden = true; lista.innerHTML = ''; }
@@ -1643,7 +1680,24 @@ async function zbuduj(spec, note, prev, context, opts) {
   }
   const bledyBramki = ((r.werdykt && r.werdykt.wpisy) || []).filter(w => w.poziom === 'blad');
   if (bledyBramki.length) {
-    throw new Error(bledyBramki.map(w => w.kod + ': ' + w.tekst).join('; '));
+    last = r;
+    lastIdx = 0;
+    last.iteracje = petla.iteracje;
+    last.akceptacja = false;
+    last._renderOk = false;
+    last.zdanie = pjOstatnieZdanie;
+    last.klasyfikacja = pjOstatniaKlasyfikacja;
+    if (r.mesh) {
+      rysujAktualna();
+      fillCzesciSwitch();
+    }
+    setWarn(r.werdykt);
+    syncExport(r.werdykt);
+    const pyt = (petla.pytania && petla.pytania.length)
+      ? petla.pytania
+      : bledyBramki.slice(0, 3).map(function (w) { return w.tekst; });
+    pokazPytaniaBramki(pyt);
+    return r;
   }
   if (typeof window !== 'undefined' && window.P2S
       && typeof window.P2S.flagaWizjaProjekt === 'function'
@@ -1660,6 +1714,11 @@ async function zbuduj(spec, note, prev, context, opts) {
   $('pjPytanieWrap').hidden = true;
   last = r;
   lastIdx = 0;
+  last.iteracje = petla.iteracje;
+  last.akceptacja = false;
+  last._renderOk = false;
+  last.zdanie = pjOstatnieZdanie;
+  last.klasyfikacja = pjOstatniaKlasyfikacja;
   last.eksperymentalny = werdyktEksperymentalny(r.spec) || !!opts.niepelnyShard;
   if (opts.niepelnyShard) last.shardBledy = opts.shardBledy || [];
   if (opts.niepelnyShard) {
@@ -1742,6 +1801,131 @@ async function pjRozmowaZSzukaniem(text, imgs) {
   return talk;
 }
 
+function pjFnKlasyfikuj() {
+  if (typeof window !== 'undefined' && window.P2S && typeof window.P2S.klasyfikujZdanie === 'function') {
+    return window.P2S.klasyfikujZdanie;
+  }
+  if (typeof klasyfikujZdanie === 'function') return klasyfikujZdanie;
+  return null;
+}
+
+function pjLiczbaZTekstu(text) {
+  const t = normalizujJednostki(String(text || ''));
+  const m = t.match(/(\d+(?:[.,]\d+)?)/);
+  if (!m) return null;
+  const n = Number(String(m[1]).replace(',', '.'));
+  return Number.isFinite(n) ? n : null;
+}
+
+function pjSpecZMatch(b) {
+  return {
+    spec_version: '1.0',
+    nazwa: b.spec.nazwa,
+    material: b.spec.material || 'PETG',
+    bryly: b.spec.bryly,
+    cechy: b.spec.cechy || [],
+    pytania: [],
+    uwagi_do_druku: b.spec.uwagi_do_druku || '',
+    orientacja_druku: {
+      obrot_xyz_deg: [0, 0, 0],
+      sciana_na_plycie: 'spód',
+      uzasadnienie: 'MATCH — szablon archetypu.'
+    },
+    podpory: { wymagane: false, uzasadnienie: 'Szablon archetypu.', typ: 'brak' },
+    brim: { wymagany: false, uzasadnienie: 'Szablon archetypu.' }
+  };
+}
+
+function pjPewnoscKl(kl) {
+  if (kl && typeof kl.p_klasy === 'number') return kl.p_klasy;
+  const k0 = kl && kl.kandydaci && kl.kandydaci[0];
+  if (k0 && typeof k0.p === 'number') return k0.p;
+  return null;
+}
+
+function pjFnBuildArchetyp() {
+  if (typeof buildArchetyp === 'function') return buildArchetyp;
+  return window.P2S && window.P2S.archetypy && window.P2S.archetypy.build;
+}
+
+/**
+ * MATCH z brakiem pola → pytanie (stan pjOczekujacyMatch). Komplet → zbuduj.
+ * @returns {Promise<'stop'|'dalej'>}
+ */
+async function pjObsluzMatchBuild(klasa, parametry, zdanie, kl) {
+  const bFn = pjFnBuildArchetyp();
+  if (typeof bFn !== 'function') return 'dalej';
+  try { await ladujRejestr(false); } catch (e) { /* ignore */ }
+  const b = bFn(klasa, parametry || {});
+  if (b && b.spec) {
+    pjOczekujacyMatch = null;
+    pjOstatnieZdanie = zdanie;
+    pjOstatniaKlasyfikacja = Object.assign({}, kl || {}, {
+      decyzja: 'MATCH', klasa: klasa, parametry: parametry || {}
+    });
+    if (!(await bootEngine())) return 'stop';
+    const pk = pjPewnoscKl(pjOstatniaKlasyfikacja);
+    chatLine('ai', 'MATCH ' + klasa + (pk != null ? (' (p ' + pk + ')') : '')
+      + (kl && kl.uzasadnienie ? (': ' + kl.uzasadnienie) : ''));
+    await zbuduj(pjSpecZMatch(b), zdanie.slice(0, 40), null, zdanie, {});
+    return 'stop';
+  }
+  if (b && b.powod === 'brak_pola') {
+    const n = (pjOczekujacyMatch && pjOczekujacyMatch.nPytan) || 0;
+    if (n >= 3) {
+      pjOczekujacyMatch = null;
+      return 'dalej';
+    }
+    const pole = b.pole;
+    const pyt = (kl && Array.isArray(kl.pytania) && kl.pytania.length)
+      ? kl.pytania
+      : ['Podaj ' + pole + ' [mm] dla klasy ' + klasa + '.'];
+    const pk = pjPewnoscKl(kl);
+    chatLine('ai', 'MATCH ' + klasa + (pk != null ? (' (p ' + pk + ')') : '')
+      + '. Brakuje ' + pole + ' — podaj w mm.');
+    pokazPytaniaBramki(pyt);
+    pjOczekujacyMatch = {
+      klasa: klasa,
+      parametry: Object.assign({}, parametry || {}),
+      brakujace_pola: pole ? [pole] : [],
+      zdanie: zdanie,
+      nPytan: n + 1,
+      kl: kl || {}
+    };
+    return 'stop';
+  }
+  if (b && b.powod === 'brak_buildera') {
+    pjOczekujacyMatch = null;
+    chatLine('ai', 'Klasa w rejestrze, ale brak buildera — ścieżka NEW (nie zgaduję geometrii).');
+    return 'dalej';
+  }
+  pjOczekujacyMatch = null;
+  return 'dalej';
+}
+
+/** @returns {Promise<'stop'|'dalej'>} */
+async function pjDomknijOczekujacyMatch(text0) {
+  const st = pjOczekujacyMatch;
+  if (!st) return 'dalej';
+  const num = pjLiczbaZTekstu(text0);
+  if (num == null) {
+    pjOczekujacyMatch = null;
+    return 'dalej';
+  }
+  const pole = (st.brakujace_pola || [])[0];
+  if (!pole) {
+    pjOczekujacyMatch = null;
+    return 'dalej';
+  }
+  const parametry = Object.assign({}, st.parametry || {});
+  parametry[pole] = num;
+  const zdanie = (st.zdanie || '') + ' | ' + text0;
+  const kl = Object.assign({}, st.kl || {}, {
+    decyzja: 'MATCH', klasa: st.klasa, parametry: parametry
+  });
+  return pjObsluzMatchBuild(st.klasa, parametry, zdanie, kl);
+}
+
 async function zrob() {
   if (pjOriginFile()) {
     chatLine('ai', PJ_FILE_ORIGIN_MSG);
@@ -1758,15 +1942,22 @@ async function zrob() {
   const hintEl = $('pjVisionHint');
   if (hintEl) hintEl.hidden = true;
   pjPokazResearch(text0);
-  if (!key()) {
+  if (pjOczekujacyMatch) {
+    const d = await pjDomknijOczekujacyMatch(text0);
+    if (d === 'stop') return;
+  }
+  const klasFnStart = pjFnKlasyfikuj();
+  if (!key() && typeof klasFnStart !== 'function') {
     chatLine('ai', 'Brak klucza API — wklej SPEC ręcznie poniżej. Budowanie, podgląd i 3MF działają offline. Linki do podobnych modeli są powyżej.');
     $('pjSpec').focus();
     return;
   }
-  const meta = pjMetaWersji();
-  chatLine('ai', 'Mózg: ' + pjModelRoli('talk') + ' · reasoning max · profil ' + pjProfil()
-    + ' · talk ' + (PJ_TIMEOUT_TALK_MS / 60000) + ' min / SPEC ' + (PJ_TIMEOUT_SPEC_MS / 60000)
-    + ' min · ' + meta.wersja + (meta.stamp ? (' · ' + meta.stamp) : '') + '.');
+  if (key()) {
+    const meta = pjMetaWersji();
+    chatLine('ai', 'Mózg: ' + pjModelRoli('talk') + ' · reasoning max · profil ' + pjProfil()
+      + ' · talk ' + (PJ_TIMEOUT_TALK_MS / 60000) + ' min / SPEC ' + (PJ_TIMEOUT_SPEC_MS / 60000)
+      + ' min · ' + meta.wersja + (meta.stamp ? (' · ' + meta.stamp) : '') + '.');
+  }
   try {
     let text = text0;
     if (imgs.length) {
@@ -1784,6 +1975,43 @@ async function zrob() {
           chatLine('ai', 'Nie odczytałem zdjęcia przez Flash. Opisz klamkę/drzwi słowami i podaj mm suwmiarką.');
         }
       }
+    }
+    pjOstatnieZdanie = text0;
+    try {
+      const klasFn = pjFnKlasyfikuj();
+      if (typeof klasFn === 'function') {
+        const kl = await klasFn(text, {
+          orCall: orCall,
+          model: pjModelRoli('talk'),
+          timeoutMs: 60000,
+          zdanieWymiary: text0
+        });
+        pjOstatniaKlasyfikacja = kl;
+        if (kl && kl.decyzja === 'REJECT') {
+          const pyt = (kl.pytania || []).filter(Boolean).slice(0, 3);
+          pokazPytaniaBramki(pyt.length ? pyt : ['Doprecyzuj zlecenie (max 3 pytania).']);
+          if (kl.uzasadnienie) chatLine('ai', kl.uzasadnienie);
+          return;
+        }
+        if (kl && kl.decyzja === 'REMIX') {
+          chatLine('ai', (kl.uzasadnienie ? (kl.uzasadnienie + ' ') : '')
+            + 'To wygląda na poprawkę istniejącego modelu — otwieram Przerób. Wgraj STL/3MF (nie biorę siatki z Projektu).');
+          const t = document.querySelector('#tabs .tab[data-v="przerobka"]');
+          if (t) t.click();
+          return;
+        }
+        if (kl && kl.decyzja === 'MATCH') {
+          const m = await pjObsluzMatchBuild(kl.klasa, kl.parametry || {}, text, kl);
+          if (m === 'stop') return;
+        }
+      }
+    } catch (ke) {
+      pjOstatniaKlasyfikacja = { decyzja: 'NEW', uzasadnienie: 'klasyfikator padł: ' + String((ke && ke.message) || ke).slice(0, 120) };
+    }
+    if (!key()) {
+      chatLine('ai', 'Brak klucza API — wklej SPEC ręcznie poniżej. Budowanie, podgląd i 3MF działają offline. Linki do podobnych modeli są powyżej.');
+      $('pjSpec').focus();
+      return;
     }
     const talk = await pjRozmowaZSzukaniem(text, uzyjFlashDoOpisu(pjModelRoli('talk')) ? [] : imgs);
     chatLine('ai', pjObetnijZnacznik(talk));
@@ -1829,6 +2057,30 @@ async function zrob() {
     };
     let spec;
     let shardBledy = [];
+    const naprawBramki = async function (zly, werdykt, iter) {
+      const bledy = ((werdykt && werdykt.wpisy) || []).filter(function (w) {
+        return w && w.poziom === 'blad';
+      });
+      const msg = bledy.map(function (w) { return w.kod + ': ' + w.tekst; }).join('; ');
+      try { chatLine('ai', 'Autokorekta ' + iter + '/3: ' + msg.slice(0, 220)); } catch (e2) {}
+      const popraw = Object.assign({}, body, {
+        messages: [
+          { role: 'system', content: pjSysSpec() },
+          {
+            role: 'user',
+            content: userB
+              + '\n\nPOPRZEDNI SPEC Z BŁĘDEM BRAMKI (iteracja ' + iter + '):\n' + JSON.stringify(zly)
+              + '\n\nBŁĄD BRAMKI:\n' + msg
+              + '\n\nOddaj cały poprawiony SPEC. Napraw wyłącznie wskazany błąd; nie dodawaj nowych cech.'
+          }
+        ],
+        reasoning: { effort: 'high' }
+      });
+      const s2 = pjDomknijSpec(parseSpec(await pjOdpowiedzSpec(popraw)), talk, text);
+      if (pjGotoweDoSpec(talk, text, prev)) pjOdrzucPustePoRysuj(s2, talk);
+      pjWalidujSpecWejscie(s2);
+      return s2;
+    };
     // [[SZABLON:id(params)]] — generuj SPEC z szablonu bez wywołania LLM
     const szablonMatch = /\[\[SZABLON:(\w+)\(([^)]*)\)\]\]/i.exec(talk);
     if (szablonMatch && !prev) {
@@ -1886,7 +2138,8 @@ async function zrob() {
       pjWalidujSpecWejscie(spec);
       await zbuduj(spec, text.slice(0, 40), prev && prev, userB, {
         niepelnyShard: shardBledy.length > 0,
-        shardBledy: shardBledy
+        shardBledy: shardBledy,
+        napraw: naprawBramki
       });
     } catch (first) {
       const msg1 = String((first && first.message) || first);
@@ -1916,7 +2169,7 @@ async function zrob() {
       spec = pjDomknijSpec(parseSpec(await pjOdpowiedzSpec(popraw)), talk, text);
       if (pjGotoweDoSpec(talk, text, prev)) pjOdrzucPustePoRysuj(spec, talk);
       pjWalidujSpecWejscie(spec);
-      await zbuduj(spec, text.slice(0, 40), prev && prev, userB);
+      await zbuduj(spec, text.slice(0, 40), prev && prev, userB, { napraw: naprawBramki });
     }
     pytanieRundy = 0;
   } catch (e) {
@@ -1937,6 +2190,87 @@ function offline() {
     if (inp) { inp.disabled = false; inp.placeholder = 'np. mydelniczka do wanny'; }
     if (btn) btn.disabled = false;
   }
+}
+
+function wersjaAppTekst() {
+  try {
+    if (typeof window !== 'undefined' && window.P2S_VER_NAME) return String(window.P2S_VER_NAME);
+  } catch (e) {}
+  try {
+    if (typeof window !== 'undefined' && window.__P2S_META && window.__P2S_META.wersja) {
+      return String(window.__P2S_META.wersja);
+    }
+  } catch (e2) {}
+  return '';
+}
+
+function pobierzKandydatArchetypu(rec) {
+  const when = rec && rec.when ? rec.when : Date.now();
+  const payload = {
+    when: when,
+    zdanie: rec && rec.zdanie,
+    klasa: rec && rec.klasa,
+    parametry: rec && rec.parametry,
+    spec: rec && rec.spec,
+    uzasadnienie: rec && rec.uzasadnienie,
+    notatka: 'kandydat — nie dopisany do rejestru archetypów (Faza C)'
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const nazwa = 'kandydat-archetypu-' + when + '.json';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = nazwa;
+  a.click();
+}
+
+async function onPjAkceptuj() {
+  if (!last || !last.mesh || !last._renderOk) return;
+  last.akceptacja = true;
+  const mimoEl = $('pjMimo');
+  const eksper = last.eksperymentalny || werdyktEksperymentalny(last.spec);
+  last.mimo = !!(mimoEl && mimoEl.checked) || !!eksper;
+  const canvas = $('pjIzo');
+  const jpegFn = (typeof jpegZCanvas === 'function')
+    ? jpegZCanvas
+    : (window.P2S && window.P2S.jpegZCanvas);
+  const png = typeof jpegFn === 'function' ? jpegFn(canvas) : '';
+  const kl = last.klasyfikacja || pjOstatniaKlasyfikacja || {};
+  const rec = {
+    when: Date.now(),
+    zdanie: last.zdanie || pjOstatnieZdanie || '',
+    decyzja: kl.decyzja || 'NEW',
+    klasa: kl.klasa || '',
+    parametry: kl.parametry || {},
+    spec: last.spec,
+    bramka: {
+      eksportOk: !!(last.werdykt && last.werdykt.eksportOk),
+      wpisy: (last.werdykt && last.werdykt.wpisy) || [],
+      iteracje: last.iteracje || 0
+    },
+    render_png: png,
+    wersja_app: wersjaAppTekst(),
+    mimo: !!last.mimo
+  };
+  const zapisz = (typeof zapiszInstancje === 'function')
+    ? zapiszInstancje
+    : (window.P2S && window.P2S.zapiszInstancje);
+  if (typeof zapisz === 'function') {
+    const out = await zapisz(rec);
+    if (out && out.komunikat) chatLine('ai', out.komunikat);
+    else chatLine('ai', 'Zapisano instancję (widziałem 4 rzuty).');
+  }
+  const cb = $('pjNowaKlasa');
+  if (cb && cb.checked && (kl.decyzja === 'NEW' || !kl.decyzja)) {
+    pobierzKandydatArchetypu({
+      when: rec.when,
+      zdanie: rec.zdanie,
+      klasa: rec.klasa,
+      parametry: rec.parametry,
+      spec: rec.spec,
+      uzasadnienie: kl.uzasadnienie
+    });
+  }
+  syncExport(last.werdykt);
 }
 
 function bind() {
@@ -1993,9 +2327,12 @@ function bind() {
       setWarn({ wpisy: [{ poziom: 'blad', kod: 'SPEC', tekst: e.message }] });
     }
   });
+  const akc = $('pjAkceptuj');
+  if (akc) akc.addEventListener('click', onPjAkceptuj);
   const dl = $('pjDl3mf');
   if (dl) dl.addEventListener('click', async () => {
     if (!last || !last.mesh) return;
+    if (!last.akceptacja) return;
     const eksper = last.eksperymentalny || werdyktEksperymentalny(last.spec);
     if (!last.werdykt.eksportOk && !eksper && !($('pjMimo') && $('pjMimo').checked)) return;
     if (!last.werdykt.eksportOk && !eksper) {
@@ -2085,6 +2422,8 @@ function bind() {
   if (wmin) wmin.addEventListener('change', async () => {
     if (!last || !last.spec) return;
     last = buildAndGate(last.spec, { wmin: wmin.checked ? 0.42 : 0.8 });
+    last.akceptacja = false;
+    last._renderOk = false;
     lastIdx = Math.min(lastIdx, (last.czesci && last.czesci.length ? last.czesci.length : 1) - 1);
     rysujAktualna();
     fillCzesciSwitch();
@@ -2203,6 +2542,8 @@ if (typeof window !== 'undefined') {
   window.P2S.orKomunikatBusy = orKomunikatBusy;
   window.P2S.werdyktEksperymentalny = werdyktEksperymentalny;
   window.P2S.pjProfil = pjProfil;
+  window.P2S.petlaAutokorekty = petlaAutokorekty;
+  window.P2S.orCall = orCall;
   window.P2S.PJ_TIMEOUT_TALK_MS = PJ_TIMEOUT_TALK_MS;
   window.P2S.PJ_TIMEOUT_SPEC_MS = PJ_TIMEOUT_SPEC_MS;
 }
