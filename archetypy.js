@@ -1,7 +1,7 @@
 /**
  * Rejestr archetypów z wyboru człowieka (archetypy-rejestr.json).
  * MATCH nigdy nie dopisuje do rejestru. Brak szablon_id → brak geometrii (nie zgadujemy).
- * Szablony: nauka-szablony.js (zamrożony) + szablony-obrotowe.js.
+ * Szablony: nauka-szablony.js (zamrożony) + szablony-obrotowe.js + szablony-home.js.
  */
 'use strict';
 
@@ -11,6 +11,9 @@ import {
 import {
   podkladka, tuleja, kolnierz, zaslepka, uchwytZLaczem, kolankoTorus, SZABLONY_OBROTOWE
 } from './szablony-obrotowe.js';
+import {
+  doniczka, haczyk, organizerPrzegrody, SZABLONY_HOME
+} from './szablony-home.js';
 import { wymiaryZeZdania, sprzecznePola, rozbieznePola } from './wymiary-zdanie.js';
 
 export const MATCH_NIE_PISZE_DO_REJESTRU = true;
@@ -18,7 +21,8 @@ export const MAX_PYTAN_MATCH = 3;
 
 const FN = {
   rurKolanko, adapterPlyta, uchwyt, katownik, pudelko, zlaczka, trojnik, ruraProsta,
-  podkladka, tuleja, kolnierz, zaslepka, uchwytZLaczem, kolankoTorus
+  podkladka, tuleja, kolnierz, zaslepka, uchwytZLaczem, kolankoTorus,
+  doniczka, haczyk, organizerPrzegrody
 };
 
 const SZABLON_WYMAGANE = {
@@ -35,7 +39,10 @@ const SZABLON_WYMAGANE = {
   kolnierz: ['fi', 'fiZ'],
   zaslepka: ['fi', 'h'],
   uchwytZLaczem: ['fi', 'h'],
-  kolankoTorus: ['fi', 'kat']
+  kolankoTorus: ['fi', 'kat'],
+  doniczka: ['fi', 'h'],
+  haczyk: ['h', 'dl'],
+  organizerPrzegrody: ['x', 'y', 'z']
 };
 
 /** Źródła w kolejności; cel ustawiany tylko gdy pusty. Zero imputacji (brak źródła = brak pola). */
@@ -53,7 +60,10 @@ const SZABLON_ALIASY = {
   kolnierz: { h: ['z', 'dl'] },
   zaslepka: { h: ['z', 'dl'] },
   uchwytZLaczem: { h: ['z', 'dl'] },
-  kolankoTorus: {}
+  kolankoTorus: {},
+  doniczka: { h: ['z', 'dl'] },
+  haczyk: { h: ['z'], dl: ['y'] },
+  organizerPrzegrody: { x: ['dl'], y: ['w'], z: ['h'] }
 };
 
 let _rejestr = { when: null, wpisy: [], n: 0, _powod: 'brak', _zaladowany: false };
@@ -203,9 +213,12 @@ export function getArchetyp(id) {
   if (id == null || id === '') return null;
   const sid = String(id);
   const n = norm(sid);
-  for (const w of _rejestr.wpisy || []) {
+  const wpisy = _rejestr.wpisy || [];
+  for (const w of wpisy) {
     if (w.id === sid || norm(w.id) === n) return zamrozWpis(w);
     if (w.klasa && norm(w.klasa) === n) return zamrozWpis(w);
+  }
+  for (const w of wpisy) {
     const syn = w.synonimy || [];
     for (let i = 0; i < syn.length; i++) {
       if (norm(syn[i]) === n) return zamrozWpis(w);
@@ -230,7 +243,9 @@ function znajdzSzablon(id) {
   if (!id) return null;
   let sz = SZABLONY.find(s => s.id === id);
   if (sz) return sz;
-  return SZABLONY_OBROTOWE.find(s => s.id === id) || null;
+  sz = SZABLONY_OBROTOWE.find(s => s.id === id);
+  if (sz) return sz;
+  return SZABLONY_HOME.find(s => s.id === id) || null;
 }
 
 /**

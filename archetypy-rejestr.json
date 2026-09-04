@@ -1,5 +1,5 @@
 {
-  "when": "2026-09-04T12:03:20Z",
+  "when": "2026-09-04T17:37:11Z",
   "zrodlo": "etykiety.jsonl (nazwy + korekta właściciela, ADDENDUM 2026-09-04)",
   "wybor_when": "2026-09-04T04:47:21.749Z",
   "prog_archetypu": 8,
@@ -560,11 +560,30 @@
             "type": "number",
             "minimum": -6.0,
             "maximum": 60.0
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "z": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
+          },
+          "przegrody": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "x",
+          "y",
+          "z"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "organizerPrzegrody",
       "n_wierszy_zakresow": 81,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -2769,7 +2788,6 @@
       "opis": "Część przeznaczona do zawieszania przedmiotów na ścianie, panelu lub innej powierzchni.",
       "synonimy": [
         "hak",
-        "haczyk",
         "uchwyt ścienny",
         "wieszak ścienny",
         "kołek",

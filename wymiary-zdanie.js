@@ -6,7 +6,7 @@
 
 import { normalizujJednostki } from './builder.js';
 
-const WZ_POLA = ['fi', 'kat', 'dl', 'h', 'w', 'grub', 'fiZ', 'fi1', 'fi2', 'x', 'y', 'z'];
+const WZ_POLA = ['fi', 'kat', 'dl', 'h', 'w', 'grub', 'fiZ', 'fiDol', 'fi1', 'fi2', 'x', 'y', 'z'];
 const WZ_TOL = 0.05;
 
 const WZ_WZORCE = [
@@ -14,6 +14,10 @@ const WZ_WZORCE = [
   { pole: 'fi2', re: /\bfi2\s*(\d+(?:[.,]\d+)?)/g },
   { pole: 'fiZ', re: /(?:\bfi|\bsrednic\w*)\s+zewnetrz\w*\s*(\d+(?:[.,]\d+)?)/g },
   { pole: 'fi', re: /(?:\bfi|\bsrednic\w*)\s+wewnetrz\w*\s*(\d+(?:[.,]\d+)?)/g },
+  { pole: 'fiDol', re: /(?:\bfi|\bsrednic\w*)\s+doln\w*\s*(\d+(?:[.,]\d+)?)/g },
+  { pole: 'fi', re: /(?:\bfi|\bsrednic\w*)\s+gorn\w*\s*(\d+(?:[.,]\d+)?)/g },
+  { pole: 'fiDol', re: /\bdoln\w*(?:\s+srednic\w*)?\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'fi', re: /\bgorn\w*(?:\s+srednic\w*)?\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'fiZ', re: /\bzewnetrz\w*\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'fi', re: /\bwewnetrz\w*\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'fi', re: /\bfi\s+(\d+(?:[.,]\d+)?)/g },
