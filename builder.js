@@ -1210,6 +1210,36 @@ export function snapshotMesh(part) {
   };
 }
 
+/**
+ * Topologia na ŻYWYM Manifoldzie, w arenie, przed snapshotem.
+ * genus: w pliku engine/manifold.js nie ma stringa "genus" (embind nie wkleja nazwy
+ * do glue), ale runtime: typeof part.genus === 'function' — wołamy wtedy.
+ * status: bundla woła part.status() i porównuje do stringa "NoError".
+ */
+function zmierzTopologie(part, keep) {
+  let czesci_n = 1;
+  try {
+    if (part && typeof part.decompose === 'function') {
+      const kaw = part.decompose();
+      czesci_n = kaw && kaw.length != null ? kaw.length : 1;
+      if (kaw && kaw.length) {
+        for (let i = 0; i < kaw.length; i++) keep(kaw[i]);
+      }
+    }
+  } catch (e) {
+    czesci_n = 1;
+  }
+  let genus = null;
+  if (part && typeof part.genus === 'function') {
+    try { genus = part.genus(); } catch (e) { genus = null; }
+  }
+  let status = null;
+  if (part && typeof part.status === 'function') {
+    try { status = part.status(); } catch (e) { status = null; }
+  }
+  return { czesci_n: czesci_n, genus: genus, status: status };
+}
+
 function zlozBryly(spec, keep, opts) {
   let part = null;
   const ctx = {};
@@ -1285,6 +1315,7 @@ function buildOnePart(specWe, opts) {
     spec.deklaracja.bbox = { x: +g.x.toFixed(4), y: +g.y.toFixed(4), z: +g.z.toFixed(4) };
     spec.deklaracja.tolerance_mm = spec.deklaracja.tolerance_mm || 0.2;
     spec.deklaracja.objetosc_mm3 = +part.volume().toFixed(2);
+    spec.deklaracja.topologia = zmierzTopologie(part, keep);
     const werdykt = sprawdzBramke(part, spec.deklaracja, spec, opts || {});
     for (const t of spec._ostrzezeniaNorm || []) {
       werdykt.wpisy.push({ poziom: 'ostrzezenie', kod: 'NORM', tekst: t });

@@ -3328,6 +3328,7 @@ window.P2S.przerobka = {
   inwentarz3mf, porownajInwentarz, tekstInwentarza,
   PRZEROBKA_CIRCULAR_SEGMENTS, sciankaMin,
   deltaRZobwodu, wybierzObrecz, powiekszObwodIRamiona,
-  dodajDziurkeBrelok, wydluzOsiowo, wydluzWszystkieCiala
+  dodajDziurkeBrelok, wydluzOsiowo, wydluzWszystkieCiala,
+  interpretujZdanie
 };
 })();

@@ -1,14 +1,14 @@
 // Service worker - HTML najpierw z sieci (online-first).
 // CACHE wypełnia build_pwa.py z SHA-256 index.html. Nie wpisuj ręcznie.
 // Doradca, diagnostyka i checklisty są w index.html i w cache — działają bez sieci.
-const CACHE = 'p2s-guide-v4.2.51-ec168316';
+const CACHE = 'p2s-guide-v4.2.52-567b5926';
 
 // addAll jest atomowe: jeden 404 odrzuca całą instalację SW i offline pada po cichu.
 // Krytyczne (przewodnik + silnik) muszą być kompletne. Reszta: allSettled.
 const CRITICAL = ['./', './index.html',
   './engine/manifold.js', './engine/manifold.wasm', './engine/LICENSE-manifold.txt'];
 const OPTIONAL = ['./manifest.webmanifest', './icon-192.png',
-  './icon-512.png', './icon-512-maskable.png', './apple-touch-icon.png', './favicon-32.png', './fflate.min.js', './builder.js', './gate.js', './export3mf.js', './preview.js', './projekt-ui.js', './spec-v1.schema.json', './przerobka-web.js', './przerobka-ui.js', './intent.js', './modele_guard.js', './modele-rura.js', './szukaj.js', './nauka-rag.js', './nauka-pack.json', './nauka-ocena.js', './nitka.js', './spec-validate.js', './font-skrypt.js', './studio.css', './studio.js', './t0-checklista.js', './szpule-kalibrowane.js', './hms-dekoder.js', './analizator-3mf.js', './analizator-profile.js', './analizator-profile.json', './wyszukiwanie.js', './wektory-przewodnik.json', './ocena-zdjecia.js', './ocena-zdjecia.json', './drukarka-status.js', './wizja-projekt.js', './brep-cechy.js', './modele/LICENSE-ocena-zdjecia.txt', './wersja.json', './pliki.json', './sw.js', './vendor/ort/LICENSE-onnxruntime-web.txt'];
+  './icon-512.png', './icon-512-maskable.png', './apple-touch-icon.png', './favicon-32.png', './fflate.min.js', './builder.js', './gate.js', './export3mf.js', './preview.js', './projekt-ui.js', './spec-v1.schema.json', './przerobka-web.js', './przerobka-ui.js', './intent.js', './modele_guard.js', './modele-rura.js', './szukaj.js', './nauka-rag.js', './nauka-szablony.js', './nauka-pack.json', './szablony-obrotowe.js', './archetypy.js', './archetypy-rejestr.json', './instancje.js', './klasyfikator.js', './progi-klasyfikatora.json', './nauka-ocena.js', './nitka.js', './spec-validate.js', './font-skrypt.js', './studio.css', './studio.js', './t0-checklista.js', './szpule-kalibrowane.js', './hms-dekoder.js', './analizator-3mf.js', './analizator-profile.js', './analizator-profile.json', './wyszukiwanie.js', './wektory-przewodnik.json', './ocena-zdjecia.js', './ocena-zdjecia.json', './drukarka-status.js', './wizja-projekt.js', './brep-cechy.js', './modele/LICENSE-ocena-zdjecia.txt', './wersja.json', './pliki.json', './sw.js', './vendor/ort/LICENSE-onnxruntime-web.txt'];
 
 self.addEventListener('install', e => {
   e.waitUntil((async () => {

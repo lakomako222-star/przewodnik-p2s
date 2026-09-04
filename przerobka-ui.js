@@ -38,6 +38,11 @@
   var CIALA = null;
   var NAZWY_CIAL = null;
   var LIC_META = null;
+  var ZRODLO_UPLOAD = false;
+  var prAkceptacja = false;
+  var prRenderOk = false;
+  var prOstatnieZdanie = '';
+  var prOstatniWerdykt = null;
 
   function pokazLicencjePrzerobu() {
     var box = $('prLicencja');
@@ -197,6 +202,13 @@
     var rys = window.P2S && window.P2S.rysuj;
     var keys = ['izo', 'przod', 'bok', 'gora'];
     var mesh = m ? meshZBryly(m) : MESH;
+    var ok = !!(mesh && mesh.vertProperties && mesh.vertProperties.length);
+    prRenderOk = ok;
+    if (!ok) prAkceptacja = false;
+    var akc = $('prAkceptuj');
+    if (akc) akc.disabled = !ok;
+    var pob = $('prPobierz');
+    if (pob && !prAkceptacja) pob.disabled = true;
     MESH = mesh;
     var i;
     if (mesh && rz && rys && W) {
@@ -219,6 +231,54 @@
       }
       $('prGab').textContent = fmt(dx) + ' × ' + fmt(dy) + ' × ' + fmt(dz) + ' mm';
     }
+  }
+  function bramkaPoOperacji(part) {
+    var fn = window.P2S && window.P2S.sprawdzBramke;
+    if (!fn || !part || typeof part.boundingBox !== 'function') return null;
+    var dekl = {};
+    try {
+      var bb = part.boundingBox();
+      var mn = bb.min, mx = bb.max;
+      if (Array.isArray(mn)) {
+        dekl.bbox = { x: mx[0] - mn[0], y: mx[1] - mn[1], z: mx[2] - mn[2] };
+      }
+    } catch (e) {}
+    try {
+      var topo = { czesci_n: 1, genus: null, status: null };
+      if (typeof part.decompose === 'function') {
+        var kaw = part.decompose();
+        topo.czesci_n = kaw && kaw.length != null ? kaw.length : 1;
+        if (kaw) {
+          for (var i = 0; i < kaw.length; i++) {
+            try { kaw[i].delete(); } catch (e2) {}
+          }
+        }
+      }
+      if (typeof part.status === 'function') {
+        try { topo.status = part.status(); } catch (e3) { topo.status = null; }
+      }
+      dekl.topologia = topo;
+    } catch (e4) {}
+    try {
+      prOstatniWerdykt = fn(part, dekl, SPEC || {}, {});
+    } catch (e5) {
+      prOstatniWerdykt = { eksportOk: false, wpisy: [{ poziom: 'blad', kod: 'BRAMKA', tekst: String(e5 && e5.message || e5) }] };
+    }
+    if (prOstatniWerdykt && prOstatniWerdykt.wpisy && prOstatniWerdykt.wpisy.length && $('prWynik')) {
+      prOstatniWerdykt.wpisy.forEach(function (w) {
+        var d2 = el('div', w.poziom === 'blad' ? 'pr-blad' : 'pr-ostrz');
+        d2.appendChild(el('b', null, (w.kod || '') + ' '));
+        d2.appendChild(el('span', null, w.tekst || ''));
+        $('prWynik').appendChild(d2);
+      });
+    }
+    return prOstatniWerdykt;
+  }
+  function syncPrEksport() {
+    var akc = $('prAkceptuj');
+    if (akc) akc.disabled = !prRenderOk;
+    var pob = $('prPobierz');
+    if (pob) pob.disabled = !(prAkceptacja && (WYNIK || BIEZ));
   }
   function pokazCechy() {
     var box = $('prCechy');
@@ -361,15 +421,20 @@
       out.appendChild(d2);
     });
   }
-  async function wczytaj(file) {
+  async function wczytaj(file, opts) {
+    opts = opts || {};
     var A = pipe();
     if (!A) { stan('Brak potoku przeróbki.'); return; }
     if ($('prWynik')) $('prWynik').innerHTML = '';
     if ($('prEdycja')) $('prEdycja').hidden = true;
     if ($('prPobierz')) $('prPobierz').disabled = true;
+    if ($('prAkceptuj')) $('prAkceptuj').disabled = true;
     if ($('prWskaz')) $('prWskaz').textContent = '';
     WYNIK = null;
     WYBRANA = null;
+    prAkceptacja = false;
+    prRenderOk = false;
+    if (!opts.zachowajZrodlo) ZRODLO_UPLOAD = !opts.zNitki;
     NAZWA = String(file.name || 'model').replace(/\.(stl|3mf)$/i, '');
     reformEtap('import');
     stan('wczytuję silnik…');
@@ -481,10 +546,12 @@
     }
     WYNIK = out.wynik;
     BIEZ = out.wynik;
+    prAkceptacja = false;
     pokazBramke(out.bramka, KAT, out.katalogPo, d);
-    if ($('prWynik')) $('prWynik').appendChild(el('p', 'pr-ok', 'Przeszło wszystkie kontrole. Możesz pobrać.'));
-    if ($('prPobierz')) $('prPobierz').disabled = false;
+    bramkaPoOperacji(out.wynik);
+    if ($('prWynik')) $('prWynik').appendChild(el('p', 'pr-ok', 'Przeszło kontrole przeróbki. Zaakceptuj 4 rzuty, potem pobierz.'));
     odswiezPodglad();
+    syncPrEksport();
   }
   function wymagaNd() {
     if (window.P2S && typeof window.P2S.wymagaPotwierdzeniaNd === 'function') {
@@ -495,6 +562,10 @@
   }
   async function pobierz() {
     if (!WYNIK || !window.P2S) return;
+    if (!prAkceptacja) {
+      prChat('ai', 'Najpierw akceptacja 4 rzutów.');
+      return;
+    }
     if (wymagaNd()) {
       var ok = window.confirm(
         'Licencja ND: wolno ciąć u siebie, nie publikować przeróbki. To nie jest porada prawna. Eksportować?'
@@ -659,12 +730,14 @@
         var r = window.P2S.buildAndGate(SPEC);
         if (r && r.mesh && typeof window.P2S.mesh3MF === 'function') {
           var buf = await window.P2S.mesh3MF(r.mesh, { nazwa: NAZWA, spec: SPEC, licencja: LIC_META });
-          await wczytaj(asFile(buf, (NAZWA || 'projekt') + '_skala.3mf'));
+          await wczytaj(asFile(buf, (NAZWA || 'projekt') + '_skala.3mf'), { zachowajZrodlo: true });
           SPEC = r.spec || SPEC;
           odswiezCheckliste(window.P2S.ocenBrimPoSkali ? window.P2S.ocenBrimPoSkali(SPEC, r.mesh.bbox) : SPEC, r.werdykt);
           stan('');
           prChat('ai', 'Przeskalowałem SPEC ×' + factor + ' i złożyłem siatkę od nowa (bez wymyślania modelu). Orientacja zostaje.');
-          if ($('prPobierz')) $('prPobierz').disabled = false;
+          prAkceptacja = false;
+      if (BIEZ) bramkaPoOperacji(BIEZ);
+      syncPrEksport();
           WYNIK = BIEZ;
           return true;
         }
@@ -678,7 +751,9 @@
         if (window.P2S.ocenBrimPoSkali) SPEC = window.P2S.ocenBrimPoSkali(SPEC, box);
         odswiezCheckliste(SPEC, null);
       }
-      if ($('prPobierz')) $('prPobierz').disabled = false;
+      prAkceptacja = false;
+      if (BIEZ) bramkaPoOperacji(BIEZ);
+      syncPrEksport();
       WYNIK = BIEZ;
       odswiezPodglad();
       stan('');
@@ -733,7 +808,9 @@
         KAT._solid = out.wynik;
         pokazCechy();
       }
-      if ($('prPobierz')) $('prPobierz').disabled = false;
+      prAkceptacja = false;
+      if (BIEZ) bramkaPoOperacji(BIEZ);
+      syncPrEksport();
       odswiezPodglad();
       stan('');
       var msg = [];
@@ -767,7 +844,9 @@
       var out = A.dodajDziurkeBrelok(BIEZ || ORG, { srednica_mm: plan.srednica_mm || 5.2 });
       if (BIEZ && BIEZ !== ORG) { try { BIEZ.delete(); } catch (e0) {} }
       BIEZ = out.wynik; ORG = out.wynik; WYNIK = out.wynik;
-      if ($('prPobierz')) $('prPobierz').disabled = false;
+      prAkceptacja = false;
+      if (BIEZ) bramkaPoOperacji(BIEZ);
+      syncPrEksport();
       odswiezPodglad();
       stan('');
       prChat('ai', 'Dziurka Ø' + fmt(out.srednica_mm, 1) + ' mm w osobnym uszku (ścianka ' + fmt(out.scianka_mm, 1) + ' mm). Nie ruszałem kafelkiem istniejących gniazd. Pobierz 3MF.');
@@ -802,7 +881,9 @@
       var out = outs[0];
       if (BIEZ && BIEZ !== ORG && CIALA.indexOf(BIEZ) < 0) { try { BIEZ.delete(); } catch (e0) {} }
       BIEZ = out.wynik; ORG = out.wynik; WYNIK = out.wynik;
-      if ($('prPobierz')) $('prPobierz').disabled = false;
+      prAkceptacja = false;
+      if (BIEZ) bramkaPoOperacji(BIEZ);
+      syncPrEksport();
       odswiezPodglad();
       stan('');
       prChat('ai', 'Wydłużyłem ' + CIALA.length + ' części, oś ' + out.os + ' o ' + fmt(extra, 1) + ' mm z każdej strony (nie skala). Pobierz 3MF.');
@@ -946,11 +1027,13 @@
       var r = window.P2S.buildAndGate(spec);
       if (r && r.mesh && typeof window.P2S.mesh3MF === 'function') {
         var buf = await window.P2S.mesh3MF(r.mesh, { nazwa: spec.nazwa || NAZWA, spec: spec, licencja: LIC_META });
-        await wczytaj(asFile(buf, (spec.nazwa || NAZWA || 'projekt') + '_przerob.3mf'));
+        await wczytaj(asFile(buf, (spec.nazwa || NAZWA || 'projekt') + '_przerob.3mf'), { zachowajZrodlo: true });
         SPEC = r.spec || spec;
         odswiezCheckliste(SPEC, r.werdykt);
         WYNIK = BIEZ;
-        if ($('prPobierz')) $('prPobierz').disabled = false;
+        prAkceptacja = false;
+      if (BIEZ) bramkaPoOperacji(BIEZ);
+      syncPrEksport();
         prChat('ai', 'Wgrałem zmianę w SPEC na żywym modelu — nie zaczynałem od nowa.');
       }
     } else if (/\[\[\s*SPEC\s*\]\]/i.test(talk) && !SPEC) {
@@ -999,6 +1082,37 @@
       await wydluzZywa(wyd.extra_mm);
       return;
     }
+    prOstatnieZdanie = raw || '';
+    var Aint = pipe();
+    if (raw && Aint && typeof Aint.interpretujZdanie === 'function' && KAT) {
+      var iz = Aint.interpretujZdanie(raw, KAT, {
+        material: ($('prMat') && $('prMat').value) || 'PETG',
+        pasowanie: ($('prPas') && $('prPas').value) || 'przesuwne'
+      });
+      if (iz && iz.pytanie && !iz.wykonaj) {
+        prChat('ai', iz.pytanie);
+        return;
+      }
+      if (iz && iz.ok && iz.wykonaj && iz.cecha_id != null && iz.wymiar != null
+          && typeof Aint.wykonajPrzerobke === 'function') {
+        try {
+          var outIz = Aint.wykonajPrzerobke(KAT, iz.cecha_id, iz.wymiar, { klik: !!iz.klik });
+          if (outIz && outIz.ok && outIz.wynik) {
+            WYNIK = outIz.wynik;
+            BIEZ = outIz.wynik;
+            prAkceptacja = false;
+            bramkaPoOperacji(outIz.wynik);
+            odswiezPodglad();
+            syncPrEksport();
+            prChat('ai', 'Zinterpretowałem zdanie: Ø' + fmt(iz.wymiar) + ' mm. Zaakceptuj 4 rzuty.');
+            return;
+          }
+          if (iz.pytanie) { prChat('ai', iz.pytanie); return; }
+        } catch (eIz) {
+          prChat('ai', 'interpretujZdanie: ' + (eIz && eIz.message || eIz));
+        }
+      }
+    }
     if (!prKey()) {
       prChat('ai', 'Bez klucza: skala %, obwód obręczy / ramiona, wydłuż uchwyty, dziurka na klucz, albo kafelek Ø. Drop nie wymaga wklejania SPEC.');
       return;
@@ -1018,8 +1132,45 @@
     }
     pokazNitke(pack);
     if (pack.blob) {
-      await wczytaj(asFile(pack.blob, (pack.nazwa || 'projekt') + '.3mf'));
+      await wczytaj(asFile(pack.blob, (pack.nazwa || 'projekt') + '.3mf'), { zNitki: true });
     }
+  }
+  async function onPrAkceptuj() {
+    if (!prRenderOk || !(WYNIK || BIEZ)) {
+      prChat('ai', 'Najpierw wczytaj model i zobacz 4 rzuty.');
+      return;
+    }
+    if (!ZRODLO_UPLOAD) {
+      prChat('ai', 'Instancja REMIX tylko z uploadu użytkownika — nie zapisuję nitki z Projektu.');
+      prAkceptacja = true;
+      syncPrEksport();
+      return;
+    }
+    prAkceptacja = true;
+    var jpegFn = window.P2S && window.P2S.jpegZCanvas;
+    var png = typeof jpegFn === 'function' ? jpegFn($('prCv0')) : '';
+    var zapisz = window.P2S && window.P2S.zapiszInstancje;
+    if (typeof zapisz === 'function') {
+      var out = await zapisz({
+        when: Date.now(),
+        zdanie: prOstatnieZdanie || NAZWA || '',
+        decyzja: 'REMIX',
+        klasa: '',
+        parametry: {},
+        spec: SPEC || null,
+        bramka: {
+          eksportOk: !!(prOstatniWerdykt && prOstatniWerdykt.eksportOk),
+          wpisy: (prOstatniWerdykt && prOstatniWerdykt.wpisy) || [],
+          iteracje: 0
+        },
+        render_png: png,
+        wersja_app: (typeof window !== 'undefined' && window.P2S_VER_NAME) ? String(window.P2S_VER_NAME) : '',
+        mimo: false
+      });
+      if (out && out.komunikat) prChat('ai', out.komunikat);
+      else prChat('ai', 'Zapisano instancję REMIX (upload).');
+    }
+    syncPrEksport();
   }
   function reformEtap(nazwa) {
     document.querySelectorAll('.reform-etapy [data-etap]').forEach(function (el) {
@@ -1043,6 +1194,7 @@
       if (e.target.files[0]) wczytaj(e.target.files[0]);
     });
     if ($('prZrob')) $('prZrob').addEventListener('click', przelicz);
+    if ($('prAkceptuj')) $('prAkceptuj').addEventListener('click', onPrAkceptuj);
     if ($('prPobierz')) $('prPobierz').addEventListener('click', pobierz);
     if ($('prWyslij')) $('prWyslij').addEventListener('click', prWyslij);
     var prIn = $('prIn');

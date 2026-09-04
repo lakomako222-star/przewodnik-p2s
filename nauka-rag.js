@@ -334,8 +334,8 @@ function bitCzysty(s) {
   return t;
 }
 
-export function tekstKontekstuNauki(hits, zapytanie) {
-  if (!hits || !hits.length) return '';
+export function tekstKontekstuNauki(hits, zapytanie, _szablonyTekst) {
+  if (!hits || !hits.length) return (_szablonyTekst || '');
   const x = bitCzysty(zapytanie).replace(/\s+/g, ' ').slice(0, 80) || 'tej rzeczy';
   const qTags = tagiZQuery(zapytanie);
   const ksztaltQ = qTags.some((t) =>
@@ -366,6 +366,20 @@ export function tekstKontekstuNauki(hits, zapytanie) {
   if (pamiec.length) {
     lines.push('======== PAMIĘĆ KATALOGU (NAZWANE CZĘŚCI, NIE ESEJ, NIE TRENING GPU) ========');
     lines.push('Już oglądałeś i indeksowałeś te wzorce. Przypomnij sobie konkret, nie zgaduj od zera.');
+    const y0 = hits.find(hitBezpieczny);
+    if (y0) {
+      lines.push(
+        'Ćwiczył ten katalog: gdy ktoś prosi o ' + x + ', masz wzorzec ' +
+        (y0.id || '?') + ' (już widziany).'
+      );
+    }
+    const cw = _pack && _pack.cwicz;
+    if (cw && cw.n) {
+      lines.push(
+        'Ćwiczenie offline: ' + cw.self_hit + '/' + cw.n +
+        ' (' + cw.self_hit_pct + '%) self-hit@5 — katalog przypomina siebie. Wagi LLM bez zmian.'
+      );
+    }
     for (let i = 0; i < pamiec.length; i++) lines.push(pamiec[i]);
     lines.push('==========================================================================');
   }
@@ -393,6 +407,7 @@ export function tekstKontekstuNauki(hits, zapytanie) {
     ].filter(Boolean);
     lines.push('- ' + bits.join(' | '));
   }
+  if (_szablonyTekst) lines.push('\n' + _szablonyTekst);
   return lines.join('\n');
 }
 
@@ -413,7 +428,8 @@ export function naukaRagStan() {
     kategorie: Object.keys(kat).length,
     kategorie_liczby: kat,
     ostatnie_n: _ostatnie.length,
-    ostatnie_q: _ostatnieQ
+    ostatnie_q: _ostatnieQ,
+    cwicz: (_pack && _pack.cwicz) || null
   };
 }
 
