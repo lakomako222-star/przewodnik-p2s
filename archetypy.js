@@ -25,6 +25,14 @@ import {
   mocowanieWentylatora, uchwytDysku, prowadnica, kanal, obudowa, ramka, krzyz, klipsU,
   gridfinityBin, SZABLONY_12C
 } from './szablony-12c.js';
+import {
+  mydelniczka, uchwytGabki, uchwytSzczoteczek, uchwytPrysznicowy, uchwytPapieru,
+  uchwytLyzek, stojakDesek, miarka,
+  organizerKabli, uchwytBitow, uchwytSciennyTabletu, przepustKablowy, klipsFilamentu,
+  stojakDysz, pojemnikDesykantu, stojakWkretakow,
+  zawiasProsty, klipsTorebki, stojakKredek, zaslepkaGniazdka, ochraniaczNaroznika,
+  uchwytKart, wieszakPada, uchwytButelek, SZABLONY_12D
+} from './szablony-12d.js';
 import { wymiaryZeZdania, sprzecznePola, rozbieznePola } from './wymiary-zdanie.js';
 
 export const MATCH_NIE_PISZE_DO_REJESTRU = true;
@@ -39,7 +47,13 @@ const FN = {
   podstawkaLaptopa, stojakMonitora, stojakPada, uchwytSluchawek, uchwytRecznika,
   uchwytLadowarki, uchwytPamieci, wspornikGpu,
   mocowanieWentylatora, uchwytDysku, prowadnica, kanal, obudowa, ramka, krzyz, klipsU,
-  gridfinityBin
+  gridfinityBin,
+  mydelniczka, uchwytGabki, uchwytSzczoteczek, uchwytPrysznicowy, uchwytPapieru,
+  uchwytLyzek, stojakDesek, miarka,
+  organizerKabli, uchwytBitow, uchwytSciennyTabletu, przepustKablowy, klipsFilamentu,
+  stojakDysz, pojemnikDesykantu, stojakWkretakow,
+  zawiasProsty, klipsTorebki, stojakKredek, zaslepkaGniazdka, ochraniaczNaroznika,
+  uchwytKart, wieszakPada, uchwytButelek
 };
 
 const SZABLON_WYMAGANE = {
@@ -94,7 +108,31 @@ const SZABLON_WYMAGANE = {
   ramka: ['x', 'y'],
   krzyz: ['fi'],
   klipsU: ['w', 'h'],
-  gridfinityBin: ['nx', 'ny', 'hU']
+  gridfinityBin: ['nx', 'ny', 'hU'],
+  mydelniczka: ['x', 'y', 'z'],
+  uchwytGabki: ['x', 'y', 'z'],
+  uchwytSzczoteczek: ['fi', 'h'],
+  uchwytPrysznicowy: ['fi', 'kat'],
+  uchwytPapieru: ['dl', 'fi'],
+  uchwytLyzek: ['x', 'y'],
+  stojakDesek: ['w', 'n', 'szczelina'],
+  miarka: ['fi', 'h'],
+  organizerKabli: ['n', 'fi'],
+  uchwytBitow: ['n', 'rozstaw'],
+  uchwytSciennyTabletu: ['w', 'grub', 'kat'],
+  przepustKablowy: ['fi', 'h'],
+  klipsFilamentu: ['fi'],
+  stojakDysz: ['n'],
+  pojemnikDesykantu: ['x', 'y', 'z'],
+  stojakWkretakow: ['n', 'fi'],
+  zawiasProsty: ['dl', 'fiOsi'],
+  klipsTorebki: ['dl', 'w'],
+  stojakKredek: ['nx', 'ny', 'fi'],
+  zaslepkaGniazdka: ['x', 'y'],
+  ochraniaczNaroznika: ['a', 'h', 'grub'],
+  uchwytKart: ['n', 'szczelina'],
+  wieszakPada: ['w', 'h'],
+  uchwytButelek: ['fi', 'n']
 };
 
 /** Źródła w kolejności; cel ustawiany tylko gdy pusty. Zero imputacji (brak źródła = brak pola). */
@@ -150,7 +188,31 @@ const SZABLON_ALIASY = {
   ramka: { x: ['dl'], y: ['w'], grub: ['z'] },
   krzyz: {},
   klipsU: { w: ['x'], h: ['z'] },
-  gridfinityBin: { nx: ['x', 'n'], ny: ['y'], hU: ['h', 'z'] }
+  gridfinityBin: { nx: ['x', 'n'], ny: ['y'], hU: ['h', 'z'] },
+  mydelniczka: { x: ['dl'], y: ['w'], z: ['h'], otwory: ['n'] },
+  uchwytGabki: { x: ['dl'], y: ['w'], z: ['h'] },
+  uchwytSzczoteczek: { h: ['z'] },
+  uchwytPrysznicowy: {},
+  uchwytPapieru: { dl: ['x'], fi: ['d'] },
+  uchwytLyzek: { x: ['dl'], y: ['w'] },
+  stojakDesek: { w: ['x'] },
+  miarka: { h: ['z'] },
+  organizerKabli: {},
+  uchwytBitow: { rozstaw: ['w'] },
+  uchwytSciennyTabletu: { w: ['x'] },
+  przepustKablowy: { h: ['z', 'dl'] },
+  klipsFilamentu: {},
+  stojakDysz: {},
+  pojemnikDesykantu: { x: ['dl'], y: ['w'], z: ['h'], otwory: ['n'] },
+  stojakWkretakow: {},
+  zawiasProsty: { dl: ['x'], fiOsi: ['fi', 'otwor'] },
+  klipsTorebki: { dl: ['x'], w: ['y'] },
+  stojakKredek: {},
+  zaslepkaGniazdka: { x: ['dl', 'w'], y: ['h'] },
+  ochraniaczNaroznika: { a: ['dl', 'x'] },
+  uchwytKart: { szczelina: ['w', 'grub'] },
+  wieszakPada: { w: ['x'], h: ['z'] },
+  uchwytButelek: {}
 };
 
 let _rejestr = { when: null, wpisy: [], n: 0, _powod: 'brak', _zaladowany: false };
@@ -336,7 +398,9 @@ function znajdzSzablon(id) {
   if (sz) return sz;
   sz = SZABLONY_12B.find(s => s.id === id);
   if (sz) return sz;
-  return SZABLONY_12C.find(s => s.id === id) || null;
+  sz = SZABLONY_12C.find(s => s.id === id);
+  if (sz) return sz;
+  return SZABLONY_12D.find(s => s.id === id) || null;
 }
 
 /**
