@@ -1,5 +1,5 @@
 {
-  "when": "2026-09-05T16:38:43Z",
+  "when": "2026-09-05T16:53:34Z",
   "zrodlo": "etykiety.jsonl (nazwy + korekta właściciela, ADDENDUM 2026-09-04)",
   "wybor_when": "2026-09-04T04:47:21.749Z",
   "prog_archetypu": 8,
@@ -2116,11 +2116,20 @@
             "type": "number",
             "minimum": -1.0,
             "maximum": 322.0
+          },
+          "n": {
+            "type": "number"
+          },
+          "fi": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "n",
+          "fi"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "organizerKabli",
       "n_wierszy_zakresow": 23
     },
     {
@@ -6948,11 +6957,24 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 10.0
+          },
+          "w": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
+          },
+          "kat": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "w",
+          "grub",
+          "kat"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "uchwytSciennyTabletu",
       "n_wierszy_zakresow": 13
     },
     {
@@ -11484,11 +11506,16 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 2.0
+          },
+          "fi": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "fi"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "klipsFilamentu",
       "n_wierszy_zakresow": 11
     },
     {
@@ -11609,11 +11636,20 @@
             "type": "number",
             "minimum": -1.0,
             "maximum": 5.0
+          },
+          "fi": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "fi",
+          "h"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "przepustKablowy",
       "n_wierszy_zakresow": 12
     },
     {
@@ -11734,11 +11770,20 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 30.0
+          },
+          "n": {
+            "type": "number"
+          },
+          "fi": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "n",
+          "fi"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "stojakWkretakow",
       "n_wierszy_zakresow": 11
     },
     {
@@ -11860,11 +11905,20 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 144.0
+          },
+          "n": {
+            "type": "number"
+          },
+          "rozstaw": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "n",
+          "rozstaw"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "uchwytBitow",
       "n_wierszy_zakresow": 10
     },
     {
@@ -14262,11 +14316,27 @@
             "type": "number",
             "minimum": -1.0,
             "maximum": 3750.0
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "z": {
+            "type": "number"
+          },
+          "otwory": {
+            "type": "array"
           }
         },
-        "required": []
+        "required": [
+          "x",
+          "y",
+          "z"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "pojemnikDesykantu",
       "n_wierszy_zakresow": 10
     },
     {
@@ -14385,11 +14455,16 @@
             "type": "number",
             "minimum": -1.0,
             "maximum": 8.0
+          },
+          "n": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "n"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "stojakDysz",
       "n_wierszy_zakresow": 7
     },
     {
