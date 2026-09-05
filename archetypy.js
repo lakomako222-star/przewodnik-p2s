@@ -13,8 +13,18 @@ import {
 } from './szablony-obrotowe.js';
 import {
   doniczka, haczyk, organizerPrzegrody, kubek, pokrywka, lejek, podstawka, galka, stopka,
-  stojak, ociekacz, klipsKabla, wieszakListwa, SZABLONY_HOME
+  stojak, ociekacz, klipsKabla, wieszakListwa,
+  wazon, swiecznik, walek, kolo, uchwytJajka, uchwytSzpuli, stojakOkularow, etykietaRoslin,
+  SZABLONY_HOME
 } from './szablony-home.js';
+import {
+  podstawkaLaptopa, stojakMonitora, stojakPada, uchwytSluchawek, uchwytRecznika,
+  uchwytLadowarki, uchwytPamieci, wspornikGpu, SZABLONY_12B
+} from './szablony-12b.js';
+import {
+  mocowanieWentylatora, uchwytDysku, prowadnica, kanal, obudowa, ramka, krzyz, klipsU,
+  gridfinityBin, SZABLONY_12C
+} from './szablony-12c.js';
 import { wymiaryZeZdania, sprzecznePola, rozbieznePola } from './wymiary-zdanie.js';
 
 export const MATCH_NIE_PISZE_DO_REJESTRU = true;
@@ -24,7 +34,12 @@ const FN = {
   rurKolanko, adapterPlyta, uchwyt, katownik, pudelko, zlaczka, trojnik, ruraProsta,
   podkladka, tuleja, kolnierz, zaslepka, uchwytZLaczem, kolankoTorus,
   doniczka, haczyk, organizerPrzegrody,
-  kubek, pokrywka, lejek, podstawka, galka, stopka, stojak, ociekacz, klipsKabla, wieszakListwa
+  kubek, pokrywka, lejek, podstawka, galka, stopka, stojak, ociekacz, klipsKabla, wieszakListwa,
+  wazon, swiecznik, walek, kolo, uchwytJajka, uchwytSzpuli, stojakOkularow, etykietaRoslin,
+  podstawkaLaptopa, stojakMonitora, stojakPada, uchwytSluchawek, uchwytRecznika,
+  uchwytLadowarki, uchwytPamieci, wspornikGpu,
+  mocowanieWentylatora, uchwytDysku, prowadnica, kanal, obudowa, ramka, krzyz, klipsU,
+  gridfinityBin
 };
 
 const SZABLON_WYMAGANE = {
@@ -51,10 +66,35 @@ const SZABLON_WYMAGANE = {
   podstawka: ['fi'],
   galka: ['fi', 'h'],
   stopka: ['fi', 'h'],
-  stojak: ['w', 'h'],
+  stojak: ['w', 'h', 'kat'],
   ociekacz: ['x', 'y', 'z'],
   klipsKabla: ['fi'],
-  wieszakListwa: ['h', 'dl']
+  wieszakListwa: ['h', 'dl', 'n'],
+  wazon: ['fi', 'h'],
+  swiecznik: ['fi', 'h', 'fiGniazda'],
+  walek: ['fi', 'dl'],
+  kolo: ['fi', 'grub', 'fiOtw'],
+  uchwytJajka: ['fi', 'h'],
+  uchwytSzpuli: ['fiTrzpienia', 'dl', 'podstawa'],
+  stojakOkularow: ['w', 'h'],
+  etykietaRoslin: ['dl', 'w', 'szpikulec'],
+  podstawkaLaptopa: ['w', 'gl', 'kat'],
+  stojakMonitora: ['x', 'y', 'z'],
+  stojakPada: ['w', 'kat', 'gniazdo'],
+  uchwytSluchawek: ['h', 'dl'],
+  uchwytRecznika: ['dl', 'fi'],
+  uchwytLadowarki: ['x', 'y', 'z', 'otwor'],
+  uchwytPamieci: ['n', 'szczelina'],
+  wspornikGpu: ['h', 'podstawa'],
+  mocowanieWentylatora: ['fi'],
+  uchwytDysku: ['w', 'dl'],
+  prowadnica: ['dl', 'w', 'h'],
+  kanal: ['dl', 'w', 'h'],
+  obudowa: ['x', 'y', 'z'],
+  ramka: ['x', 'y'],
+  krzyz: ['fi'],
+  klipsU: ['w', 'h'],
+  gridfinityBin: ['nx', 'ny', 'hU']
 };
 
 /** Źródła w kolejności; cel ustawiany tylko gdy pusty. Zero imputacji (brak źródła = brak pola). */
@@ -66,7 +106,7 @@ const SZABLON_ALIASY = {
   zlaczka: {},
   rurKolanko: {},
   trojnik: {},
-  katownik: {},
+  katownik: { a: ['dl', 'x'], b: ['h', 'y'] },
   podkladka: {},
   tuleja: { dl: ['z'] },
   kolnierz: { h: ['z', 'dl'] },
@@ -78,14 +118,39 @@ const SZABLON_ALIASY = {
   organizerPrzegrody: { x: ['dl'], y: ['w'], z: ['h'], przegrody: ['n'] },
   kubek: { h: ['z', 'dl'] },
   pokrywka: {},
-  lejek: { h: ['z', 'dl'] },
+  lejek: { h: ['z', 'dl'], fi: ['fi1'], fiDol: ['fi2'] },
   podstawka: {},
   galka: { h: ['z'] },
   stopka: { h: ['z'] },
   stojak: { w: ['x'], h: ['z'] },
   ociekacz: { x: ['dl'], y: ['w'], z: ['h'] },
   klipsKabla: { fi: ['d'] },
-  wieszakListwa: { h: ['z'], dl: ['y'], n: ['przegrody'] }
+  wieszakListwa: { h: ['z'], dl: ['y'], n: ['przegrody'] },
+  wazon: { h: ['z', 'dl'] },
+  swiecznik: { h: ['z'], fiGniazda: ['fiDol', 'fi2'] },
+  walek: { dl: ['h', 'z'] },
+  kolo: { grub: ['h', 'z'], fiOtw: ['fiDol', 'fi2'] },
+  uchwytJajka: { h: ['z'] },
+  uchwytSzpuli: { fiTrzpienia: ['fi'], dl: ['h', 'z'], podstawa: ['fiZ', 'w'] },
+  stojakOkularow: { w: ['x'], h: ['z'] },
+  etykietaRoslin: { dl: ['x'], w: ['y'], szpikulec: ['h', 'z'] },
+  podstawkaLaptopa: { w: ['x'], gl: ['y', 'dl'], kat: ['kat'] },
+  stojakMonitora: { x: ['dl'], y: ['w'], z: ['h'] },
+  stojakPada: { w: ['x'], gniazdo: ['fi', 'szczelina'] },
+  uchwytSluchawek: { h: ['z'], dl: ['y'] },
+  uchwytRecznika: { dl: ['x'], fi: ['d'], wsporniki: ['n'] },
+  uchwytLadowarki: { x: ['dl'], y: ['w'], z: ['h'], otwor: ['fiOtw', 'fi'] },
+  uchwytPamieci: { szczelina: ['w', 'grub'] },
+  wspornikGpu: { h: ['z'], podstawa: ['fi', 'fiZ'] },
+  mocowanieWentylatora: {},
+  uchwytDysku: { w: ['x'], dl: ['y'] },
+  prowadnica: { dl: ['x'], w: ['y'] },
+  kanal: { dl: ['x'], w: ['y'] },
+  obudowa: { x: ['dl'], y: ['w'], z: ['h'] },
+  ramka: { x: ['dl'], y: ['w'], grub: ['z'] },
+  krzyz: {},
+  klipsU: { w: ['x'], h: ['z'] },
+  gridfinityBin: { nx: ['x', 'n'], ny: ['y'], hU: ['h', 'z'] }
 };
 
 let _rejestr = { when: null, wpisy: [], n: 0, _powod: 'brak', _zaladowany: false };
@@ -267,7 +332,11 @@ function znajdzSzablon(id) {
   if (sz) return sz;
   sz = SZABLONY_OBROTOWE.find(s => s.id === id);
   if (sz) return sz;
-  return SZABLONY_HOME.find(s => s.id === id) || null;
+  sz = SZABLONY_HOME.find(s => s.id === id);
+  if (sz) return sz;
+  sz = SZABLONY_12B.find(s => s.id === id);
+  if (sz) return sz;
+  return SZABLONY_12C.find(s => s.id === id) || null;
 }
 
 /**
@@ -294,6 +363,39 @@ function aliasujParametrySzablonu(szablonId, params) {
     o.fi1 = o.fi;
   }
   return o;
+}
+
+function archUnikalne(arr) {
+  const src = Array.isArray(arr) ? arr : [];
+  const out = [];
+  for (let i = 0; i < src.length; i++) {
+    const v = Number(src[i]);
+    if (!Number.isFinite(v)) continue;
+    let jest = false;
+    for (let j = 0; j < out.length; j++) {
+      if (Math.abs(out[j] - v) <= 0.05) { jest = true; break; }
+    }
+    if (!jest) out.push(v);
+  }
+  return out;
+}
+
+/** Jedna jawna wartość ze zdania → pole, gdy LLM go nie podał. Zero imputacji przy 0/2+ wartościach. */
+function archDolaczWymiaryZdania(p, zdanie) {
+  if (zdanie == null || zdanie === '' || typeof wymiaryZeZdania !== 'function') return;
+  const wym = wymiaryZeZdania(zdanie);
+  const pola = Object.keys(wym);
+  for (let i = 0; i < pola.length; i++) {
+    const pole = pola[i];
+    if (!brakuje(p, pole)) continue;
+    const uniq = archUnikalne(wym[pole]);
+    if (uniq.length === 1) p[pole] = uniq[0];
+  }
+}
+
+function archBrakSzablonu(wpis) {
+  const id = wpis && wpis.szablon_id;
+  return !id || id === 'brak_buildera';
 }
 
 /**
@@ -436,7 +538,8 @@ function archUsunPolaSprzeczne(p, zdanie, out, pytania) {
  * Post-processing decyzji LLM. Rejestr pusty → MATCH traktuj jako NEW.
  * Rejestr niepusty + MATCH: walidujParametry; brak_pola + jest liczba → MATCH + pytanie;
  * brak_pola bez żadnej liczby → REJECT brak_wymiaru. NIE dopisuje do rejestru.
- * zdanie (opcjonalne): warstwa deterministyczna — sprzeczne/rozbieżne pole usuwane, pytanie.
+ * zdanie (opcjonalne): warstwa deterministyczna — sprzeczne pole → REJECT + pytanie;
+ * unikalny wymiar ze zdania uzupełnia puste pole LLM; brak szablon_id → NEW.
  */
 export function zastosujMatch(wynik, zdanie) {
   const out = wynik && typeof wynik === 'object' ? Object.assign({}, wynik) : { decyzja: 'NEW' };
@@ -477,8 +580,25 @@ export function zastosujMatch(wynik, zdanie) {
   }
 
   const p = aliasujParametrySzablonu(wpis.szablon_id, out.parametry || {});
+  archDolaczWymiaryZdania(p, zdanie);
+  const p2 = aliasujParametrySzablonu(wpis.szablon_id, p);
+  Object.assign(p, p2);
   out.parametry = p;
   const bylaSprzeczka = archUsunPolaSprzeczne(p, zdanie, out, pytania);
+  if (bylaSprzeczka && out.sprzeczne_pola && out.sprzeczne_pola.length) {
+    out.decyzja = 'REJECT';
+    out.klasa = wpis.id;
+    out.pytania = pytania.slice(0, MAX_PYTAN_MATCH);
+    out.uzasadnienie = String(out.uzasadnienie || '') + ' [REJECT: sprzeczne_pole]';
+    return out;
+  }
+  if (archBrakSzablonu(wpis)) {
+    out.decyzja = 'NEW';
+    out.klasa = wpis.id;
+    out.pytania = pytania.slice(0, MAX_PYTAN_MATCH);
+    out.uzasadnienie = String(out.uzasadnienie || '') + ' [MATCH→NEW: brak_buildera]';
+    return out;
+  }
   const wal = walidujParametry(wpis.id, p);
   if (!wal.ok) {
     const pole = wal.brakujace_pole || wal.pole;

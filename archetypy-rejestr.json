@@ -1,5 +1,5 @@
 {
-  "when": "2026-09-04T21:45:10Z",
+  "when": "2026-09-05T08:04:26Z",
   "zrodlo": "etykiety.jsonl (nazwy + korekta właściciela, ADDENDUM 2026-09-04)",
   "wybor_when": "2026-09-04T04:47:21.749Z",
   "prog_archetypu": 8,
@@ -1774,7 +1774,8 @@
         },
         "required": [
           "h",
-          "dl"
+          "dl",
+          "n"
         ]
       },
       "szablon_id": "wieszakListwa",
@@ -1786,6 +1787,9 @@
       "klasa": "etykieta roślin",
       "opis": "To klasa małych tabliczek lub znaczników służących do opisywania i rozpoznawania roślin w doniczkach, grządkach oraz szklarni.",
       "synonimy": [
+        "plant label",
+        "plant tag",
+        "etykieta roślin",
         "znacznik roślin",
         "tabliczka do roślin",
         "etykieta ogrodowa",
@@ -1794,10 +1798,7 @@
         "identyfikator rośliny",
         "znacznik grządki",
         "plant marker",
-        "plant tag",
-        "garden marker",
-        "plant label",
-        "garden stake label"
+        "garden marker"
       ],
       "geometryczny": true,
       "n_modeli": 32,
@@ -1929,11 +1930,24 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 11.0
+          },
+          "dl": {
+            "type": "number"
+          },
+          "w": {
+            "type": "number"
+          },
+          "szpikulec": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "dl",
+          "w",
+          "szpikulec"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "etykietaRoslin",
       "n_wierszy_zakresow": 32,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -2080,11 +2094,26 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 21.0
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
+          },
+          "rant": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "x",
+          "y"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "ramka",
       "n_wierszy_zakresow": 28,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -2390,7 +2419,8 @@
         },
         "required": [
           "w",
-          "h"
+          "h",
+          "kat"
         ]
       },
       "szablon_id": "stojak",
@@ -2975,18 +3005,18 @@
       "klasa": "uchwyt jajka",
       "opis": "To niewielka część służąca do stabilnego ustawiania lub podtrzymywania jajka, zwykle podczas gotowania, serwowania albo przechowywania.",
       "synonimy": [
+        "egg cup",
+        "eggcup",
+        "uchwyt jajka",
         "podstawka pod jajko",
         "kieliszek do jajka",
         "stojak na jajko",
         "gniazdo na jajko",
         "podpora jajka",
         "trzymak jajka",
-        "egg cup",
         "egg holder",
         "egg stand",
-        "egg cradle",
-        "egg rest",
-        "egg support"
+        "egg cradle"
       ],
       "geometryczny": true,
       "n_modeli": 17,
@@ -3103,11 +3133,20 @@
             "type": "number",
             "minimum": -5.0,
             "maximum": 14.0
+          },
+          "fi": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "fi",
+          "h"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "uchwytJajka",
       "n_wierszy_zakresow": 12,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -3244,11 +3283,20 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 3.0
+          },
+          "h": {
+            "type": "number"
+          },
+          "dl": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "h",
+          "dl"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "uchwytSluchawek",
       "n_wierszy_zakresow": 14,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -4566,11 +4614,24 @@
             "type": "number",
             "minimum": -1.0,
             "maximum": 5.0
+          },
+          "w": {
+            "type": "number"
+          },
+          "kat": {
+            "type": "number"
+          },
+          "gniazdo": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "w",
+          "kat",
+          "gniazdo"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "stojakPada",
       "n_wierszy_zakresow": 11,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -4718,6 +4779,8 @@
       "klasa": "uchwyt ręcznika",
       "opis": "Element służący do zawieszania, przechowywania lub suszenia ręczników.",
       "synonimy": [
+        "towel holder",
+        "towel bar",
         "wieszak na ręcznik",
         "rel ing ręcznikowy",
         "drążek na ręcznik",
@@ -4725,7 +4788,6 @@
         "stojak na ręczniki",
         "towel rack",
         "towel rail",
-        "towel bar",
         "towel hook",
         "towel hanger",
         "towel stand"
@@ -4843,11 +4905,23 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 100.0
+          },
+          "dl": {
+            "type": "number"
+          },
+          "fi": {
+            "type": "number"
+          },
+          "wsporniki": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "dl",
+          "fi"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "uchwytRecznika",
       "n_wierszy_zakresow": 14,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -4976,11 +5050,24 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 110.0
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "z": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "x",
+          "y",
+          "z"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "obudowa",
       "n_wierszy_zakresow": 15,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -4989,6 +5076,9 @@
       "klasa": "uchwyt szpuli",
       "opis": "Element podtrzymujący i stabilizujący szpulę filamentu podczas przechowywania lub drukowania 3D.",
       "synonimy": [
+        "spool holder",
+        "spoolholder",
+        "uchwyt szpuli",
         "stojak szpuli",
         "wspornik szpuli",
         "mocowanie szpuli",
@@ -4997,10 +5087,7 @@
         "oś szpuli",
         "adapter szpuli",
         "spool mount",
-        "spool bracket",
-        "spool rack",
-        "spool stand",
-        "spool support"
+        "spool bracket"
       ],
       "geometryczny": true,
       "n_modeli": 15,
@@ -5115,11 +5202,24 @@
             "type": "number",
             "minimum": -16.0,
             "maximum": 13.0
+          },
+          "fiTrzpienia": {
+            "type": "number"
+          },
+          "dl": {
+            "type": "number"
+          },
+          "podstawa": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "fiTrzpienia",
+          "dl",
+          "podstawa"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "uchwytSzpuli",
       "n_wierszy_zakresow": 13,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -5269,7 +5369,8 @@
           }
         },
         "required": [
-          "fi"
+          "fi",
+          "kat"
         ]
       },
       "szablon_id": "kolankoTorus",
@@ -5840,11 +5941,20 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 2.0
+          },
+          "w": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "w",
+          "h"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "klipsU",
       "n_wierszy_zakresow": 13,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -6556,11 +6666,24 @@
             "type": "number",
             "minimum": -3.0,
             "maximum": 198.0
+          },
+          "w": {
+            "type": "number"
+          },
+          "gl": {
+            "type": "number"
+          },
+          "kat": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "w",
+          "gl",
+          "kat"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "podstawkaLaptopa",
       "n_wierszy_zakresow": 10,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -6569,6 +6692,7 @@
       "klasa": "stojak monitora",
       "opis": "Klasa obejmuje części służące do ustawienia monitora na biurku, jego uniesienia oraz zapewnienia stabilnego podparcia.",
       "synonimy": [
+        "monitor stand",
         "podstawka pod monitor",
         "podstawa monitora",
         "podwyższenie monitora",
@@ -6691,11 +6815,24 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 132.0
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "z": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "x",
+          "y",
+          "z"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "stojakMonitora",
       "n_wierszy_zakresow": 11,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -6840,17 +6977,18 @@
       "klasa": "świecznik",
       "opis": "Klasa obejmuje podstawki, uchwyty i osłony przeznaczone do bezpiecznego ustawiania świec.",
       "synonimy": [
+        "candle holder",
+        "candleholder",
+        "świecznik",
         "uchwyt na świecę",
         "podstawka na świecę",
         "stojak na świecę",
         "kielich na świecę",
         "osłonka na świecę",
-        "candle holder",
         "candlestick",
         "candle stand",
         "tealight holder",
-        "votive holder",
-        "taper holder"
+        "votive holder"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -6962,11 +7100,24 @@
             "type": "number",
             "minimum": -1.0,
             "maximum": 1.0
+          },
+          "fi": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
+          },
+          "fiGniazda": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "fi",
+          "h",
+          "fiGniazda"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "swiecznik",
       "n_wierszy_zakresow": 10,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -7104,6 +7255,7 @@
       "klasa": "uchwyt ładowarki",
       "opis": "Element przeznaczony do stabilnego ustawienia, zawieszenia lub zamocowania ładowarki w wybranym miejscu.",
       "synonimy": [
+        "charger holder",
         "mocowanie ładowarki",
         "stojak na ładowarkę",
         "podstawka pod ładowarkę",
@@ -7114,8 +7266,7 @@
         "charging dock",
         "charger stand",
         "charging cradle",
-        "power adapter mount",
-        "wall charger bracket"
+        "power adapter mount"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -7227,11 +7378,28 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 6.0
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "z": {
+            "type": "number"
+          },
+          "otwor": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "x",
+          "y",
+          "z",
+          "otwor"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "uchwytLadowarki",
       "n_wierszy_zakresow": 9,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -7783,6 +7951,8 @@
       "klasa": "wazon",
       "opis": "Klasa obejmuje dekoracyjne pojemniki przeznaczone do eksponowania kwiatów, roślin lub kompozycji florystycznych.",
       "synonimy": [
+        "vase",
+        "wazon",
         "naczynie dekoracyjne",
         "pojemnik na kwiaty",
         "flakon",
@@ -7792,8 +7962,7 @@
         "flower vessel",
         "decorative vessel",
         "bud holder",
-        "floral container",
-        "flower sleeve"
+        "floral container"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -7905,11 +8074,23 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 13.0
+          },
+          "fi": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "fi",
+          "h"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "wazon",
       "n_wierszy_zakresow": 9,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -8039,11 +8220,24 @@
             "type": "number",
             "minimum": 1.0,
             "maximum": 11.0
+          },
+          "dl": {
+            "type": "number"
+          },
+          "w": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "dl",
+          "w",
+          "h"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "kanal",
       "n_wierszy_zakresow": 10,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -8052,18 +8246,18 @@
       "klasa": "mocowanie wentylatora",
       "opis": "Element służący do przytwierdzenia wentylatora do obudowy, ramy lub innej powierzchni montażowej.",
       "synonimy": [
+        "fan mount",
+        "fan bracket",
         "uchwyt wentylatora",
         "wspornik wentylatora",
         "stelaż wentylatora",
         "rama montażowa wentylatora",
         "adapter wentylatora",
         "obejma wentylatora",
-        "fan bracket",
         "fan holder",
         "fan mounting bracket",
         "fan adapter",
-        "fan frame",
-        "fan support"
+        "fan frame"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -8175,11 +8369,16 @@
             "type": "number",
             "minimum": 1.0,
             "maximum": 9.0
+          },
+          "fi": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "fi"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "mocowanieWentylatora",
       "n_wierszy_zakresow": 9,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -8583,11 +8782,20 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 47.0
+          },
+          "w": {
+            "type": "number"
+          },
+          "dl": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "w",
+          "dl"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "uchwytDysku",
       "n_wierszy_zakresow": 12,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -8732,6 +8940,7 @@
       "klasa": "uchwyt pamięci",
       "opis": "Element służący do przechowywania, porządkowania lub mocowania kart pamięci, takich jak SD i microSD.",
       "synonimy": [
+        "usb holder",
         "uchwyt karty pamięci",
         "organizer kart pamięci",
         "stojak na karty SD",
@@ -8742,8 +8951,7 @@
         "SD card holder",
         "memory card organizer",
         "memory card stand",
-        "memory card case",
-        "memory card storage"
+        "memory card case"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -8855,11 +9063,20 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 1.0
+          },
+          "n": {
+            "type": "number"
+          },
+          "szczelina": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "n",
+          "szczelina"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "uchwytPamieci",
       "n_wierszy_zakresow": 10,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -8868,6 +9085,8 @@
       "klasa": "wspornik GPU",
       "opis": "Element podtrzymujący kartę graficzną w obudowie komputera i ograniczający jej ugięcie lub opadanie.",
       "synonimy": [
+        "gpu support",
+        "gpu sag",
         "podpórka karty graficznej",
         "podpora GPU",
         "stojak pod kartę graficzną",
@@ -8877,9 +9096,7 @@
         "GPU support bracket",
         "graphics card support",
         "GPU brace",
-        "GPU anti-sag bracket",
-        "graphics card holder",
-        "GPU support stand"
+        "GPU anti-sag bracket"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -8991,11 +9208,20 @@
             "type": "number",
             "minimum": 1.0,
             "maximum": 24.0
+          },
+          "h": {
+            "type": "number"
+          },
+          "podstawa": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "h",
+          "podstawa"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "wspornikGpu",
       "n_wierszy_zakresow": 10,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -9418,11 +9644,24 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 4.0
+          },
+          "dl": {
+            "type": "number"
+          },
+          "w": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "dl",
+          "w",
+          "h"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "prowadnica",
       "n_wierszy_zakresow": 9,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -9693,11 +9932,20 @@
             "type": "number",
             "minimum": 1.0,
             "maximum": 7.0
+          },
+          "fi": {
+            "type": "number"
+          },
+          "dl": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "fi",
+          "dl"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "walek",
       "n_wierszy_zakresow": 7,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -9839,11 +10087,12 @@
       "klasa": "koło",
       "opis": "Część obrotowa o kształcie tarczy lub pierścienia, służąca do toczenia, prowadzenia, podpierania albo przenoszenia napędu.",
       "synonimy": [
+        "wheel",
+        "tarcza",
         "kółko",
         "kółko jezdne",
         "koło napędowe",
         "koło podporowe",
-        "wheel",
         "small wheel",
         "running wheel",
         "drive wheel",
@@ -9958,11 +10207,24 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 129.0
+          },
+          "fi": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
+          },
+          "fiOtw": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "fi",
+          "grub",
+          "fiOtw"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "kolo",
       "n_wierszy_zakresow": 6,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -9971,6 +10233,9 @@
       "klasa": "stojak okularów",
       "opis": "Klasa obejmuje elementy przeznaczone do bezpiecznego odkładania, przechowywania lub eksponowania okularów.",
       "synonimy": [
+        "glasses stand",
+        "eyeglass stand",
+        "stojak okularów",
         "uchwyt na okulary",
         "podstawka na okulary",
         "wieszak na okulary",
@@ -9979,10 +10244,7 @@
         "stojak na okulary",
         "glasses holder",
         "eyeglass holder",
-        "spectacle stand",
-        "glasses rack",
-        "eyewear holder",
-        "glasses display stand"
+        "spectacle stand"
       ],
       "geometryczny": true,
       "n_modeli": 10,
@@ -10092,11 +10354,20 @@
             "type": "number",
             "minimum": -1.0,
             "maximum": 6.0
+          },
+          "w": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "w",
+          "h"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "stojakOkularow",
       "n_wierszy_zakresow": 10,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -10354,11 +10625,16 @@
             "type": "number",
             "minimum": 3.0,
             "maximum": 13.0
+          },
+          "fi": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "fi"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "krzyz",
       "n_wierszy_zakresow": 4,
       "synonimy_model": "openai/gpt-5.6-luna"
     }

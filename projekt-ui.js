@@ -8,7 +8,8 @@ import { WIDOKI, rzutuj, rysuj, etykietaGabarytu } from './preview.js';
 import { wyciagnijSzukaj, szukajSieci, hostDozwolony, tekstWynikowSzukania } from './szukaj.js';
 import { ladujPackNauki, szukajNauki, tekstKontekstuNauki, tagiZQuery } from './nauka-rag.js';
 import { dopasujSzablony, tekstSzablonow, SZABLONY } from './nauka-szablony.js';
-import { ladujRejestr, ladujProgi, tekstArchetypow, build as buildArchetyp } from './archetypy.js';
+import { ladujRejestr, ladujProgi, tekstArchetypow, build as buildArchetyp, getArchetyp } from './archetypy.js';
+import { pomiarZwrotny } from './wymiary-zdanie.js';
 import {
   nowyProjectId, modelCzytaObraz, uzyjFlashDoOpisu, hintWizji, mockOpisZdjecia,
   parseScalePercent, zapiszNitke, wczytajNitke, skrotRozmowy, kompresujZdjecie,
@@ -1656,6 +1657,41 @@ async function pjSpecSharded(talk, text, userB) {
   return spec;
 }
 
+function pjPomiarZwrotnyZWyniku(r, context) {
+  const bb = (r && r.mesh && r.mesh.bbox)
+    || (r && r.deklaracja && r.deklaracja.bbox)
+    || {};
+  const topo = (r && r.deklaracja && r.deklaracja.topologia) || {};
+  const kody = ((r && r.werdykt && r.werdykt.wpisy) || []).map(function (w) {
+    return w && w.kod;
+  }).filter(Boolean);
+  const kl = pjOstatniaKlasyfikacja || {};
+  let sid = '';
+  try {
+    const w = typeof getArchetyp === 'function' ? getArchetyp(kl.klasa) : null;
+    sid = (w && w.szablon_id) || '';
+  } catch (e) { sid = ''; }
+  if (typeof pomiarZwrotny !== 'function') {
+    return {
+      tekst: '[pomiar-zwrotny]\ngabaryt: '
+        + (Number.isFinite(bb.x) ? (bb.x.toFixed(2) + ' × ' + bb.y.toFixed(2) + ' × ' + bb.z.toFixed(2) + ' mm') : 'brak')
+        + '\nBRYLY: ' + (topo.czesci_n == null ? '?' : String(topo.czesci_n))
+        + '\nkody: ' + (kody.length ? kody.join(', ') : 'brak'),
+      ok: true,
+      pytania: [],
+      rozjazdy: []
+    };
+  }
+  return pomiarZwrotny({
+    bbox: bb,
+    czesci_n: topo.czesci_n,
+    kody: kody,
+    parametry: kl.parametry,
+    zdanie: context || pjOstatnieZdanie,
+    szablonId: sid
+  });
+}
+
 async function zbuduj(spec, note, prev, context, opts) {
   opts = opts || {};
   pjWalidujSpecWejscie(spec);
@@ -1748,6 +1784,23 @@ async function zbuduj(spec, note, prev, context, opts) {
   if (werdyktOstrz !== r.werdykt) r.werdykt = werdyktOstrz;
   setWarn(r.werdykt);
   syncExport(r.werdykt);
+  const pomiar = pjPomiarZwrotnyZWyniku(r, context || note);
+  chatLine('ai', pomiar.tekst);
+  if (!pomiar.ok) {
+    last.akceptacja = false;
+    last._pomiarRozjazd = pomiar.rozjazdy;
+    if (r.werdykt) {
+      r.werdykt.eksportOk = false;
+      r.werdykt.wpisy = (r.werdykt.wpisy || []).concat(pomiar.pytania.map(function (t) {
+        return { poziom: 'blad', kod: 'POMIAR', tekst: t };
+      }));
+    }
+    setWarn(r.werdykt);
+    syncExport(r.werdykt);
+    pokazPytaniaBramki(pomiar.pytania);
+    pjWlaczPrzerobTo(!!r.mesh);
+    return r;
+  }
   pushHist({ spec: r.spec, deklaracja: r.deklaracja, note: note || '', when: Date.now() });
   if (r.spec.uwagi_do_druku) chatLine('ai', r.spec.uwagi_do_druku);
   pokazCheckliste(r.spec, r.werdykt);

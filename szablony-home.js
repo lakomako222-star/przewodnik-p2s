@@ -484,6 +484,222 @@ export function wieszakListwa(h, dl, n, w, grub) {
   };
 }
 
+/**
+ * Wazon — stożek ścięty, dno pełne, bez drenażu. fiDol = 0,72·fi (kształt, nie parametr).
+ * @param {number} fi — średnica górna zewn. [mm]
+ * @param {number} h — wysokość [mm]
+ * @param {number} grub — ścianka [mm], domyślnie 2,4
+ */
+export function wazon(fi, h, grub) {
+  const g = grub || 2.4;
+  const dno = 3;
+  const dol = Math.max(fi * 0.72, 2 * g + 4);
+  const fiW = Math.max(fi - 2 * g, 1);
+  const dolW = Math.max(dol - 2 * g, 1);
+  const bryly = [
+    {
+      id: 'zewn', operacja: 'dodaj',
+      ksztalt: { typ: 'walec', wysokosc_mm: h, srednica_dolna_mm: dol, srednica_gorna_mm: fi },
+      pozycja_mm: [0, 0, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    },
+    {
+      id: 'wnetrze', operacja: 'odejmij',
+      ksztalt: { typ: 'walec', wysokosc_mm: Math.max(h - dno + 1, 1), srednica_dolna_mm: dolW, srednica_gorna_mm: fiW },
+      pozycja_mm: [0, 0, dno], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    }
+  ];
+  return {
+    nazwa: 'Wazon Fi' + fi + ' H' + h,
+    material: 'PETG',
+    bryly, cechy: [],
+    uwagi_do_druku: 'Wazon z szablonu wazon. Ścianka ' + g + ' mm, dno ' + dno + ' mm. Drukuj dnem na płycie.'
+  };
+}
+
+/**
+ * Świecznik — walec z gniazdem na świecę od góry.
+ * @param {number} fi — średnica zewn. [mm]
+ * @param {number} h — wysokość [mm]
+ * @param {number} fiGniazda — średnica gniazda [mm]
+ */
+export function swiecznik(fi, h, fiGniazda) {
+  const gleb = Math.max(8, Math.min(h * 0.4, 22));
+  const d = Math.min(Number(fiGniazda), fi - 2.4);
+  const bryly = [
+    {
+      id: 'korpus', operacja: 'dodaj',
+      ksztalt: { typ: 'walec', wysokosc_mm: h, srednica_dolna_mm: fi, srednica_gorna_mm: fi },
+      pozycja_mm: [0, 0, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    },
+    {
+      id: 'gniazdo', operacja: 'odejmij',
+      ksztalt: { typ: 'walec', wysokosc_mm: gleb + 1, srednica_dolna_mm: d, srednica_gorna_mm: d },
+      pozycja_mm: [0, 0, h - gleb], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    }
+  ];
+  return {
+    nazwa: 'Swiecznik Fi' + fi + ' H' + h,
+    material: 'PETG',
+    bryly, cechy: [],
+    uwagi_do_druku: 'Świecznik z szablonu swiecznik. Gniazdo Ø' + d + ' głębokość ' + gleb + ' mm. Drukuj dnem na płycie.'
+  };
+}
+
+/**
+ * Wałek — pełny walec (oś / trzpień).
+ * @param {number} fi — średnica [mm]
+ * @param {number} dl — długość wzdłuż Z [mm]
+ */
+export function walek(fi, dl) {
+  const bryly = [
+    {
+      id: 'korpus', operacja: 'dodaj',
+      ksztalt: { typ: 'walec', wysokosc_mm: dl, srednica_dolna_mm: fi, srednica_gorna_mm: fi },
+      pozycja_mm: [0, 0, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    }
+  ];
+  return {
+    nazwa: 'Walek Fi' + fi + ' L' + dl,
+    material: 'PETG',
+    bryly, cechy: [],
+    uwagi_do_druku: 'Wałek z szablonu walek. Drukuj na płasko (oś Z).'
+  };
+}
+
+/**
+ * Koło / tarcza z otworem.
+ * @param {number} fi — średnica zewn. [mm]
+ * @param {number} grub — grubość [mm]
+ * @param {number} fiOtw — średnica otworu [mm]
+ */
+export function kolo(fi, grub, fiOtw) {
+  const d = Math.min(Number(fiOtw), fi - 2.4);
+  const bryly = [
+    {
+      id: 'tarcza', operacja: 'dodaj',
+      ksztalt: { typ: 'walec', wysokosc_mm: grub, srednica_dolna_mm: fi, srednica_gorna_mm: fi },
+      pozycja_mm: [0, 0, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    },
+    {
+      id: 'otwor', operacja: 'odejmij',
+      ksztalt: { typ: 'walec', wysokosc_mm: grub + 2, srednica_dolna_mm: d, srednica_gorna_mm: d },
+      pozycja_mm: [0, 0, -1], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    }
+  ];
+  return {
+    nazwa: 'Kolo Fi' + fi + ' otw ' + d,
+    material: 'PETG',
+    bryly, cechy: [],
+    uwagi_do_druku: 'Koło z szablonu kolo. Otwór Ø' + d + '. Drukuj tarczą na płycie.'
+  };
+}
+
+/**
+ * Uchwyt jajka — kubeczek bez drenażu.
+ * @param {number} fi — średnica zewn. [mm]
+ * @param {number} h — wysokość [mm]
+ */
+export function uchwytJajka(fi, h) {
+  const spec = doniczka(fi, h, 2.4, fi, 0);
+  spec.nazwa = 'Uchwyt jajka Fi' + fi + ' H' + h;
+  spec.uwagi_do_druku = 'Uchwyt jajka z szablonu uchwytJajka. Drukuj dnem na płycie.';
+  return spec;
+}
+
+/**
+ * Uchwyt szpuli — tarcza + trzpień (mostek: trzpień wchodzi w tarczę).
+ * @param {number} fiTrzpienia — średnica trzpienia [mm]
+ * @param {number} dl — wysokość trzpienia ponad tarczą [mm]
+ * @param {number} podstawa — średnica tarczy [mm]
+ */
+export function uchwytSzpuli(fiTrzpienia, dl, podstawa) {
+  const bazaH = 4;
+  const fiB = Number(podstawa);
+  const pin = Number(fiTrzpienia);
+  const bryly = [
+    {
+      id: 'baza', operacja: 'dodaj',
+      ksztalt: { typ: 'walec', wysokosc_mm: bazaH, srednica_dolna_mm: fiB, srednica_gorna_mm: fiB },
+      pozycja_mm: [0, 0, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    },
+    {
+      id: 'trzpien', operacja: 'dodaj',
+      ksztalt: { typ: 'walec', wysokosc_mm: bazaH + dl, srednica_dolna_mm: pin, srednica_gorna_mm: pin },
+      pozycja_mm: [0, 0, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    }
+  ];
+  return {
+    nazwa: 'Uchwyt szpuli Fi' + pin + ' L' + dl,
+    material: 'PETG',
+    bryly, cechy: [],
+    uwagi_do_druku: 'Uchwyt szpuli z szablonu uchwytSzpuli. Drukuj tarczą na płycie.'
+  };
+}
+
+/**
+ * Stojak na okulary — baza + dwa słupki (mostek: słupki w bazie).
+ * @param {number} w — szerokość [mm]
+ * @param {number} h — wysokość słupków [mm]
+ */
+export function stojakOkularow(w, h) {
+  const bazaY = 18;
+  const g = 4;
+  const slup = 8;
+  const bryly = [
+    {
+      id: 'baza', operacja: 'dodaj',
+      ksztalt: { typ: 'prostopadloscian', x_mm: w, y_mm: bazaY, z_mm: g },
+      pozycja_mm: [0, 0, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    },
+    {
+      id: 'slup_l', operacja: 'dodaj',
+      ksztalt: { typ: 'prostopadloscian', x_mm: slup, y_mm: slup, z_mm: h },
+      pozycja_mm: [0, (bazaY - slup) / 2, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    },
+    {
+      id: 'slup_p', operacja: 'dodaj',
+      ksztalt: { typ: 'prostopadloscian', x_mm: slup, y_mm: slup, z_mm: h },
+      pozycja_mm: [w - slup, (bazaY - slup) / 2, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    }
+  ];
+  return {
+    nazwa: 'Stojak okularow ' + w + '×' + h,
+    material: 'PETG',
+    bryly, cechy: [],
+    uwagi_do_druku: 'Stojak okularów z szablonu stojakOkularow. Drukuj bazą na płycie.'
+  };
+}
+
+/**
+ * Etykieta roślin — tabliczka + szpikulec (mostek: szpikulec wchodzi w tabliczkę).
+ * @param {number} dl — długość tabliczki [mm]
+ * @param {number} w — szerokość tabliczki [mm]
+ * @param {number} szpikulec — długość szpikulca [mm]
+ */
+export function etykietaRoslin(dl, w, szpikulec) {
+  const g = 1.6;
+  const spikeW = Math.max(6, Math.min(w * 0.35, 12));
+  const overlap = g;
+  const bryly = [
+    {
+      id: 'tabliczka', operacja: 'dodaj',
+      ksztalt: { typ: 'prostopadloscian', x_mm: dl, y_mm: w, z_mm: g },
+      pozycja_mm: [0, 0, szpikulec], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    },
+    {
+      id: 'szpikulec', operacja: 'dodaj',
+      ksztalt: { typ: 'prostopadloscian', x_mm: spikeW, y_mm: g, z_mm: szpikulec + overlap },
+      pozycja_mm: [(dl - spikeW) / 2, (w - g) / 2, 0], obrot_deg: [0, 0, 0], srodkowanie: 'brak'
+    }
+  ];
+  return {
+    nazwa: 'Etykieta roslin ' + dl + '×' + w,
+    material: 'PETG',
+    bryly, cechy: [],
+    uwagi_do_druku: 'Etykieta roślin z szablonu etykietaRoslin. Drukuj szpikulcem wzdłuż Z, tabliczką do góry.'
+  };
+}
+
 export const SZABLONY_HOME = [
   {
     id: 'doniczka',
@@ -573,7 +789,7 @@ export const SZABLONY_HOME = [
     parametry: 'w, h, kat',
     fn: stojak,
     przyklad: 'stojak(80, 90, 65) → szer. 80, oparcie 90, kąt 65°',
-    opis: 'Wymagane: w, h. kat 65°.'
+    opis: 'Wymagane: w, h, kat (stopnie).'
   },
   {
     id: 'ociekacz',
@@ -600,6 +816,78 @@ export const SZABLONY_HOME = [
     parametry: 'h, dl, n, w, grub',
     fn: wieszakListwa,
     przyklad: 'wieszakListwa(60, 35, 3) → belka, 3 haczyki',
-    opis: 'Wymagane: h (belka), dl (wysięg). n=3, rozstaw 50 mm.'
+    opis: 'Wymagane: h (belka), dl (wysięg), n (liczba haków).'
+  },
+  {
+    id: 'wazon',
+    nazwa: 'Wazon',
+    tagi: ['wazon', 'vase'],
+    parametry: 'fi, h, grub',
+    fn: wazon,
+    przyklad: 'wazon(80, 120) → stożek Ø80 H120',
+    opis: 'Wymagane: fi, h. grub 2,4 mm, dno 3 mm, dół 0,72·fi.'
+  },
+  {
+    id: 'swiecznik',
+    nazwa: 'Świecznik',
+    tagi: ['swiecznik', 'candle'],
+    parametry: 'fi, h, fiGniazda',
+    fn: swiecznik,
+    przyklad: 'swiecznik(60, 40, 22) → walec Ø60, gniazdo Ø22',
+    opis: 'Wymagane: fi, h, fiGniazda.'
+  },
+  {
+    id: 'walek',
+    nazwa: 'Wałek',
+    tagi: ['walek', 'rod'],
+    parametry: 'fi, dl',
+    fn: walek,
+    przyklad: 'walek(12, 40) → walec Ø12 L40',
+    opis: 'Wymagane: fi, dl.'
+  },
+  {
+    id: 'kolo',
+    nazwa: 'Koło / tarcza',
+    tagi: ['kolo', 'wheel'],
+    parametry: 'fi, grub, fiOtw',
+    fn: kolo,
+    przyklad: 'kolo(80, 8, 8) → tarcza Ø80, otwór Ø8',
+    opis: 'Wymagane: fi, grub, fiOtw.'
+  },
+  {
+    id: 'uchwytJajka',
+    nazwa: 'Uchwyt jajka',
+    tagi: ['jajko', 'egg cup'],
+    parametry: 'fi, h',
+    fn: uchwytJajka,
+    przyklad: 'uchwytJajka(45, 40) → kubeczek Ø45 H40',
+    opis: 'Wymagane: fi, h.'
+  },
+  {
+    id: 'uchwytSzpuli',
+    nazwa: 'Uchwyt szpuli',
+    tagi: ['szpula', 'spool'],
+    parametry: 'fiTrzpienia, dl, podstawa',
+    fn: uchwytSzpuli,
+    przyklad: 'uchwytSzpuli(20, 50, 60) → trzpień Ø20 na tarczy Ø60',
+    opis: 'Wymagane: fiTrzpienia, dl, podstawa.'
+  },
+  {
+    id: 'stojakOkularow',
+    nazwa: 'Stojak na okulary',
+    tagi: ['okulary', 'glasses stand'],
+    parametry: 'w, h',
+    fn: stojakOkularow,
+    przyklad: 'stojakOkularow(80, 70) → baza 80, słupki 70',
+    opis: 'Wymagane: w, h.'
+  },
+  {
+    id: 'etykietaRoslin',
+    nazwa: 'Etykieta roślin',
+    tagi: ['etykieta', 'plant label'],
+    parametry: 'dl, w, szpikulec',
+    fn: etykietaRoslin,
+    przyklad: 'etykietaRoslin(50, 20, 80) → tabliczka 50×20, szpikulec 80',
+    opis: 'Wymagane: dl, w, szpikulec.'
   }
 ];
