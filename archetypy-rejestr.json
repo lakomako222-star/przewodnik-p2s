@@ -1,5 +1,5 @@
 {
-  "when": "2026-09-05T12:05:22Z",
+  "when": "2026-09-05T16:38:43Z",
   "zrodlo": "etykiety.jsonl (nazwy + korekta właściciela, ADDENDUM 2026-09-04)",
   "wybor_when": "2026-09-04T04:47:21.749Z",
   "prog_archetypu": 8,
@@ -7,21 +7,8 @@
     {
       "id": "zabawka",
       "klasa": "zabawka",
-      "opis": "Klasa obejmuje drukowane przestrzennie przedmioty przeznaczone do zabawy, kolekcjonowania lub odgrywania scenek.",
-      "synonimy": [
-        "figurką",
-        "figurine",
-        "ludzik",
-        "little figure",
-        "figurką kolekcjonerska",
-        "collectible figure",
-        "figurka akcji",
-        "action figure",
-        "miniatura",
-        "miniature",
-        "model",
-        "model do zabawy"
-      ],
+      "opis": "zabawka",
+      "synonimy": [],
       "geometryczny": false,
       "n_modeli": 415,
       "zrodla_etykiet": {
@@ -77,25 +64,13 @@
       "statystyki": {},
       "schemat_parametrow": null,
       "szablon_id": null,
-      "n_wierszy_zakresow": 0,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 0
     },
     {
       "id": "sruba",
       "klasa": "śruba",
-      "opis": "Element z gwintem, służący do skręcania, mocowania lub dociskania części, często współpracujący z nakrętką albo otworem gwintowanym.",
-      "synonimy": [
-        "wkręt",
-        "element gwintowany",
-        "łącznik gwintowany",
-        "trzpień gwintowany",
-        "bolt",
-        "screw",
-        "machine screw",
-        "threaded fastener",
-        "threaded rod",
-        "stud"
-      ],
+      "opis": "śruba",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 257,
       "zrodla_etykiet": {
@@ -240,26 +215,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 240,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 240
     },
     {
       "id": "organizer",
       "klasa": "organizer",
-      "opis": "Klasa obejmuje części służące do przechowywania, sortowania i porządkowania drobnych przedmiotów w przegródkach lub pojemnikach.",
-      "synonimy": [
-        "przybornik",
-        "sortownik",
-        "tacka na drobiazgi",
-        "wkładka",
-        "pojemnik z przegródkami",
-        "szufladka",
-        "storage tray",
-        "parts bin",
-        "compartment tray",
-        "drawer insert",
-        "divider tray"
-      ],
+      "opis": "organizer",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 178,
       "zrodla_etykiet": {
@@ -422,24 +384,13 @@
         ]
       },
       "szablon_id": "organizerPrzegrody",
-      "n_wierszy_zakresow": 149,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 149
     },
     {
       "id": "lozysko",
       "klasa": "łożysko",
-      "opis": "Element mechaniczny służący do podtrzymywania ruchomych osi i redukcji tarcia w mechanizmach drukarki 3D.",
-      "synonimy": [
-        "bearing",
-        "ball bearing",
-        "linear bearing",
-        "tuleja ślizgowa",
-        "łożysko kulkowe",
-        "łożysko liniowe",
-        "608ZZ",
-        "LM8UU",
-        "roller bearing"
-      ],
+      "opis": "łożysko",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 177,
       "zrodla_etykiet": {
@@ -583,18 +534,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 160,
-      "synonimy_model": "google/gemini-3.7-flash"
+      "n_wierszy_zakresow": 160
     },
     {
       "id": "pudelko",
       "klasa": "pudełko",
-      "opis": "Klasa obejmuje drukowane części tworzące zamknięty lub częściowo zamknięty pojemnik do przechowywania, ochrony albo organizowania innych elementów.",
-      "synonimy": [
-        "pojemnik",
-        "zasobnik",
-        "container"
-      ],
+      "opis": "pudełko",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 118,
       "zrodla_etykiet": {
@@ -755,25 +701,13 @@
         ]
       },
       "szablon_id": "pudelko",
-      "n_wierszy_zakresow": 111,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 111
     },
     {
       "id": "rura",
       "klasa": "rura",
-      "opis": "Klasa obejmuje części o wydłużonym, zwykle cylindrycznym kształcie, z jednym lub większą liczbą przelotowych kanałów.",
-      "synonimy": [
-        "tuba",
-        "tuleja rurowa",
-        "przewód rurowy",
-        "kanał rurowy",
-        "element cylindryczny",
-        "pipe",
-        "tube",
-        "tubing",
-        "cylindrical tube",
-        "hollow cylinder"
-      ],
+      "opis": "rura",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 114,
       "zrodla_etykiet": {
@@ -930,17 +864,13 @@
         ]
       },
       "szablon_id": "ruraProsta",
-      "n_wierszy_zakresow": 104,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 104
     },
     {
       "id": "uchwyt",
       "klasa": "uchwyt",
-      "opis": "Element przeznaczony do trzymania, przenoszenia, mocowania lub manipulowania inną częścią albo urządzeniem.",
-      "synonimy": [
-        "podparcie",
-        "bracket"
-      ],
+      "opis": "uchwyt",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 103,
       "zrodla_etykiet": {
@@ -1097,25 +1027,13 @@
         ]
       },
       "szablon_id": "uchwytZLaczem",
-      "n_wierszy_zakresow": 92,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 92
     },
     {
       "id": "nakretka",
       "klasa": "nakrętka",
-      "opis": "Element z wewnętrznym gwintem, nakręcany na śrubę lub pręt gwintowany w celu łączenia i dociskania części.",
-      "synonimy": [
-        "nut",
-        "hex nut",
-        "threaded nut",
-        "fastener nut",
-        "locknut",
-        "jam nut",
-        "nakrętka sześciokątna",
-        "nakrętka gwintowana",
-        "nakrętka mocująca",
-        "nakrętka kontrująca"
-      ],
+      "opis": "nakrętka",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 74,
       "zrodla_etykiet": {
@@ -1260,25 +1178,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 71,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 71
     },
     {
       "id": "adapter",
       "klasa": "adapter",
-      "opis": "Część pośrednia służąca do połączenia elementów o różnych wymiarach, kształtach, standardach lub sposobach mocowania.",
-      "synonimy": [
-        "przejściówka",
-        "złączka",
-        "łącznik",
-        "konwerter",
-        "przejściówka montażowa",
-        "converter",
-        "coupler",
-        "connector",
-        "interface piece",
-        "mounting interface"
-      ],
+      "opis": "adapter",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 52,
       "zrodla_etykiet": {
@@ -1437,27 +1343,13 @@
         ]
       },
       "szablon_id": "adapterPlyta",
-      "n_wierszy_zakresow": 39,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 39
     },
     {
       "id": "podkladka",
       "klasa": "podkładka",
-      "opis": "Cienki element z otworem, który rozkłada nacisk, ustala odstęp lub zabezpiecza połączenie śrubowe.",
-      "synonimy": [
-        "krążek dystansowy",
-        "pierścień dystansowy",
-        "pierścień oporowy",
-        "krążek oporowy",
-        "przekładka",
-        "element dystansujący",
-        "shim",
-        "spacer ring",
-        "thrust ring",
-        "backing ring",
-        "flat ring",
-        "spacing disc"
-      ],
+      "opis": "podkładka",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 40,
       "zrodla_etykiet": {
@@ -1613,20 +1505,13 @@
         ]
       },
       "szablon_id": "podkladka",
-      "n_wierszy_zakresow": 38,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 38
     },
     {
       "id": "wieszak",
       "klasa": "wieszak",
-      "opis": "Część przeznaczona do zawieszania przedmiotów na ścianie, panelu lub innej powierzchni.",
-      "synonimy": [
-        "uchwyt ścienny",
-        "wieszak ścienny",
-        "kołek",
-        "wall mount",
-        "挂钩"
-      ],
+      "opis": "wieszak",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 33,
       "zrodla_etykiet": {
@@ -1782,26 +1667,16 @@
         ]
       },
       "szablon_id": "wieszakListwa",
-      "n_wierszy_zakresow": 30,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 30
     },
     {
       "id": "etykieta-roslin",
       "klasa": "etykieta roślin",
-      "opis": "To klasa małych tabliczek lub znaczników służących do opisywania i rozpoznawania roślin w doniczkach, grządkach oraz szklarni.",
+      "opis": "etykieta roślin",
       "synonimy": [
         "plant label",
         "plant tag",
-        "etykieta roślin",
-        "znacznik roślin",
-        "tabliczka do roślin",
-        "etykieta ogrodowa",
-        "marker ogrodowy",
-        "tabliczka ogrodowa",
-        "identyfikator rośliny",
-        "znacznik grządki",
-        "plant marker",
-        "garden marker"
+        "etykieta roślin"
       ],
       "geometryczny": true,
       "n_modeli": 32,
@@ -1951,25 +1826,13 @@
         ]
       },
       "szablon_id": "etykietaRoslin",
-      "n_wierszy_zakresow": 32,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 32
     },
     {
       "id": "ramka",
       "klasa": "ramka",
-      "opis": "Klasa obejmuje części tworzące sztywną konstrukcję obwodową, która podtrzymuje, otacza lub ustala inne elementy.",
-      "synonimy": [
-        "rama",
-        "oprawa",
-        "stelaż",
-        "szkielet",
-        "obramowanie",
-        "konstrukcja nośna",
-        "oprawka",
-        "support frame",
-        "mounting frame",
-        "chassis"
-      ],
+      "opis": "ramka",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 28,
       "zrodla_etykiet": {
@@ -2117,25 +1980,17 @@
         ]
       },
       "szablon_id": "ramka",
-      "n_wierszy_zakresow": 28,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 28
     },
     {
       "id": "organizer-kabli",
       "klasa": "organizer kabli",
-      "opis": "Klasa obejmuje drukowane elementy do porządkowania, spinania, prowadzenia i mocowania kabli oraz przewodów.",
+      "opis": "organizer kabli",
       "synonimy": [
         "cable comb",
         "cablecomb",
         "grzebien na kable",
-        "organizer kabli",
-        "prowadnica kabli",
-        "spinka do kabli",
-        "zacisk kablowy",
-        "grzebień kablowy",
-        "wire clip",
-        "cable holder",
-        "cord keeper"
+        "organizer kabli"
       ],
       "geometryczny": true,
       "n_modeli": 26,
@@ -2266,21 +2121,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 23,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 23
     },
     {
       "id": "obudowa",
       "klasa": "obudowa",
-      "opis": "Klasa obejmuje części tworzące zewnętrzną osłonę urządzenia lub mechanizmu, chroniące jego elementy i nadające całości formę.",
-      "synonimy": [
-        "skorupa",
-        "kadłub",
-        "puszka",
-        "kaseta",
-        "casing",
-        "shell"
-      ],
+      "opis": "obudowa",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 25,
       "zrodla_etykiet": {
@@ -2422,21 +2269,13 @@
         ]
       },
       "szablon_id": "obudowa",
-      "n_wierszy_zakresow": 24,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 24
     },
     {
       "id": "zaslepka",
       "klasa": "zaślepka",
-      "opis": "Część służąca do zamykania otworu, końca profilu lub obudowy oraz ochrony wnętrza przed zabrudzeniem i uszkodzeniem.",
-      "synonimy": [
-        "korek",
-        "osłona końcowa",
-        "korek uszczelniający",
-        "plug",
-        "blanking plug",
-        "dust cap"
-      ],
+      "opis": "zaślepka",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 24,
       "zrodla_etykiet": {
@@ -2579,18 +2418,15 @@
         ]
       },
       "szablon_id": "zaslepka",
-      "n_wierszy_zakresow": 22,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 22
     },
     {
       "id": "stojak",
       "klasa": "stojak",
-      "opis": "Klasa obejmuje części służące do podtrzymywania, ustawiania lub eksponowania innych elementów w określonej pozycji.",
+      "opis": "stojak",
       "synonimy": [
         "phone stand",
-        "phonestand",
-        "podpórka",
-        "ekspozytor"
+        "phonestand"
       ],
       "geometryczny": true,
       "n_modeli": 24,
@@ -2732,26 +2568,13 @@
         ]
       },
       "szablon_id": "stojak",
-      "n_wierszy_zakresow": 22,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 22
     },
     {
       "id": "kolo-zebate",
       "klasa": "koło zębate",
-      "opis": "To część z wystającymi zębami, która przenosi napęd i ruch obrotowy przez zazębienie z innym elementem.",
-      "synonimy": [
-        "zębatka",
-        "tryb",
-        "zębnik",
-        "zębate koło",
-        "element zębaty",
-        "gear",
-        "cogwheel",
-        "toothed wheel",
-        "spur gear",
-        "pinion",
-        "gear wheel"
-      ],
+      "opis": "koło zębate",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 23,
       "zrodla_etykiet": {
@@ -2878,27 +2701,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 12,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 12
     },
     {
       "id": "uchwyt-suszarki",
       "klasa": "uchwyt suszarki",
-      "opis": "Klasa obejmuje elementy służące do przechowywania, montażu lub stabilnego podtrzymywania suszarki do włosów.",
-      "synonimy": [
-        "wieszak na suszarkę",
-        "stojak na suszarkę",
-        "mocowanie suszarki",
-        "wspornik suszarki",
-        "koszyk na suszarkę",
-        "organizer na suszarkę",
-        "hair dryer holder",
-        "hairdryer mount",
-        "blow dryer holder",
-        "hair dryer wall mount",
-        "hairdryer bracket",
-        "blow dryer stand"
-      ],
+      "opis": "uchwyt suszarki",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 23,
       "zrodla_etykiet": {
@@ -3025,27 +2834,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 21,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 21
     },
     {
       "id": "element-mebli",
       "klasa": "element mebli",
-      "opis": "Klasa obejmuje drukowane części i dodatki przeznaczone do budowy, łączenia, naprawy lub wykończenia mebli.",
-      "synonimy": [
-        "część meblowa",
-        "komponent mebla",
-        "moduł meblowy",
-        "detal meblowy",
-        "akcesorium meblowe",
-        "element wyposażenia",
-        "furniture part",
-        "furniture component",
-        "furniture module",
-        "furniture detail",
-        "furniture accessory",
-        "fitting"
-      ],
+      "opis": "element mebli",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 22,
       "zrodla_etykiet": {
@@ -3171,27 +2966,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 19,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 19
     },
     {
       "id": "klucz",
       "klasa": "klucz",
-      "opis": "Część lub narzędzie służące do chwytania, dokręcania i odkręcania śrub oraz nakrętek.",
-      "synonimy": [
-        "narzędzie do nakrętek",
-        "wrench",
-        "spanner",
-        "klucz płaski",
-        "open-end wrench",
-        "klucz oczkowy",
-        "box-end wrench",
-        "klucz nasadowy",
-        "socket wrench",
-        "imbus",
-        "Allen key",
-        "hex key"
-      ],
+      "opis": "klucz",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 22,
       "zrodla_etykiet": {
@@ -3317,20 +3098,16 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 18,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 18
     },
     {
       "id": "podstawka",
       "klasa": "podstawka",
-      "opis": "Część służąca do podpierania, ustawiania lub stabilizowania innego elementu albo całego wydruku.",
+      "opis": "podstawka",
       "synonimy": [
         "coaster",
         "saucer",
-        "podstawka",
-        "platforma",
-        "baza",
-        "base plate"
+        "podstawka"
       ],
       "geometryczny": true,
       "n_modeli": 22,
@@ -3468,25 +3245,14 @@
         ]
       },
       "szablon_id": "podstawka",
-      "n_wierszy_zakresow": 19,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 19
     },
     {
       "id": "podstawka-konsoli",
       "klasa": "podstawka konsoli",
-      "opis": "Element służący do stabilnego ustawienia, podparcia lub ekspozycji konsoli do gier.",
+      "opis": "podstawka konsoli",
       "synonimy": [
-        "console stand",
-        "stojak do konsoli",
-        "podstawa pod konsolę",
-        "baza konsoli",
-        "platforma pod konsolę",
-        "wspornik konsoli",
-        "stojak na konsolę",
-        "console base",
-        "gaming console dock",
-        "console holder",
-        "console support"
+        "console stand"
       ],
       "geometryczny": true,
       "n_modeli": 22,
@@ -3613,20 +3379,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 22,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 22
     },
     {
       "id": "uchwyt-handheld",
       "klasa": "uchwyt handheld",
-      "opis": "Części przeznaczone do wygodnego trzymania, prowadzenia lub obsługi urządzeń i narzędzi w dłoni.",
-      "synonimy": [
-        "uchwyt ręczny",
-        "podpórka dłoni",
-        "handgrip",
-        "pistol grip",
-        "controller grip"
-      ],
+      "opis": "uchwyt handheld",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 22,
       "zrodla_etykiet": {
@@ -3752,26 +3511,17 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 19,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 19
     },
     {
       "id": "zawias",
       "klasa": "zawias",
-      "opis": "Element łączący dwie części i umożliwiający ich wzajemny obrót wokół jednej osi.",
+      "opis": "zawias",
       "synonimy": [
         "hinge",
         "hinges",
         "zawias",
-        "zawiasy",
-        "przegub",
-        "połączenie obrotowe",
-        "łącznik obrotowy",
-        "element przegubowy",
-        "oś przegubowa",
-        "pivot joint",
-        "rotary joint",
-        "pivot connector"
+        "zawiasy"
       ],
       "geometryczny": true,
       "n_modeli": 21,
@@ -3897,26 +3647,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 20,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 20
     },
     {
       "id": "doniczka",
       "klasa": "doniczka",
-      "opis": "Pojemnik przeznaczony do uprawy roślin, zwykle z miejscem na podłoże i odpływ nadmiaru wody.",
-      "synonimy": [
-        "donica",
-        "osłonka",
-        "pojemnik na rośliny",
-        "naczynie na kwiaty",
-        "doniczka samonawadniająca",
-        "planter",
-        "plant pot",
-        "flowerpot",
-        "plant container",
-        "cachepot",
-        "self-watering planter"
-      ],
+      "opis": "doniczka",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 20,
       "zrodla_etykiet": {
@@ -4058,26 +3795,15 @@
         ]
       },
       "szablon_id": "doniczka",
-      "n_wierszy_zakresow": 16,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 16
     },
     {
       "id": "wazon",
       "klasa": "wazon",
-      "opis": "Klasa obejmuje dekoracyjne pojemniki przeznaczone do eksponowania kwiatów, roślin lub kompozycji florystycznych.",
+      "opis": "wazon",
       "synonimy": [
         "vase",
-        "wazon",
-        "naczynie dekoracyjne",
-        "pojemnik na kwiaty",
-        "flakon",
-        "kwiatnik",
-        "dekoracyjny pojemnik",
-        "flower holder",
-        "flower vessel",
-        "decorative vessel",
-        "bud holder",
-        "floral container"
+        "wazon"
       ],
       "geometryczny": true,
       "n_modeli": 20,
@@ -4214,26 +3940,17 @@
         ]
       },
       "szablon_id": "wazon",
-      "n_wierszy_zakresow": 14,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 14
     },
     {
       "id": "gridfinity",
       "klasa": "gridfinity",
-      "opis": "Klasa obejmuje modułowe pojemniki, tacki, wkłady i płyty bazowe do konfigurowania organizerów o standaryzowanym układzie komórek.",
+      "opis": "gridfinity",
       "synonimy": [
         "gridfinity",
         "gridfinity bin",
         "gf bin",
-        "bin",
-        "modułowy organizer",
-        "system organizerów",
-        "pojemnik modułowy",
-        "wkład organizacyjny",
-        "taca modułowa",
-        "modular organizer",
-        "modular bin",
-        "storage insert"
+        "bin"
       ],
       "geometryczny": true,
       "n_modeli": 20,
@@ -4371,27 +4088,13 @@
         ]
       },
       "szablon_id": "gridfinityBin",
-      "n_wierszy_zakresow": 18,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 18
     },
     {
       "id": "prowadnica",
       "klasa": "prowadnica",
-      "opis": "Element wymuszający i stabilizujący ruch innej części wzdłuż określonego toru, zwykle liniowego.",
-      "synonimy": [
-        "szyna prowadząca",
-        "listwa prowadząca",
-        "prowadnik",
-        "tor prowadzący",
-        "prowadzenie liniowe",
-        "szyna liniowa",
-        "guide rail",
-        "linear guide",
-        "linear rail",
-        "guideway",
-        "slide rail",
-        "guiding track"
-      ],
+      "opis": "prowadnica",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 18,
       "zrodla_etykiet": {
@@ -4526,26 +4229,16 @@
         ]
       },
       "szablon_id": "prowadnica",
-      "n_wierszy_zakresow": 15,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 15
     },
     {
       "id": "stojak-okularow",
       "klasa": "stojak okularów",
-      "opis": "Klasa obejmuje elementy przeznaczone do bezpiecznego odkładania, przechowywania lub eksponowania okularów.",
+      "opis": "stojak okularów",
       "synonimy": [
         "glasses stand",
         "eyeglass stand",
-        "stojak okularów",
-        "uchwyt na okulary",
-        "podstawka na okulary",
-        "wieszak na okulary",
-        "organizer na okulary",
-        "ekspozytor okularów",
-        "stojak na okulary",
-        "glasses holder",
-        "eyeglass holder",
-        "spectacle stand"
+        "stojak okularów"
       ],
       "geometryczny": true,
       "n_modeli": 18,
@@ -4677,26 +4370,16 @@
         ]
       },
       "szablon_id": "stojakOkularow",
-      "n_wierszy_zakresow": 15,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 15
     },
     {
       "id": "uchwyt-jajka",
       "klasa": "uchwyt jajka",
-      "opis": "To niewielka część służąca do stabilnego ustawiania lub podtrzymywania jajka, zwykle podczas gotowania, serwowania albo przechowywania.",
+      "opis": "uchwyt jajka",
       "synonimy": [
         "egg cup",
         "eggcup",
-        "uchwyt jajka",
-        "podstawka pod jajko",
-        "kieliszek do jajka",
-        "stojak na jajko",
-        "gniazdo na jajko",
-        "podpora jajka",
-        "trzymak jajka",
-        "egg holder",
-        "egg stand",
-        "egg cradle"
+        "uchwyt jajka"
       ],
       "geometryczny": true,
       "n_modeli": 17,
@@ -4827,26 +4510,15 @@
         ]
       },
       "szablon_id": "uchwytJajka",
-      "n_wierszy_zakresow": 12,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 12
     },
     {
       "id": "uchwyt-sluchawek",
       "klasa": "uchwyt słuchawek",
-      "opis": "Element do druku 3D służący do odkładania, zawieszania lub przechowywania słuchawek na biurku, ścianie albo innym uchwycie.",
+      "opis": "uchwyt słuchawek",
       "synonimy": [
         "headphone stand",
-        "headphone holder",
-        "stojak na słuchawki",
-        "wieszak na słuchawki",
-        "hak na słuchawki",
-        "podstawka pod słuchawki",
-        "wieszak headsetu",
-        "headphone hanger",
-        "headphone hook",
-        "headset stand",
-        "headset holder",
-        "headphone rack"
+        "headphone holder"
       ],
       "geometryczny": true,
       "n_modeli": 17,
@@ -4977,26 +4649,16 @@
         ]
       },
       "szablon_id": "uchwytSluchawek",
-      "n_wierszy_zakresow": 14,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 14
     },
     {
       "id": "krzyz",
       "klasa": "krzyż",
-      "opis": "Część łącząca cztery odcinki lub profile w jednym punkcie, zwykle pod kątem prostym względem siebie.",
+      "opis": "krzyż",
       "synonimy": [
         "cross fitting",
         "pipe cross",
-        "krzyz",
-        "łącznik czterodrożny",
-        "złączka czterodrożna",
-        "węzeł czteroramienny",
-        "rozgałęźnik czterokierunkowy",
-        "złącze wieloramienne",
-        "four-way connector",
-        "four-way joint",
-        "four-arm junction",
-        "four-port fitting"
+        "krzyz"
       ],
       "geometryczny": true,
       "n_modeli": 16,
@@ -5123,25 +4785,13 @@
         ]
       },
       "szablon_id": "krzyz",
-      "n_wierszy_zakresow": 12,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 12
     },
     {
       "id": "forma",
       "klasa": "forma",
-      "opis": "Klasa obejmuje części służące do nadawania innym materiałom określonego kształtu, zwykle jako matryce, negatywy lub narzędzia formujące.",
-      "synonimy": [
-        "matryca",
-        "foremka",
-        "narzędzie formujące",
-        "forma odlewnicza",
-        "negatyw",
-        "mold",
-        "mould",
-        "die",
-        "forming tool",
-        "casting mold"
-      ],
+      "opis": "forma",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 16,
       "zrodla_etykiet": {
@@ -5261,13 +4911,12 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 10,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 10
     },
     {
       "id": "haczyk",
       "klasa": "haczyk",
-      "opis": "Część służąca do zawieszania, zaczepiania lub podtrzymywania innych elementów za pomocą wystającego ramienia albo wyprofilowanego zaczepu.",
+      "opis": "haczyk",
       "synonimy": [
         "hook",
         "hooks",
@@ -5275,11 +4924,7 @@
         "wallhook",
         "mounting hook",
         "hak",
-        "haczyk",
-        "zawieszka",
-        "uchwyt wiszący",
-        "element zaczepowy",
-        "zaczep montażowy"
+        "haczyk"
       ],
       "geometryczny": true,
       "n_modeli": 16,
@@ -5415,25 +5060,13 @@
         ]
       },
       "szablon_id": "haczyk",
-      "n_wierszy_zakresow": 14,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 14
     },
     {
       "id": "kolnierz",
       "klasa": "kołnierz",
-      "opis": "Klasa obejmuje części w formie występującego pierścienia lub obrzeża, które służą do łączenia, podparcia, ustalania albo uszczelniania innych elementów.",
-      "synonimy": [
-        "kryza",
-        "opaska",
-        "pierścień mocujący",
-        "kołnierz montażowy",
-        "wieniec",
-        "collar",
-        "mounting ring",
-        "mounting flange",
-        "flange ring",
-        "shoulder"
-      ],
+      "opis": "kołnierz",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 15,
       "zrodla_etykiet": {
@@ -5571,25 +5204,13 @@
         ]
       },
       "szablon_id": "kolnierz",
-      "n_wierszy_zakresow": 15,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 15
     },
     {
       "id": "redukcja",
       "klasa": "redukcja",
-      "opis": "Część łącząca elementy o różnych średnicach lub przekrojach, zwykle umożliwiająca przejście z większego rozmiaru na mniejszy.",
-      "synonimy": [
-        "zwężka",
-        "łącznik redukcyjny",
-        "przejściówka średnic",
-        "adapter średnic",
-        "tuleja redukcyjna",
-        "reducing adapter",
-        "reducer fitting",
-        "diameter adapter",
-        "step-down adapter",
-        "reducing sleeve"
-      ],
+      "opis": "redukcja",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 15,
       "zrodla_etykiet": {
@@ -5724,26 +5345,15 @@
         ]
       },
       "szablon_id": "zlaczka",
-      "n_wierszy_zakresow": 15,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 15
     },
     {
       "id": "galka",
       "klasa": "gałka",
-      "opis": "Element montowany na osi lub trzpieniu, służący do ręcznego obracania, regulowania albo ustawiania mechanizmu.",
+      "opis": "gałka",
       "synonimy": [
         "knob",
-        "galka",
-        "pokrętło",
-        "rękojeść obrotowa",
-        "uchwyt obrotowy",
-        "uchwyt nastawczy",
-        "nastawnik",
-        "regulator",
-        "element nastawczy",
-        "rotary control",
-        "control dial",
-        "adjuster"
+        "galka"
       ],
       "geometryczny": true,
       "n_modeli": 15,
@@ -5872,26 +5482,13 @@
         ]
       },
       "szablon_id": "galka",
-      "n_wierszy_zakresow": 13,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 13
     },
     {
       "id": "katownik",
       "klasa": "kątownik",
-      "opis": "Kątownik to część w kształcie kąta prostego, służąca do łączenia, podpierania lub wzmacniania dwóch elementów.",
-      "synonimy": [
-        "wspornik kątowy",
-        "wzmocnienie narożne",
-        "profil L",
-        "element narożny",
-        "uchwyt kątowy",
-        "angle bracket",
-        "corner bracket",
-        "L-bracket",
-        "angle brace",
-        "corner brace",
-        "L-angle"
-      ],
+      "opis": "kątownik",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 15,
       "zrodla_etykiet": {
@@ -6026,27 +5623,13 @@
         ]
       },
       "szablon_id": "katownik",
-      "n_wierszy_zakresow": 14,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 14
     },
     {
       "id": "klamka",
       "klasa": "klamka",
-      "opis": "Część służąca do ręcznego otwierania i zamykania drzwi lub podobnych elementów ruchomych.",
-      "synonimy": [
-        "uchwyt drzwiowy",
-        "rękojeść drzwiowa",
-        "dźwignia drzwiowa",
-        "gałka drzwiowa",
-        "uchwyt otwierający",
-        "dźwignia otwierania",
-        "door handle",
-        "lever handle",
-        "door knob",
-        "pull handle",
-        "opening lever",
-        "latch handle"
-      ],
+      "opis": "klamka",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 15,
       "zrodla_etykiet": {
@@ -6165,24 +5748,17 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 14,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 14
     },
     {
       "id": "stojak-pada",
       "klasa": "stojak pada",
-      "opis": "Klasa obejmuje elementy służące do stabilnego odkładania, przechowywania lub eksponowania pada oziroma kontrolera do gier.",
+      "opis": "stojak pada",
       "synonimy": [
         "gamepad",
         "controller stand",
         "pad stand",
-        "stojak pada",
-        "podstawka kontrolera",
-        "podpora kontrolera",
-        "stacja dokująca kontrolera",
-        "stojak do gamepada",
-        "kontroler dock",
-        "gamepad stand"
+        "stojak pada"
       ],
       "geometryczny": true,
       "n_modeli": 15,
@@ -6315,27 +5891,13 @@
         ]
       },
       "szablon_id": "stojakPada",
-      "n_wierszy_zakresow": 11,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 11
     },
     {
       "id": "uchwyt-lazienkowy",
       "klasa": "uchwyt łazienkowy",
-      "opis": "Klasa obejmuje elementy służące do podpierania się, przytrzymywania lub stabilizacji użytkownika w łazience, zwykle montowane na ścianie, przy wannie albo pod prysznicem.",
-      "synonimy": [
-        "poręcz łazienkowa",
-        "rączka łazienkowa",
-        "chwyt łazienkowy",
-        "poręcz prysznicowa",
-        "drążek podporowy",
-        "uchwyt bezpieczeństwa",
-        "bathroom grab bar",
-        "bathroom grab rail",
-        "shower support rail",
-        "safety rail",
-        "support handle",
-        "wall-mounted grab bar"
-      ],
+      "opis": "uchwyt łazienkowy",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 15,
       "zrodla_etykiet": {
@@ -6454,26 +6016,15 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 13,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 13
     },
     {
       "id": "uchwyt-recznika",
       "klasa": "uchwyt ręcznika",
-      "opis": "Element służący do zawieszania, przechowywania lub suszenia ręczników.",
+      "opis": "uchwyt ręcznika",
       "synonimy": [
         "towel holder",
-        "towel bar",
-        "wieszak na ręcznik",
-        "rel ing ręcznikowy",
-        "drążek na ręcznik",
-        "hak na ręcznik",
-        "stojak na ręczniki",
-        "towel rack",
-        "towel rail",
-        "towel hook",
-        "towel hanger",
-        "towel stand"
+        "towel bar"
       ],
       "geometryczny": true,
       "n_modeli": 15,
@@ -6605,26 +6156,16 @@
         ]
       },
       "szablon_id": "uchwytRecznika",
-      "n_wierszy_zakresow": 14,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 14
     },
     {
       "id": "uchwyt-szpuli",
       "klasa": "uchwyt szpuli",
-      "opis": "Element podtrzymujący i stabilizujący szpulę filamentu podczas przechowywania lub drukowania 3D.",
+      "opis": "uchwyt szpuli",
       "synonimy": [
         "spool holder",
         "spoolholder",
-        "uchwyt szpuli",
-        "stojak szpuli",
-        "wspornik szpuli",
-        "mocowanie szpuli",
-        "wieszak szpuli",
-        "trzpień szpuli",
-        "oś szpuli",
-        "adapter szpuli",
-        "spool mount",
-        "spool bracket"
+        "uchwyt szpuli"
       ],
       "geometryczny": true,
       "n_modeli": 15,
@@ -6757,27 +6298,13 @@
         ]
       },
       "szablon_id": "uchwytSzpuli",
-      "n_wierszy_zakresow": 13,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 13
     },
     {
       "id": "imadlo",
       "klasa": "imadło",
-      "opis": "Klasa obejmuje części służące do unieruchamiania przedmiotów między regulowanymi szczękami lub powierzchniami zaciskowymi.",
-      "synonimy": [
-        "ścisk warsztatowy",
-        "bench clamp",
-        "zacisk szczękowy",
-        "jaw clamp",
-        "uchwyt szczękowy",
-        "jaw holder",
-        "przyrząd zaciskowy",
-        "clamping fixture",
-        "przyrząd mocujący",
-        "workholding fixture",
-        "zacisk stołowy",
-        "table clamp"
-      ],
+      "opis": "imadło",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 14,
       "zrodla_etykiet": {
@@ -6895,26 +6422,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 11,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 11
     },
     {
       "id": "kubek",
       "klasa": "kubek",
-      "opis": "Klasa obejmuje otwarte pojemniki przeznaczone do przechowywania i picia napojów.",
-      "synonimy": [
-        "naczynie do picia",
-        "naczynko",
-        "pojemnik na napój",
-        "filiżanka",
-        "kubeczek",
-        "mug",
-        "tumbler",
-        "beaker",
-        "drinking vessel",
-        "drink container",
-        "open-top vessel"
-      ],
+      "opis": "kubek",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 14,
       "zrodla_etykiet": {
@@ -7044,22 +6558,13 @@
         ]
       },
       "szablon_id": "kubek",
-      "n_wierszy_zakresow": 10,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 10
     },
     {
       "id": "pokrywka",
       "klasa": "pokrywka",
-      "opis": "Część służąca do przykrywania, zamykania lub osłaniania otworu albo pojemnika.",
-      "synonimy": [
-        "pokrywa",
-        "wieczko",
-        "dekiel",
-        "lid",
-        "top",
-        "hatch",
-        "closure"
-      ],
+      "opis": "pokrywka",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 14,
       "zrodla_etykiet": {
@@ -7188,23 +6693,13 @@
         ]
       },
       "szablon_id": "pokrywka",
-      "n_wierszy_zakresow": 14,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 14
     },
     {
       "id": "stopka",
       "klasa": "stopka",
-      "opis": "Część podporowa montowana na końcu elementu, która stabilizuje konstrukcję, chroni powierzchnię lub zapewnia poślizg.",
-      "synonimy": [
-        "nóżka",
-        "opora",
-        "ślizgacz",
-        "nakładka ochronna",
-        "support foot",
-        "base pad",
-        "bumper",
-        "glider"
-      ],
+      "opis": "stopka",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 14,
       "zrodla_etykiet": {
@@ -7331,26 +6826,15 @@
         ]
       },
       "szablon_id": "stopka",
-      "n_wierszy_zakresow": 12,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 12
     },
     {
       "id": "uchwyt-scienny-tabletu",
       "klasa": "uchwyt ścienny tabletu",
-      "opis": "Element montażowy służący do bezpiecznego przymocowania tabletu do ściany, zwykle z możliwością łatwego wkładania i wyjmowania urządzenia.",
+      "opis": "uchwyt ścienny tabletu",
       "synonimy": [
         "tablet wall mount",
-        "phone wall holder",
-        "mocowanie tabletu",
-        "uchwyt do tabletu",
-        "wieszak na tablet",
-        "stojak ścienny",
-        "kieszeń na tablet",
-        "gniazdo ścienne",
-        "tablet holder",
-        "wall bracket",
-        "tablet wall bracket",
-        "wall dock"
+        "phone wall holder"
       ],
       "geometryczny": true,
       "n_modeli": 14,
@@ -7469,26 +6953,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 13,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 13
     },
     {
       "id": "kolanko",
       "klasa": "kolanko",
-      "opis": "Element łączący dwa odcinki pod kątem, najczęściej stosowany w przewodach, rurach i kanałach.",
-      "synonimy": [
-        "złączka kątowa",
-        "kształtka łukowa",
-        "łuk łączący",
-        "gięty łącznik",
-        "adapter kątowy",
-        "elbow fitting",
-        "pipe elbow",
-        "angle connector",
-        "bent joint",
-        "elbow adapter",
-        "angled coupling"
-      ],
+      "opis": "kolanko",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 13,
       "zrodla_etykiet": {
@@ -7621,25 +7092,16 @@
         ]
       },
       "szablon_id": "kolankoTorus",
-      "n_wierszy_zakresow": 13,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 13
     },
     {
       "id": "klips-kablowy",
       "klasa": "klips kablowy",
-      "opis": "Element służący do przytrzymywania, prowadzenia i porządkowania przewodów na powierzchni lub w obrębie konstrukcji.",
+      "opis": "klips kablowy",
       "synonimy": [
         "cable clip",
         "cableclip",
-        "klips kablowy",
-        "spinka kablowa",
-        "zacisk kabla",
-        "mocowanie przewodu",
-        "prowadnica kabla",
-        "zatrzask przewodu",
-        "wire holder",
-        "cable clamp",
-        "wire clamp"
+        "klips kablowy"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -7767,27 +7229,13 @@
         ]
       },
       "szablon_id": "klipsKabla",
-      "n_wierszy_zakresow": 12,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 12
     },
     {
       "id": "ociekacz",
       "klasa": "ociekacz",
-      "opis": "Element służący do zbierania i odprowadzania kapiących lub spływających cieczy.",
-      "synonimy": [
-        "tacka odpływowa",
-        "tacka ściekowa",
-        "podstawka z odpływem",
-        "kuweta odpływowa",
-        "rynienka ociekowa",
-        "zbieracz cieczy",
-        "drip tray",
-        "drain tray",
-        "drip pan",
-        "drainage tray",
-        "catch tray",
-        "liquid collector"
-      ],
+      "opis": "ociekacz",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -7922,27 +7370,13 @@
         ]
       },
       "szablon_id": "ociekacz",
-      "n_wierszy_zakresow": 6,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 6
     },
     {
       "id": "nawadnianie",
       "klasa": "nawadnianie",
-      "opis": "Klasa obejmuje części służące do doprowadzania, rozprowadzania i dozowania wody do roślin lub innych obszarów.",
-      "synonimy": [
-        "system podlewania",
-        "instalacja podlewająca",
-        "układ irygacyjny",
-        "zraszanie",
-        "kroplowanie",
-        "przewód kroplujący",
-        "emiter wody",
-        "dysza zraszająca",
-        "irrigation system",
-        "watering system",
-        "drip irrigation",
-        "sprinkler head"
-      ],
+      "opis": "nawadnianie",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -8058,26 +7492,15 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 9,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 9
     },
     {
       "id": "podstawka-laptopa",
       "klasa": "podstawka laptopa",
-      "opis": "Element służący do stabilnego ustawienia i uniesienia laptopa, często poprawiający ergonomię pracy oraz chłodzenie urządzenia.",
+      "opis": "podstawka laptopa",
       "synonimy": [
         "laptop stand",
-        "laptopstand",
-        "stojak pod laptopa",
-        "podstawka pod komputer przenośny",
-        "podpórka laptopa",
-        "platforma pod laptop",
-        "podwyższenie laptopa",
-        "uchwyt do laptopa",
-        "notebook stand",
-        "laptop riser",
-        "laptop holder",
-        "computer stand"
+        "laptopstand"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -8207,26 +7630,14 @@
         ]
       },
       "szablon_id": "podstawkaLaptopa",
-      "n_wierszy_zakresow": 10,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 10
     },
     {
       "id": "stojak-monitora",
       "klasa": "stojak monitora",
-      "opis": "Klasa obejmuje części służące do ustawienia monitora na biurku, jego uniesienia oraz zapewnienia stabilnego podparcia.",
+      "opis": "stojak monitora",
       "synonimy": [
-        "monitor stand",
-        "podstawka pod monitor",
-        "podstawa monitora",
-        "podwyższenie monitora",
-        "platforma pod monitor",
-        "stojak ekranowy",
-        "monitor riser",
-        "display stand",
-        "screen stand",
-        "monitor base",
-        "display base",
-        "screen riser"
+        "monitor stand"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -8356,27 +7767,13 @@
         ]
       },
       "szablon_id": "stojakMonitora",
-      "n_wierszy_zakresow": 11,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 11
     },
     {
       "id": "stojak-przypraw",
       "klasa": "stojak przypraw",
-      "opis": "Klasa obejmuje części służące do przechowywania, porządkowania i eksponowania pojemników z przyprawami.",
-      "synonimy": [
-        "organizer na przyprawy",
-        "półka na przyprawy",
-        "uchwyt na słoiczki",
-        "organizer słoiczków",
-        "ekspozytor przypraw",
-        "stojak na słoiki",
-        "spice holder",
-        "spice organizer",
-        "spice shelf",
-        "seasoning organizer",
-        "jar holder",
-        "spice display"
-      ],
+      "opis": "stojak przypraw",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -8492,26 +7889,16 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 12,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 12
     },
     {
       "id": "swiecznik",
       "klasa": "świecznik",
-      "opis": "Klasa obejmuje podstawki, uchwyty i osłony przeznaczone do bezpiecznego ustawiania świec.",
+      "opis": "świecznik",
       "synonimy": [
         "candle holder",
         "candleholder",
-        "świecznik",
-        "uchwyt na świecę",
-        "podstawka na świecę",
-        "stojak na świecę",
-        "kielich na świecę",
-        "osłonka na świecę",
-        "candlestick",
-        "candle stand",
-        "tealight holder",
-        "votive holder"
+        "świecznik"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -8641,26 +8028,14 @@
         ]
       },
       "szablon_id": "swiecznik",
-      "n_wierszy_zakresow": 10,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 10
     },
     {
       "id": "uchwyt-ladowarki",
       "klasa": "uchwyt ładowarki",
-      "opis": "Element przeznaczony do stabilnego ustawienia, zawieszenia lub zamocowania ładowarki w wybranym miejscu.",
+      "opis": "uchwyt ładowarki",
       "synonimy": [
-        "charger holder",
-        "mocowanie ładowarki",
-        "stojak na ładowarkę",
-        "podstawka pod ładowarkę",
-        "wieszak na ładowarkę",
-        "uchwyt do zasilacza",
-        "gniazdo na ładowarkę",
-        "charger mount",
-        "charging dock",
-        "charger stand",
-        "charging cradle",
-        "power adapter mount"
+        "charger holder"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -8794,27 +8169,13 @@
         ]
       },
       "szablon_id": "uchwytLadowarki",
-      "n_wierszy_zakresow": 9,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 9
     },
     {
       "id": "uchwyt-ogrodowy",
       "klasa": "uchwyt ogrodowy",
-      "opis": "Klasa obejmuje drukowane elementy służące do zawieszania, mocowania lub podpierania narzędzi i akcesoriów ogrodowych.",
-      "synonimy": [
-        "wieszak narzędzi",
-        "mocowanie narzędzia",
-        "stojak ogrodowy",
-        "wspornik ogrodowy",
-        "haczyk ogrodowy",
-        "klips ogrodowy",
-        "obejma",
-        "garden tool holder",
-        "tool hanger",
-        "garden hook",
-        "garden bracket",
-        "tool mount"
-      ],
+      "opis": "uchwyt ogrodowy",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -8930,27 +8291,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 11,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 11
     },
     {
       "id": "uchwyt-okienny",
       "klasa": "uchwyt okienny",
-      "opis": "Część służąca do otwierania, zamykania lub ryglowania skrzydła okiennego.",
-      "synonimy": [
-        "klamka okienna",
-        "klamka do okna",
-        "rączka okienna",
-        "dźwignia okienna",
-        "uchwyt skrzydła",
-        "rękojeść okienna",
-        "casement handle",
-        "window lever",
-        "sash handle",
-        "window grip",
-        "window crank",
-        "locking handle"
-      ],
+      "opis": "uchwyt okienny",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -9066,26 +8413,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 9,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 9
     },
     {
       "id": "uchwyt-pilota",
       "klasa": "uchwyt pilota",
-      "opis": "Klasa obejmuje części służące do odkładania, przechowywania lub montażu pilota zdalnego sterowania.",
-      "synonimy": [
-        "stojak na pilota",
-        "podstawka pod pilota",
-        "wieszak na pilota",
-        "organizer pilotów",
-        "kieszeń na pilota",
-        "uchwyt ścienny do pilota",
-        "remote holder",
-        "remote control stand",
-        "remote dock",
-        "remote caddy",
-        "remote wall mount"
-      ],
+      "opis": "uchwyt pilota",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -9201,26 +8535,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 12,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 12
     },
     {
       "id": "uchwyt-worka",
       "klasa": "uchwyt worka",
-      "opis": "Element służący do przenoszenia, zawieszania lub stabilnego mocowania worka albo torby.",
-      "synonimy": [
-        "rączka worka",
-        "rączka torby",
-        "zaczep worka",
-        "wieszak na worek",
-        "mocowanie worka",
-        "ramka worka",
-        "klips do worka",
-        "bag handle",
-        "sack handle",
-        "bag hanger",
-        "bag mount"
-      ],
+      "opis": "uchwyt worka",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -9336,25 +8657,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 11,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 11
     },
     {
       "id": "kanal",
       "klasa": "kanał",
-      "opis": "Klasa obejmuje części tworzące podłużny przepływ, prowadzenie lub przejście dla kabli, przewodów, powietrza albo innych elementów.",
-      "synonimy": [
-        "korytko",
-        "rowek",
-        "bruzda",
-        "przelot",
-        "tunel",
-        "kanałek",
-        "duct",
-        "groove",
-        "slot",
-        "passage"
-      ],
+      "opis": "kanał",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -9483,26 +8792,15 @@
         ]
       },
       "szablon_id": "kanal",
-      "n_wierszy_zakresow": 10,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 10
     },
     {
       "id": "mocowanie-wentylatora",
       "klasa": "mocowanie wentylatora",
-      "opis": "Element służący do przytwierdzenia wentylatora do obudowy, ramy lub innej powierzchni montażowej.",
+      "opis": "mocowanie wentylatora",
       "synonimy": [
         "fan mount",
-        "fan bracket",
-        "uchwyt wentylatora",
-        "wspornik wentylatora",
-        "stelaż wentylatora",
-        "rama montażowa wentylatora",
-        "adapter wentylatora",
-        "obejma wentylatora",
-        "fan holder",
-        "fan mounting bracket",
-        "fan adapter",
-        "fan frame"
+        "fan bracket"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -9624,27 +8922,13 @@
         ]
       },
       "szablon_id": "mocowanieWentylatora",
-      "n_wierszy_zakresow": 9,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 9
     },
     {
       "id": "suszarka-filamentu",
       "klasa": "suszarka filamentu",
-      "opis": "Urządzenie podgrzewające i osuszające filament przed drukowaniem 3D, aby ograniczyć wilgoć i poprawić jakość wydruku.",
-      "synonimy": [
-        "komora susząca",
-        "pudełko suszące",
-        "osuszacz szpuli",
-        "podgrzewacz szpuli",
-        "pojemnik osuszający",
-        "filament dryer",
-        "dry box",
-        "drying box",
-        "spool dryer",
-        "filament dehydrator",
-        "heated dry box",
-        "filament drying chamber"
-      ],
+      "opis": "suszarka filamentu",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -9760,27 +9044,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 12,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 12
     },
     {
       "id": "kalibracja",
       "klasa": "kalibracja",
-      "opis": "Części służące do sprawdzania i strojenia parametrów drukarki 3D, materiału oraz jakości wydruku.",
-      "synonimy": [
-        "kostka testowa",
-        "kostka XYZ",
-        "wieża testowa",
-        "wieża temperaturowa",
-        "próbka testowa",
-        "wzorzec pomiarowy",
-        "test pierwszej warstwy",
-        "test mostów",
-        "test nawisu",
-        "test nitkowania",
-        "test cube",
-        "temperature tower"
-      ],
+      "opis": "kalibracja",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -9896,27 +9166,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 10,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 10
     },
     {
       "id": "uchwyt-dysku",
       "klasa": "uchwyt dysku",
-      "opis": "Element służący do stabilnego zamocowania dysku w obudowie, szafce lub innym urządzeniu.",
-      "synonimy": [
-        "mocowanie dysku",
-        "wspornik dysku",
-        "stojak na dysk",
-        "kieszeń na dysk",
-        "ramka dysku",
-        "adapter montażowy dysku",
-        "HDD mount",
-        "drive bracket",
-        "drive holder",
-        "disk cradle",
-        "drive caddy",
-        "hard drive bay"
-      ],
+      "opis": "uchwyt dysku",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -10041,27 +9297,13 @@
         ]
       },
       "szablon_id": "uchwytDysku",
-      "n_wierszy_zakresow": 12,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 12
     },
     {
       "id": "uchwyt-kamery",
       "klasa": "uchwyt kamery",
-      "opis": "Element służący do stabilnego przymocowania kamery do obudowy, ramy, statywu lub innej konstrukcji.",
-      "synonimy": [
-        "mocowanie kamery",
-        "wspornik kamery",
-        "stojak kamery",
-        "adapter kamery",
-        "ramię kamery",
-        "zacisk kamery",
-        "camera mount",
-        "camera holder",
-        "camera bracket",
-        "camera support",
-        "camera clamp",
-        "camera arm"
-      ],
+      "opis": "uchwyt kamery",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -10177,26 +9419,14 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 11,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 11
     },
     {
       "id": "uchwyt-pamieci",
       "klasa": "uchwyt pamięci",
-      "opis": "Element służący do przechowywania, porządkowania lub mocowania kart pamięci, takich jak SD i microSD.",
+      "opis": "uchwyt pamięci",
       "synonimy": [
-        "usb holder",
-        "uchwyt karty pamięci",
-        "organizer kart pamięci",
-        "stojak na karty SD",
-        "pojemnik na karty pamięci",
-        "etui na kartę SD",
-        "magazynek kart pamięci",
-        "memory card holder",
-        "SD card holder",
-        "memory card organizer",
-        "memory card stand",
-        "memory card case"
+        "usb holder"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -10322,26 +9552,15 @@
         ]
       },
       "szablon_id": "uchwytPamieci",
-      "n_wierszy_zakresow": 10,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 10
     },
     {
       "id": "wspornik-gpu",
       "klasa": "wspornik GPU",
-      "opis": "Element podtrzymujący kartę graficzną w obudowie komputera i ograniczający jej ugięcie lub opadanie.",
+      "opis": "wspornik GPU",
       "synonimy": [
         "gpu support",
-        "gpu sag",
-        "podpórka karty graficznej",
-        "podpora GPU",
-        "stojak pod kartę graficzną",
-        "wspornik karty graficznej",
-        "podpórka antyzwisowa",
-        "wsparcie antyugięciowe GPU",
-        "GPU support bracket",
-        "graphics card support",
-        "GPU brace",
-        "GPU anti-sag bracket"
+        "gpu sag"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -10467,26 +9686,15 @@
         ]
       },
       "szablon_id": "wspornikGpu",
-      "n_wierszy_zakresow": 10,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 10
     },
     {
       "id": "klips-torebki",
       "klasa": "klips torebki",
-      "opis": "Element służący do zamykania i zabezpieczania torebki, zwykle w formie zatrzasku, klamry lub zapięcia magnetycznego.",
+      "opis": "klips torebki",
       "synonimy": [
         "bag clip",
-        "klips torebki",
-        "zapięcie torebki",
-        "zamknięcie torebki",
-        "klamra torebki",
-        "zatrzask torebki",
-        "zapinka do torebki",
-        "zapięcie magnetyczne",
-        "bigiel",
-        "purse clasp",
-        "handbag clasp",
-        "bag closure"
+        "klips torebki"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -10603,24 +9811,15 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 12,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 12
     },
     {
       "id": "miarka",
       "klasa": "miarka",
-      "opis": "Klasa obejmuje części służące do pomiaru długości, odległości lub wymiarów za pomocą podziałki albo znaczników.",
+      "opis": "miarka",
       "synonimy": [
-        "linijka",
-        "liniał",
-        "przymiar",
-        "podziałka pomiarowa",
-        "wzornik pomiarowy",
-        "ruler",
-        "measuring tool",
-        "measuring stick",
-        "scale",
-        "graduated rule"
+        "measuring cup",
+        "miarka"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -10732,29 +9931,33 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 1.0
+          },
+          "fi": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
+          },
+          "ml": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "fi",
+          "h"
+        ]
       },
-      "szablon_id": null,
-      "n_wierszy_zakresow": 12,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "szablon_id": "miarka",
+      "n_wierszy_zakresow": 12
     },
     {
       "id": "mydelniczka",
       "klasa": "mydelniczka",
-      "opis": "Klasa obejmuje podstawki, tacki i uchwyty służące do przechowywania kostki mydła oraz odprowadzania z niej wody.",
+      "opis": "mydelniczka",
       "synonimy": [
-        "podstawka do mydła",
-        "tacka na mydło",
-        "stojak na mydło",
-        "uchwyt na mydło",
-        "pojemnik na mydło",
+        "soap dish",
         "soap holder",
-        "soap tray",
-        "soap rest",
-        "soap saver",
-        "bar soap holder"
+        "soap tray"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -10866,31 +10069,36 @@
             "type": "number",
             "minimum": -15.0,
             "maximum": 12.0
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "z": {
+            "type": "number"
+          },
+          "otwory": {
+            "type": "array"
           }
         },
-        "required": []
+        "required": [
+          "x",
+          "y",
+          "z"
+        ]
       },
-      "szablon_id": null,
-      "n_wierszy_zakresow": 11,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "szablon_id": "mydelniczka",
+      "n_wierszy_zakresow": 11
     },
     {
       "id": "ochraniacz-naroznika",
       "klasa": "ochraniacz narożnika",
-      "opis": "Element nakładany na róg lub narożne krawędzie przedmiotu, chroniący je przed uderzeniami, otarciami i uszkodzeniami.",
+      "opis": "ochraniacz narożnika",
       "synonimy": [
-        "osłona rogu",
-        "zabezpieczenie naroża",
-        "nakładka na róg",
-        "kapturek narożny",
-        "odbojnik narożny",
-        "ochrona narożnika",
-        "corner guard",
-        "corner bumper",
-        "corner cap",
-        "corner cover",
-        "corner shield",
-        "edge protector"
+        "corner protector",
+        "ochraniacz naroznika"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -11007,27 +10215,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 12,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 12
     },
     {
       "id": "stojak-bizuterii",
       "klasa": "stojak biżuterii",
-      "opis": "To część służąca do przechowywania, porządkowania lub eksponowania biżuterii, takiej jak naszyjniki, bransoletki, pierścionki i kolczyki.",
-      "synonimy": [
-        "stojak na biżuterię",
-        "organizer biżuterii",
-        "ekspozytor biżuterii",
-        "wieszak na biżuterię",
-        "drzewko biżuteryjne",
-        "uchwyt na biżuterię",
-        "jewelry stand",
-        "jewelry holder",
-        "jewelry organizer",
-        "jewelry display",
-        "jewelry rack",
-        "jewelry tree"
-      ],
+      "opis": "stojak biżuterii",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -11143,24 +10337,15 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 10,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 10
     },
     {
       "id": "stojak-kredek",
       "klasa": "stojak kredek",
-      "opis": "Klasa obejmuje modele służące do przechowywania, segregowania i wygodnego ustawiania kredek lub podobnych przyborów piśmienniczych.",
+      "opis": "stojak kredek",
       "synonimy": [
-        "organizer kredek",
-        "pojemnik na kredki",
-        "kubek na kredki",
-        "uchwyt na kredki",
-        "podstawka na kredki",
-        "organizer przyborów",
-        "pencil holder",
-        "pencil cup",
-        "pencil organizer",
-        "colored pencil holder"
+        "crayon holder",
+        "stojak kredek"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -11277,26 +10462,15 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 11,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 11
     },
     {
       "id": "uchwyt-butelek",
       "klasa": "uchwyt butelek",
-      "opis": "Klasa obejmuje drukowane elementy służące do podtrzymywania, mocowania lub organizowania butelek i bidonów.",
+      "opis": "uchwyt butelek",
       "synonimy": [
-        "stojak na butelkę",
-        "koszyk na butelkę",
-        "mocowanie butelki",
-        "obejma butelki",
-        "klips do butelki",
-        "uchwyt bidonu",
         "bottle holder",
-        "bottle mount",
-        "bottle cage",
-        "bottle bracket",
-        "bottle clip",
-        "bottle cradle"
+        "uchwyt butelek"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -11413,27 +10587,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 11,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 11
     },
     {
       "id": "uchwyt-kapsulek",
       "klasa": "uchwyt kapsułek",
-      "opis": "Części służące do przechowywania, porządkowania lub podawania kapsułek, najczęściej kawowych albo dozujących.",
-      "synonimy": [
-        "stojak na kapsułki",
-        "organizer kapsułek",
-        "podajnik kapsułek",
-        "dozownik kapsułek",
-        "tacka na kapsułki",
-        "uchwyt na kapsułki",
-        "capsule rack",
-        "capsule organizer",
-        "capsule dispenser",
-        "capsule tray",
-        "capsule stand",
-        "capsule holder"
-      ],
+      "opis": "uchwyt kapsułek",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -11549,26 +10709,15 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 11,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 11
     },
     {
       "id": "uchwyt-kart",
       "klasa": "uchwyt kart",
-      "opis": "Klasa obejmuje części służące do przechowywania, porządkowania, podawania lub eksponowania kart.",
+      "opis": "uchwyt kart",
       "synonimy": [
-        "stojak na karty",
-        "kieszeń na karty",
-        "organizer kart",
-        "etui na karty",
-        "podajnik kart",
-        "klips do kart",
-        "card stand",
-        "card rack",
-        "card tray",
-        "card organizer",
-        "card sleeve",
-        "card dispenser"
+        "card holder",
+        "uchwyt kart"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -11685,26 +10834,15 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 11,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 11
     },
     {
       "id": "uchwyt-papieru",
       "klasa": "uchwyt papieru",
-      "opis": "To klasa części służących do przytrzymywania, spinania lub stabilizowania kartek i innych cienkich arkuszy.",
+      "opis": "uchwyt papieru",
       "synonimy": [
-        "klips do papieru",
-        "zacisk do papieru",
-        "spinka do papieru",
-        "zatrzask papierowy",
-        "uchwyt kartki",
-        "obejma papieru",
-        "paper clip",
-        "paper clamp",
-        "paper holder",
-        "sheet holder",
-        "paper grip",
-        "document clip"
+        "toilet paper holder",
+        "uchwyt papieru"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -11816,31 +10954,29 @@
             "type": "number",
             "minimum": -1.0,
             "maximum": 7.0
+          },
+          "dl": {
+            "type": "number"
+          },
+          "fi": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "dl",
+          "fi"
+        ]
       },
-      "szablon_id": null,
-      "n_wierszy_zakresow": 12,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "szablon_id": "uchwytPapieru",
+      "n_wierszy_zakresow": 12
     },
     {
       "id": "uchwyt-prysznicowy",
       "klasa": "uchwyt prysznicowy",
-      "opis": "Element służący do zawieszania lub stabilnego mocowania słuchawki prysznicowej na ścianie albo drążku.",
+      "opis": "uchwyt prysznicowy",
       "synonimy": [
         "shower holder",
-        "uchwyt prysznicowy",
-        "mocowanie słuchawki prysznicowej",
-        "wspornik słuchawki prysznicowej",
-        "wieszak słuchawki prysznicowej",
-        "stojak na słuchawkę prysznicową",
-        "uchwyt słuchawki prysznicowej",
-        "shower handset holder",
-        "handheld shower holder",
-        "shower head bracket",
-        "shower wand mount",
-        "shower cradle"
+        "uchwyt prysznicowy"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -11952,29 +11088,29 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 78.0
+          },
+          "fi": {
+            "type": "number"
+          },
+          "kat": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "fi",
+          "kat"
+        ]
       },
-      "szablon_id": null,
-      "n_wierszy_zakresow": 10,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "szablon_id": "uchwytPrysznicowy",
+      "n_wierszy_zakresow": 10
     },
     {
       "id": "uchwyt-szczoteczek",
       "klasa": "uchwyt szczoteczek",
-      "opis": "Klasa obejmuje stojaki, pojemniki i organizery służące do przechowywania szczoteczek do zębów w pozycji pionowej.",
+      "opis": "uchwyt szczoteczek",
       "synonimy": [
-        "stojak na szczoteczki",
-        "stojak do szczoteczek",
-        "pojemnik na szczoteczki",
-        "organizer szczoteczek",
-        "kubek na szczoteczki",
-        "toothbrush stand",
-        "toothbrush organizer",
-        "toothbrush cup",
-        "toothbrush caddy",
-        "bathroom brush holder"
+        "toothbrush holder",
+        "uchwyt szczoteczek"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -12086,29 +11222,32 @@
             "type": "number",
             "minimum": -2.0,
             "maximum": 69.5
+          },
+          "fi": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
+          },
+          "n": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "fi",
+          "h"
+        ]
       },
-      "szablon_id": null,
-      "n_wierszy_zakresow": 8,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "szablon_id": "uchwytSzczoteczek",
+      "n_wierszy_zakresow": 8
     },
     {
       "id": "wieszak-pada",
       "klasa": "wieszak pada",
-      "opis": "To część służąca do zawieszania, przechowywania lub montażu kontrolera do gier na ścianie, biurku albo innym podłożu.",
+      "opis": "wieszak pada",
       "synonimy": [
-        "uchwyt pada",
-        "stojak na pada",
-        "wieszak kontrolera",
-        "mocowanie pada",
-        "zawieszka do kontrolera",
-        "controller holder",
-        "game controller stand",
-        "controller mount",
-        "gamepad hanger",
-        "controller bracket"
+        "controller hanger",
+        "wieszak pada"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -12225,26 +11364,15 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 11,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 11
     },
     {
       "id": "klips-filamentu",
       "klasa": "klips filamentu",
-      "opis": "Mała część służąca do przytrzymywania i zabezpieczania luźnego końca filamentu, zwykle na szpuli.",
+      "opis": "klips filamentu",
       "synonimy": [
         "filament clip",
-        "klips filamentu",
-        "spinka filamentu",
-        "zacisk filamentu",
-        "klamra filamentu",
-        "uchwyt końcówki filamentu",
-        "blokada końcówki filamentu",
-        "zabezpieczenie filamentu",
-        "filament end holder",
-        "filament retainer",
-        "filament clamp",
-        "filament keeper"
+        "klips filamentu"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -12361,26 +11489,15 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 11,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 11
     },
     {
       "id": "przepust-kablowy",
       "klasa": "przepust kablowy",
-      "opis": "Element prowadzący i zabezpieczający przewód podczas przechodzenia przez ściankę, obudowę lub otwór.",
+      "opis": "przepust kablowy",
       "synonimy": [
         "desk grommet",
-        "przepust kablowy",
-        "przelotka kablowa",
-        "tulejka kablowa",
-        "osłona przewodu",
-        "prowadnica przewodu",
-        "odciążka kabla",
-        "cable grommet",
-        "cable bushing",
-        "cable pass-through",
-        "wire pass-through",
-        "strain relief"
+        "przepust kablowy"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -12497,26 +11614,15 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 12,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 12
     },
     {
       "id": "stojak-wkretakow",
       "klasa": "stojak wkrętaków",
-      "opis": "Klasa obejmuje elementy służące do przechowywania, porządkowania i łatwego odkładania wkrętaków.",
+      "opis": "stojak wkrętaków",
       "synonimy": [
-        "uchwyt na wkrętaki",
-        "organizer wkrętaków",
-        "podstawka na wkrętaki",
-        "szafka na wkrętaki",
-        "stojak narzędziowy",
-        "uchwyt narzędziowy",
-        "screwdriver holder",
-        "screwdriver rack",
         "screwdriver stand",
-        "screwdriver organizer",
-        "tool holder",
-        "tool rack"
+        "stojak wkretakow"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -12633,26 +11739,16 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 11,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 11
     },
     {
       "id": "uchwyt-bitow",
       "klasa": "uchwyt bitów",
-      "opis": "Element przeznaczony do przechowywania, porządkowania lub szybkiego udostępniania końcówek wkrętakowych.",
+      "opis": "uchwyt bitów",
       "synonimy": [
         "hex bit holder",
         "bit holder",
-        "uchwyt bitow",
-        "magazyn bitów",
-        "stojak na bity",
-        "organizer bitów",
-        "schowek na bity",
-        "kaseta na bity",
-        "pojemnik na bity",
-        "bit organizer",
-        "bit rack",
-        "bit storage"
+        "uchwyt bitow"
       ],
       "geometryczny": true,
       "n_modeli": 12,
@@ -12769,25 +11865,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 10,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 10
     },
     {
       "id": "przekladnia",
       "klasa": "przekładnia",
-      "opis": "Zespół kół zębatych i elementów współpracujących, który przenosi ruch oraz zmienia prędkość, moment obrotowy lub kierunek obrotów.",
-      "synonimy": [
-        "mechanizm zębaty",
-        "układ kół zębatych",
-        "skrzynia przekładniowa",
-        "napęd zębaty",
-        "gearbox",
-        "gear train",
-        "gear drive",
-        "reducer",
-        "transmission",
-        "gearing"
-      ],
+      "opis": "przekładnia",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 11,
       "zrodla_etykiet": {
@@ -12902,22 +11986,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 10,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 10
     },
     {
       "id": "tuleja",
       "klasa": "tuleja",
-      "opis": "Cylindryczna część wsuwana w otwór, służąca do prowadzenia wału, zmniejszania tarcia, ochrony materiału lub ustalania odstępu.",
-      "synonimy": [
-        "tulejka",
-        "wkładka rurowa",
-        "pierścień ślizgowy",
-        "dystans rurowy",
-        "sleeve",
-        "bearing insert",
-        "spacer sleeve"
-      ],
+      "opis": "tuleja",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 11,
       "zrodla_etykiet": {
@@ -13044,25 +12119,13 @@
         ]
       },
       "szablon_id": "tuleja",
-      "n_wierszy_zakresow": 10,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 10
     },
     {
       "id": "przyrzad",
       "klasa": "przyrząd",
-      "opis": "Klasa obejmuje drukowane elementy ułatwiające wykonywanie, ustawianie, mocowanie lub kontrolowanie innych prac i części.",
-      "synonimy": [
-        "narzędzie",
-        "przystawka",
-        "oprzyrządowanie",
-        "pomoc warsztatowa",
-        "szablon",
-        "przyrząd pomiarowy",
-        "tool",
-        "jig",
-        "fixture",
-        "device"
-      ],
+      "opis": "przyrząd",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 11,
       "zrodla_etykiet": {
@@ -13177,26 +12240,15 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 8,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 8
     },
     {
       "id": "lejek",
       "klasa": "lejek",
-      "opis": "Klasa obejmuje części zwężające się ku wylotowi, ułatwiające przesypywanie, przelewanie lub dozowanie materiałów i cieczy.",
+      "opis": "lejek",
       "synonimy": [
         "funnel",
-        "lejek",
-        "nasypnik",
-        "zasypnik",
-        "lej zasypowy",
-        "rękaw zasypowy",
-        "przewód zsypowy",
-        "stożek przelewowy",
-        "hopper",
-        "filling cone",
-        "loading chute",
-        "feed chute"
+        "lejek"
       ],
       "geometryczny": true,
       "n_modeli": 11,
@@ -13328,22 +12380,13 @@
         ]
       },
       "szablon_id": "lejek",
-      "n_wierszy_zakresow": 10,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 10
     },
     {
       "id": "zatrzask",
       "klasa": "zatrzask",
-      "opis": "Klasa obejmuje części służące do szybkiego, zwykle sprężystego łączenia elementów i ich rozłączania bez użycia narzędzi.",
-      "synonimy": [
-        "zapadka",
-        "języczek",
-        "zamknięcie sprężyste",
-        "catch",
-        "clip",
-        "spring catch",
-        "locking tab"
-      ],
+      "opis": "zatrzask",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -13457,25 +12500,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 9,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 9
     },
     {
       "id": "trojnik",
       "klasa": "trójnik",
-      "opis": "Element łączący trzy odcinki lub profile, zwykle pod kątem prostym, tworząc rozgałęzienie w kształcie litery T.",
-      "synonimy": [
-        "złączka T",
-        "łącznik T",
-        "rozgałęźnik T",
-        "łącznik trójramienny",
-        "element rozdzielający",
-        "tee connector",
-        "T-joint",
-        "T-fitting",
-        "three-way connector",
-        "branch connector"
-      ],
+      "opis": "trójnik",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -13601,24 +12632,13 @@
         ]
       },
       "szablon_id": "trojnik",
-      "n_wierszy_zakresow": 5,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 5
     },
     {
       "id": "walek",
       "klasa": "wałek",
-      "opis": "Klasa obejmuje części o wydłużonym, zwykle obrotowo-symetrycznym kształcie, służące jako osie, trzpienie, rolki lub elementy dystansowe.",
-      "synonimy": [
-        "walec",
-        "cylinder",
-        "trzpień",
-        "oś",
-        "drążek",
-        "rdzeń",
-        "shaft",
-        "pin",
-        "rod"
-      ],
+      "opis": "wałek",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -13741,27 +12761,13 @@
         ]
       },
       "szablon_id": "walek",
-      "n_wierszy_zakresow": 7,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 7
     },
     {
       "id": "blokada-szafki",
       "klasa": "blokada szafki",
-      "opis": "Elementy służące do zamykania, ryglowania lub zabezpieczania drzwiczek i szuflad szafek.",
-      "synonimy": [
-        "zamek szafkowy",
-        "zatrzask szafkowy",
-        "rygiel szafki",
-        "zamknięcie drzwiczek",
-        "blokada drzwiczek",
-        "zabezpieczenie szafki",
-        "uchwyt z zamkiem",
-        "cabinet lock",
-        "cupboard lock",
-        "cabinet latch",
-        "cam lock",
-        "door catch"
-      ],
+      "opis": "blokada szafki",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -13875,27 +12881,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 8,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 8
     },
     {
       "id": "organizer-zabawek-kapiel",
       "klasa": "organizer zabawek kąpiel",
-      "opis": "Klasa obejmuje pojemniki, kosze, siatki i uchwyty służące do przechowywania oraz ociekania zabawek używanych podczas kąpieli.",
-      "synonimy": [
-        "kosz na zabawki do wanny",
-        "pojemnik na zabawki kąpielowe",
-        "siatka na zabawki do wanny",
-        "uchwyt na zabawki kąpielowe",
-        "schowek na zabawki do kąpieli",
-        "ociekacz na zabawki dziecięce",
-        "bath toy caddy",
-        "tub toy holder",
-        "bath toy bin",
-        "bathtub toy basket",
-        "bath toy net",
-        "bath toy storage"
-      ],
+      "opis": "organizer zabawek kąpiel",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -14009,27 +13001,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 9,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 9
     },
     {
       "id": "podpora-roslin",
       "klasa": "podpora roślin",
-      "opis": "Element podtrzymujący łodygi i pędy roślin, pomagający im rosnąć pionowo lub utrzymać określony kształt.",
-      "synonimy": [
-        "palik do roślin",
-        "tyczka do roślin",
-        "kratka dla pnączy",
-        "trejaż",
-        "drabinka do roślin",
-        "stelaż ogrodowy",
-        "podpórka łodygi",
-        "uchwyt dla pnączy",
-        "plant stake",
-        "plant trellis",
-        "climbing frame",
-        "plant cage"
-      ],
+      "opis": "podpora roślin",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -14143,26 +13121,15 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 9,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 9
     },
     {
       "id": "stojak-desek",
       "klasa": "stojak desek",
-      "opis": "Klasa obejmuje części służące do ustawiania, podpierania i przechowywania desek lub podobnych płaskich elementów.",
+      "opis": "stojak desek",
       "synonimy": [
-        "uchwyt desek",
-        "organizer desek",
-        "regał na deski",
-        "wspornik desek",
-        "stojak płyt",
-        "przechowalnik desek",
-        "board rack",
-        "board holder",
-        "board stand",
-        "plank rack",
-        "board organizer",
-        "board storage rack"
+        "cutting board stand",
+        "stojak desek"
       ],
       "geometryczny": true,
       "n_modeli": 10,
@@ -14272,32 +13239,31 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 58.0
+          },
+          "w": {
+            "type": "number"
+          },
+          "n": {
+            "type": "number"
+          },
+          "szczelina": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "w",
+          "n",
+          "szczelina"
+        ]
       },
-      "szablon_id": null,
-      "n_wierszy_zakresow": 10,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "szablon_id": "stojakDesek",
+      "n_wierszy_zakresow": 10
     },
     {
       "id": "uchwyt-doniczki",
       "klasa": "uchwyt doniczki",
-      "opis": "Element służący do podtrzymywania i mocowania doniczki na ścianie, suficie, balustradzie lub innym podłożu.",
-      "synonimy": [
-        "wieszak doniczki",
-        "mocowanie doniczki",
-        "wspornik doniczki",
-        "konsola doniczkowa",
-        "stojak na doniczkę",
-        "obejma doniczki",
-        "plant pot holder",
-        "planter holder",
-        "flower pot holder",
-        "pot bracket",
-        "planter bracket",
-        "plant hanger"
-      ],
+      "opis": "uchwyt doniczki",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -14411,26 +13377,15 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 9,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 9
     },
     {
       "id": "uchwyt-gabki",
       "klasa": "uchwyt gąbki",
-      "opis": "Element przeznaczony do przechowywania gąbki, często z otworami lub szczelinami odprowadzającymi wodę.",
+      "opis": "uchwyt gąbki",
       "synonimy": [
-        "stojak na gąbkę",
-        "podstawka na gąbkę",
-        "koszyk na gąbkę",
-        "ociekacz do gąbki",
-        "pojemnik na gąbkę",
         "sponge holder",
-        "sponge rack",
-        "sponge caddy",
-        "sponge tray",
-        "sponge basket",
-        "sponge drainer",
-        "sponge rest"
+        "uchwyt gabki"
       ],
       "geometryczny": true,
       "n_modeli": 10,
@@ -14540,30 +13495,33 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 150.0
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "z": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "x",
+          "y",
+          "z"
+        ]
       },
-      "szablon_id": null,
-      "n_wierszy_zakresow": 8,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "szablon_id": "uchwytGabki",
+      "n_wierszy_zakresow": 8
     },
     {
       "id": "uchwyt-lyzek",
       "klasa": "uchwyt łyżek",
-      "opis": "Element przeznaczony do odkładania, przechowywania lub organizowania łyżek i podobnych przyborów kuchennych.",
+      "opis": "uchwyt łyżek",
       "synonimy": [
-        "stojak na łyżki",
-        "podstawka pod łyżkę",
-        "organizer łyżek",
-        "pojemnik na łyżki",
-        "łyżkownik",
-        "spoon holder",
-        "spoon rack",
-        "spoon stand",
         "spoon rest",
-        "utensil holder",
-        "cutlery organizer"
+        "uchwyt lyzek"
       ],
       "geometryczny": true,
       "n_modeli": 10,
@@ -14673,31 +13631,27 @@
             "type": "number",
             "minimum": -3.0,
             "maximum": 2.0
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "x",
+          "y"
+        ]
       },
-      "szablon_id": null,
-      "n_wierszy_zakresow": 9,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "szablon_id": "uchwytLyzek",
+      "n_wierszy_zakresow": 9
     },
     {
       "id": "uchwyt-smoczka",
       "klasa": "uchwyt smoczka",
-      "opis": "Element przeznaczony do wygodnego trzymania, przenoszenia lub mocowania smoczka dla niemowlęcia.",
-      "synonimy": [
-        "rączka do smoczka",
-        "rękojeść smoczka",
-        "chwyt smoczka",
-        "zaczep do smoczka",
-        "zawieszka do smoczka",
-        "pacifier handle",
-        "pacifier grip",
-        "dummy handle",
-        "dummy grip",
-        "soother handle",
-        "soother grip"
-      ],
+      "opis": "uchwyt smoczka",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -14811,27 +13765,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 8,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 8
     },
     {
       "id": "uchwyt-wozka",
       "klasa": "uchwyt wózka",
-      "opis": "Klasa obejmuje elementy służące do chwytania i prowadzenia wózka, takie jak rączki, pałąki oraz uchwyty ergonomiczne.",
-      "synonimy": [
-        "rączka wózka",
-        "rękojeść wózka",
-        "pałąk wózka",
-        "chwyt wózka",
-        "uchwyt prowadzący",
-        "rączka do prowadzenia",
-        "cart handle",
-        "trolley handle",
-        "stroller handle",
-        "push handle",
-        "handlebar",
-        "grip"
-      ],
+      "opis": "uchwyt wózka",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -14945,26 +13885,15 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 8,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 8
     },
     {
       "id": "zaslepka-gniazdka",
       "klasa": "zaślepka gniazdka",
-      "opis": "Element zakrywający nieużywane gniazdko elektryczne, chroniący je przed kurzem, dotykiem i przypadkowym użyciem.",
+      "opis": "zaślepka gniazdka",
       "synonimy": [
-        "zaślepka gniazda",
-        "osłona gniazda",
-        "maskownica gniazdka",
-        "wkładka zaślepiająca",
-        "zatyczka gniazdka",
-        "zaślepka elektryczna",
-        "socket cover",
         "outlet cover",
-        "socket blank",
-        "outlet blanking plate",
-        "socket insert",
-        "receptacle cover"
+        "zaslepka gniazdka"
       ],
       "geometryczny": true,
       "n_modeli": 10,
@@ -15079,25 +14008,15 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 8,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 8
     },
     {
       "id": "kolo",
       "klasa": "koło",
-      "opis": "Część obrotowa o kształcie tarczy lub pierścienia, służąca do toczenia, prowadzenia, podpierania albo przenoszenia napędu.",
+      "opis": "koło",
       "synonimy": [
         "wheel",
-        "tarcza",
-        "kółko",
-        "kółko jezdne",
-        "koło napędowe",
-        "koło podporowe",
-        "small wheel",
-        "running wheel",
-        "drive wheel",
-        "support wheel",
-        "caster wheel"
+        "tarcza"
       ],
       "geometryczny": true,
       "n_modeli": 10,
@@ -15225,26 +14144,15 @@
         ]
       },
       "szablon_id": "kolo",
-      "n_wierszy_zakresow": 10,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 10
     },
     {
       "id": "pojemnik-desykantu",
       "klasa": "pojemnik desykantu",
-      "opis": "Część służąca do przechowywania lub mocowania desykantu, który pochłania wilgoć z zamkniętej przestrzeni.",
+      "opis": "pojemnik desykantu",
       "synonimy": [
-        "pojemnik na desykant",
-        "zasobnik osuszacza",
-        "uchwyt środka suszącego",
-        "wkład osuszający",
-        "kaseta osuszająca",
-        "pojemnik na żel krzemionkowy",
-        "desiccant holder",
-        "desiccant container",
-        "drying-agent holder",
-        "moisture absorber holder",
-        "silica-gel holder",
-        "desiccant cartridge"
+        "silica box",
+        "pojemnik desykantu"
       ],
       "geometryczny": true,
       "n_modeli": 10,
@@ -15359,26 +14267,15 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 10,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 10
     },
     {
       "id": "stojak-dysz",
       "klasa": "stojak dysz",
-      "opis": "Klasa obejmuje podstawki, uchwyty i organizery służące do przechowywania oraz porządkowania dysz do drukarek 3D.",
+      "opis": "stojak dysz",
       "synonimy": [
-        "uchwyt dysz",
-        "podstawka pod dysze",
-        "organizer dysz",
-        "stojak na dysze",
-        "magazynek dysz",
-        "tacka na dysze",
         "nozzle holder",
-        "nozzle rack",
-        "nozzle organizer",
-        "nozzle tray",
-        "nozzle storage",
-        "tip holder"
+        "stojak dysz"
       ],
       "geometryczny": true,
       "n_modeli": 10,
@@ -15493,27 +14390,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 7,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 7
     },
     {
       "id": "uchwyt-listwy",
       "klasa": "uchwyt listwy",
-      "opis": "Element służący do mocowania, podtrzymywania lub zatrzaskiwania listwy na wybranej powierzchni.",
-      "synonimy": [
-        "mocowanie listwy",
-        "klips do listwy",
-        "zatrzask listwy",
-        "obejma listwy",
-        "wspornik listwy",
-        "zaczep listwy",
-        "uchwyt montażowy",
-        "strip holder",
-        "trim holder",
-        "rail clip",
-        "strip mounting bracket",
-        "rail retainer"
-      ],
+      "opis": "uchwyt listwy",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -15627,25 +14510,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 8,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 8
     },
     {
       "id": "uchwyt-pedzli",
       "klasa": "uchwyt pędzli",
-      "opis": "Klasa obejmuje części służące do przechowywania, porządkowania i ustawiania pędzli malarskich lub artystycznych.",
-      "synonimy": [
-        "stojak na pędzle",
-        "organizer pędzli",
-        "pojemnik na pędzle",
-        "kubek na pędzle",
-        "szafka na pędzle",
-        "brush stand",
-        "brush organizer",
-        "brush rack",
-        "brush cup",
-        "brush container"
-      ],
+      "opis": "uchwyt pędzli",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -15759,21 +14630,13 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 8,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 8
     },
     {
       "id": "klips",
       "klasa": "klips",
-      "opis": "Część służąca do szybkiego, zwykle sprężystego łączenia, przytrzymywania lub mocowania innych elementów.",
-      "synonimy": [
-        "uchwyt zatrzaskowy",
-        "mocowanie sprężyste",
-        "element dociskowy",
-        "clamp",
-        "retainer",
-        "spring clamp"
-      ],
+      "opis": "klips",
+      "synonimy": [],
       "geometryczny": true,
       "n_modeli": 2,
       "zrodla_etykiet": {
@@ -15889,8 +14752,7 @@
         ]
       },
       "szablon_id": "klipsU",
-      "n_wierszy_zakresow": 2,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "n_wierszy_zakresow": 2
     }
   ],
   "n": 110,
