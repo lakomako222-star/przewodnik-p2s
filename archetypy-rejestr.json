@@ -1,5 +1,5 @@
 {
-  "when": "2026-09-05T16:59:36Z",
+  "when": "2026-09-05T19:25:07Z",
   "zrodlo": "etykiety.jsonl (nazwy + korekta właściciela, ADDENDUM 2026-09-04)",
   "wybor_when": "2026-09-04T04:47:21.749Z",
   "prog_archetypu": 8,
@@ -7,8 +7,20 @@
     {
       "id": "zabawka",
       "klasa": "zabawka",
-      "opis": "zabawka",
-      "synonimy": [],
+      "opis": "Klasa obejmuje drukowane przestrzennie przedmioty przeznaczone do zabawy, kolekcjonowania lub interakcji manualnej.",
+      "synonimy": [
+        "figurka",
+        "miniatura",
+        "pionek",
+        "klocek",
+        "układanka",
+        "gadżet",
+        "pojazd",
+        "robot",
+        "figurine",
+        "toy model",
+        "miniature"
+      ],
       "geometryczny": false,
       "n_modeli": 415,
       "zrodla_etykiet": {
@@ -64,13 +76,21 @@
       "statystyki": {},
       "schemat_parametrow": null,
       "szablon_id": null,
-      "n_wierszy_zakresow": 0
+      "n_wierszy_zakresow": 0,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "sruba",
       "klasa": "śruba",
-      "opis": "śruba",
-      "synonimy": [],
+      "opis": "Klasa obejmuje gwintowane elementy złączne służące do skręcania i mocowania części, zwykle współpracujące z nakrętką lub gwintowanym otworem.",
+      "synonimy": [
+        "wkręt",
+        "element złączny",
+        "śruba maszynowa",
+        "screw",
+        "bolt",
+        "machine screw"
+      ],
       "geometryczny": true,
       "n_modeli": 257,
       "zrodla_etykiet": {
@@ -215,13 +235,22 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 240
+      "n_wierszy_zakresow": 240,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "organizer",
       "klasa": "organizer",
-      "opis": "organizer",
-      "synonimy": [],
+      "opis": "Klasa obejmuje części służące do porządkowania, segregowania i przechowywania drobnych przedmiotów lub narzędzi.",
+      "synonimy": [
+        "przegródka",
+        "wkład",
+        "tacka",
+        "sortownik",
+        "tray",
+        "divider",
+        "caddy"
+      ],
       "geometryczny": true,
       "n_modeli": 178,
       "zrodla_etykiet": {
@@ -384,13 +413,25 @@
         ]
       },
       "szablon_id": "organizerPrzegrody",
-      "n_wierszy_zakresow": 149
+      "n_wierszy_zakresow": 149,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "lozysko",
       "klasa": "łożysko",
-      "opis": "łożysko",
-      "synonimy": [],
+      "opis": "Klasa obejmuje części zmniejszające tarcie i umożliwiające płynny obrót lub przesuw wału, osi albo innego elementu.",
+      "synonimy": [
+        "tuleja ślizgowa",
+        "tuleja prowadząca",
+        "element toczny",
+        "oprawa wału",
+        "sleeve bearing",
+        "plain bearing",
+        "guide bushing",
+        "rolling element",
+        "bearing insert",
+        "bearing housing"
+      ],
       "geometryczny": true,
       "n_modeli": 177,
       "zrodla_etykiet": {
@@ -534,13 +575,20 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 160
+      "n_wierszy_zakresow": 160,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "pudelko",
       "klasa": "pudełko",
-      "opis": "pudełko",
-      "synonimy": [],
+      "opis": "Klasa obejmuje zamknięte lub częściowo zamknięte elementy służące do przechowywania, ochrony i porządkowania przedmiotów.",
+      "synonimy": [
+        "kasetka",
+        "skrytka",
+        "zasobnik",
+        "container",
+        "storage case"
+      ],
       "geometryczny": true,
       "n_modeli": 118,
       "zrodla_etykiet": {
@@ -701,18 +749,29 @@
         ]
       },
       "szablon_id": "pudelko",
-      "n_wierszy_zakresow": 111
+      "n_wierszy_zakresow": 111,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "rura",
       "klasa": "rura",
-      "opis": "rura",
-      "synonimy": [],
+      "opis": "Klasa obejmuje wydłużone, najczęściej cylindryczne elementy z pustym przekrojem, służące do prowadzenia powietrza, cieczy, przewodów lub innych części.",
+      "synonimy": [
+        "rurka",
+        "tubus",
+        "przewód rurowy",
+        "kanał rurowy",
+        "cylindryczny przewód",
+        "tube",
+        "tubing",
+        "pipework",
+        "hollow cylinder"
+      ],
       "geometryczny": true,
-      "n_modeli": 114,
+      "n_modeli": 116,
       "zrodla_etykiet": {
         "wlasciciel": 12,
-        "regula": 102
+        "regula": 104
       },
       "nazwana_wprost": true,
       "cluster_id": null,
@@ -781,42 +840,42 @@
         ]
       },
       "zakresy_n": {
-        "bbox_L": 104,
-        "bbox_M": 104,
-        "bbox_S": 104,
-        "fill": 51,
-        "genus": 104
+        "bbox_L": 106,
+        "bbox_M": 106,
+        "bbox_S": 106,
+        "fill": 53,
+        "genus": 106
       },
       "statystyki": {
         "bbox_L": {
-          "mediana": 68.692,
+          "mediana": 67.33,
           "p10": 3.966,
-          "p90": 143.652,
-          "n": 104
+          "p90": 142.475,
+          "n": 106
         },
         "bbox_M": {
-          "mediana": 48.758,
+          "mediana": 47.19,
           "p10": 3.001,
-          "p90": 90.207,
-          "n": 104
+          "p90": 90.0,
+          "n": 106
         },
         "bbox_S": {
           "mediana": 28.997,
           "p10": 1.275,
-          "p90": 66.936,
-          "n": 104
+          "p90": 66.442,
+          "n": 106
         },
         "fill": {
           "mediana": 0.204,
           "p10": 0.093,
           "p90": 0.401,
-          "n": 51
+          "n": 53
         },
         "genus": {
           "mediana": 1.0,
           "p10": 0.0,
           "p90": 8.0,
-          "n": 104
+          "n": 106
         }
       },
       "schemat_parametrow": {
@@ -864,13 +923,17 @@
         ]
       },
       "szablon_id": "ruraProsta",
-      "n_wierszy_zakresow": 104
+      "n_wierszy_zakresow": 106,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "uchwyt",
       "klasa": "uchwyt",
-      "opis": "uchwyt",
-      "synonimy": [],
+      "opis": "Element służący do chwytania, przenoszenia, podtrzymywania lub zamocowania innej części.",
+      "synonimy": [
+        "mocowanie",
+        "łapa"
+      ],
       "geometryczny": true,
       "n_modeli": 103,
       "zrodla_etykiet": {
@@ -1027,13 +1090,22 @@
         ]
       },
       "szablon_id": "uchwytZLaczem",
-      "n_wierszy_zakresow": 92
+      "n_wierszy_zakresow": 92,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "nakretka",
       "klasa": "nakrętka",
-      "opis": "nakrętka",
-      "synonimy": [],
+      "opis": "Nakrętka to element z gwintem wewnętrznym, służący do mocowania części na śrubie lub pręcie gwintowanym.",
+      "synonimy": [
+        "element z gwintem wewnętrznym",
+        "mocowanie gwintowane",
+        "hex nut",
+        "internally threaded fastener",
+        "lock nut",
+        "jam nut",
+        "wing nut"
+      ],
       "geometryczny": true,
       "n_modeli": 74,
       "zrodla_etykiet": {
@@ -1178,13 +1250,25 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 71
+      "n_wierszy_zakresow": 71,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "adapter",
       "klasa": "adapter",
-      "opis": "adapter",
-      "synonimy": [],
+      "opis": "Część pośrednia służąca do połączenia elementów o różnych wymiarach, kształtach, standardach lub sposobach mocowania.",
+      "synonimy": [
+        "przejściówka",
+        "łącznik",
+        "przetwornik",
+        "konwerter",
+        "złączka",
+        "interfejs",
+        "converter",
+        "coupler",
+        "fitting",
+        "interface piece"
+      ],
       "geometryczny": true,
       "n_modeli": 52,
       "zrodla_etykiet": {
@@ -1343,13 +1427,25 @@
         ]
       },
       "szablon_id": "adapterPlyta",
-      "n_wierszy_zakresow": 39
+      "n_wierszy_zakresow": 39,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "podkladka",
       "klasa": "podkładka",
-      "opis": "podkładka",
-      "synonimy": [],
+      "opis": "Element w kształcie płaskiego pierścienia, stosowany do rozkładania nacisku pod łbem śruby lub nakrętką, dystansowania i ochrony powierzchni.",
+      "synonimy": [
+        "washer",
+        "flat washer",
+        "spacer washer",
+        "mounting washer",
+        "shim",
+        "dystans",
+        "krążek dystansowy",
+        "pierścień pod śrubę",
+        "podkładka dystansowa",
+        "podkładka montażowa"
+      ],
       "geometryczny": true,
       "n_modeli": 40,
       "zrodla_etykiet": {
@@ -1505,13 +1601,20 @@
         ]
       },
       "szablon_id": "podkladka",
-      "n_wierszy_zakresow": 38
+      "n_wierszy_zakresow": 38,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "wieszak",
       "klasa": "wieszak",
-      "opis": "wieszak",
-      "synonimy": [],
+      "opis": "Element przeznaczony do zawieszania przedmiotów na ścianie, meblu lub innej powierzchni.",
+      "synonimy": [
+        "zawieszka",
+        "wieszak ścienny",
+        "hanger",
+        "peg",
+        "hanging bracket"
+      ],
       "geometryczny": true,
       "n_modeli": 33,
       "zrodla_etykiet": {
@@ -1667,7 +1770,8 @@
         ]
       },
       "szablon_id": "wieszakListwa",
-      "n_wierszy_zakresow": 30
+      "n_wierszy_zakresow": 30,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "etykieta-roslin",
@@ -1831,8 +1935,20 @@
     {
       "id": "ramka",
       "klasa": "ramka",
-      "opis": "ramka",
-      "synonimy": [],
+      "opis": "Ramka to płaska lub przestrzenna część tworząca obrys, podparcie albo mocowanie dla innego elementu.",
+      "synonimy": [
+        "rama",
+        "obramowanie",
+        "stelaż",
+        "szkielet",
+        "konstrukcja nośna",
+        "frame",
+        "bezel",
+        "surround",
+        "support frame",
+        "mounting frame",
+        "chassis"
+      ],
       "geometryczny": true,
       "n_modeli": 28,
       "zrodla_etykiet": {
@@ -1980,7 +2096,8 @@
         ]
       },
       "szablon_id": "ramka",
-      "n_wierszy_zakresow": 28
+      "n_wierszy_zakresow": 28,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "organizer-kabli",
@@ -2135,8 +2252,13 @@
     {
       "id": "obudowa",
       "klasa": "obudowa",
-      "opis": "obudowa",
-      "synonimy": [],
+      "opis": "Część chroniąca podzespoły lub mechanizm, zwykle osłaniająca je przed uszkodzeniami i nadająca całości uporządkowaną formę.",
+      "synonimy": [
+        "casing",
+        "shell",
+        "korpus",
+        "skorupa"
+      ],
       "geometryczny": true,
       "n_modeli": 25,
       "zrodla_etykiet": {
@@ -2278,13 +2400,22 @@
         ]
       },
       "szablon_id": "obudowa",
-      "n_wierszy_zakresow": 24
+      "n_wierszy_zakresow": 24,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "zaslepka",
       "klasa": "zaślepka",
-      "opis": "zaślepka",
-      "synonimy": [],
+      "opis": "To część służąca do zamknięcia otworu, końca profilu lub obudowy oraz ochrony wnętrza przed kurzem i uszkodzeniami.",
+      "synonimy": [
+        "korek",
+        "osłona końcowa",
+        "wkładka zamykająca",
+        "kołpak",
+        "plug",
+        "blanking plug",
+        "protective cap"
+      ],
       "geometryczny": true,
       "n_modeli": 24,
       "zrodla_etykiet": {
@@ -2427,7 +2558,8 @@
         ]
       },
       "szablon_id": "zaslepka",
-      "n_wierszy_zakresow": 22
+      "n_wierszy_zakresow": 22,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "stojak",
@@ -2582,8 +2714,21 @@
     {
       "id": "kolo-zebate",
       "klasa": "koło zębate",
-      "opis": "koło zębate",
-      "synonimy": [],
+      "opis": "Element obrotowy z zębami, który zazębia się z innym kołem lub listwą, przenosząc napęd i moment obrotowy.",
+      "synonimy": [
+        "zębatka",
+        "tryb",
+        "koło przekładni",
+        "koło uzębione",
+        "wieniec zębaty",
+        "gear",
+        "gear wheel",
+        "cogwheel",
+        "toothed wheel",
+        "spur gear",
+        "cog",
+        "pinion"
+      ],
       "geometryczny": true,
       "n_modeli": 23,
       "zrodla_etykiet": {
@@ -2710,13 +2855,26 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 12
+      "n_wierszy_zakresow": 12,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "uchwyt-suszarki",
       "klasa": "uchwyt suszarki",
-      "opis": "uchwyt suszarki",
-      "synonimy": [],
+      "opis": "Element przeznaczony do bezpiecznego odkładania, zawieszania lub montażu suszarki do włosów.",
+      "synonimy": [
+        "stojak na suszarkę",
+        "wieszak na suszarkę",
+        "mocowanie do suszarki",
+        "podstawka na suszarkę",
+        "wspornik do suszarki",
+        "hair dryer holder",
+        "blow dryer holder",
+        "hair dryer mount",
+        "blow dryer wall mount",
+        "hairdryer cradle",
+        "hair dryer bracket"
+      ],
       "geometryczny": true,
       "n_modeli": 23,
       "zrodla_etykiet": {
@@ -2843,13 +3001,27 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 21
+      "n_wierszy_zakresow": 21,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "element-mebli",
       "klasa": "element mebli",
-      "opis": "element mebli",
-      "synonimy": [],
+      "opis": "Klasa obejmuje drukowane części i akcesoria przeznaczone do budowy, łączenia, naprawy lub wyposażenia mebli.",
+      "synonimy": [
+        "część meblowa",
+        "komponent meblowy",
+        "detal meblowy",
+        "podzespół mebla",
+        "akcesorium meblowe",
+        "okucie meblowe",
+        "uchwyt meblowy",
+        "łącznik meblowy",
+        "furniture part",
+        "furniture component",
+        "furniture fitting",
+        "furniture accessory"
+      ],
       "geometryczny": true,
       "n_modeli": 22,
       "zrodla_etykiet": {
@@ -2975,13 +3147,26 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 19
+      "n_wierszy_zakresow": 19,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "klucz",
       "klasa": "klucz",
-      "opis": "klucz",
-      "synonimy": [],
+      "opis": "Część służąca do otwierania zamka albo chwytania i obracania elementu mechanicznego.",
+      "synonimy": [
+        "wytrych",
+        "klucz do zamka",
+        "dorobiony klucz",
+        "blank kluczowy",
+        "key blank",
+        "lock key",
+        "house key",
+        "tool key",
+        "wrench",
+        "spanner",
+        "narzędzie do obracania"
+      ],
       "geometryczny": true,
       "n_modeli": 22,
       "zrodla_etykiet": {
@@ -3107,7 +3292,8 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 18
+      "n_wierszy_zakresow": 18,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "podstawka",
@@ -3393,8 +3579,17 @@
     {
       "id": "uchwyt-handheld",
       "klasa": "uchwyt handheld",
-      "opis": "uchwyt handheld",
-      "synonimy": [],
+      "opis": "Klasa obejmuje części przeznaczone do wygodnego trzymania urządzenia lub elementu w dłoni, często z ergonomicznym kształtem i miejscem na palce.",
+      "synonimy": [
+        "rękojeść",
+        "uchwyt ręczny",
+        "chwyt ergonomiczny",
+        "rączka do trzymania",
+        "handgrip",
+        "palm grip",
+        "controller grip",
+        "grip shell"
+      ],
       "geometryczny": true,
       "n_modeli": 22,
       "zrodla_etykiet": {
@@ -3520,7 +3715,8 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 19
+      "n_wierszy_zakresow": 19,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "zawias",
@@ -3673,8 +3869,18 @@
     {
       "id": "doniczka",
       "klasa": "doniczka",
-      "opis": "doniczka",
-      "synonimy": [],
+      "opis": "Pojemnik przeznaczony do uprawy roślin, zwykle z miejscem na podłoże i odpływ nadmiaru wody.",
+      "synonimy": [
+        "osłonka",
+        "pojemnik na rośliny",
+        "pojemnik uprawowy",
+        "pojemnik do sadzenia",
+        "sadzarka",
+        "flower pot",
+        "plant pot",
+        "planter",
+        "plant container"
+      ],
       "geometryczny": true,
       "n_modeli": 20,
       "zrodla_etykiet": {
@@ -3816,7 +4022,8 @@
         ]
       },
       "szablon_id": "doniczka",
-      "n_wierszy_zakresow": 16
+      "n_wierszy_zakresow": 16,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "wazon",
@@ -4114,8 +4321,21 @@
     {
       "id": "prowadnica",
       "klasa": "prowadnica",
-      "opis": "prowadnica",
-      "synonimy": [],
+      "opis": "Element wymuszający prostoliniowy lub określony kierunek ruchu współpracującej części.",
+      "synonimy": [
+        "szyna prowadząca",
+        "listwa prowadząca",
+        "tor prowadzący",
+        "prowadnik",
+        "ślizg",
+        "prowadzenie liniowe",
+        "guide rail",
+        "guideway",
+        "linear rail",
+        "slide rail",
+        "linear guide",
+        "slider"
+      ],
       "geometryczny": true,
       "n_modeli": 18,
       "zrodla_etykiet": {
@@ -4250,7 +4470,8 @@
         ]
       },
       "szablon_id": "prowadnica",
-      "n_wierszy_zakresow": 15
+      "n_wierszy_zakresow": 15,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "stojak-okularow",
@@ -4392,6 +4613,156 @@
       },
       "szablon_id": "stojakOkularow",
       "n_wierszy_zakresow": 15
+    },
+    {
+      "id": "walek",
+      "klasa": "wałek",
+      "opis": "Cylindryczna część przeznaczona do przenoszenia obrotu, podpierania innych elementów lub pracy jako dystans i prowadnica.",
+      "synonimy": [
+        "trzpień",
+        "oś",
+        "pręt",
+        "rolka",
+        "cylindryczny trzpień",
+        "element obrotowy",
+        "shaft",
+        "axle",
+        "rod",
+        "pin",
+        "roller",
+        "spindle"
+      ],
+      "geometryczny": true,
+      "n_modeli": 17,
+      "zrodla_etykiet": {
+        "regula": 17
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0979",
+        "0980",
+        "0981",
+        "0982",
+        "0983",
+        "0984",
+        "0985",
+        "0986",
+        "0987",
+        "0988",
+        "2714",
+        "2715",
+        "2716",
+        "2717",
+        "2718",
+        "2719",
+        "2720"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          12.0,
+          175.523
+        ],
+        "bbox_M": [
+          10.0,
+          102.827
+        ],
+        "bbox_S": [
+          8.0,
+          33.615
+        ],
+        "fill": [
+          0.061,
+          0.585
+        ],
+        "genus": [
+          0.0,
+          9.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 12,
+        "bbox_M": 12,
+        "bbox_S": 12,
+        "fill": 8,
+        "genus": 12
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 47.439,
+          "p10": 25.507,
+          "p90": 150.531,
+          "n": 12
+        },
+        "bbox_M": {
+          "mediana": 36.757,
+          "p10": 12.0,
+          "p90": 102.818,
+          "n": 12
+        },
+        "bbox_S": {
+          "mediana": 20.189,
+          "p10": 9.0,
+          "p90": 29.438,
+          "n": 12
+        },
+        "fill": {
+          "mediana": 0.324,
+          "p10": 0.061,
+          "p90": 0.459,
+          "n": 8
+        },
+        "genus": {
+          "mediana": 2.5,
+          "p10": 0.0,
+          "p90": 7.0,
+          "n": 12
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 12.0,
+            "maximum": 175.523
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 10.0,
+            "maximum": 102.827
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 8.0,
+            "maximum": 33.615
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.061,
+            "maximum": 0.585
+          },
+          "genus": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 9.0
+          },
+          "fi": {
+            "type": "number"
+          },
+          "dl": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "fi",
+          "dl"
+        ]
+      },
+      "szablon_id": "walek",
+      "n_wierszy_zakresow": 12,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "uchwyt-jajka",
@@ -4811,8 +5182,20 @@
     {
       "id": "forma",
       "klasa": "forma",
-      "opis": "forma",
-      "synonimy": [],
+      "opis": "Część służąca do nadawania innym materiałom określonego kształtu podczas odlewania, prasowania lub formowania.",
+      "synonimy": [
+        "kształt",
+        "wzornik",
+        "matryca",
+        "forma odlewnicza",
+        "przyrząd formujący",
+        "mold",
+        "mould",
+        "pattern",
+        "die",
+        "forming tool",
+        "cast form"
+      ],
       "geometryczny": true,
       "n_modeli": 16,
       "zrodla_etykiet": {
@@ -4932,7 +5315,8 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 10
+      "n_wierszy_zakresow": 10,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "haczyk",
@@ -5086,8 +5470,21 @@
     {
       "id": "kolnierz",
       "klasa": "kołnierz",
-      "opis": "kołnierz",
-      "synonimy": [],
+      "opis": "Element pierścieniowy wystający poza korpus, służący do łączenia, ustalania, wzmacniania lub ograniczania przesuwu innych części.",
+      "synonimy": [
+        "obręcz",
+        "pierścień oporowy",
+        "pierścień mocujący",
+        "mankiet",
+        "wieniec",
+        "rant montażowy",
+        "flange",
+        "collar",
+        "mounting flange",
+        "retaining ring",
+        "shoulder ring",
+        "flanged ring"
+      ],
       "geometryczny": true,
       "n_modeli": 15,
       "zrodla_etykiet": {
@@ -5225,13 +5622,26 @@
         ]
       },
       "szablon_id": "kolnierz",
-      "n_wierszy_zakresow": 15
+      "n_wierszy_zakresow": 15,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "redukcja",
       "klasa": "redukcja",
-      "opis": "redukcja",
-      "synonimy": [],
+      "opis": "Część służąca do połączenia elementów o różnych średnicach lub przekrojach, zwykle poprzez ich stopniowe zmniejszenie.",
+      "synonimy": [
+        "zwężka",
+        "łącznik redukcyjny",
+        "adapter zmniejszający",
+        "przejściówka średnicowa",
+        "złączka stopniowana",
+        "reducing adapter",
+        "reducing coupling",
+        "step-down adapter",
+        "diameter reducer",
+        "transition fitting",
+        "tapered connector"
+      ],
       "geometryczny": true,
       "n_modeli": 15,
       "zrodla_etykiet": {
@@ -5366,7 +5776,8 @@
         ]
       },
       "szablon_id": "zlaczka",
-      "n_wierszy_zakresow": 15
+      "n_wierszy_zakresow": 15,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "galka",
@@ -5508,8 +5919,18 @@
     {
       "id": "katownik",
       "klasa": "kątownik",
-      "opis": "kątownik",
-      "synonimy": [],
+      "opis": "Element w kształcie litery L lub zbliżonym, służący do łączenia, podpierania albo wzmacniania dwóch powierzchni ustawionych pod kątem.",
+      "synonimy": [
+        "uchwyt narożny",
+        "narożnik montażowy",
+        "konsola",
+        "wzmocnienie narożne",
+        "corner bracket",
+        "L-bracket",
+        "angle support",
+        "mounting bracket",
+        "corner brace"
+      ],
       "geometryczny": true,
       "n_modeli": 15,
       "zrodla_etykiet": {
@@ -5644,13 +6065,22 @@
         ]
       },
       "szablon_id": "katownik",
-      "n_wierszy_zakresow": 14
+      "n_wierszy_zakresow": 14,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "klamka",
       "klasa": "klamka",
-      "opis": "klamka",
-      "synonimy": [],
+      "opis": "Części służące do chwytania i naciskania w celu otwierania lub zamykania drzwi, szafek i innych elementów.",
+      "synonimy": [
+        "uchwyt drzwiowy",
+        "dźwignia drzwiowa",
+        "dźwignia",
+        "door handle",
+        "lever handle",
+        "door lever",
+        "pull handle"
+      ],
       "geometryczny": true,
       "n_modeli": 15,
       "zrodla_etykiet": {
@@ -5769,7 +6199,8 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 14
+      "n_wierszy_zakresow": 14,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "stojak-pada",
@@ -5917,8 +6348,21 @@
     {
       "id": "uchwyt-lazienkowy",
       "klasa": "uchwyt łazienkowy",
-      "opis": "uchwyt łazienkowy",
-      "synonimy": [],
+      "opis": "Klasa obejmuje elementy montowane w łazience, które zapewniają podparcie i ułatwiają bezpieczne poruszanie się lub wstawanie.",
+      "synonimy": [
+        "poręcz łazienkowa",
+        "uchwyt ścienny",
+        "uchwyt przyścienny",
+        "rączka łazienkowa",
+        "poręcz bezpieczeństwa",
+        "uchwyt do prysznica",
+        "grab bar",
+        "bathroom grab rail",
+        "wall-mounted grab bar",
+        "support handle",
+        "shower safety handle",
+        "toilet safety rail"
+      ],
       "geometryczny": true,
       "n_modeli": 15,
       "zrodla_etykiet": {
@@ -6037,7 +6481,8 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 13
+      "n_wierszy_zakresow": 13,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "uchwyt-recznika",
@@ -6322,10 +6767,994 @@
       "n_wierszy_zakresow": 13
     },
     {
+      "id": "stojak-desek",
+      "klasa": "stojak desek",
+      "opis": "stojak desek",
+      "synonimy": [
+        "cutting board stand",
+        "stojak desek"
+      ],
+      "geometryczny": true,
+      "n_modeli": 15,
+      "zrodla_etykiet": {
+        "regula": 15
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "2261",
+        "2262",
+        "2263",
+        "2264",
+        "2265",
+        "2266",
+        "2267",
+        "2268",
+        "2269",
+        "2270",
+        "2685",
+        "2686",
+        "2687",
+        "2688",
+        "2689"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          60.0,
+          200.034
+        ],
+        "bbox_M": [
+          15.0,
+          129.798
+        ],
+        "bbox_S": [
+          3.0,
+          116.121
+        ],
+        "fill": [
+          0.058,
+          0.802
+        ],
+        "genus": [
+          -13.0,
+          219.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 14,
+        "bbox_M": 14,
+        "bbox_S": 14,
+        "fill": 6,
+        "genus": 14
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 145.0,
+          "p10": 95.0,
+          "p90": 195.066,
+          "n": 14
+        },
+        "bbox_M": {
+          "mediana": 87.978,
+          "p10": 50.0,
+          "p90": 109.751,
+          "n": 14
+        },
+        "bbox_S": {
+          "mediana": 39.683,
+          "p10": 9.7,
+          "p90": 75.589,
+          "n": 14
+        },
+        "fill": {
+          "mediana": 0.422,
+          "p10": 0.058,
+          "p90": 0.666,
+          "n": 6
+        },
+        "genus": {
+          "mediana": 0.0,
+          "p10": 0.0,
+          "p90": 58.0,
+          "n": 14
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 60.0,
+            "maximum": 200.034
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 15.0,
+            "maximum": 129.798
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 3.0,
+            "maximum": 116.121
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.058,
+            "maximum": 0.802
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -13.0,
+            "maximum": 219.0
+          },
+          "w": {
+            "type": "number"
+          },
+          "n": {
+            "type": "number"
+          },
+          "szczelina": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "w",
+          "n",
+          "szczelina"
+        ]
+      },
+      "szablon_id": "stojakDesek",
+      "n_wierszy_zakresow": 14
+    },
+    {
+      "id": "uchwyt-gabki",
+      "klasa": "uchwyt gąbki",
+      "opis": "uchwyt gąbki",
+      "synonimy": [
+        "sponge holder",
+        "uchwyt gabki"
+      ],
+      "geometryczny": true,
+      "n_modeli": 15,
+      "zrodla_etykiet": {
+        "regula": 15
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "2319",
+        "2320",
+        "2321",
+        "2322",
+        "2323",
+        "2324",
+        "2325",
+        "2326",
+        "2327",
+        "2328",
+        "2690",
+        "2691",
+        "2692",
+        "2693",
+        "2694"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          20.531,
+          241.605
+        ],
+        "bbox_M": [
+          13.291,
+          175.556
+        ],
+        "bbox_S": [
+          13.234,
+          112.56
+        ],
+        "fill": [
+          0.086,
+          0.482
+        ],
+        "genus": [
+          0.0,
+          150.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 12,
+        "bbox_M": 12,
+        "bbox_S": 12,
+        "fill": 6,
+        "genus": 12
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 142.639,
+          "p10": 100.166,
+          "p90": 189.282,
+          "n": 12
+        },
+        "bbox_M": {
+          "mediana": 104.218,
+          "p10": 42.825,
+          "p90": 139.432,
+          "n": 12
+        },
+        "bbox_S": {
+          "mediana": 35.773,
+          "p10": 21.113,
+          "p90": 96.73,
+          "n": 12
+        },
+        "fill": {
+          "mediana": 0.196,
+          "p10": 0.086,
+          "p90": 0.22,
+          "n": 6
+        },
+        "genus": {
+          "mediana": 15.0,
+          "p10": 0.0,
+          "p90": 120.0,
+          "n": 12
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 20.531,
+            "maximum": 241.605
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 13.291,
+            "maximum": 175.556
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 13.234,
+            "maximum": 112.56
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.086,
+            "maximum": 0.482
+          },
+          "genus": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 150.0
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "z": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "z"
+        ]
+      },
+      "szablon_id": "uchwytGabki",
+      "n_wierszy_zakresow": 12
+    },
+    {
+      "id": "uchwyt-lyzek",
+      "klasa": "uchwyt łyżek",
+      "opis": "uchwyt łyżek",
+      "synonimy": [
+        "spoon rest",
+        "uchwyt lyzek"
+      ],
+      "geometryczny": true,
+      "n_modeli": 15,
+      "zrodla_etykiet": {
+        "regula": 15
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "2363",
+        "2364",
+        "2365",
+        "2366",
+        "2367",
+        "2368",
+        "2369",
+        "2370",
+        "2371",
+        "2372",
+        "2695",
+        "2696",
+        "2697",
+        "2698",
+        "2699"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          29.334,
+          234.985
+        ],
+        "bbox_M": [
+          21.985,
+          166.027
+        ],
+        "bbox_S": [
+          3.024,
+          112.883
+        ],
+        "fill": [
+          0.033,
+          0.611
+        ],
+        "genus": [
+          -3.0,
+          2.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 13,
+        "bbox_M": 13,
+        "bbox_S": 13,
+        "fill": 8,
+        "genus": 13
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 123.183,
+          "p10": 92.572,
+          "p90": 182.356,
+          "n": 13
+        },
+        "bbox_M": {
+          "mediana": 90.629,
+          "p10": 51.122,
+          "p90": 127.233,
+          "n": 13
+        },
+        "bbox_S": {
+          "mediana": 49.871,
+          "p10": 12.711,
+          "p90": 59.357,
+          "n": 13
+        },
+        "fill": {
+          "mediana": 0.086,
+          "p10": 0.033,
+          "p90": 0.226,
+          "n": 8
+        },
+        "genus": {
+          "mediana": 0.0,
+          "p10": 0.0,
+          "p90": 1.0,
+          "n": 13
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 29.334,
+            "maximum": 234.985
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 21.985,
+            "maximum": 166.027
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 3.024,
+            "maximum": 112.883
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.033,
+            "maximum": 0.611
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -3.0,
+            "maximum": 2.0
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
+      },
+      "szablon_id": "uchwytLyzek",
+      "n_wierszy_zakresow": 13
+    },
+    {
+      "id": "zaslepka-gniazdka",
+      "klasa": "zaślepka gniazdka",
+      "opis": "zaślepka gniazdka",
+      "synonimy": [
+        "outlet cover",
+        "zaslepka gniazdka"
+      ],
+      "geometryczny": true,
+      "n_modeli": 15,
+      "zrodla_etykiet": {
+        "regula": 15
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "2473",
+        "2474",
+        "2475",
+        "2476",
+        "2477",
+        "2478",
+        "2479",
+        "2480",
+        "2481",
+        "2482",
+        "2700",
+        "2701",
+        "2702",
+        "2703",
+        "2704"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          34.109,
+          149.164
+        ],
+        "bbox_M": [
+          25.0,
+          119.812
+        ],
+        "bbox_S": [
+          5.0,
+          69.44
+        ],
+        "fill": [
+          0.038,
+          0.531
+        ],
+        "genus": [
+          0.0,
+          5.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 11,
+        "bbox_M": 11,
+        "bbox_S": 11,
+        "fill": 7,
+        "genus": 11
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 114.0,
+          "p10": 40.082,
+          "p90": 130.093,
+          "n": 11
+        },
+        "bbox_M": {
+          "mediana": 70.0,
+          "p10": 38.727,
+          "p90": 101.6,
+          "n": 11
+        },
+        "bbox_S": {
+          "mediana": 11.256,
+          "p10": 5.012,
+          "p90": 45.203,
+          "n": 11
+        },
+        "fill": {
+          "mediana": 0.36,
+          "p10": 0.038,
+          "p90": 0.446,
+          "n": 7
+        },
+        "genus": {
+          "mediana": 3.0,
+          "p10": 1.0,
+          "p90": 3.0,
+          "n": 11
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 34.109,
+            "maximum": 149.164
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 25.0,
+            "maximum": 119.812
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 5.0,
+            "maximum": 69.44
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.038,
+            "maximum": 0.531
+          },
+          "genus": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 5.0
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
+      },
+      "szablon_id": "zaslepkaGniazdka",
+      "n_wierszy_zakresow": 11
+    },
+    {
+      "id": "kolo",
+      "klasa": "koło",
+      "opis": "koło",
+      "synonimy": [
+        "wheel",
+        "tarcza"
+      ],
+      "geometryczny": true,
+      "n_modeli": 15,
+      "zrodla_etykiet": {
+        "regula": 15
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "2496",
+        "2497",
+        "2498",
+        "2499",
+        "2500",
+        "2501",
+        "2502",
+        "2503",
+        "2504",
+        "2505",
+        "2705",
+        "2706",
+        "2707",
+        "2708",
+        "2709"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          22.878,
+          159.985
+        ],
+        "bbox_M": [
+          21.297,
+          156.242
+        ],
+        "bbox_S": [
+          2.0,
+          101.6
+        ],
+        "fill": [
+          0.066,
+          0.773
+        ],
+        "genus": [
+          0.0,
+          32.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 15,
+        "bbox_M": 15,
+        "bbox_S": 15,
+        "fill": 10,
+        "genus": 15
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 57.452,
+          "p10": 23.75,
+          "p90": 156.242,
+          "n": 15
+        },
+        "bbox_M": {
+          "mediana": 51.94,
+          "p10": 22.868,
+          "p90": 123.65,
+          "n": 15
+        },
+        "bbox_S": {
+          "mediana": 16.728,
+          "p10": 6.015,
+          "p90": 50.17,
+          "n": 15
+        },
+        "fill": {
+          "mediana": 0.41,
+          "p10": 0.066,
+          "p90": 0.736,
+          "n": 10
+        },
+        "genus": {
+          "mediana": 1.0,
+          "p10": 0.0,
+          "p90": 26.0,
+          "n": 15
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 22.878,
+            "maximum": 159.985
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 21.297,
+            "maximum": 156.242
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 2.0,
+            "maximum": 101.6
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.066,
+            "maximum": 0.773
+          },
+          "genus": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 32.0
+          },
+          "fi": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
+          },
+          "fiOtw": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "fi",
+          "grub",
+          "fiOtw"
+        ]
+      },
+      "szablon_id": "kolo",
+      "n_wierszy_zakresow": 15
+    },
+    {
+      "id": "pojemnik-desykantu",
+      "klasa": "pojemnik desykantu",
+      "opis": "pojemnik desykantu",
+      "synonimy": [
+        "silica box",
+        "pojemnik desykantu"
+      ],
+      "geometryczny": true,
+      "n_modeli": 15,
+      "zrodla_etykiet": {
+        "regula": 15
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "2587",
+        "2588",
+        "2589",
+        "2590",
+        "2591",
+        "2592",
+        "2593",
+        "2594",
+        "2595",
+        "2596",
+        "2721",
+        "2722",
+        "2723",
+        "2724",
+        "2725"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          23.9,
+          192.793
+        ],
+        "bbox_M": [
+          7.038,
+          144.665
+        ],
+        "bbox_S": [
+          1.655,
+          65.069
+        ],
+        "fill": [
+          0.042,
+          0.435
+        ],
+        "genus": [
+          -1.0,
+          3750.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 15,
+        "bbox_M": 15,
+        "bbox_S": 15,
+        "fill": 9,
+        "genus": 15
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 81.734,
+          "p10": 39.992,
+          "p90": 150.0,
+          "n": 15
+        },
+        "bbox_M": {
+          "mediana": 49.968,
+          "p10": 38.213,
+          "p90": 96.711,
+          "n": 15
+        },
+        "bbox_S": {
+          "mediana": 13.336,
+          "p10": 2.989,
+          "p90": 58.673,
+          "n": 15
+        },
+        "fill": {
+          "mediana": 0.118,
+          "p10": 0.042,
+          "p90": 0.356,
+          "n": 9
+        },
+        "genus": {
+          "mediana": 102.0,
+          "p10": -1.0,
+          "p90": 1124.0,
+          "n": 15
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 23.9,
+            "maximum": 192.793
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 7.038,
+            "maximum": 144.665
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 1.655,
+            "maximum": 65.069
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.042,
+            "maximum": 0.435
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -1.0,
+            "maximum": 3750.0
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "z": {
+            "type": "number"
+          },
+          "otwory": {
+            "type": "array"
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "z"
+        ]
+      },
+      "szablon_id": "pojemnikDesykantu",
+      "n_wierszy_zakresow": 15
+    },
+    {
+      "id": "stojak-dysz",
+      "klasa": "stojak dysz",
+      "opis": "stojak dysz",
+      "synonimy": [
+        "nozzle holder",
+        "stojak dysz"
+      ],
+      "geometryczny": true,
+      "n_modeli": 15,
+      "zrodla_etykiet": {
+        "regula": 15
+      },
+      "nazwana_wprost": false,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "2615",
+        "2616",
+        "2617",
+        "2618",
+        "2619",
+        "2620",
+        "2621",
+        "2622",
+        "2623",
+        "2624",
+        "2726",
+        "2727",
+        "2728",
+        "2729",
+        "2730"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          41.679,
+          180.01
+        ],
+        "bbox_M": [
+          33.237,
+          80.024
+        ],
+        "bbox_S": [
+          12.697,
+          40.0
+        ],
+        "fill": [
+          0.132,
+          0.506
+        ],
+        "genus": [
+          -1.0,
+          8.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 11,
+        "bbox_M": 11,
+        "bbox_S": 11,
+        "fill": 5,
+        "genus": 11
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 65.864,
+          "p10": 45.782,
+          "p90": 160.008,
+          "n": 11
+        },
+        "bbox_M": {
+          "mediana": 41.658,
+          "p10": 35.345,
+          "p90": 56.377,
+          "n": 11
+        },
+        "bbox_S": {
+          "mediana": 23.014,
+          "p10": 14.201,
+          "p90": 34.715,
+          "n": 11
+        },
+        "fill": {
+          "mediana": 0.216,
+          "p10": 0.132,
+          "p90": 0.506,
+          "n": 5
+        },
+        "genus": {
+          "mediana": 0.0,
+          "p10": 0.0,
+          "p90": 3.0,
+          "n": 11
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 41.679,
+            "maximum": 180.01
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 33.237,
+            "maximum": 80.024
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 12.697,
+            "maximum": 40.0
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.132,
+            "maximum": 0.506
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -1.0,
+            "maximum": 8.0
+          },
+          "n": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "n"
+        ]
+      },
+      "szablon_id": "stojakDysz",
+      "n_wierszy_zakresow": 11
+    },
+    {
       "id": "imadlo",
       "klasa": "imadło",
-      "opis": "imadło",
-      "synonimy": [],
+      "opis": "Klasa obejmuje części służące do unieruchamiania i mocnego ściskania obrabianych przedmiotów, zwykle za pomocą ruchomych szczęk.",
+      "synonimy": [
+        "ścisk",
+        "zacisk",
+        "uchwyt zaciskowy",
+        "przyrząd mocujący",
+        "warsztatowy zacisk",
+        "bench vise",
+        "vise clamp",
+        "workholding clamp",
+        "clamping fixture"
+      ],
       "geometryczny": true,
       "n_modeli": 14,
       "zrodla_etykiet": {
@@ -6443,13 +7872,27 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 11
+      "n_wierszy_zakresow": 11,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "kubek",
       "klasa": "kubek",
-      "opis": "kubek",
-      "synonimy": [],
+      "opis": "Klasa obejmuje otwarte pojemniki przeznaczone do przechowywania i picia napojów, zwykle wyposażone w dno oraz opcjonalnie ucho lub pokrywkę.",
+      "synonimy": [
+        "naczynie do picia",
+        "pojemnik na napój",
+        "szklanka",
+        "filiżanka",
+        "kufel",
+        "kubeczek",
+        "mug",
+        "cup",
+        "drinking cup",
+        "tumbler",
+        "beaker",
+        "travel mug"
+      ],
       "geometryczny": true,
       "n_modeli": 14,
       "zrodla_etykiet": {
@@ -6579,13 +8022,22 @@
         ]
       },
       "szablon_id": "kubek",
-      "n_wierszy_zakresow": 10
+      "n_wierszy_zakresow": 10,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "pokrywka",
       "klasa": "pokrywka",
-      "opis": "pokrywka",
-      "synonimy": [],
+      "opis": "Część służąca do zamykania pojemnika, otworu lub obudowy oraz ochrony ich wnętrza.",
+      "synonimy": [
+        "wieczko",
+        "przykrywka",
+        "dekiel",
+        "nakładka",
+        "lid",
+        "top",
+        "closure"
+      ],
       "geometryczny": true,
       "n_modeli": 14,
       "zrodla_etykiet": {
@@ -6714,13 +8166,27 @@
         ]
       },
       "szablon_id": "pokrywka",
-      "n_wierszy_zakresow": 14
+      "n_wierszy_zakresow": 14,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "stopka",
       "klasa": "stopka",
-      "opis": "stopka",
-      "synonimy": [],
+      "opis": "To niewielka część montowana na końcu lub spodzie elementu, która podpiera konstrukcję, chroni powierzchnię, zwiększa stabilność albo umożliwia ślizganie.",
+      "synonimy": [
+        "nóżka",
+        "foot",
+        "pad",
+        "podpórka",
+        "support foot",
+        "ślizgacz",
+        "glide",
+        "odbojnik",
+        "bumper",
+        "osłona końcówki",
+        "element dystansowy",
+        "spacer"
+      ],
       "geometryczny": true,
       "n_modeli": 14,
       "zrodla_etykiet": {
@@ -6847,7 +8313,8 @@
         ]
       },
       "szablon_id": "stopka",
-      "n_wierszy_zakresow": 12
+      "n_wierszy_zakresow": 12,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "uchwyt-scienny-tabletu",
@@ -6992,8 +8459,18 @@
     {
       "id": "kolanko",
       "klasa": "kolanko",
-      "opis": "kolanko",
-      "synonimy": [],
+      "opis": "Klasa obejmuje części łączące dwa odcinki przewodu pod kątem, najczęściej 45° lub 90°.",
+      "synonimy": [
+        "złączka kątowa",
+        "łuk rurowy",
+        "rura łukowa",
+        "przyłącze kątowe",
+        "zagięcie 90°",
+        "elbow fitting",
+        "angle connector",
+        "pipe bend",
+        "90-degree bend"
+      ],
       "geometryczny": true,
       "n_modeli": 13,
       "zrodla_etykiet": {
@@ -7126,7 +8603,298 @@
         ]
       },
       "szablon_id": "kolankoTorus",
-      "n_wierszy_zakresow": 13
+      "n_wierszy_zakresow": 13,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "klips",
+      "klasa": "klips",
+      "opis": "Mała część służąca do szybkiego, zwykle zatrzaskowego mocowania, spinania lub utrzymywania innych elementów.",
+      "synonimy": [
+        "zapinka",
+        "spinka",
+        "uchwyt mocujący",
+        "obejma",
+        "mocowanie zatrzaskowe",
+        "fastener",
+        "snap fastener",
+        "mounting tab"
+      ],
+      "geometryczny": true,
+      "n_modeli": 12,
+      "zrodla_etykiet": {
+        "wlasciciel": 1,
+        "regula": 11
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0065",
+        "2493",
+        "2675",
+        "2676",
+        "2677",
+        "2678",
+        "2679",
+        "2680",
+        "2681",
+        "2682",
+        "2683",
+        "2684"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          1.416,
+          349.992
+        ],
+        "bbox_M": [
+          0.863,
+          346.153
+        ],
+        "bbox_S": [
+          0.809,
+          50.0
+        ],
+        "fill": [
+          0.099,
+          0.485
+        ],
+        "genus": [
+          -1.0,
+          1.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 12,
+        "bbox_M": 12,
+        "bbox_S": 12,
+        "fill": 9,
+        "genus": 12
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 35.224,
+          "p10": 13.992,
+          "p90": 94.747,
+          "n": 12
+        },
+        "bbox_M": {
+          "mediana": 29.171,
+          "p10": 8.035,
+          "p90": 73.601,
+          "n": 12
+        },
+        "bbox_S": {
+          "mediana": 13.745,
+          "p10": 6.0,
+          "p90": 27.242,
+          "n": 12
+        },
+        "fill": {
+          "mediana": 0.332,
+          "p10": 0.099,
+          "p90": 0.389,
+          "n": 9
+        },
+        "genus": {
+          "mediana": 0.0,
+          "p10": 0.0,
+          "p90": 1.0,
+          "n": 12
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 1.416,
+            "maximum": 349.992
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 0.863,
+            "maximum": 346.153
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 0.809,
+            "maximum": 50.0
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.099,
+            "maximum": 0.485
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -1.0,
+            "maximum": 1.0
+          },
+          "w": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "w",
+          "h"
+        ]
+      },
+      "szablon_id": "klipsU",
+      "n_wierszy_zakresow": 12,
+      "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "trojnik",
+      "klasa": "trójnik",
+      "opis": "Klasa obejmuje części łączące trzy odcinki lub elementy, zwykle w układzie litery T.",
+      "synonimy": [
+        "złączka T",
+        "łącznik T",
+        "kształtka T",
+        "rozgałęźnik T",
+        "trójramienna złączka",
+        "tee",
+        "T-connector",
+        "T-fitting",
+        "T-joint",
+        "T-piece",
+        "three-way connector",
+        "branch fitting"
+      ],
+      "geometryczny": true,
+      "n_modeli": 12,
+      "zrodla_etykiet": {
+        "wlasciciel": 1,
+        "regula": 11
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [
+        "0271",
+        "1533",
+        "1534",
+        "1535",
+        "1536",
+        "1537",
+        "1538",
+        "1539",
+        "1540",
+        "1541",
+        "2710",
+        "2713"
+      ],
+      "zakresy": {
+        "bbox_L": [
+          22.37,
+          135.783
+        ],
+        "bbox_M": [
+          19.673,
+          128.76
+        ],
+        "bbox_S": [
+          10.215,
+          101.686
+        ],
+        "fill": [
+          0.099,
+          0.3
+        ],
+        "genus": [
+          -13.0,
+          6.0
+        ]
+      },
+      "zakresy_n": {
+        "bbox_L": 7,
+        "bbox_M": 7,
+        "bbox_S": 7,
+        "fill": 3,
+        "genus": 7
+      },
+      "statystyki": {
+        "bbox_L": {
+          "mediana": 72.06,
+          "p10": 22.37,
+          "p90": 91.921,
+          "n": 7
+        },
+        "bbox_M": {
+          "mediana": 55.942,
+          "p10": 19.673,
+          "p90": 82.122,
+          "n": 7
+        },
+        "bbox_S": {
+          "mediana": 38.195,
+          "p10": 10.215,
+          "p90": 67.235,
+          "n": 7
+        },
+        "fill": {
+          "mediana": 0.106,
+          "p10": 0.099,
+          "p90": 0.3,
+          "n": 3
+        },
+        "genus": {
+          "mediana": 2.0,
+          "p10": -13.0,
+          "p90": 3.0,
+          "n": 7
+        }
+      },
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "bbox_L": {
+            "type": "number",
+            "minimum": 22.37,
+            "maximum": 135.783
+          },
+          "bbox_M": {
+            "type": "number",
+            "minimum": 19.673,
+            "maximum": 128.76
+          },
+          "bbox_S": {
+            "type": "number",
+            "minimum": 10.215,
+            "maximum": 101.686
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.099,
+            "maximum": 0.3
+          },
+          "genus": {
+            "type": "number",
+            "minimum": -13.0,
+            "maximum": 6.0
+          },
+          "fi": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
+          },
+          "dl": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "fi"
+        ]
+      },
+      "szablon_id": "trojnik",
+      "n_wierszy_zakresow": 7,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "klips-kablowy",
@@ -7268,8 +9036,21 @@
     {
       "id": "ociekacz",
       "klasa": "ociekacz",
-      "opis": "ociekacz",
-      "synonimy": [],
+      "opis": "Element przeznaczony do zbierania i odprowadzania kapiącej wody, skroplin lub innych cieczy.",
+      "synonimy": [
+        "tacka ociekowa",
+        "tacka na skropliny",
+        "wanienka odpływowa",
+        "rynienka ściekowa",
+        "podstawka z odpływem",
+        "taca zbierająca",
+        "drip tray",
+        "drain tray",
+        "drip pan",
+        "catch tray",
+        "drainage tray",
+        "condensate tray"
+      ],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -7404,13 +9185,27 @@
         ]
       },
       "szablon_id": "ociekacz",
-      "n_wierszy_zakresow": 6
+      "n_wierszy_zakresow": 6,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "nawadnianie",
       "klasa": "nawadnianie",
-      "opis": "nawadnianie",
-      "synonimy": [],
+      "opis": "Klasa obejmuje drukowane elementy służące do rozprowadzania, dozowania i kierowania wody w instalacjach nawadniających.",
+      "synonimy": [
+        "zraszacz",
+        "dysza wodna",
+        "końcówka kroplująca",
+        "kroplownik",
+        "łącznik węża",
+        "trójnik rurowy",
+        "zawór przepływu",
+        "sprinkler",
+        "water nozzle",
+        "drip emitter",
+        "hose connector",
+        "irrigation fitting"
+      ],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -7526,7 +9321,8 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 9
+      "n_wierszy_zakresow": 9,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "podstawka-laptopa",
@@ -7806,8 +9602,21 @@
     {
       "id": "stojak-przypraw",
       "klasa": "stojak przypraw",
-      "opis": "stojak przypraw",
-      "synonimy": [],
+      "opis": "Klasa obejmuje części służące do przechowywania, porządkowania i wygodnego eksponowania pojemników z przyprawami.",
+      "synonimy": [
+        "organizer przypraw",
+        "półka na przyprawy",
+        "uchwyt na przyprawy",
+        "regał na przyprawy",
+        "podstawka na przyprawy",
+        "szafka na przyprawy",
+        "spice rack",
+        "spice holder",
+        "spice organizer",
+        "spice shelf",
+        "seasoning rack",
+        "spice storage"
+      ],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -7923,7 +9732,8 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 12
+      "n_wierszy_zakresow": 12,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "swiecznik",
@@ -8208,8 +10018,21 @@
     {
       "id": "uchwyt-ogrodowy",
       "klasa": "uchwyt ogrodowy",
-      "opis": "uchwyt ogrodowy",
-      "synonimy": [],
+      "opis": "To część służąca do wygodnego i bezpiecznego trzymania lub prowadzenia narzędzia ogrodowego.",
+      "synonimy": [
+        "rączka narzędzia",
+        "rękojeść narzędzia",
+        "chwyt narzędziowy",
+        "uchwyt do narzędzia",
+        "rączka do łopaty",
+        "rączka do sekatora",
+        "trzonek narzędzia",
+        "garden tool handle",
+        "tool grip",
+        "tool handgrip",
+        "replacement garden handle",
+        "D-grip"
+      ],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -8325,13 +10148,27 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 11
+      "n_wierszy_zakresow": 11,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "uchwyt-okienny",
       "klasa": "uchwyt okienny",
-      "opis": "uchwyt okienny",
-      "synonimy": [],
+      "opis": "Klasa obejmuje części służące do ręcznego otwierania, zamykania i uchylania skrzydeł okiennych.",
+      "synonimy": [
+        "klamka okienna",
+        "rączka okienna",
+        "dźwignia okienna",
+        "manetka okienna",
+        "gałka okienna",
+        "zaczep okienny",
+        "window handle",
+        "casement handle",
+        "window lever",
+        "sash window handle",
+        "espagnolette handle",
+        "window latch handle"
+      ],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -8447,13 +10284,27 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 9
+      "n_wierszy_zakresow": 9,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "uchwyt-pilota",
       "klasa": "uchwyt pilota",
-      "opis": "uchwyt pilota",
-      "synonimy": [],
+      "opis": "Klasa obejmuje elementy służące do przechowywania, odkładania lub mocowania pilota zdalnego sterowania.",
+      "synonimy": [
+        "stojak na pilot",
+        "organizer na piloty",
+        "kieszeń na pilot",
+        "mocowanie pilota",
+        "wieszak na pilot",
+        "baza do pilota",
+        "remote stand",
+        "remote dock",
+        "remote cradle",
+        "remote mount",
+        "remote organizer",
+        "remote control rack"
+      ],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -8569,13 +10420,27 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 12
+      "n_wierszy_zakresow": 12,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "uchwyt-worka",
       "klasa": "uchwyt worka",
-      "opis": "uchwyt worka",
-      "synonimy": [],
+      "opis": "Element służący do wygodnego przenoszenia, podtrzymywania lub zawieszania worka albo torby.",
+      "synonimy": [
+        "rączka torby",
+        "rączka worka",
+        "pałąk torby",
+        "kabłąk torby",
+        "pętla do noszenia",
+        "zaczep do worka",
+        "bag handle",
+        "bag grip",
+        "tote handle",
+        "sack handle",
+        "carry loop",
+        "bag hanger"
+      ],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -8691,13 +10556,26 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 11
+      "n_wierszy_zakresow": 11,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "kanal",
       "klasa": "kanał",
-      "opis": "kanał",
-      "synonimy": [],
+      "opis": "Ta klasa obejmuje wydłużone wewnętrzne przejścia w częściach drukowanych 3D, służące do prowadzenia powietrza, cieczy, przewodów lub innych elementów.",
+      "synonimy": [
+        "przewód",
+        "tunel",
+        "przelot",
+        "przepust",
+        "droga przepływu",
+        "otwór przelotowy",
+        "duct",
+        "passage",
+        "bore",
+        "flow path",
+        "通道"
+      ],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -8826,7 +10704,8 @@
         ]
       },
       "szablon_id": "kanal",
-      "n_wierszy_zakresow": 10
+      "n_wierszy_zakresow": 10,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "mocowanie-wentylatora",
@@ -8961,8 +10840,21 @@
     {
       "id": "suszarka-filamentu",
       "klasa": "suszarka filamentu",
-      "opis": "suszarka filamentu",
-      "synonimy": [],
+      "opis": "Klasa obejmuje urządzenia i pojemniki, które ogrzewają oraz osuszają filament przed drukowaniem 3D, ograniczając jego zawilgocenie.",
+      "synonimy": [
+        "suszarka do filamentu",
+        "komora susząca filamentu",
+        "pojemnik suszący",
+        "stacja suszenia",
+        "pudełko do suszenia",
+        "filament dryer",
+        "dry box",
+        "filament drying box",
+        "drying chamber",
+        "filament dehydrator",
+        "dry storage box",
+        "heated filament box"
+      ],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -9078,13 +10970,27 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 12
+      "n_wierszy_zakresow": 12,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "kalibracja",
       "klasa": "kalibracja",
-      "opis": "kalibracja",
-      "synonimy": [],
+      "opis": "Klasa obejmuje części i modele służące do sprawdzania oraz dostrajania parametrów drukarki 3D i materiału.",
+      "synonimy": [
+        "test kalibracyjny",
+        "wydruk testowy",
+        "kostka testowa",
+        "próba druku",
+        "benchmark",
+        "torture test",
+        "test mostów",
+        "test zwisów",
+        "test pierwszej warstwy",
+        "wieża temperatury",
+        "wieża retrakcji",
+        "test przepływu"
+      ],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -9200,13 +11106,27 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 10
+      "n_wierszy_zakresow": 10,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "uchwyt-dysku",
       "klasa": "uchwyt dysku",
-      "opis": "uchwyt dysku",
-      "synonimy": [],
+      "opis": "Element służący do stabilnego zamocowania dysku HDD lub SSD w obudowie, urządzeniu albo systemie montażowym.",
+      "synonimy": [
+        "mocowanie dysku",
+        "wspornik dysku",
+        "kieszeń na dysk",
+        "sanki dysku",
+        "ramka montażowa",
+        "stelaż dysku",
+        "uchwyt HDD",
+        "uchwyt SSD",
+        "drive mount",
+        "drive bracket",
+        "drive caddy",
+        "drive tray"
+      ],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -9331,13 +11251,27 @@
         ]
       },
       "szablon_id": "uchwytDysku",
-      "n_wierszy_zakresow": 12
+      "n_wierszy_zakresow": 12,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "uchwyt-kamery",
       "klasa": "uchwyt kamery",
-      "opis": "uchwyt kamery",
-      "synonimy": [],
+      "opis": "Element służący do stabilnego zamocowania kamery do modelu, konstrukcji lub innego podzespołu.",
+      "synonimy": [
+        "mocowanie kamery",
+        "wspornik kamery",
+        "adapter kamery",
+        "podstawka kamery",
+        "obejma kamery",
+        "zaczep kamery",
+        "camera mount",
+        "camera bracket",
+        "camera holder",
+        "camera support",
+        "camera clamp",
+        "camera cradle"
+      ],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -9453,7 +11387,8 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 11
+      "n_wierszy_zakresow": 11,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "uchwyt-pamieci",
@@ -10276,8 +12211,21 @@
     {
       "id": "stojak-bizuterii",
       "klasa": "stojak biżuterii",
-      "opis": "stojak biżuterii",
-      "synonimy": [],
+      "opis": "Klasa obejmuje elementy służące do przechowywania, porządkowania lub eksponowania biżuterii, takiej jak naszyjniki, kolczyki, pierścionki i bransoletki.",
+      "synonimy": [
+        "ekspozytor biżuterii",
+        "organizer biżuterii",
+        "uchwyt na biżuterię",
+        "wieszak na naszyjniki",
+        "stojak na kolczyki",
+        "podstawka na pierścionki",
+        "wieszak na bransoletki",
+        "jewelry display",
+        "jewelry organizer",
+        "necklace holder",
+        "earring stand",
+        "ring display"
+      ],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -10393,7 +12341,8 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 10
+      "n_wierszy_zakresow": 10,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "stojak-kredek",
@@ -10670,8 +12619,21 @@
     {
       "id": "uchwyt-kapsulek",
       "klasa": "uchwyt kapsułek",
-      "opis": "uchwyt kapsułek",
-      "synonimy": [],
+      "opis": "Klasa obejmuje drukowane elementy służące do przechowywania, porządkowania lub podawania kapsułek.",
+      "synonimy": [
+        "stojak na kapsułki",
+        "organizer kapsułek",
+        "pojemnik na kapsułki",
+        "magazynek kapsułek",
+        "podajnik kapsułek",
+        "kaseta na kapsułki",
+        "capsule stand",
+        "capsule organizer",
+        "capsule container",
+        "capsule magazine",
+        "capsule dispenser",
+        "capsule rack"
+      ],
       "geometryczny": true,
       "n_modeli": 12,
       "zrodla_etykiet": {
@@ -10787,7 +12749,8 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 11
+      "n_wierszy_zakresow": 11,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "uchwyt-kart",
@@ -11998,8 +13961,20 @@
     {
       "id": "przekladnia",
       "klasa": "przekładnia",
-      "opis": "przekładnia",
-      "synonimy": [],
+      "opis": "Klasa obejmuje części przenoszące i zmieniające ruch obrotowy, zwykle za pomocą kół zębatych, wałków lub innych elementów mechanicznych.",
+      "synonimy": [
+        "reduktor",
+        "skrzynia przekładniowa",
+        "mechanizm zębaty",
+        "układ kół zębatych",
+        "napęd zębaty",
+        "gearbox",
+        "transmission",
+        "gear reducer",
+        "gear train",
+        "reduction drive",
+        "gear assembly"
+      ],
       "geometryczny": true,
       "n_modeli": 11,
       "zrodla_etykiet": {
@@ -12114,13 +14089,24 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 10
+      "n_wierszy_zakresow": 10,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "tuleja",
       "klasa": "tuleja",
-      "opis": "tuleja",
-      "synonimy": [],
+      "opis": "Klasa obejmuje cylindryczne części służące do prowadzenia, podpierania, dystansowania lub ochrony wałków i osi.",
+      "synonimy": [
+        "tulejka",
+        "wkładka ślizgowa",
+        "łożyskowa wkładka",
+        "sleeve",
+        "bearing bushing",
+        "sliding insert",
+        "spacer sleeve",
+        "shaft liner",
+        "wear sleeve"
+      ],
       "geometryczny": true,
       "n_modeli": 11,
       "zrodla_etykiet": {
@@ -12247,13 +14233,27 @@
         ]
       },
       "szablon_id": "tuleja",
-      "n_wierszy_zakresow": 10
+      "n_wierszy_zakresow": 10,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "przyrzad",
       "klasa": "przyrząd",
-      "opis": "przyrząd",
-      "synonimy": [],
+      "opis": "Klasa obejmuje elementy ułatwiające wykonywanie, ustawianie, mierzenie lub powtarzalne przeprowadzanie określonych czynności.",
+      "synonimy": [
+        "narzędzie",
+        "oprzyrządowanie",
+        "uchwyt montażowy",
+        "przystawka",
+        "pomoc warsztatowa",
+        "szablon",
+        "tool",
+        "fixture",
+        "jig",
+        "gauge",
+        "instrument",
+        "mounting aid"
+      ],
       "geometryczny": true,
       "n_modeli": 11,
       "zrodla_etykiet": {
@@ -12368,7 +14368,8 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 8
+      "n_wierszy_zakresow": 8,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "lejek",
@@ -12513,8 +14514,17 @@
     {
       "id": "zatrzask",
       "klasa": "zatrzask",
-      "opis": "zatrzask",
-      "synonimy": [],
+      "opis": "Część służąca do szybkiego, zwykle sprężystego łączenia i rozłączania elementów bez użycia narzędzi.",
+      "synonimy": [
+        "zapadka",
+        "sprężysty zaczep",
+        "zamek wciskany",
+        "uchwyt zatrzaskowy",
+        "catch",
+        "clip",
+        "snap-fit",
+        "push lock"
+      ],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -12628,274 +14638,27 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 9
-    },
-    {
-      "id": "trojnik",
-      "klasa": "trójnik",
-      "opis": "trójnik",
-      "synonimy": [],
-      "geometryczny": true,
-      "n_modeli": 10,
-      "zrodla_etykiet": {
-        "wlasciciel": 1,
-        "regula": 9
-      },
-      "nazwana_wprost": true,
-      "cluster_id": null,
-      "przyklady_model_id": [
-        "0271",
-        "1533",
-        "1534",
-        "1535",
-        "1536",
-        "1537",
-        "1538",
-        "1539",
-        "1540",
-        "1541"
-      ],
-      "zakresy": {
-        "bbox_L": [
-          57.538,
-          135.783
-        ],
-        "bbox_M": [
-          41.987,
-          128.76
-        ],
-        "bbox_S": [
-          32.555,
-          101.686
-        ],
-        "fill": [
-          0.106,
-          0.106
-        ],
-        "genus": [
-          -13.0,
-          6.0
-        ]
-      },
-      "zakresy_n": {
-        "bbox_L": 5,
-        "bbox_M": 5,
-        "bbox_S": 5,
-        "fill": 1,
-        "genus": 5
-      },
-      "statystyki": {
-        "bbox_L": {
-          "mediana": 80.404,
-          "p10": 57.538,
-          "p90": 135.783,
-          "n": 5
-        },
-        "bbox_M": {
-          "mediana": 59.0,
-          "p10": 41.987,
-          "p90": 128.76,
-          "n": 5
-        },
-        "bbox_S": {
-          "mediana": 45.993,
-          "p10": 32.555,
-          "p90": 101.686,
-          "n": 5
-        },
-        "fill": {
-          "mediana": 0.106,
-          "p10": 0.106,
-          "p90": 0.106,
-          "n": 1
-        },
-        "genus": {
-          "mediana": 2.0,
-          "p10": -13.0,
-          "p90": 6.0,
-          "n": 5
-        }
-      },
-      "schemat_parametrow": {
-        "type": "object",
-        "additionalProperties": true,
-        "properties": {
-          "bbox_L": {
-            "type": "number",
-            "minimum": 57.538,
-            "maximum": 135.783
-          },
-          "bbox_M": {
-            "type": "number",
-            "minimum": 41.987,
-            "maximum": 128.76
-          },
-          "bbox_S": {
-            "type": "number",
-            "minimum": 32.555,
-            "maximum": 101.686
-          },
-          "fill": {
-            "type": "number",
-            "minimum": 0.106,
-            "maximum": 0.106
-          },
-          "genus": {
-            "type": "number",
-            "minimum": -13.0,
-            "maximum": 6.0
-          },
-          "fi": {
-            "type": "number"
-          },
-          "grub": {
-            "type": "number"
-          },
-          "dl": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "fi"
-        ]
-      },
-      "szablon_id": "trojnik",
-      "n_wierszy_zakresow": 5
-    },
-    {
-      "id": "walek",
-      "klasa": "wałek",
-      "opis": "wałek",
-      "synonimy": [],
-      "geometryczny": true,
-      "n_modeli": 10,
-      "zrodla_etykiet": {
-        "regula": 10
-      },
-      "nazwana_wprost": false,
-      "cluster_id": null,
-      "przyklady_model_id": [
-        "0979",
-        "0980",
-        "0981",
-        "0982",
-        "0983",
-        "0984",
-        "0985",
-        "0986",
-        "0987",
-        "0988"
-      ],
-      "zakresy": {
-        "bbox_L": [
-          25.507,
-          59.998
-        ],
-        "bbox_M": [
-          20.295,
-          59.998
-        ],
-        "bbox_S": [
-          8.0,
-          33.615
-        ],
-        "fill": [
-          0.116,
-          0.585
-        ],
-        "genus": [
-          1.0,
-          7.0
-        ]
-      },
-      "zakresy_n": {
-        "bbox_L": 7,
-        "bbox_M": 7,
-        "bbox_S": 7,
-        "fill": 3,
-        "genus": 7
-      },
-      "statystyki": {
-        "bbox_L": {
-          "mediana": 44.759,
-          "p10": 25.507,
-          "p90": 59.998,
-          "n": 7
-        },
-        "bbox_M": {
-          "mediana": 43.48,
-          "p10": 20.295,
-          "p90": 59.998,
-          "n": 7
-        },
-        "bbox_S": {
-          "mediana": 20.344,
-          "p10": 8.0,
-          "p90": 25.0,
-          "n": 7
-        },
-        "fill": {
-          "mediana": 0.31,
-          "p10": 0.116,
-          "p90": 0.585,
-          "n": 3
-        },
-        "genus": {
-          "mediana": 5.0,
-          "p10": 1.0,
-          "p90": 7.0,
-          "n": 7
-        }
-      },
-      "schemat_parametrow": {
-        "type": "object",
-        "additionalProperties": true,
-        "properties": {
-          "bbox_L": {
-            "type": "number",
-            "minimum": 25.507,
-            "maximum": 59.998
-          },
-          "bbox_M": {
-            "type": "number",
-            "minimum": 20.295,
-            "maximum": 59.998
-          },
-          "bbox_S": {
-            "type": "number",
-            "minimum": 8.0,
-            "maximum": 33.615
-          },
-          "fill": {
-            "type": "number",
-            "minimum": 0.116,
-            "maximum": 0.585
-          },
-          "genus": {
-            "type": "number",
-            "minimum": 1.0,
-            "maximum": 7.0
-          },
-          "fi": {
-            "type": "number"
-          },
-          "dl": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "fi",
-          "dl"
-        ]
-      },
-      "szablon_id": "walek",
-      "n_wierszy_zakresow": 7
+      "n_wierszy_zakresow": 9,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "blokada-szafki",
       "klasa": "blokada szafki",
-      "opis": "blokada szafki",
-      "synonimy": [],
+      "opis": "Części służące do zamykania, ryglowania lub zabezpieczania drzwiczek i szuflad szafki przed przypadkowym otwarciem.",
+      "synonimy": [
+        "zatrzask szafki",
+        "rygiel szafki",
+        "zamek szafkowy",
+        "blokada drzwiczek",
+        "zabezpieczenie szafki",
+        "uchwyt z zatrzaskiem",
+        "cabinet latch",
+        "cabinet lock",
+        "cupboard latch",
+        "door catch",
+        "cabinet bolt",
+        "drawer lock"
+      ],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -13009,13 +14772,27 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 8
+      "n_wierszy_zakresow": 8,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "organizer-zabawek-kapiel",
       "klasa": "organizer zabawek kąpiel",
-      "opis": "organizer zabawek kąpiel",
-      "synonimy": [],
+      "opis": "Klasa obejmuje pojemniki, kosze, siatki i uchwyty służące do przechowywania oraz suszenia zabawek używanych podczas kąpieli.",
+      "synonimy": [
+        "pojemnik na zabawki kąpielowe",
+        "kosz na zabawki kąpielowe",
+        "wieszak na zabawki kąpielowe",
+        "siatka na zabawki kąpielowe",
+        "worek na zabawki kąpielowe",
+        "suszak na zabawki kąpielowe",
+        "bath toy holder",
+        "bath toy storage",
+        "bathtub toy basket",
+        "bath toy bag",
+        "bath toy net",
+        "tub toy holder"
+      ],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -13129,13 +14906,27 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 9
+      "n_wierszy_zakresow": 9,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "podpora-roslin",
       "klasa": "podpora roślin",
-      "opis": "podpora roślin",
-      "synonimy": [],
+      "opis": "Element przeznaczony do podtrzymywania, prowadzenia lub stabilizowania rosnących roślin.",
+      "synonimy": [
+        "palik",
+        "tyczka",
+        "kratka ogrodowa",
+        "trejaż",
+        "drabinka dla roślin",
+        "obręcz podtrzymująca",
+        "klatka do pomidorów",
+        "stelaż ogrodowy",
+        "plant stake",
+        "garden stake",
+        "trellis",
+        "plant cage"
+      ],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -13249,149 +15040,26 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 9
-    },
-    {
-      "id": "stojak-desek",
-      "klasa": "stojak desek",
-      "opis": "stojak desek",
-      "synonimy": [
-        "cutting board stand",
-        "stojak desek"
-      ],
-      "geometryczny": true,
-      "n_modeli": 10,
-      "zrodla_etykiet": {
-        "regula": 10
-      },
-      "nazwana_wprost": false,
-      "cluster_id": null,
-      "przyklady_model_id": [
-        "2261",
-        "2262",
-        "2263",
-        "2264",
-        "2265",
-        "2266",
-        "2267",
-        "2268",
-        "2269",
-        "2270"
-      ],
-      "zakresy": {
-        "bbox_L": [
-          60.0,
-          200.034
-        ],
-        "bbox_M": [
-          15.0,
-          129.798
-        ],
-        "bbox_S": [
-          3.0,
-          116.121
-        ],
-        "fill": [
-          0.058,
-          0.802
-        ],
-        "genus": [
-          0.0,
-          58.0
-        ]
-      },
-      "zakresy_n": {
-        "bbox_L": 10,
-        "bbox_M": 10,
-        "bbox_S": 10,
-        "fill": 4,
-        "genus": 10
-      },
-      "statystyki": {
-        "bbox_L": {
-          "mediana": 147.5,
-          "p10": 60.0,
-          "p90": 180.098,
-          "n": 10
-        },
-        "bbox_M": {
-          "mediana": 89.965,
-          "p10": 15.0,
-          "p90": 109.751,
-          "n": 10
-        },
-        "bbox_S": {
-          "mediana": 45.0,
-          "p10": 3.0,
-          "p90": 75.589,
-          "n": 10
-        },
-        "fill": {
-          "mediana": 0.347,
-          "p10": 0.058,
-          "p90": 0.802,
-          "n": 4
-        },
-        "genus": {
-          "mediana": 0.0,
-          "p10": 0.0,
-          "p90": 18.0,
-          "n": 10
-        }
-      },
-      "schemat_parametrow": {
-        "type": "object",
-        "additionalProperties": true,
-        "properties": {
-          "bbox_L": {
-            "type": "number",
-            "minimum": 60.0,
-            "maximum": 200.034
-          },
-          "bbox_M": {
-            "type": "number",
-            "minimum": 15.0,
-            "maximum": 129.798
-          },
-          "bbox_S": {
-            "type": "number",
-            "minimum": 3.0,
-            "maximum": 116.121
-          },
-          "fill": {
-            "type": "number",
-            "minimum": 0.058,
-            "maximum": 0.802
-          },
-          "genus": {
-            "type": "number",
-            "minimum": 0.0,
-            "maximum": 58.0
-          },
-          "w": {
-            "type": "number"
-          },
-          "n": {
-            "type": "number"
-          },
-          "szczelina": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "w",
-          "n",
-          "szczelina"
-        ]
-      },
-      "szablon_id": "stojakDesek",
-      "n_wierszy_zakresow": 10
+      "n_wierszy_zakresow": 9,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "uchwyt-doniczki",
       "klasa": "uchwyt doniczki",
-      "opis": "uchwyt doniczki",
-      "synonimy": [],
+      "opis": "Element służący do podtrzymywania, mocowania lub zawieszania doniczki na ścianie, balustradzie albo innym podłożu.",
+      "synonimy": [
+        "wspornik doniczki",
+        "mocowanie doniczki",
+        "zawieszka do doniczki",
+        "obejma doniczki",
+        "stelaż doniczki",
+        "flower pot holder",
+        "planter holder",
+        "pot bracket",
+        "planter bracket",
+        "flowerpot mount",
+        "pot hanger"
+      ],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -13505,281 +15173,27 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 9
-    },
-    {
-      "id": "uchwyt-gabki",
-      "klasa": "uchwyt gąbki",
-      "opis": "uchwyt gąbki",
-      "synonimy": [
-        "sponge holder",
-        "uchwyt gabki"
-      ],
-      "geometryczny": true,
-      "n_modeli": 10,
-      "zrodla_etykiet": {
-        "regula": 10
-      },
-      "nazwana_wprost": false,
-      "cluster_id": null,
-      "przyklady_model_id": [
-        "2319",
-        "2320",
-        "2321",
-        "2322",
-        "2323",
-        "2324",
-        "2325",
-        "2326",
-        "2327",
-        "2328"
-      ],
-      "zakresy": {
-        "bbox_L": [
-          100.228,
-          241.605
-        ],
-        "bbox_M": [
-          82.167,
-          175.556
-        ],
-        "bbox_S": [
-          21.113,
-          96.73
-        ],
-        "fill": [
-          0.086,
-          0.204
-        ],
-        "genus": [
-          0.0,
-          150.0
-        ]
-      },
-      "zakresy_n": {
-        "bbox_L": 8,
-        "bbox_M": 8,
-        "bbox_S": 8,
-        "fill": 4,
-        "genus": 8
-      },
-      "statystyki": {
-        "bbox_L": {
-          "mediana": 152.282,
-          "p10": 100.228,
-          "p90": 189.282,
-          "n": 8
-        },
-        "bbox_M": {
-          "mediana": 104.218,
-          "p10": 82.167,
-          "p90": 139.432,
-          "n": 8
-        },
-        "bbox_S": {
-          "mediana": 40.938,
-          "p10": 21.113,
-          "p90": 66.0,
-          "n": 8
-        },
-        "fill": {
-          "mediana": 0.166,
-          "p10": 0.086,
-          "p90": 0.204,
-          "n": 4
-        },
-        "genus": {
-          "mediana": 23.5,
-          "p10": 0.0,
-          "p90": 91.0,
-          "n": 8
-        }
-      },
-      "schemat_parametrow": {
-        "type": "object",
-        "additionalProperties": true,
-        "properties": {
-          "bbox_L": {
-            "type": "number",
-            "minimum": 100.228,
-            "maximum": 241.605
-          },
-          "bbox_M": {
-            "type": "number",
-            "minimum": 82.167,
-            "maximum": 175.556
-          },
-          "bbox_S": {
-            "type": "number",
-            "minimum": 21.113,
-            "maximum": 96.73
-          },
-          "fill": {
-            "type": "number",
-            "minimum": 0.086,
-            "maximum": 0.204
-          },
-          "genus": {
-            "type": "number",
-            "minimum": 0.0,
-            "maximum": 150.0
-          },
-          "x": {
-            "type": "number"
-          },
-          "y": {
-            "type": "number"
-          },
-          "z": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "x",
-          "y",
-          "z"
-        ]
-      },
-      "szablon_id": "uchwytGabki",
-      "n_wierszy_zakresow": 8
-    },
-    {
-      "id": "uchwyt-lyzek",
-      "klasa": "uchwyt łyżek",
-      "opis": "uchwyt łyżek",
-      "synonimy": [
-        "spoon rest",
-        "uchwyt lyzek"
-      ],
-      "geometryczny": true,
-      "n_modeli": 10,
-      "zrodla_etykiet": {
-        "regula": 10
-      },
-      "nazwana_wprost": false,
-      "cluster_id": null,
-      "przyklady_model_id": [
-        "2363",
-        "2364",
-        "2365",
-        "2366",
-        "2367",
-        "2368",
-        "2369",
-        "2370",
-        "2371",
-        "2372"
-      ],
-      "zakresy": {
-        "bbox_L": [
-          29.334,
-          153.851
-        ],
-        "bbox_M": [
-          21.985,
-          127.233
-        ],
-        "bbox_S": [
-          3.024,
-          59.357
-        ],
-        "fill": [
-          0.071,
-          0.611
-        ],
-        "genus": [
-          -3.0,
-          2.0
-        ]
-      },
-      "zakresy_n": {
-        "bbox_L": 9,
-        "bbox_M": 9,
-        "bbox_S": 9,
-        "fill": 6,
-        "genus": 9
-      },
-      "statystyki": {
-        "bbox_L": {
-          "mediana": 115.247,
-          "p10": 29.334,
-          "p90": 139.541,
-          "n": 9
-        },
-        "bbox_M": {
-          "mediana": 80.73,
-          "p10": 21.985,
-          "p90": 116.415,
-          "n": 9
-        },
-        "bbox_S": {
-          "mediana": 50.238,
-          "p10": 3.024,
-          "p90": 56.256,
-          "n": 9
-        },
-        "fill": {
-          "mediana": 0.103,
-          "p10": 0.071,
-          "p90": 0.226,
-          "n": 6
-        },
-        "genus": {
-          "mediana": 0.0,
-          "p10": -3.0,
-          "p90": 1.0,
-          "n": 9
-        }
-      },
-      "schemat_parametrow": {
-        "type": "object",
-        "additionalProperties": true,
-        "properties": {
-          "bbox_L": {
-            "type": "number",
-            "minimum": 29.334,
-            "maximum": 153.851
-          },
-          "bbox_M": {
-            "type": "number",
-            "minimum": 21.985,
-            "maximum": 127.233
-          },
-          "bbox_S": {
-            "type": "number",
-            "minimum": 3.024,
-            "maximum": 59.357
-          },
-          "fill": {
-            "type": "number",
-            "minimum": 0.071,
-            "maximum": 0.611
-          },
-          "genus": {
-            "type": "number",
-            "minimum": -3.0,
-            "maximum": 2.0
-          },
-          "x": {
-            "type": "number"
-          },
-          "y": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "x",
-          "y"
-        ]
-      },
-      "szablon_id": "uchwytLyzek",
-      "n_wierszy_zakresow": 9
+      "n_wierszy_zakresow": 9,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "uchwyt-smoczka",
       "klasa": "uchwyt smoczka",
-      "opis": "uchwyt smoczka",
-      "synonimy": [],
+      "opis": "Element służący do przypinania, zawieszania lub zabezpieczania smoczka przed upuszczeniem i zgubieniem.",
+      "synonimy": [
+        "klips do smoczka",
+        "zawieszka do smoczka",
+        "zaczep do smoczka",
+        "spinka do smoczka",
+        "smycz do smoczka",
+        "uchwyt na smoczek",
+        "pacifier clip",
+        "dummy clip",
+        "soother clip",
+        "pacifier holder",
+        "dummy holder",
+        "pacifier strap"
+      ],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -13893,13 +15307,27 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 8
+      "n_wierszy_zakresow": 8,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "uchwyt-wozka",
       "klasa": "uchwyt wózka",
-      "opis": "uchwyt wózka",
-      "synonimy": [],
+      "opis": "Element służący do chwytania, pchania i prowadzenia wózka.",
+      "synonimy": [
+        "rączka wózka",
+        "rękojeść wózka",
+        "pałąk wózka",
+        "drążek prowadzący",
+        "uchwyt prowadzący",
+        "wózkowy drążek",
+        "cart handle",
+        "trolley handle",
+        "push handle",
+        "stroller handle",
+        "handlebar",
+        "steering bar"
+      ],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -14013,548 +15441,27 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 8
-    },
-    {
-      "id": "zaslepka-gniazdka",
-      "klasa": "zaślepka gniazdka",
-      "opis": "zaślepka gniazdka",
-      "synonimy": [
-        "outlet cover",
-        "zaslepka gniazdka"
-      ],
-      "geometryczny": true,
-      "n_modeli": 10,
-      "zrodla_etykiet": {
-        "regula": 10
-      },
-      "nazwana_wprost": false,
-      "cluster_id": null,
-      "przyklady_model_id": [
-        "2473",
-        "2474",
-        "2475",
-        "2476",
-        "2477",
-        "2478",
-        "2479",
-        "2480",
-        "2481",
-        "2482"
-      ],
-      "zakresy": {
-        "bbox_L": [
-          34.109,
-          149.164
-        ],
-        "bbox_M": [
-          25.0,
-          119.812
-        ],
-        "bbox_S": [
-          5.0,
-          69.44
-        ],
-        "fill": [
-          0.038,
-          0.531
-        ],
-        "genus": [
-          1.0,
-          3.0
-        ]
-      },
-      "zakresy_n": {
-        "bbox_L": 8,
-        "bbox_M": 8,
-        "bbox_S": 8,
-        "fill": 7,
-        "genus": 8
-      },
-      "statystyki": {
-        "bbox_L": {
-          "mediana": 115.032,
-          "p10": 34.109,
-          "p90": 130.093,
-          "n": 8
-        },
-        "bbox_M": {
-          "mediana": 70.896,
-          "p10": 25.0,
-          "p90": 101.6,
-          "n": 8
-        },
-        "bbox_S": {
-          "mediana": 8.878,
-          "p10": 5.0,
-          "p90": 45.203,
-          "n": 8
-        },
-        "fill": {
-          "mediana": 0.36,
-          "p10": 0.038,
-          "p90": 0.446,
-          "n": 7
-        },
-        "genus": {
-          "mediana": 3.0,
-          "p10": 1.0,
-          "p90": 3.0,
-          "n": 8
-        }
-      },
-      "schemat_parametrow": {
-        "type": "object",
-        "additionalProperties": true,
-        "properties": {
-          "bbox_L": {
-            "type": "number",
-            "minimum": 34.109,
-            "maximum": 149.164
-          },
-          "bbox_M": {
-            "type": "number",
-            "minimum": 25.0,
-            "maximum": 119.812
-          },
-          "bbox_S": {
-            "type": "number",
-            "minimum": 5.0,
-            "maximum": 69.44
-          },
-          "fill": {
-            "type": "number",
-            "minimum": 0.038,
-            "maximum": 0.531
-          },
-          "genus": {
-            "type": "number",
-            "minimum": 1.0,
-            "maximum": 3.0
-          },
-          "x": {
-            "type": "number"
-          },
-          "y": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "x",
-          "y"
-        ]
-      },
-      "szablon_id": "zaslepkaGniazdka",
-      "n_wierszy_zakresow": 8
-    },
-    {
-      "id": "kolo",
-      "klasa": "koło",
-      "opis": "koło",
-      "synonimy": [
-        "wheel",
-        "tarcza"
-      ],
-      "geometryczny": true,
-      "n_modeli": 10,
-      "zrodla_etykiet": {
-        "regula": 10
-      },
-      "nazwana_wprost": false,
-      "cluster_id": null,
-      "przyklady_model_id": [
-        "2496",
-        "2497",
-        "2498",
-        "2499",
-        "2500",
-        "2501",
-        "2502",
-        "2503",
-        "2504",
-        "2505"
-      ],
-      "zakresy": {
-        "bbox_L": [
-          22.878,
-          159.985
-        ],
-        "bbox_M": [
-          21.297,
-          156.242
-        ],
-        "bbox_S": [
-          2.0,
-          50.17
-        ],
-        "fill": [
-          0.418,
-          0.773
-        ],
-        "genus": [
-          0.0,
-          32.0
-        ]
-      },
-      "zakresy_n": {
-        "bbox_L": 10,
-        "bbox_M": 10,
-        "bbox_S": 10,
-        "fill": 5,
-        "genus": 10
-      },
-      "statystyki": {
-        "bbox_L": {
-          "mediana": 55.019,
-          "p10": 22.878,
-          "p90": 156.242,
-          "n": 10
-        },
-        "bbox_M": {
-          "mediana": 41.29,
-          "p10": 21.297,
-          "p90": 115.366,
-          "n": 10
-        },
-        "bbox_S": {
-          "mediana": 21.789,
-          "p10": 2.0,
-          "p90": 49.243,
-          "n": 10
-        },
-        "fill": {
-          "mediana": 0.498,
-          "p10": 0.418,
-          "p90": 0.773,
-          "n": 5
-        },
-        "genus": {
-          "mediana": 1.5,
-          "p10": 0.0,
-          "p90": 9.0,
-          "n": 10
-        }
-      },
-      "schemat_parametrow": {
-        "type": "object",
-        "additionalProperties": true,
-        "properties": {
-          "bbox_L": {
-            "type": "number",
-            "minimum": 22.878,
-            "maximum": 159.985
-          },
-          "bbox_M": {
-            "type": "number",
-            "minimum": 21.297,
-            "maximum": 156.242
-          },
-          "bbox_S": {
-            "type": "number",
-            "minimum": 2.0,
-            "maximum": 50.17
-          },
-          "fill": {
-            "type": "number",
-            "minimum": 0.418,
-            "maximum": 0.773
-          },
-          "genus": {
-            "type": "number",
-            "minimum": 0.0,
-            "maximum": 32.0
-          },
-          "fi": {
-            "type": "number"
-          },
-          "grub": {
-            "type": "number"
-          },
-          "fiOtw": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "fi",
-          "grub",
-          "fiOtw"
-        ]
-      },
-      "szablon_id": "kolo",
-      "n_wierszy_zakresow": 10
-    },
-    {
-      "id": "pojemnik-desykantu",
-      "klasa": "pojemnik desykantu",
-      "opis": "pojemnik desykantu",
-      "synonimy": [
-        "silica box",
-        "pojemnik desykantu"
-      ],
-      "geometryczny": true,
-      "n_modeli": 10,
-      "zrodla_etykiet": {
-        "regula": 10
-      },
-      "nazwana_wprost": false,
-      "cluster_id": null,
-      "przyklady_model_id": [
-        "2587",
-        "2588",
-        "2589",
-        "2590",
-        "2591",
-        "2592",
-        "2593",
-        "2594",
-        "2595",
-        "2596"
-      ],
-      "zakresy": {
-        "bbox_L": [
-          23.9,
-          192.793
-        ],
-        "bbox_M": [
-          7.038,
-          144.665
-        ],
-        "bbox_S": [
-          1.655,
-          65.069
-        ],
-        "fill": [
-          0.042,
-          0.435
-        ],
-        "genus": [
-          -1.0,
-          3750.0
-        ]
-      },
-      "zakresy_n": {
-        "bbox_L": 10,
-        "bbox_M": 10,
-        "bbox_S": 10,
-        "fill": 5,
-        "genus": 10
-      },
-      "statystyki": {
-        "bbox_L": {
-          "mediana": 50.019,
-          "p10": 23.9,
-          "p90": 136.249,
-          "n": 10
-        },
-        "bbox_M": {
-          "mediana": 49.984,
-          "p10": 7.038,
-          "p90": 74.086,
-          "n": 10
-        },
-        "bbox_S": {
-          "mediana": 12.532,
-          "p10": 1.655,
-          "p90": 52.823,
-          "n": 10
-        },
-        "fill": {
-          "mediana": 0.105,
-          "p10": 0.042,
-          "p90": 0.435,
-          "n": 5
-        },
-        "genus": {
-          "mediana": 32.0,
-          "p10": -1.0,
-          "p90": 1124.0,
-          "n": 10
-        }
-      },
-      "schemat_parametrow": {
-        "type": "object",
-        "additionalProperties": true,
-        "properties": {
-          "bbox_L": {
-            "type": "number",
-            "minimum": 23.9,
-            "maximum": 192.793
-          },
-          "bbox_M": {
-            "type": "number",
-            "minimum": 7.038,
-            "maximum": 144.665
-          },
-          "bbox_S": {
-            "type": "number",
-            "minimum": 1.655,
-            "maximum": 65.069
-          },
-          "fill": {
-            "type": "number",
-            "minimum": 0.042,
-            "maximum": 0.435
-          },
-          "genus": {
-            "type": "number",
-            "minimum": -1.0,
-            "maximum": 3750.0
-          },
-          "x": {
-            "type": "number"
-          },
-          "y": {
-            "type": "number"
-          },
-          "z": {
-            "type": "number"
-          },
-          "otwory": {
-            "type": "array"
-          }
-        },
-        "required": [
-          "x",
-          "y",
-          "z"
-        ]
-      },
-      "szablon_id": "pojemnikDesykantu",
-      "n_wierszy_zakresow": 10
-    },
-    {
-      "id": "stojak-dysz",
-      "klasa": "stojak dysz",
-      "opis": "stojak dysz",
-      "synonimy": [
-        "nozzle holder",
-        "stojak dysz"
-      ],
-      "geometryczny": true,
-      "n_modeli": 10,
-      "zrodla_etykiet": {
-        "regula": 10
-      },
-      "nazwana_wprost": false,
-      "cluster_id": null,
-      "przyklady_model_id": [
-        "2615",
-        "2616",
-        "2617",
-        "2618",
-        "2619",
-        "2620",
-        "2621",
-        "2622",
-        "2623",
-        "2624"
-      ],
-      "zakresy": {
-        "bbox_L": [
-          41.679,
-          160.008
-        ],
-        "bbox_M": [
-          33.237,
-          45.674
-        ],
-        "bbox_S": [
-          12.697,
-          40.0
-        ],
-        "fill": [
-          0.132,
-          0.506
-        ],
-        "genus": [
-          -1.0,
-          8.0
-        ]
-      },
-      "zakresy_n": {
-        "bbox_L": 7,
-        "bbox_M": 7,
-        "bbox_S": 7,
-        "fill": 3,
-        "genus": 7
-      },
-      "statystyki": {
-        "bbox_L": {
-          "mediana": 74.718,
-          "p10": 41.679,
-          "p90": 122.996,
-          "n": 7
-        },
-        "bbox_M": {
-          "mediana": 41.606,
-          "p10": 33.237,
-          "p90": 43.408,
-          "n": 7
-        },
-        "bbox_S": {
-          "mediana": 23.726,
-          "p10": 12.697,
-          "p90": 34.715,
-          "n": 7
-        },
-        "fill": {
-          "mediana": 0.216,
-          "p10": 0.132,
-          "p90": 0.506,
-          "n": 3
-        },
-        "genus": {
-          "mediana": 0.0,
-          "p10": -1.0,
-          "p90": 2.0,
-          "n": 7
-        }
-      },
-      "schemat_parametrow": {
-        "type": "object",
-        "additionalProperties": true,
-        "properties": {
-          "bbox_L": {
-            "type": "number",
-            "minimum": 41.679,
-            "maximum": 160.008
-          },
-          "bbox_M": {
-            "type": "number",
-            "minimum": 33.237,
-            "maximum": 45.674
-          },
-          "bbox_S": {
-            "type": "number",
-            "minimum": 12.697,
-            "maximum": 40.0
-          },
-          "fill": {
-            "type": "number",
-            "minimum": 0.132,
-            "maximum": 0.506
-          },
-          "genus": {
-            "type": "number",
-            "minimum": -1.0,
-            "maximum": 8.0
-          },
-          "n": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "n"
-        ]
-      },
-      "szablon_id": "stojakDysz",
-      "n_wierszy_zakresow": 7
+      "n_wierszy_zakresow": 8,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "uchwyt-listwy",
       "klasa": "uchwyt listwy",
-      "opis": "uchwyt listwy",
-      "synonimy": [],
+      "opis": "Element służący do przytwierdzania, podpierania lub zawieszania listwy na powierzchni.",
+      "synonimy": [
+        "mocowanie listwy",
+        "klips listwy",
+        "zaczep listwy",
+        "wieszak listwy",
+        "stojak listwy",
+        "uchwyt szyny",
+        "mocowanie szyny",
+        "rail holder",
+        "strip holder",
+        "rail mount",
+        "strip clip",
+        "bar holder"
+      ],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -14668,13 +15575,27 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 8
+      "n_wierszy_zakresow": 8,
+      "synonimy_model": "openai/gpt-5.6-luna"
     },
     {
       "id": "uchwyt-pedzli",
       "klasa": "uchwyt pędzli",
-      "opis": "uchwyt pędzli",
-      "synonimy": [],
+      "opis": "Klasa obejmuje części służące do przechowywania, ustawiania lub suszenia pędzli malarskich, kosmetycznych albo modelarskich.",
+      "synonimy": [
+        "stojak na pędzle",
+        "kubek na pędzle",
+        "organizer pędzli",
+        "pojemnik na pędzle",
+        "podstawka na pędzle",
+        "suszak do pędzli",
+        "brush stand",
+        "brush rack",
+        "brush organizer",
+        "brush cup",
+        "brush rest",
+        "brush drying rack"
+      ],
       "geometryczny": true,
       "n_modeli": 10,
       "zrodla_etykiet": {
@@ -14788,129 +15709,8 @@
         "required": []
       },
       "szablon_id": null,
-      "n_wierszy_zakresow": 8
-    },
-    {
-      "id": "klips",
-      "klasa": "klips",
-      "opis": "klips",
-      "synonimy": [],
-      "geometryczny": true,
-      "n_modeli": 2,
-      "zrodla_etykiet": {
-        "wlasciciel": 1,
-        "regula": 1
-      },
-      "nazwana_wprost": true,
-      "cluster_id": null,
-      "przyklady_model_id": [
-        "0065",
-        "2493"
-      ],
-      "zakresy": {
-        "bbox_L": [
-          15.959,
-          84.624
-        ],
-        "bbox_M": [
-          14.191,
-          44.203
-        ],
-        "bbox_S": [
-          10.0,
-          20.0
-        ],
-        "fill": [
-          0.389,
-          0.389
-        ],
-        "genus": [
-          0.0,
-          0.0
-        ]
-      },
-      "zakresy_n": {
-        "bbox_L": 2,
-        "bbox_M": 2,
-        "bbox_S": 2,
-        "fill": 1,
-        "genus": 2
-      },
-      "statystyki": {
-        "bbox_L": {
-          "mediana": 50.291,
-          "p10": 15.959,
-          "p90": 84.624,
-          "n": 2
-        },
-        "bbox_M": {
-          "mediana": 29.197,
-          "p10": 14.191,
-          "p90": 44.203,
-          "n": 2
-        },
-        "bbox_S": {
-          "mediana": 15.0,
-          "p10": 10.0,
-          "p90": 20.0,
-          "n": 2
-        },
-        "fill": {
-          "mediana": 0.389,
-          "p10": 0.389,
-          "p90": 0.389,
-          "n": 1
-        },
-        "genus": {
-          "mediana": 0.0,
-          "p10": 0.0,
-          "p90": 0.0,
-          "n": 2
-        }
-      },
-      "schemat_parametrow": {
-        "type": "object",
-        "additionalProperties": true,
-        "properties": {
-          "bbox_L": {
-            "type": "number",
-            "minimum": 15.959,
-            "maximum": 84.624
-          },
-          "bbox_M": {
-            "type": "number",
-            "minimum": 14.191,
-            "maximum": 44.203
-          },
-          "bbox_S": {
-            "type": "number",
-            "minimum": 10.0,
-            "maximum": 20.0
-          },
-          "fill": {
-            "type": "number",
-            "minimum": 0.389,
-            "maximum": 0.389
-          },
-          "genus": {
-            "type": "number",
-            "minimum": 0.0,
-            "maximum": 0.0
-          },
-          "w": {
-            "type": "number"
-          },
-          "h": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "w",
-          "h"
-        ]
-      },
-      "szablon_id": "klipsU",
-      "n_wierszy_zakresow": 2
+      "n_wierszy_zakresow": 8,
+      "synonimy_model": "openai/gpt-5.6-luna"
     }
   ],
   "n": 110,
