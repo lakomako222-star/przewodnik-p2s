@@ -16,7 +16,7 @@ Oddaj JSON według schematu. decyzja:
 
 klasa: krótki identyfikator (np. haczyk, tuleja, ociekacz) albo pusty string.
 kandydaci: max 3 {klasa, p} z p w 0..1.
-parametry: znane mm — srednica_mm (wewnętrzna/nominalna), srednica_zewn_mm, dlugosc_mm, wysokosc_mm, szerokosc_mm, grubosc_mm; x/y/z_mm tylko dla pudełek/płyt. kat — kąt gięcia w stopniach (kolanko); fi1/fi2 — średnica wejścia/wyjścia (redukcja, dwie różne średnice); srednica_zewn_mm tylko gdy zdanie mówi wprost „zewnętrzna”.
+parametry: znane mm — srednica_mm (wewnętrzna/nominalna), srednica_zewn_mm, dlugosc_mm, wysokosc_mm, szerokosc_mm, grubosc_mm; x/y/z_mm tylko dla pudełek/płyt. kat — kąt gięcia w stopniach (kolanko, stojak); fi1/fi2 — średnica wejścia/wyjścia (redukcja); fiDol — średnica dolna/rurki (lejek, doniczka stożek); n — liczba haków/przegród/otworów (liczba całkowita); fiGniazda — gniazdo świecy; fiOtw — otwór w tarczy/kole; fiTrzpienia + podstawa — uchwyt szpuli; szpikulec — etykieta roślin. srednica_zewn_mm tylko gdy zdanie mówi wprost „zewnętrzna”.
 pytania: max 3, tylko przy REJECT.
 uzasadnienie: jedno–dwa zdania.`;
 
@@ -70,6 +70,20 @@ export const SCHEMAT_KLASYFIKATORA = {
         dl: { type: ['number', 'null'] },
         w: { type: ['number', 'null'] },
         h: { type: ['number', 'null'] },
+        n: { type: ['number', 'null'] },
+        fiDol: { type: ['number', 'null'] },
+        fiGniazda: { type: ['number', 'null'] },
+        fiOtw: { type: ['number', 'null'] },
+        fiTrzpienia: { type: ['number', 'null'] },
+        podstawa: { type: ['number', 'null'] },
+        szpikulec: { type: ['number', 'null'] },
+        gl: { type: ['number', 'null'] },
+        gniazdo: { type: ['number', 'null'] },
+        otwor: { type: ['number', 'null'] },
+        szczelina: { type: ['number', 'null'] },
+        nx: { type: ['number', 'null'] },
+        ny: { type: ['number', 'null'] },
+        hU: { type: ['number', 'null'] },
         a: { type: ['number', 'null'] },
         b: { type: ['number', 'null'] },
         x: { type: ['number', 'null'] },
@@ -121,6 +135,16 @@ function aliasParametry(p) {
   if (o.x == null && o.x_mm != null) o.x = o.x_mm;
   if (o.y == null && o.y_mm != null) o.y = o.y_mm;
   if (o.z == null && o.z_mm != null) o.z = o.z_mm;
+  if (o.fi1 == null && o.fi1_mm != null) o.fi1 = o.fi1_mm;
+  if (o.fi2 == null && o.fi2_mm != null) o.fi2 = o.fi2_mm;
+  if (o.fiDol == null && o.fiDol_mm != null) o.fiDol = o.fiDol_mm;
+  if (o.fiDol == null && o.fi2 != null) o.fiDol = o.fi2;
+  if (o.fiGniazda == null && o.fiDol != null) o.fiGniazda = o.fiDol;
+  if (o.fiOtw == null && o.fi2 != null) o.fiOtw = o.fi2;
+  if (o.fiTrzpienia == null && o.fi != null) o.fiTrzpienia = o.fi;
+  if (o.podstawa == null && o.fiZ != null) o.podstawa = o.fiZ;
+  if (o.n == null && o.liczba_hakow != null) o.n = o.liczba_hakow;
+  if (o.n == null && o.przegrody != null) o.n = o.przegrody;
   return o;
 }
 

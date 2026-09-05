@@ -6,7 +6,9 @@
 
 import { normalizujJednostki } from './builder.js';
 
-const WZ_POLA = ['fi', 'kat', 'dl', 'h', 'w', 'grub', 'fiZ', 'fiDol', 'fi1', 'fi2', 'x', 'y', 'z', 'n'];
+const WZ_POLA = ['fi', 'kat', 'dl', 'h', 'w', 'grub', 'fiZ', 'fiDol', 'fi1', 'fi2', 'x', 'y', 'z', 'n',
+  'fiGniazda', 'fiOtw', 'fiTrzpienia', 'podstawa', 'szpikulec',
+  'gl', 'gniazdo', 'otwor', 'szczelina', 'nx', 'ny', 'hU'];
 const WZ_TOL = 0.05;
 
 const WZ_WZORCE = [
@@ -15,8 +17,11 @@ const WZ_WZORCE = [
   { pole: 'fiZ', re: /(?:\bfi|\bsrednic\w*)\s+zewnetrz\w*\s*(\d+(?:[.,]\d+)?)/g },
   { pole: 'fi', re: /(?:\bfi|\bsrednic\w*)\s+wewnetrz\w*\s*(\d+(?:[.,]\d+)?)/g },
   { pole: 'fiDol', re: /(?:\bfi|\bsrednic\w*)\s+doln\w*\s*(\d+(?:[.,]\d+)?)/g },
+  { pole: 'fiDol', re: /\bfidol\s*(\d+(?:[.,]\d+)?)/g },
+  { pole: 'fiDol', re: /\brurka\s+(?:fi\s+)?(\d+(?:[.,]\d+)?)/g },
   { pole: 'fi', re: /(?:\bfi|\bsrednic\w*)\s+gorn\w*\s*(\d+(?:[.,]\d+)?)/g },
   { pole: 'fiDol', re: /\bdoln\w*(?:\s+srednic\w*)?\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'fiDol', re: /\bdol\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'fi', re: /\bgorn\w*(?:\s+srednic\w*)?\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'fiZ', re: /\bzewnetrz\w*\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'fi', re: /\bwewnetrz\w*\s+(\d+(?:[.,]\d+)?)/g },
@@ -37,15 +42,30 @@ const WZ_WZORCE = [
   { pole: 'y', re: /\by\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'n', re: /(\d+)\s*(?:przegrod\w*|hakow|haki|otwor\w*)/g },
   { pole: 'n', re: /\bz\s+(\d+)\s*(?:przegrod|hak|otwor)/g },
+  { pole: 'n', re: /\bn\s+(\d+)/g },
+  { pole: 'fiGniazda', re: /\bgniazd\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'fiOtw', re: /\bfiotw\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'fiOtw', re: /\botwor(?:u|em)?\s+(?:fi\s+)?(\d+(?:[.,]\d+)?)/g },
+  { pole: 'fiTrzpienia', re: /\btrzpie\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'podstawa', re: /\bpodstaw\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'szpikulec', re: /\bszpikul\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'gl', re: /\bgl\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'gl', re: /\bglebokosc\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'gniazdo', re: /\bgniazd\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'otwor', re: /\botwor(?:u|em)?\s+(?:fi\s+)?(\d+(?:[.,]\d+)?)/g },
+  { pole: 'szczelina', re: /\bszczelin\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'nx', re: /\bnx\s+(\d+)/g },
+  { pole: 'ny', re: /\bny\s+(\d+)/g },
+  { pole: 'hU', re: /\bhu\s+(\d+)/g },
   { pole: 'z', re: /\bz\s+(\d+(?:[.,]\d+)?)/g }
 ];
 
 const WZ_SLOWNIE = {
-  dwoma: 2, dwiema: 2,
-  trzema: 3,
-  czterema: 4, czterech: 4,
-  piecioma: 5, pieciu: 5,
-  szescioma: 6, szesciu: 6
+  dwa: 2, dwie: 2, dwoma: 2, dwiema: 2,
+  trzy: 3, trzema: 3,
+  cztery: 4, czterema: 4, czterech: 4,
+  piec: 5, piecioma: 5, pieciu: 5,
+  szesc: 6, szescioma: 6, szesciu: 6
 };
 
 function wz_puste() {
@@ -114,7 +134,7 @@ export function wymiaryZeZdania(zdanie) {
   const poJed = (typeof normalizujJednostki === 'function') ? normalizujJednostki(raw) : raw;
   const t = wz_bezOgonkow(poJed);
   const used = [];
-  const slRe = /\b(dwoma|dwiema|trzema|czterema|czterech|piecioma|pieciu|szescioma|szesciu)\s+(przegrod|hak|otwor)/g;
+  const slRe = /\b(dwa|dwie|dwoma|dwiema|trzy|trzema|cztery|czterema|czterech|piec|piecioma|pieciu|szesc|szescioma|szesciu)\s+(przegrod|hak|otwor)/g;
   let sm;
   while ((sm = slRe.exec(t))) {
     const val = WZ_SLOWNIE[sm[1]];
@@ -173,11 +193,100 @@ export function rozbieznePola(wym, parametryLLM) {
   return out;
 }
 
+const WZ_FI_GABARYT_XY = {
+  kubek: 1, pokrywka: 1, lejek: 1, podstawka: 1, galka: 1, stopka: 1,
+  doniczka: 1, zaslepka: 1, wazon: 1, swiecznik: 1, walek: 1, kolo: 1
+};
+
+function wz_liczbaPola(p, pole) {
+  const o = p && typeof p === 'object' ? p : {};
+  const n = typeof o[pole] === 'number' ? o[pole] : Number(o[pole]);
+  return Number.isFinite(n) ? n : null;
+}
+
+/**
+ * Porównanie gabarytu siatki z jawnymi parametrami zdania (fi→XY, h→Z przy walcu).
+ * fi wewnętrzne (klips, tuleja, kolanko) nie jest gabarytem — nie blokuje.
+ * @returns {{ ok: boolean, pytania: string[], rozjazdy: {pole:string, oczekiwane:number, zmierzone:number, os:string}[] }}
+ */
+export function ocenGabarytVsZdanie(bbox, parametry, zdanie, szablonId) {
+  const bb = bbox && typeof bbox === 'object' ? bbox : {};
+  const x = Number(bb.x), y = Number(bb.y), z = Number(bb.z);
+  const out = { ok: true, pytania: [], rozjazdy: [] };
+  if (![x, y, z].every(Number.isFinite)) return out;
+  const p = parametry && typeof parametry === 'object' ? Object.assign({}, parametry) : {};
+  if (zdanie && typeof wymiaryZeZdania === 'function') {
+    const wym = wymiaryZeZdania(zdanie);
+    const pola = Object.keys(wym);
+    for (let i = 0; i < pola.length; i++) {
+      const pole = pola[i];
+      if (wz_liczbaPola(p, pole) != null) continue;
+      const uniq = wz_unikalne(wym[pole]);
+      if (uniq.length === 1) p[pole] = uniq[0];
+    }
+  }
+  const sid = String(szablonId || '');
+  const fi = wz_liczbaPola(p, 'fi');
+  const h = wz_liczbaPola(p, 'h');
+  const maPudelko = wz_liczbaPola(p, 'x') != null && wz_liczbaPola(p, 'y') != null && wz_liczbaPola(p, 'z') != null;
+  function rozjazd(pole, oczekiwane, zmierzone, os) {
+    if (!Number.isFinite(oczekiwane) || !Number.isFinite(zmierzone)) return;
+    if (Math.abs(zmierzone - oczekiwane) <= 0.5) return;
+    out.ok = false;
+    out.rozjazdy.push({ pole: pole, oczekiwane: oczekiwane, zmierzone: zmierzone, os: os });
+    out.pytania.push(
+      'Gabaryt ' + os.toUpperCase() + ' = ' + zmierzone.toFixed(2) + ' mm, zdanie ' + pole + ' = '
+      + oczekiwane + ' mm (różnica > 0,5 mm). Które zostawić?'
+    );
+  }
+  if (WZ_FI_GABARYT_XY[sid] && fi != null) {
+    rozjazd('fi', fi, Math.max(x, y), x >= y ? 'x' : 'y');
+  }
+  if (WZ_FI_GABARYT_XY[sid] && h != null && !maPudelko) {
+    rozjazd('h', h, z, 'z');
+  }
+  return out;
+}
+
+/**
+ * Blok tekstu dla agenta / czatu Projekt przed zapisem 3MF.
+ * @returns {{ tekst: string, ok: boolean, pytania: string[], rozjazdy: object[] }}
+ */
+export function pomiarZwrotny(opts) {
+  const o = opts && typeof opts === 'object' ? opts : {};
+  const bb = o.bbox && typeof o.bbox === 'object' ? o.bbox : {};
+  const x = Number(bb.x), y = Number(bb.y), z = Number(bb.z);
+  const gab = [x, y, z].every(Number.isFinite)
+    ? (x.toFixed(2) + ' × ' + y.toFixed(2) + ' × ' + z.toFixed(2) + ' mm')
+    : 'brak';
+  const czesci = (typeof o.czesci_n === 'number' && Number.isFinite(o.czesci_n)) ? o.czesci_n : null;
+  const kody = Array.isArray(o.kody) ? o.kody.filter(Boolean) : [];
+  const ocena = ocenGabarytVsZdanie(bb, o.parametry, o.zdanie, o.szablonId);
+  const linie = [
+    '[pomiar-zwrotny]',
+    'gabaryt: ' + gab,
+    'BRYLY: ' + (czesci == null ? '?' : String(czesci)),
+    'kody: ' + (kody.length ? kody.join(', ') : 'brak')
+  ];
+  if (!ocena.ok) {
+    linie.push('rozjazd > 0,5 mm — nie zapisuję 3MF.');
+    for (let i = 0; i < ocena.pytania.length; i++) linie.push(ocena.pytania[i]);
+  }
+  return {
+    tekst: linie.join('\n'),
+    ok: ocena.ok,
+    pytania: ocena.pytania,
+    rozjazdy: ocena.rozjazdy
+  };
+}
+
 function wz_eksportP2S() {
   if (typeof window === 'undefined') return;
   window.P2S = window.P2S || {};
   window.P2S.wymiaryZeZdania = wymiaryZeZdania;
   window.P2S.sprzecznePola = sprzecznePola;
   window.P2S.rozbieznePola = rozbieznePola;
+  window.P2S.ocenGabarytVsZdanie = ocenGabarytVsZdanie;
+  window.P2S.pomiarZwrotny = pomiarZwrotny;
 }
 wz_eksportP2S();

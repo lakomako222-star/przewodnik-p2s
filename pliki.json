@@ -1,6 +1,6 @@
 {
-  "wersja": "4.2.54",
-  "stempel": "dbeb7d14",
+  "wersja": "4.2.55",
+  "stempel": "445d6117",
   "krytyczne": [
     "index.html",
     "engine/manifold.js",
@@ -32,6 +32,9 @@
     "nauka-pack.json",
     "szablony-obrotowe.js",
     "szablony-home.js",
+    "szablony-12b.js",
+    "szablony-12c.js",
+    "wymiary-zdanie.js",
     "archetypy.js",
     "archetypy-rejestr.json",
     "instancje.js",
