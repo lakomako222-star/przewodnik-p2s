@@ -1,7 +1,7 @@
 /**
  * Podgląd 2D — cztery rzuty, malarz, bez three.js.
  * strokeStyle MUSI być identyczny z fillStyle, inaczej widać przekątne triangulacji.
- * Obrót 360: przycisk „obrót” kręci kamerą izo (azymut), bez gestu.
+ * Obrót 360: przycisk „obrót” kręci azymut izo; przeciągnięcie palcem/myszą na pjIzo/prCv0 kręci az+el.
  */
 export const WIDOKI = {
   izo: { az: -35, el: 25, etykieta: 'izo' },
@@ -10,9 +10,21 @@ export const WIDOKI = {
   gora: { az: 0, el: 90, etykieta: 'góra' }
 };
 const IZO_AZ0 = -35, IZO_EL0 = 25;
+const ORBIT_DEG = 0.4;
+const ORBIT_DRAG_PX = 6;
+const ORBIT_EL_MIN = -85, ORBIT_EL_MAX = 85;
 const meshIzoByCanvas = Object.create(null);
 let pendingIzoMesh = null;
 const obrotStan = { on: false, raf: 0, last: 0 };
+const orbitStan = { active: false, id: null, x: 0, y: 0, dragged: false, blokujClickDo: 0 };
+
+function clamp(v, a, b) {
+  return Math.max(a, Math.min(b, v));
+}
+
+function wrapAz(az) {
+  return ((az % 360) + 360) % 360;
+}
 
 export function rzutuj(mesh, widok, W, H, pad = 14) {
   if (mesh && widok === WIDOKI.izo) pendingIzoMesh = mesh;
@@ -77,6 +89,7 @@ export function rysuj(ctx, tris, tlo = '#12151a') {
     ctx.moveTo(t.p[0], t.p[1]); ctx.lineTo(t.p[2], t.p[3]); ctx.lineTo(t.p[4], t.p[5]);
     ctx.closePath(); ctx.fill(); ctx.stroke();
   }
+  if (ctx && ctx.canvas && ctx.canvas.id === 'pjIzo') podpisIzo(obrotStan.on);
 }
 
 export function etykietaGabarytu(widokKlucz, bbox) {
@@ -107,7 +120,12 @@ function podpisIzo(on) {
   if (!lb) return;
   const mesh = meshIzoByCanvas.pjIzo;
   const bb = mesh && mesh.bbox;
-  const head = on ? 'obrót' : 'izo';
+  const az = Math.round(WIDOKI.izo.az);
+  const el = Math.round(WIDOKI.izo.el);
+  const ruszone = Math.abs(WIDOKI.izo.az - IZO_AZ0) > 0.5 || Math.abs(WIDOKI.izo.el - IZO_EL0) > 0.5;
+  const head = (on || ruszone)
+    ? ('obrót · az ' + az + '° el ' + el + '°')
+    : 'izo';
   lb.textContent = bb ? (head + ' · ' + etykietaGabarytu('izo', bb)) : head;
 }
 
@@ -131,7 +149,7 @@ function klatkaObrotu(ts) {
   const dt = Math.min(80, ts - obrotStan.last);
   obrotStan.last = ts;
   if (dt >= 16) {
-    WIDOKI.izo.az = (WIDOKI.izo.az + dt * 0.036) % 360;
+    WIDOKI.izo.az = wrapAz(WIDOKI.izo.az + dt * 0.036);
     rysujIzoCanvasy();
   }
   obrotStan.raf = requestAnimationFrame(klatkaObrotu);
@@ -145,19 +163,21 @@ function syncPrzyciskiObrotu() {
   });
 }
 
-function ustawObrot(on) {
+function ustawObrot(on, resetKat) {
   obrotStan.on = !!on;
   syncPrzyciskiObrotu();
   cancelAnimationFrame(obrotStan.raf);
   obrotStan.raf = 0;
   if (!obrotStan.on) {
-    WIDOKI.izo.az = IZO_AZ0;
-    WIDOKI.izo.el = IZO_EL0;
+    if (resetKat !== false) {
+      WIDOKI.izo.az = IZO_AZ0;
+      WIDOKI.izo.el = IZO_EL0;
+    }
     rysujIzoCanvasy();
     return;
   }
   if (woliMniejRuchu()) {
-    WIDOKI.izo.az = (WIDOKI.izo.az + 45) % 360;
+    WIDOKI.izo.az = wrapAz(WIDOKI.izo.az + 45);
     rysujIzoCanvasy();
     obrotStan.on = false;
     syncPrzyciskiObrotu();
@@ -200,4 +220,62 @@ function podlaczObrot() {
     }
   });
 }
+
+function podlaczOrbit() {
+  if (typeof document === 'undefined') return;
+  ['pjIzo', 'prCv0'].forEach(function (id) {
+    const c = document.getElementById(id);
+    if (!c || c.getAttribute('data-p2s-orbit') === '1') return;
+    c.setAttribute('data-p2s-orbit', '1');
+    c.style.touchAction = 'none';
+    c.addEventListener('pointerdown', function (e) {
+      if (e.button != null && e.button !== 0) return;
+      orbitStan.active = true;
+      orbitStan.id = e.pointerId;
+      orbitStan.x = e.clientX;
+      orbitStan.y = e.clientY;
+      orbitStan.dragged = false;
+      try { c.setPointerCapture(e.pointerId); } catch (err) { /* stary silnik */ }
+    });
+    c.addEventListener('pointermove', function (e) {
+      if (!orbitStan.active || e.pointerId !== orbitStan.id) return;
+      const dx = e.clientX - orbitStan.x;
+      const dy = e.clientY - orbitStan.y;
+      if (!orbitStan.dragged && Math.hypot(dx, dy) < ORBIT_DRAG_PX) return;
+      if (!orbitStan.dragged) {
+        orbitStan.dragged = true;
+        if (obrotStan.on) ustawObrot(false, false);
+      }
+      orbitStan.x = e.clientX;
+      orbitStan.y = e.clientY;
+      WIDOKI.izo.az = wrapAz(WIDOKI.izo.az + dx * ORBIT_DEG);
+      WIDOKI.izo.el = clamp(WIDOKI.izo.el + dy * ORBIT_DEG, ORBIT_EL_MIN, ORBIT_EL_MAX);
+      rysujIzoCanvasy();
+    });
+    function koniec(e) {
+      if (!orbitStan.active || (e && e.pointerId !== orbitStan.id)) return;
+      if (orbitStan.dragged) orbitStan.blokujClickDo = Date.now() + 300;
+      orbitStan.active = false;
+      orbitStan.id = null;
+      orbitStan.dragged = false;
+    }
+    c.addEventListener('pointerup', koniec);
+    c.addEventListener('pointercancel', koniec);
+    c.addEventListener('click', function (e) {
+      if (Date.now() < orbitStan.blokujClickDo || e.detail > 1) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+      }
+    }, true);
+    c.addEventListener('dblclick', function (e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      if (obrotStan.on) ustawObrot(false, false);
+      WIDOKI.izo.az = IZO_AZ0;
+      WIDOKI.izo.el = IZO_EL0;
+      rysujIzoCanvasy();
+    });
+  });
+}
 podlaczObrot();
+podlaczOrbit();
