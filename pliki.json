@@ -1,6 +1,6 @@
 {
-  "wersja": "4.2.63",
-  "stempel": "99912971",
+  "wersja": "4.2.64",
+  "stempel": "dc892a36",
   "krytyczne": [
     "index.html",
     "engine/manifold.js",
@@ -34,6 +34,7 @@
     "szablony-home.js",
     "szablony-12b.js",
     "szablony-12c.js",
+    "szablony-12d.js",
     "wymiary-zdanie.js",
     "archetypy.js",
     "archetypy-rejestr.json",
