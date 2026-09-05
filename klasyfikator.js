@@ -200,7 +200,9 @@ export async function klasyfikujZdanie(zdanie, opts) {
   try {
     txt = await call(body, opts.timeoutMs || 60000);
   } catch (e) {
-    if (/json_schema|response_format/i.test(String((e && e.message) || e))) {
+    /* Astra 6 (i inni) na strict json_schema oddają HTTP 400 „Provider returned error”
+       bez słowa schema — ten sam fallback co przy jawnym błędzie response_format. */
+    if (/json_schema|response_format|HTTP 400/i.test(String((e && e.message) || e))) {
       txt = await call(Object.assign({}, body, {
         response_format: { type: 'json_object' }
       }), opts.timeoutMs || 60000);
