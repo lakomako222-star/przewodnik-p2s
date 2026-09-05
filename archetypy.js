@@ -12,7 +12,8 @@ import {
   podkladka, tuleja, kolnierz, zaslepka, uchwytZLaczem, kolankoTorus, SZABLONY_OBROTOWE
 } from './szablony-obrotowe.js';
 import {
-  doniczka, haczyk, organizerPrzegrody, SZABLONY_HOME
+  doniczka, haczyk, organizerPrzegrody, kubek, pokrywka, lejek, podstawka, galka, stopka,
+  stojak, ociekacz, klipsKabla, wieszakListwa, SZABLONY_HOME
 } from './szablony-home.js';
 import { wymiaryZeZdania, sprzecznePola, rozbieznePola } from './wymiary-zdanie.js';
 
@@ -22,7 +23,8 @@ export const MAX_PYTAN_MATCH = 3;
 const FN = {
   rurKolanko, adapterPlyta, uchwyt, katownik, pudelko, zlaczka, trojnik, ruraProsta,
   podkladka, tuleja, kolnierz, zaslepka, uchwytZLaczem, kolankoTorus,
-  doniczka, haczyk, organizerPrzegrody
+  doniczka, haczyk, organizerPrzegrody,
+  kubek, pokrywka, lejek, podstawka, galka, stopka, stojak, ociekacz, klipsKabla, wieszakListwa
 };
 
 const SZABLON_WYMAGANE = {
@@ -42,7 +44,17 @@ const SZABLON_WYMAGANE = {
   kolankoTorus: ['fi', 'kat'],
   doniczka: ['fi', 'h'],
   haczyk: ['h', 'dl'],
-  organizerPrzegrody: ['x', 'y', 'z']
+  organizerPrzegrody: ['x', 'y', 'z'],
+  kubek: ['fi', 'h'],
+  pokrywka: ['fi'],
+  lejek: ['fi', 'fiDol', 'h'],
+  podstawka: ['fi'],
+  galka: ['fi', 'h'],
+  stopka: ['fi', 'h'],
+  stojak: ['w', 'h'],
+  ociekacz: ['x', 'y', 'z'],
+  klipsKabla: ['fi'],
+  wieszakListwa: ['h', 'dl']
 };
 
 /** Źródła w kolejności; cel ustawiany tylko gdy pusty. Zero imputacji (brak źródła = brak pola). */
@@ -63,7 +75,17 @@ const SZABLON_ALIASY = {
   kolankoTorus: {},
   doniczka: { h: ['z', 'dl'] },
   haczyk: { h: ['z'], dl: ['y'] },
-  organizerPrzegrody: { x: ['dl'], y: ['w'], z: ['h'] }
+  organizerPrzegrody: { x: ['dl'], y: ['w'], z: ['h'], przegrody: ['n'] },
+  kubek: { h: ['z', 'dl'] },
+  pokrywka: {},
+  lejek: { h: ['z', 'dl'] },
+  podstawka: {},
+  galka: { h: ['z'] },
+  stopka: { h: ['z'] },
+  stojak: { w: ['x'], h: ['z'] },
+  ociekacz: { x: ['dl'], y: ['w'], z: ['h'] },
+  klipsKabla: { fi: ['d'] },
+  wieszakListwa: { h: ['z'], dl: ['y'], n: ['przegrody'] }
 };
 
 let _rejestr = { when: null, wpisy: [], n: 0, _powod: 'brak', _zaladowany: false };

@@ -6,7 +6,7 @@
 
 import { normalizujJednostki } from './builder.js';
 
-const WZ_POLA = ['fi', 'kat', 'dl', 'h', 'w', 'grub', 'fiZ', 'fiDol', 'fi1', 'fi2', 'x', 'y', 'z'];
+const WZ_POLA = ['fi', 'kat', 'dl', 'h', 'w', 'grub', 'fiZ', 'fiDol', 'fi1', 'fi2', 'x', 'y', 'z', 'n'];
 const WZ_TOL = 0.05;
 
 const WZ_WZORCE = [
@@ -35,8 +35,18 @@ const WZ_WZORCE = [
   { pole: 'grub', re: /\bgrub\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'x', re: /\bx\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'y', re: /\by\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'n', re: /(\d+)\s*(?:przegrod\w*|hakow|haki|otwor\w*)/g },
+  { pole: 'n', re: /\bz\s+(\d+)\s*(?:przegrod|hak|otwor)/g },
   { pole: 'z', re: /\bz\s+(\d+(?:[.,]\d+)?)/g }
 ];
+
+const WZ_SLOWNIE = {
+  dwoma: 2, dwiema: 2,
+  trzema: 3,
+  czterema: 4, czterech: 4,
+  piecioma: 5, pieciu: 5,
+  szescioma: 6, szesciu: 6
+};
 
 function wz_puste() {
   const o = {};
@@ -104,6 +114,14 @@ export function wymiaryZeZdania(zdanie) {
   const poJed = (typeof normalizujJednostki === 'function') ? normalizujJednostki(raw) : raw;
   const t = wz_bezOgonkow(poJed);
   const used = [];
+  const slRe = /\b(dwoma|dwiema|trzema|czterema|czterech|piecioma|pieciu|szescioma|szesciu)\s+(przegrod|hak|otwor)/g;
+  let sm;
+  while ((sm = slRe.exec(t))) {
+    const val = WZ_SLOWNIE[sm[1]];
+    if (val == null) continue;
+    used.push({ a: sm.index, b: sm.index + sm[0].length });
+    wym.n.push(val);
+  }
   for (let i = 0; i < WZ_WZORCE.length; i++) {
     const w = WZ_WZORCE[i];
     const re = w.re;
