@@ -1,5 +1,5 @@
 {
-  "when": "2026-09-05T16:53:34Z",
+  "when": "2026-09-05T16:59:36Z",
   "zrodlo": "etykiety.jsonl (nazwy + korekta właściciela, ADDENDUM 2026-09-04)",
   "wybor_when": "2026-09-04T04:47:21.749Z",
   "prog_archetypu": 8,
@@ -3651,11 +3651,23 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 43.0
+          },
+          "dl": {
+            "type": "number"
+          },
+          "fiOsi": {
+            "type": "number"
+          },
+          "n": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "dl",
+          "fiOsi"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "zawiasProsty",
       "n_wierszy_zakresow": 20
     },
     {
@@ -9828,11 +9840,20 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 99.0
+          },
+          "dl": {
+            "type": "number"
+          },
+          "w": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "dl",
+          "w"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "klipsTorebki",
       "n_wierszy_zakresow": 12
     },
     {
@@ -10232,11 +10253,24 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 32.5
+          },
+          "a": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
+          },
+          "grub": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "a",
+          "h",
+          "grub"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "ochraniaczNaroznika",
       "n_wierszy_zakresow": 12
     },
     {
@@ -10479,11 +10513,24 @@
             "type": "number",
             "minimum": -2.0,
             "maximum": 43.0
+          },
+          "nx": {
+            "type": "number"
+          },
+          "ny": {
+            "type": "number"
+          },
+          "fi": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "nx",
+          "ny",
+          "fi"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "stojakKredek",
       "n_wierszy_zakresow": 11
     },
     {
@@ -10604,11 +10651,20 @@
             "type": "number",
             "minimum": -10.0,
             "maximum": 507.0
+          },
+          "fi": {
+            "type": "number"
+          },
+          "n": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "fi",
+          "n"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "uchwytButelek",
       "n_wierszy_zakresow": 11
     },
     {
@@ -10851,11 +10907,20 @@
             "type": "number",
             "minimum": 0.0,
             "maximum": 7.0
+          },
+          "n": {
+            "type": "number"
+          },
+          "szczelina": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "n",
+          "szczelina"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "uchwytKart",
       "n_wierszy_zakresow": 11
     },
     {
@@ -11381,11 +11446,20 @@
             "type": "number",
             "minimum": -2.0,
             "maximum": 6.0
+          },
+          "w": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "w",
+          "h"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "wieszakPada",
       "n_wierszy_zakresow": 11
     },
     {
@@ -14057,11 +14131,20 @@
             "type": "number",
             "minimum": 1.0,
             "maximum": 3.0
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "x",
+          "y"
+        ]
       },
-      "szablon_id": null,
+      "szablon_id": "zaslepkaGniazdka",
       "n_wierszy_zakresow": 8
     },
     {
