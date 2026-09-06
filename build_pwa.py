@@ -86,6 +86,7 @@ OPCJONALNE = [
     "drukarka-status.js",
     "wizja-projekt.js",
     "brep-cechy.js",
+    "desktop.js",
     "modele/LICENSE-ocena-zdjecia.txt",
     "wersja.json",
     "pliki.json",
@@ -160,6 +161,7 @@ def hashed_bytes() -> bytes:
         "drukarka-status.js",
         "wizja-projekt.js",
         "brep-cechy.js",
+        "desktop.js",
         "modele/LICENSE-ocena-zdjecia.txt",
     ):
         p = PWA / rel
@@ -283,6 +285,7 @@ def copy_assets() -> None:
         "drukarka-status.js",
         "wizja-projekt.js",
         "brep-cechy.js",
+        "desktop.js",
         "nauka-ocena.js",
         "wersja.json", "pliki.json",
         "manifest.webmanifest",
