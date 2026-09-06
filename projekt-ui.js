@@ -3,7 +3,7 @@
  * Prefiks id: pj*. Klucz API tylko z localStorage, nigdy w logu.
  */
 import { initEngine, buildAndGate, specDiff, meshToVF, normalizujJednostki, walidujPlanDruku, scaleLiveMesh, scaleSpecNumeric, ocenBrimPoSkali } from './builder.js';
-import { mesh3MF, mesh3MFWiele, tekstDeklaracji, nazwa3mf, checklistaDruku } from './export3mf.js';
+import { mesh3MF, mesh3MFWiele, tekstDeklaracji, nazwa3mf, checklistaDruku, specZ3mf } from './export3mf.js';
 import { WIDOKI, rzutuj, rysuj, etykietaGabarytu } from './preview.js';
 import { wyciagnijSzukaj, szukajSieci, hostDozwolony, tekstWynikowSzukania } from './szukaj.js';
 import { ladujPackNauki, szukajNauki, tekstKontekstuNauki, tagiZQuery } from './nauka-rag.js';
@@ -1883,6 +1883,8 @@ function pjSpecZMatch(b, kl) {
     spec_version: maCzesci ? '1.1' : '1.0',
     nazwa: b.spec.nazwa,
     material: (kl && kl.material) || b.spec.material || 'PETG',
+    klasa: (kl && kl.klasa) || b.klasa,
+    parametry: (kl && kl.parametry) || b.parametry,
     bryly: Array.isArray(b.spec.bryly) ? b.spec.bryly : [],
     cechy: b.spec.cechy || [],
     czesci: b.spec.czesci,
@@ -2032,6 +2034,15 @@ async function pjObsluzMatchBuild(klasa, parametry, zdanie, kl) {
     chatLine('ai', 'MATCH ' + klasa + (pk != null ? (' (p ' + pk + ')') : '')
       + (kl2.lokalny ? ' — lokalny (bez chmury)' : '')
       + (kl2.uzasadnienie ? (': ' + kl2.uzasadnienie) : ''));
+    const stareP = (kl && kl.parametry) || {};
+    const kluczeP = Object.keys(Object.assign({}, stareP, param || {}));
+    const zmienione = kluczeP.filter(function (k) {
+      return String(stareP[k]) !== String((param || {})[k]);
+    });
+    if (zmienione.length && Object.keys(stareP).length) {
+      chatLine('ai', 'Parametry: ' + JSON.stringify(stareP) + ' → ' + JSON.stringify(param)
+        + (kl2.mapa_par ? (' — ' + kl2.mapa_par) : ''));
+    }
     if (Array.isArray(kl2.zalozenia) && kl2.zalozenia.length) {
       chatLine('ai', 'Założenia (tabela, nie pomiar): ' + kl2.zalozenia.join('; '));
     }
@@ -2540,6 +2551,76 @@ function bind() {
   });
   const prTo = $('pjPrzerobTo');
   if (prTo) prTo.addEventListener('click', pjPrzerobTo);
+  async function pjWczytajPlik(file) {
+    if (!file) return;
+    const name = String(file.name || '').toLowerCase();
+    try {
+      if (name.endsWith('.json')) {
+        const spec = JSON.parse(await file.text());
+        if (!(await bootEngine())) return;
+        if (spec.klasa) {
+          pjOstatniaKlasyfikacja = {
+            decyzja: 'MATCH',
+            klasa: spec.klasa,
+            parametry: spec.parametry || {},
+            lokalny: true
+          };
+        }
+        await zbuduj(spec, 'plik JSON');
+        chatLine('ai', 'Wczytałem SPEC z JSON. „przerób na 360×150” działa parametrycznie, jeśli klasa ma kolejność wymiarów.');
+        return;
+      }
+      if (name.endsWith('.3mf')) {
+        const buf = new Uint8Array(await file.arrayBuffer());
+        const fn = typeof specZ3mf === 'function'
+          ? specZ3mf
+          : (window.P2S && window.P2S.specZ3mf);
+        const spec = typeof fn === 'function' ? await fn(buf) : null;
+        if (!spec || (!spec.bryly && !spec.czesci && !spec.klasa)) {
+          chatLine('ai', 'Ten 3MF nie ma P2S:spec — w zakładce Przerób możesz przeskalować do gabarytu.');
+          return;
+        }
+        if (!(await bootEngine())) return;
+        if (spec.klasa) {
+          pjOstatniaKlasyfikacja = {
+            decyzja: 'MATCH',
+            klasa: spec.klasa,
+            parametry: spec.parametry || {},
+            lokalny: true
+          };
+        }
+        await zbuduj(spec, '3MF SPEC');
+        chatLine('ai', 'Odtworzyłem projekt z metadanych 3MF. „przerób na 360×150” działa parametrycznie.');
+        return;
+      }
+      chatLine('ai', 'Podaj plik .3mf albo .json ze SPEC.');
+    } catch (e) {
+      setWarn({ wpisy: [{ poziom: 'blad', kod: 'PLIK', tekst: String((e && e.message) || e) }] });
+    }
+  }
+  const plikBtn = $('pjPlikBtn');
+  const plikIn = $('pjPlik');
+  if (plikBtn && plikIn) {
+    plikBtn.addEventListener('click', () => plikIn.click());
+    plikIn.addEventListener('change', async () => {
+      const f = plikIn.files && plikIn.files[0];
+      if (f) await pjWczytajPlik(f);
+      plikIn.value = '';
+    });
+  }
+  const karta = document.getElementById('view-projekt');
+  if (karta) {
+    karta.addEventListener('dragover', function (e) {
+      if (!e.dataTransfer) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+    });
+    karta.addEventListener('drop', async function (e) {
+      if (!e.dataTransfer || !e.dataTransfer.files || !e.dataTransfer.files.length) return;
+      e.preventDefault();
+      await pjWczytajPlik(e.dataTransfer.files[0]);
+    });
+  }
   const bs = $('pjBuildSpec');
   if (bs) bs.addEventListener('click', async () => {
     if (!(await bootEngine())) return;

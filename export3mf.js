@@ -22,7 +22,41 @@ const RELS_XML =
 
 const esc3 = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
   .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const unesc3 = s => String(s).replace(/&quot;/g, '"').replace(/&lt;/g, '<')
+  .replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 const r3 = n => { const s = Math.round(n * 1e6) / 1e6; return Object.is(s, -0) ? 0 : s; };
+
+export async function specZ3mf(buf) {
+  const { unzipSync } = await fflateApi();
+  const u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
+  const files = unzipSync(u8);
+  for (const [name, data] of Object.entries(files)) {
+    if (!/\.model$/i.test(name)) continue;
+    const xml = new TextDecoder().decode(data);
+    const byName = Object.create(null);
+    const mdRe = /<metadata\b([^>]*)>([\s\S]*?)<\/metadata>/gi;
+    let mm;
+    while ((mm = mdRe.exec(xml))) {
+      const nm = (mm[1].match(/\bname="([^"]*)"/) || [])[1] || '';
+      if (nm) byName[nm] = String(mm[2] || '').trim();
+    }
+    if (byName['P2S:spec']) {
+      try {
+        const j = JSON.parse(unesc3(byName['P2S:spec']));
+        if (j && typeof j === 'object') return j;
+      } catch (e) { /* nie JSON */ }
+    }
+    if (byName['P2S:klasa'] && byName['P2S:parametry']) {
+      try {
+        return {
+          klasa: unesc3(byName['P2S:klasa']),
+          parametry: JSON.parse(unesc3(byName['P2S:parametry']))
+        };
+      } catch (e) { /* nie JSON */ }
+    }
+  }
+  return null;
+}
 
 function polaMesh(mesh) {
   const np = Number(mesh && mesh.numProp) || 3;
@@ -612,6 +646,34 @@ function xmlMetadanych3mf(opcje, nazwa) {
   xml += ` <metadata name="Description">${esc3(desc)}</metadata>\n`;
   if (pola.author) xml += ` <metadata name="Author">${esc3(pola.author)}</metadata>\n`;
   if (pola.license) xml += ` <metadata name="License">${esc3(pola.license)}</metadata>\n`;
+  const spec = opcje.spec;
+  if (spec && typeof spec === 'object') {
+    const klasa = spec.klasa || opcje.klasa || '';
+    const parametry = spec.parametry != null ? spec.parametry : opcje.parametry;
+    const wersja = opcje.wersja
+      || (typeof globalThis !== 'undefined' && globalThis.P2S_VER_NAME)
+      || '';
+    const payload = {
+      spec_version: spec.spec_version || '1.1',
+      nazwa: spec.nazwa || nazwa,
+      material: spec.material,
+      klasa: klasa || undefined,
+      parametry: parametry || undefined,
+      bryly: spec.bryly,
+      cechy: spec.cechy,
+      czesci: spec.czesci,
+      orientacja_druku: spec.orientacja_druku,
+      podpory: spec.podpory,
+      brim: spec.brim,
+      uwagi_do_druku: spec.uwagi_do_druku
+    };
+    xml += ` <metadata name="P2S:spec">${esc3(JSON.stringify(payload))}</metadata>\n`;
+    if (klasa) xml += ` <metadata name="P2S:klasa">${esc3(klasa)}</metadata>\n`;
+    if (parametry && typeof parametry === 'object') {
+      xml += ` <metadata name="P2S:parametry">${esc3(JSON.stringify(parametry))}</metadata>\n`;
+    }
+    if (wersja) xml += ` <metadata name="P2S:wersja">${esc3(String(wersja))}</metadata>\n`;
+  }
   return xml;
 }
 

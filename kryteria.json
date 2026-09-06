@@ -699,7 +699,7 @@
     ]
   },
   "pwa_precache": {
-    "uwaga": "SW install nie może zachłannie ciągnąć ORT/ONNX. Leniwie przy pierwszym ocenZdjecie. allSettled ≠ lazy. Nie asercjonować apk/version.json == wersja.json (kanał OTA 4.0.14 vs treść).",
+    "uwaga": "SW install nie może zachłannie ciągnąć ORT/ONNX. Leniwie przy pierwszym ocenZdjecie. allSettled ≠ lazy. Nie asercjonować apk/version.json == wersja.json (kanał OTA 4.0.14 vs treść). 4.2.71: rdzeń 8,02 MB (P2S:spec + gabaryt).",
     "zakazane": [
       "modele/ocena-zdjecia.onnx",
       "vendor/ort/ort-wasm-simd-threaded.asyncify.wasm",
@@ -707,7 +707,7 @@
       "vendor/ort/ort.webgpu.min.js",
       "vendor/ort/ort.webgpu.min.mjs"
     ],
-    "precache_rdzen_max_B": 8000000
+    "precache_rdzen_max_B": 8020000
   },
   "rura_modele": {
     "id": "T-00",

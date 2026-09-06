@@ -2720,6 +2720,7 @@ h3[data-sprawdzono="2026-08-23"]::after{
 <div class="tw"><table><colgroup><col style="width:34.0%"><col style="width:66.0%"></colgroup><thead><tr><th>Kategoria</th><th>Co z niej pochodzi</th></tr></thead><tbody><tr><td data-l="Kategoria">Arkusz specyfikacji i blog Bambu Lab</td><td data-l="Co z niej pochodzi">Parametry P2S, obszar roboczy, temperatury graniczne, wyposażenie</td></tr><tr><td data-l="Kategoria">Bambu Lab Wiki</td><td data-l="Co z niej pochodzi">Procedury obsługi, konserwacji, kalibracji, suszenia i druku TPU</td></tr><tr><td data-l="Kategoria">Karty TDS Bambu Lab</td><td data-l="Co z niej pochodzi">Temperatury i suszenie TPU 95A HF oraz TPU for AMS</td></tr><tr><td data-l="Kategoria">Profile w repozytorium Bambu Studio</td><td data-l="Co z niej pochodzi">Nazwy płyt, limity przepływu, temperatury profilu P2S</td></tr><tr><td data-l="Kategoria">Strony produktowe SUNLU</td><td data-l="Co z niej pochodzi">Zakresy temperatur i prędkości dla PLA, PETG i TPU</td></tr><tr><td data-l="Kategoria">Poradniki SUNLU</td><td data-l="Co z niej pochodzi">Parametry i czasy suszenia</td></tr><tr><td data-l="Kategoria">Materiały BIQU i sprzedawców</td><td data-l="Co z niej pochodzi">Specyfikacja, temperatury i czyszczenie CryoGrip Pro Frostbite oraz Glacier</td></tr><tr><td data-l="Kategoria">Forum Bambu Lab i społeczność</td><td data-l="Co z niej pochodzi">Rozdział 26 - znane pułapki, słabe punkty, praktyka użytkowników</td></tr><tr><td data-l="Kategoria">MakerWorld i Printables</td><td data-l="Co z niej pochodzi">Rozdział 27 - modele akcesoriów i doświadczenia z doborem materiału</td></tr><tr><td data-l="Kategoria">Karta techniczna desykantu</td><td data-l="Co z niej pochodzi">Temperatura i czas regeneracji żelu krzemionkowego</td></tr></tbody></table></div>
 <h2 id="r-33-zrodla-wersja-i-zastrzezenia-33-3a-zrodla-pierwotne">Źródła pierwotne sprawdzone 21.08.2026</h2>
 <ul><li><a href="https://csm.bblcdn.com/hub/011651bed7b4405cb2c57da72ca8300c.pdf" target="_blank" rel="noopener noreferrer">Bambu Lab P2S — specyfikacja PDF</a></li><li><a href="https://us.store.bambulab.com/products/ams-2-pro?from=home_web" target="_blank" rel="noopener noreferrer">Bambu Lab AMS 2 Pro — zgodność materiałów i suszenie</a></li><li><a href="https://jp.store.bambulab.com/en/products/bambu-high-flow-hotend-h2d" target="_blank" rel="noopener noreferrer">Bambu High Flow Hotend — tabela H2/P2S</a></li><li><a href="https://github.com/bambulab/BambuStudio/releases/tag/v02.08.02.61" target="_blank" rel="noopener noreferrer">Bambu Studio 2.8.2 v02.08.02.61</a></li><li><a href="https://uk.store.bambulab.com/products/tpu-95a-hf?modelId=661571&amp;skr=yes" target="_blank" rel="noopener noreferrer">Bambu TPU 95A HF</a></li><li><a href="https://us.store.bambulab.com/products/tpu-for-ams" target="_blank" rel="noopener noreferrer">Bambu TPU for AMS</a></li><li><a href="https://www.sunlu.com/products/petg-3d-printing-filament" target="_blank" rel="noopener noreferrer">SUNLU PETG</a></li><li><a href="https://www.sunlu.com/products/tpu-95a-flexible-filament" target="_blank" rel="noopener noreferrer">SUNLU TPU 95A</a></li><li><a href="https://www.sunlu.com/wiki/filament-usage-guide" target="_blank" rel="noopener noreferrer">SUNLU Filament Usage Guide</a></li><li><a href="https://www.sunlu.com/de/wiki/fdm-performance-comparison" target="_blank" rel="noopener noreferrer">SUNLU FDM performance comparison — źródło rozbieżności High Speed Matte PETG</a></li><li><a href="https://biqu.equipment/products/biqu-panda-buildplate-cryogrip-pro?variant=42456105123938" target="_blank" rel="noopener noreferrer">BIQU Panda CryoGrip Pro</a></li></ul>
+<div class="box info"><div class="box-t">Treść 4.2.71</div><p>06.09.2026. Przerób na wymiar: para A×B mapowana kolejnością klasy (półka 360×150 = szerokość×głębokość); follow-up „przerób na 360×150” offline. 3MF niesie <code>P2S:spec</code> / klasa / parametry — drop .3mf/.json w Projekcie odtwarza MATCH. Przerób: „do 360×150 mm” skaluje do gabarytu (ostrzeżenie gdy osie &gt;2%). T-08 Studio (mm, 1:1): <code>haczykMeta</code> 15×38.2×53.5 (jak S, nieznane metadata OK); <code>haczykSkala12</code> 18×45.84×64.2. <code>apk/version.json</code> nietknięty. Wersja treści przewodnika 3.3.</p></div>
 <div class="box info"><div class="box-t">Treść 4.2.70</div><p>06.09.2026. Zdanie bez milimetrów: tabela S/M/L haczyka (50/30, 80/40, 110/55) i mocny (grub 5, w 18) — [ZAŁOŻENIE]; MATCH lokalny bez chmury przy jednoznacznej nazwie klasy; słowa «mały/duży/mocny» nie zamieniają się na mm. Materiał: wilgoć/łazienka/obciążenie → PETG, inaczej PLA. T-08 w Studio (mm, 1:1): <code>haczykS</code> 15×38.2×53.5, <code>haczykL</code> 15×63.2×113.5, <code>haczykMocny</code> 18×50.2×84; M SHA identyczne z etapem 8 (15×48.2×83.5). <code>apk/version.json</code> nietknięty. Wersja treści przewodnika 3.3.</p></div>
 <div class="box info"><div class="box-t">Treść 4.2.69</div><p>06.09.2026. Półka ścienna: czopy, nadlewy i ramię L liczone od głębokości i frontu (nie wystają poza blat), W≤482 mm, błąd buildera z komunikatem zamiast „brak buildera”. Eksport wielu części: nowy rząd gdy X przekroczy 256 mm. Napis: kropki i/j wkorpusowane (T-35 PASS), mostki w ścianę pierścienia. T-08: trzy części półki SHA identyczne z 4.2.68 (Studio 195×150×64 / 180×150×64 / 15×56×55 mm); nowy <code>napisChrzestAni.3mf</code> Studio 226.717×246.5×3 mm 1:1; <code>polkaKomplet.3mf</code> 4 obiekty, blat prawy poza płytą w Y (150+8+150&gt;256). <code>apk/version.json</code> nietknięty. Wersja treści przewodnika 3.3.</p></div>
 <div class="box info"><div class="box-t">Treść 4.2.68</div><p>06.09.2026. Builder <code>polkaScienna</code>: półka ścienna (blat + warga + 2× uchwyt L). W&gt;250 → podział, czopy w blacie i we froncie. Nadlew gdy materiał nad kieszenią &lt;2 mm. Fillet R2 czystym CSG (klocek minus walec), nie B-Rep. Klasa nowa — nie nadpisuje wspornika półki ani półki modułowej. T-08 3/3 w Studio (mm, 1:1): 195×150×64 / 180×150×64 / 15×56×55 — <code>e2e-projekt/T08-etap12e-polka/CZYTAJ.txt</code>. Rejestr 174 klas. <code>apk/version.json</code> nietknięty. Wersja treści przewodnika 3.3.</p></div>
@@ -2800,7 +2801,7 @@ h3[data-sprawdzono="2026-08-23"]::after{
 <ul class="check"><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-0-nazwe-i-liste-profili-pl"><span>Nazwę i listę profili płyt</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-1-temperatury-w-profilach"><span>Temperatury w profilach filamentów dla P2S</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-2-nazwy-i-lokalizacje-kali"><span>Nazwy i lokalizację kalibracji w menu</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-3-sposob-mapowania-i-synch"><span>Sposób mapowania i synchronizacji AMS</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-4-funkcje-i-limity-suszeni"><span>Funkcje i limity suszenia w AMS 2 Pro</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-5-procedure-kalibracji-pie"><span>Procedurę kalibracji pierwszej warstwy na ekranie</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-6-harmonogram-i-procedury"><span>Harmonogram i procedury konserwacji</span></label></li></ul>
 <p>Nie przenoś starych, niestandardowych presetów bez porównania z nowym profilem bazowym P2S. Zapisz stary profil pod inną nazwą, zamiast go nadpisywać.</p>
 <div class="box tip"><div class="box-t">Jak utrzymać ten dokument żywy</div><p>Trzymaj dziennik z rozdziału 29 razem z wydrukowanym przewodnikiem. Za każdym razem, gdy tabela w przewodniku okaże się nieaktualna, dopisz poprawkę na marginesie i datę. Po roku będziesz mieć wersję dopasowaną do własnego sprzętu i własnych materiałów.</p></div></section>
-  <div class="foot">Przewodnik 3.3 · treść 4.2.70 · stan na 31.08.2026<br>Etykieta szpuli i komunikat na ekranie drukarki mają pierwszeństwo przed tym przewodnikiem.</div>
+  <div class="foot">Przewodnik 3.3 · treść 4.2.71 · stan na 31.08.2026<br>Etykieta szpuli i komunikat na ekranie drukarki mają pierwszeństwo przed tym przewodnikiem.</div>
 </main>
 
 <!-- ===== DORADCA + NARZĘDZIA: wstrzykiwane przez build-html.js ===== -->
@@ -3307,6 +3308,7 @@ h3[data-sprawdzono="2026-08-23"]::after{
     <button type="button" data-sync="tresc">Treść</button>
   </nav>
   <div id="syncTrescBox" hidden>
+    <div class="box info"><div class="box-t">Treść 4.2.71</div><p>06.09.2026. Przerób A×B parametrycznie + gabaryt w Przerób; 3MF z P2S:spec. T-08: meta 15×38.2×53.5, skala×1.2 18×45.84×64.2. Paczka GitHub zostaje 4.0.14.</p></div>
     <div class="box info"><div class="box-t">Treść 4.2.70</div><p>06.09.2026. Zdanie bez mm: S/M/L haczyka, MATCH lokalny, PETG/PLA z reguły. T-08 Studio 1:1: S 15×38.2×53.5, L 15×63.2×113.5, mocny 18×50.2×84; M=etap 8. Paczka GitHub zostaje 4.0.14.</p></div>
     <div class="box info"><div class="box-t">Treść 4.2.69</div><p>06.09.2026. Półka: czopy/nadlewy od D i hFront, W≤482, komunikat buildera. 3MF wiele: zawijanie rzędów 256 mm. Napis: fuse i/j, T-35 PASS. T-08: półka SHA=4.2.68; napisChrzestAni 226.717×246.5×3 mm; komplet 4 obiekty, Y poza płytą. Paczka GitHub zostaje 4.0.14.</p></div>
     <div class="box info"><div class="box-t">Treść 4.2.68</div><p>06.09.2026. Builder półki ściennej (<code>polkaScienna</code>). T-08 3/3 w Studio (mm, 1:1): 195×150×64 / 180×150×64 / 15×56×55. Rejestr 174. Paczka GitHub zostaje 4.0.14.</p></div>
@@ -3414,8 +3416,10 @@ h3[data-sprawdzono="2026-08-23"]::after{
     <label for="pjSpec">Wklej SPEC</label>
     <textarea id="pjSpec" rows="8" placeholder='{"spec_version":"1.1", "czesci":[...]}'></textarea>
     <button type="button" class="btn" id="pjBuildSpec" style="margin-top:8px">Zbuduj z SPEC</button>
+    <button type="button" class="btn" id="pjPlikBtn" style="margin-top:8px">Wczytaj 3MF / JSON</button>
   </div>
   <input type="file" id="pjFotoIn" accept="image/*" capture="environment" hidden>
+  <input type="file" id="pjPlik" accept=".3mf,.json,application/json" hidden>
   <div id="pjThumbs" class="pj-thumbs" hidden></div>
   <p class="tnote" id="pjVisionHint" hidden></p>
   <div id="pjResearch" hidden></div>
@@ -7818,9 +7822,9 @@ if ('serviceWorker' in navigator) {
 
 </script>
 <script>
-window.P2S_VER_NAME='4.2.70';
+window.P2S_VER_NAME='4.2.71';
 window.P2S_SHELL_NAME='4.2.42';
-window.__P2S_META={wersja:'4.2.70',talk_ms:300000,spec_ms:600000,shell:'4.2.42'};
+window.__P2S_META={wersja:'4.2.71',talk_ms:300000,spec_ms:600000,shell:'4.2.42'};
 window.__P2S_DECISION="DECYZJA 4.2.22: bramka SCIENKA_OTWOR na kawałku SPEC po schemacie i próbnym buildzie geometrii, przed sklejeniem; 1 lokalna naprawa tylko wadliwego shardu, bez retry całego T5 i bez monolitu. DECYZJA 4.2.21: topper z napisem to jeden płaski wykrój 2D wyciągnięty na grubość — litery spina mostek 3 mm pod linią bazową i ramka 4,2 mm po obrysie (liczby z pomiaru wzorcowego toppera 142×153×2,8 mm), nóżki to płaskie trapezy 9,5→5,0 mm zamiast walców położonych na boku (te robiły z napisu 3 mm gabaryt 4,2 mm), font liczy szerokość znaku po zapalonych kolumnach, a poprzeczki w połowie liter zniknęły; nowe bramki NAPIS_BELKA / NAPIS_POZA_OBRYSEM (dołożona bryła przecina litery albo wychodzi >2 mm poza obrys), TACA_BEZ_RANTU (przekrój w 60% wysokości bez zamkniętej dziury ≥35% obrysu = płyta, nie wanienka) i STOJAK_BEZ_ZEBER (<6 żeber przy nazwie obiecującej żebrowanie) wracają do mózgu istniejącą ścieżką SPEC_GEOMETRIA; SYS_SPEC zakazuje dokładania własnych belek do napisu i podaje przepis na tacę-wanienkę oraz konstrukcję wzorca Towel_Holder_Ribbed. DECYZJA 4.2.20: strumień SSE dla każdego shardu SPEC — bufor do końca, potem schema (talk/plan/monolit bez zmian); max_tokens 26000 (powtórka 40000) + jawne reasoning.max_tokens 10000 zamiast effort:max, bo effort u Anthropica to część max_tokens; telemetria liczy tokeny myślenia i wyjścia; kawałek po schemacie przechodzi próbny build (SPEC_GEOMETRIA wraca do mózgu); finish_reason=length lub urwany JSON = SHARD_TRUNCATED + jedna powtórka; OR_BUSY dopisuje powód. DECYZJA 4.2.19: spec-sharding T5/T6 (N× SPEC 1.0 → czesci 1.1); plan json_object 120s; niepełny shard = nie PASS; schema PL bez shards[]. DECYZJA 4.2.18: wersja.json + SW hash; talk 300s / SPEC 600s; 408/429 backoff; Grok tylko profil eksperymentalny; SPEC schema przed 3MF; derivedFrom estimated. DECYZJA 4.2.17: timeout talk 300s / SPEC 600s; retry Opus; SPEC mm 1:1; zakaz pustych brył po RYSUJ; napis bbox. DECYZJA 4.2.16: mózg Claude Opus 5 max; zapas Grok 4.6 xhigh / Sol Pro / DeepSeek V4 Pro; pinnedId puszcza Anthropic; [[SZUKAJ]] wymuszone przy marce. DECYZJA 4.2.15: napis FDM+traktor; dziurka breloka uszkiem; spaw 0,05; skala XYZ; wydłuż uchwyty; 8 części i podział P2S; bez publikacji. DECYZJA 4.2.14: figurka CSG nie pudełko; brief z mm → RYSUJ; drop bez SPEC; alias otworu; retry bramki SCIENKA_OTWOR; bez publikacji. DECYZJA 4.2.13: Przerób — obwód obręczy ΔC (5 cm=50 mm) przesunięciem promieniowym + ramiona, nie skala całego bbox; bez publikacji. DECYZJA 4.2.12: nitka Projekt→Przerób (SPEC+siatka+checklista, localStorage); zdjęcie Flash-gdy-brak-wizji; scaleLiveMesh % na żywym modelu; bez publikacji. DECYZJA 4.2.11: picker Sol/Grok/Flash/Luna w Projekcie (lista OpenRouter); 3MF hint bez project_settings + Kopiuj do Studio; strona Sufit produktu; bez publikacji. DECYZJA 4.2.10: Projekt — [[SZUKAJ]] Wikipedia/DuckDuckGo bez klucza, dopytaj mm przed RYSUJ, po 3MF poprawki+checklista Studio; Asystent punkt 12; ściągi 5.17/5.18/6.8/5.15; bez publikacji. DECYZJA 4.2.9: Projekt — orientacja/podpory/brim w rozmowie i SPEC, checklista po 3MF (geometria bez project_settings); bramka 4.2.7 bez podpór zostaje; bez publikacji. DECYZJA 4.2.8: 5.17 nowa szpula (KALIBROWANE / nowe / Classic = Słoneczny); 5.18 proces 0.20 Standard na co dzień, 0.16 HQ, 0.24 test; bez publikacji. DECYZJA 4.2.7: plik bez podpór musi mieć fizycznie zapisaną orientację, stabilny styk i zero krytycznego nawisu w cechach mierzonych; stary 3MF FAIL, nowy PASS lokalnego gate; potwierdzenie ostrzeżenia Bambu i pomiar fizyczny pozostają otwarte; bez publikacji. DECYZJA 4.2.6: sufit programowy lokalnie; Projekt N=96, Przerób N=192 z r/cos(pi/N); N-14 z siatki 69,79–75; pełny sufit dopiero po wydruku i suwmiarce; bez publikacji. DECYZJA 4.2.5: 5.13 pułapka JSON \"nil\" (BambuStudio #10583); 3MF e2e przywrócony lokalnie; Pages zostaje 4.2.1 do słowa publikuj. DECYZJA 4.2.4: zakładka Projekt — wynalazca: dopytaj (wanna/rant), 2–3 sposoby, poleć jeden, extras jako propozycje, „lepiej nie” przy słabym briefie; SPEC JSON po wyborze; paste-SPEC zostaje. DECYZJA 4.2.3: zakładka Projekt — dopytaj rant/kształt, zaproponuj przyssawki z nazwą kubka (Qinuo QNSC-M40), searchPlan+OpenRouter web, potem SPEC; paste-SPEC zostaje. DECYZJA 4.2.2: N-12 kompensacja apotemy z N silnika (nie 96) i bez +0,02; N-13 zakres world-Y w rekordzie cechy; N-14 krótki współosiowy Ø56, zakres z siatki (nie 68–73); N-15 profil y→Ø(y) krok 0,2 maxDev 0,010; asercja N przy budowie walca. DECYZJA 4.2.1: zakładka Przerób/Przeróbka w UI, ten sam potok co Node 4.2 (bez przepisywania detektora/operacji/bramki). Silnik na wątku głównym z wklejonym Manifold (file://, jak Projekt). Pole aDens type=text inputmode=decimal. DECYZJA 4.2.0: modele P0 wg WYTYCZNE 4.2 (luna / gemini-3.7-flash / terra-pro). Detektor przeróbki w Node. Silnik Manifold wklejony jako base64 + UI jako zwykły skrypt (decyzja 4.1.1 zostaje). DECYZJA 4.1.1: silnik Manifold wklejony jako base64 + UI jako zwykły skrypt, nie jako pliki boczne. Powód: przewodnik jest jednym plikiem otwieranym z dysku; moduły ES i fetch .wasm są zablokowane przy file://. Pliki engine/ zostają obok dla PWA (cache SW) i testów Node.";
 
 window.__P2S_SILNIK='base64';
@@ -10279,7 +10283,41 @@ const RELS_XML =
 
 const esc3 = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
   .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const unesc3 = s => String(s).replace(/&quot;/g, '"').replace(/&lt;/g, '<')
+  .replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 const r3 = n => { const s = Math.round(n * 1e6) / 1e6; return Object.is(s, -0) ? 0 : s; };
+
+async function specZ3mf(buf) {
+  const { unzipSync } = await fflateApi();
+  const u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
+  const files = unzipSync(u8);
+  for (const [name, data] of Object.entries(files)) {
+    if (!/\.model$/i.test(name)) continue;
+    const xml = new TextDecoder().decode(data);
+    const byName = Object.create(null);
+    const mdRe = /<metadata\b([^>]*)>([\s\S]*?)<\/metadata>/gi;
+    let mm;
+    while ((mm = mdRe.exec(xml))) {
+      const nm = (mm[1].match(/\bname="([^"]*)"/) || [])[1] || '';
+      if (nm) byName[nm] = String(mm[2] || '').trim();
+    }
+    if (byName['P2S:spec']) {
+      try {
+        const j = JSON.parse(unesc3(byName['P2S:spec']));
+        if (j && typeof j === 'object') return j;
+      } catch (e) { /* nie JSON */ }
+    }
+    if (byName['P2S:klasa'] && byName['P2S:parametry']) {
+      try {
+        return {
+          klasa: unesc3(byName['P2S:klasa']),
+          parametry: JSON.parse(unesc3(byName['P2S:parametry']))
+        };
+      } catch (e) { /* nie JSON */ }
+    }
+  }
+  return null;
+}
 
 function polaMesh(mesh) {
   const np = Number(mesh && mesh.numProp) || 3;
@@ -10869,6 +10907,34 @@ function xmlMetadanych3mf(opcje, nazwa) {
   xml += ` <metadata name="Description">${esc3(desc)}</metadata>\n`;
   if (pola.author) xml += ` <metadata name="Author">${esc3(pola.author)}</metadata>\n`;
   if (pola.license) xml += ` <metadata name="License">${esc3(pola.license)}</metadata>\n`;
+  const spec = opcje.spec;
+  if (spec && typeof spec === 'object') {
+    const klasa = spec.klasa || opcje.klasa || '';
+    const parametry = spec.parametry != null ? spec.parametry : opcje.parametry;
+    const wersja = opcje.wersja
+      || (typeof globalThis !== 'undefined' && globalThis.P2S_VER_NAME)
+      || '';
+    const payload = {
+      spec_version: spec.spec_version || '1.1',
+      nazwa: spec.nazwa || nazwa,
+      material: spec.material,
+      klasa: klasa || undefined,
+      parametry: parametry || undefined,
+      bryly: spec.bryly,
+      cechy: spec.cechy,
+      czesci: spec.czesci,
+      orientacja_druku: spec.orientacja_druku,
+      podpory: spec.podpory,
+      brim: spec.brim,
+      uwagi_do_druku: spec.uwagi_do_druku
+    };
+    xml += ` <metadata name="P2S:spec">${esc3(JSON.stringify(payload))}</metadata>\n`;
+    if (klasa) xml += ` <metadata name="P2S:klasa">${esc3(klasa)}</metadata>\n`;
+    if (parametry && typeof parametry === 'object') {
+      xml += ` <metadata name="P2S:parametry">${esc3(JSON.stringify(parametry))}</metadata>\n`;
+    }
+    if (wersja) xml += ` <metadata name="P2S:wersja">${esc3(String(wersja))}</metadata>\n`;
+  }
   return xml;
 }
 
@@ -10968,7 +11034,7 @@ function tekstDeklaracji(spec, dekl, werdykt) {
   return linie.join('\n');
 }
 
-Object.assign(window.P2S, { bboxMesh, obrocMesh, obrocPunkt, transformujCecheWalcowa, analizujNawisyMesh, analizujNawisCechWalcowych, rotacjeOsiowe, wybierzOrientacjeBezPodpor, sprawdzOrientacjeBezPodpor, wybierzObrotOsiDoZ, mesh3MF, mesh3MFWiele, nazwa3mf, nazwaFilamentuKalibrowane, wymagaPotwierdzeniaNd, polaLicencji3mf, checklistaDruku, tekstDeklaracji });
+Object.assign(window.P2S, { specZ3mf, bboxMesh, obrocMesh, obrocPunkt, transformujCecheWalcowa, analizujNawisyMesh, analizujNawisCechWalcowych, rotacjeOsiowe, wybierzOrientacjeBezPodpor, sprawdzOrientacjeBezPodpor, wybierzObrotOsiDoZ, mesh3MF, mesh3MFWiele, nazwa3mf, nazwaFilamentuKalibrowane, wymagaPotwierdzeniaNd, polaLicencji3mf, checklistaDruku, tekstDeklaracji });
 })();
 
 /* inlined preview.js */
@@ -11262,7 +11328,7 @@ Object.assign(window.P2S, { WIDOKI, rzutuj, rysuj, etykietaGabarytu });
 /* inlined projekt-ui.js */
 (function(){
 window.P2S = window.P2S || {};
-const { initEngine, buildAndGate, specDiff, meshToVF, normalizujJednostki, walidujPlanDruku, scaleLiveMesh, scaleSpecNumeric, ocenBrimPoSkali, mesh3MF, mesh3MFWiele, tekstDeklaracji, nazwa3mf, checklistaDruku, WIDOKI, rzutuj, rysuj, etykietaGabarytu, ocenScienkeOtwor, ocenOrientacjeNaSztorc, pytaniaZKodowBramki, MAPA_PYTAN_BRAMKI, sprawdzBramke } = window.P2S;
+const { initEngine, buildAndGate, specDiff, meshToVF, normalizujJednostki, walidujPlanDruku, scaleLiveMesh, scaleSpecNumeric, ocenBrimPoSkali, mesh3MF, mesh3MFWiele, tekstDeklaracji, nazwa3mf, checklistaDruku, specZ3mf, WIDOKI, rzutuj, rysuj, etykietaGabarytu, ocenScienkeOtwor, ocenOrientacjeNaSztorc, pytaniaZKodowBramki, MAPA_PYTAN_BRAMKI, sprawdzBramke } = window.P2S;
 
 /**
  * Nitka Projekt → Przerób: handoff SPEC/siatki, zdjęcia, skala %.
@@ -11477,6 +11543,72 @@ function parseSkalaXyz(text) {
   return null;
 }
 
+/**
+ * „na wymiary 360 x 150”, „do 360×150 mm”, „gabaryt 360 na 150”,
+ * „proporcjonalnie do 360”. Nie zamienia „20x5” ani „×1,2” na gabaryt.
+ */
+function parseDoGabarytu(text) {
+  const t = _stripPl(text);
+  if (!t.trim()) return null;
+  const prop = /proporcjon/.test(t);
+  let m = t.match(/proporcjon\w*(?:\s+\w+){0,4}\s+do\s+(\d+(?:[.,]\d+)?)/);
+  if (m) {
+    const after = t.slice(m.index + m[0].length, m.index + m[0].length + 24);
+    if (!/[x×]/.test(after) && !/\s+na\s+\d/.test(after)) {
+      const x = parseFloat(m[1].replace(',', '.'));
+      if (x > 0) return { x: x, tryb: 'proporcjonalnie' };
+    }
+  }
+  const keyed = /na wymiary|do wymiarow|do gabarytu|gabaryt|na wymiar/.test(t)
+    || /do\s+\d+(?:[.,]\d+)?\s*(?:mm)?\s*[x×]/.test(t)
+    || (prop && /[x×]|\s+na\s+\d/.test(t));
+  if (!keyed) return null;
+  m = t.match(/(\d+(?:[.,]\d+)?)\s*(?:mm)?\s*[x×]\s*(\d+(?:[.,]\d+)?)(?:\s*(?:mm)?\s*[x×]\s*(\d+(?:[.,]\d+)?))?/);
+  if (!m) {
+    m = t.match(/(\d+(?:[.,]\d+)?)\s*(?:mm)?\s+na\s+(\d+(?:[.,]\d+)?)(?:\s*(?:mm)?\s+na\s+(\d+(?:[.,]\d+)?))?/);
+  }
+  if (!m) return null;
+  const x = parseFloat(m[1].replace(',', '.'));
+  const y = parseFloat(m[2].replace(',', '.'));
+  const z = m[3] != null ? parseFloat(m[3].replace(',', '.')) : undefined;
+  if (!(x > 0) || !(y > 0)) return null;
+  const out = { x: x, y: y, tryb: prop ? 'proporcjonalnie' : 'osie' };
+  if (z > 0) out.z = z;
+  return out;
+}
+
+/** bb i cel w mm → czynniki skali. Rozrzut > 2 % = nierównomiernie. */
+function czynnikiDoGabarytu(bb, cel) {
+  if (!bb || !cel) return null;
+  const bx = Number(bb.x), by = Number(bb.y), bz = Number(bb.z);
+  if (!(bx > 0) || !(by > 0) || !(bz > 0)) return null;
+  let sx, sy, sz;
+  if (cel.tryb === 'proporcjonalnie') {
+    if (cel.y == null) {
+      const s = cel.x / Math.max(bx, by, bz);
+      sx = sy = sz = s;
+    } else {
+      const s = Math.min(cel.x / bx, cel.y / by, cel.z != null ? cel.z / bz : Infinity);
+      sx = sy = sz = s;
+    }
+  } else {
+    sx = cel.x / bx;
+    sy = cel.y / by;
+    sz = cel.z != null ? cel.z / bz : 1;
+  }
+  if (!(sx > 0) || !(sy > 0) || !(sz > 0) || !isFinite(sx) || !isFinite(sy) || !isFinite(sz)) {
+    return null;
+  }
+  const mn = Math.min(sx, sy, sz);
+  const mx = Math.max(sx, sy, sz);
+  const rozrzut = mn > 0 ? (mx / mn - 1) : 0;
+  return {
+    sx: sx, sy: sy, sz: sz,
+    nierownomiernie: rozrzut > 0.02,
+    rozrzut: rozrzut
+  };
+}
+
 function u8ToB64(u8) {
   const bytes = u8 instanceof Uint8Array ? u8 : new Uint8Array(u8);
   if (typeof Buffer !== 'undefined') return Buffer.from(bytes).toString('base64');
@@ -11679,6 +11811,7 @@ if (typeof window !== 'undefined') {
   Object.assign(window.P2S, {
     nowyProjectId, modelCzytaObraz, uzyjFlashDoOpisu, hintWizji, mockOpisZdjecia,
     parseScalePercent, parseObwodRamiona, parseOtworBrelok, parseWydluz, parseSkalaXyz,
+    parseDoGabarytu, czynnikiDoGabarytu,
     zapiszNitke, wczytajNitke,
     aktywnaNitkaId, skrotRozmowy, kompresujZdjecie, trescZZdjeciami, promptOpisuZdjecia,
     VISION_FLASH, HINT_BEZ_WIZJI, TINY_PNG_DATA_URL, MAX_KRAWEDZ_ZDJ
@@ -19912,6 +20045,8 @@ function pjSpecZMatch(b, kl) {
     spec_version: maCzesci ? '1.1' : '1.0',
     nazwa: b.spec.nazwa,
     material: (kl && kl.material) || b.spec.material || 'PETG',
+    klasa: (kl && kl.klasa) || b.klasa,
+    parametry: (kl && kl.parametry) || b.parametry,
     bryly: Array.isArray(b.spec.bryly) ? b.spec.bryly : [],
     cechy: b.spec.cechy || [],
     czesci: b.spec.czesci,
@@ -20061,6 +20196,15 @@ async function pjObsluzMatchBuild(klasa, parametry, zdanie, kl) {
     chatLine('ai', 'MATCH ' + klasa + (pk != null ? (' (p ' + pk + ')') : '')
       + (kl2.lokalny ? ' — lokalny (bez chmury)' : '')
       + (kl2.uzasadnienie ? (': ' + kl2.uzasadnienie) : ''));
+    const stareP = (kl && kl.parametry) || {};
+    const kluczeP = Object.keys(Object.assign({}, stareP, param || {}));
+    const zmienione = kluczeP.filter(function (k) {
+      return String(stareP[k]) !== String((param || {})[k]);
+    });
+    if (zmienione.length && Object.keys(stareP).length) {
+      chatLine('ai', 'Parametry: ' + JSON.stringify(stareP) + ' → ' + JSON.stringify(param)
+        + (kl2.mapa_par ? (' — ' + kl2.mapa_par) : ''));
+    }
     if (Array.isArray(kl2.zalozenia) && kl2.zalozenia.length) {
       chatLine('ai', 'Założenia (tabela, nie pomiar): ' + kl2.zalozenia.join('; '));
     }
@@ -20569,6 +20713,76 @@ function bind() {
   });
   const prTo = $('pjPrzerobTo');
   if (prTo) prTo.addEventListener('click', pjPrzerobTo);
+  async function pjWczytajPlik(file) {
+    if (!file) return;
+    const name = String(file.name || '').toLowerCase();
+    try {
+      if (name.endsWith('.json')) {
+        const spec = JSON.parse(await file.text());
+        if (!(await bootEngine())) return;
+        if (spec.klasa) {
+          pjOstatniaKlasyfikacja = {
+            decyzja: 'MATCH',
+            klasa: spec.klasa,
+            parametry: spec.parametry || {},
+            lokalny: true
+          };
+        }
+        await zbuduj(spec, 'plik JSON');
+        chatLine('ai', 'Wczytałem SPEC z JSON. „przerób na 360×150” działa parametrycznie, jeśli klasa ma kolejność wymiarów.');
+        return;
+      }
+      if (name.endsWith('.3mf')) {
+        const buf = new Uint8Array(await file.arrayBuffer());
+        const fn = typeof specZ3mf === 'function'
+          ? specZ3mf
+          : (window.P2S && window.P2S.specZ3mf);
+        const spec = typeof fn === 'function' ? await fn(buf) : null;
+        if (!spec || (!spec.bryly && !spec.czesci && !spec.klasa)) {
+          chatLine('ai', 'Ten 3MF nie ma P2S:spec — w zakładce Przerób możesz przeskalować do gabarytu.');
+          return;
+        }
+        if (!(await bootEngine())) return;
+        if (spec.klasa) {
+          pjOstatniaKlasyfikacja = {
+            decyzja: 'MATCH',
+            klasa: spec.klasa,
+            parametry: spec.parametry || {},
+            lokalny: true
+          };
+        }
+        await zbuduj(spec, '3MF SPEC');
+        chatLine('ai', 'Odtworzyłem projekt z metadanych 3MF. „przerób na 360×150” działa parametrycznie.');
+        return;
+      }
+      chatLine('ai', 'Podaj plik .3mf albo .json ze SPEC.');
+    } catch (e) {
+      setWarn({ wpisy: [{ poziom: 'blad', kod: 'PLIK', tekst: String((e && e.message) || e) }] });
+    }
+  }
+  const plikBtn = $('pjPlikBtn');
+  const plikIn = $('pjPlik');
+  if (plikBtn && plikIn) {
+    plikBtn.addEventListener('click', () => plikIn.click());
+    plikIn.addEventListener('change', async () => {
+      const f = plikIn.files && plikIn.files[0];
+      if (f) await pjWczytajPlik(f);
+      plikIn.value = '';
+    });
+  }
+  const karta = document.getElementById('view-projekt');
+  if (karta) {
+    karta.addEventListener('dragover', function (e) {
+      if (!e.dataTransfer) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+    });
+    karta.addEventListener('drop', async function (e) {
+      if (!e.dataTransfer || !e.dataTransfer.files || !e.dataTransfer.files.length) return;
+      e.preventDefault();
+      await pjWczytajPlik(e.dataTransfer.files[0]);
+    });
+  }
   const bs = $('pjBuildSpec');
   if (bs) bs.addEventListener('click', async () => {
     if (!(await bootEngine())) return;
@@ -25197,6 +25411,36 @@ window.P2S.przerobka = {
     prThumbs();
     if ($('prVisionHint')) $('prVisionHint').hidden = true;
     if (raw || imgs.length) prChat('me', (raw || 'zdjęcie') + (imgs.length ? ' [zdjęcie]' : ''));
+    var gab = window.P2S && window.P2S.parseDoGabarytu ? window.P2S.parseDoGabarytu(raw) : null;
+    if (gab) {
+      var bbG = bboxZBiez();
+      if (!bbG) {
+        prChat('ai', 'Najpierw wczytaj STL/3MF albo wróć z Projektu przyciskiem „Przerób to”.');
+        return;
+      }
+      var czG = window.P2S.czynnikiDoGabarytu ? window.P2S.czynnikiDoGabarytu(bbG, gab) : null;
+      if (!czG) {
+        prChat('ai', 'Nie da się policzyć skali do tego gabarytu.');
+        return;
+      }
+      var celTxt = fmt(gab.x) + (gab.y != null ? ('×' + fmt(gab.y)) : '')
+        + (gab.z != null ? ('×' + fmt(gab.z)) : '');
+      var msgG = 'teraz ' + fmt(bbG.x) + '×' + fmt(bbG.y) + '×' + fmt(bbG.z)
+        + ' → ' + celTxt + ': X ' + fmt(czG.sx) + ', Y ' + fmt(czG.sy) + ', Z ' + fmt(czG.sz);
+      if (czG.nierownomiernie) {
+        msgG += ' — nierównomiernie: grubości ścianek i średnice otworów się zmienią, nie do części pasowanych';
+        if ($('prWynik')) {
+          var dG = el('div', 'pr-ostrz');
+          dG.appendChild(el('b', null, 'SKALA_OSIE '));
+          dG.appendChild(el('span', null, 'Rozrzut czynników skali '
+            + (czG.rozrzut * 100).toFixed(1) + '% (>2%). Grubości i otwory się zmienią.'));
+          $('prWynik').appendChild(dG);
+        }
+      }
+      prChat('ai', msgG);
+      await skalaZywa([czG.sx, czG.sy, czG.sz]);
+      return;
+    }
     var otw = window.P2S && window.P2S.parseOtworBrelok ? window.P2S.parseOtworBrelok(raw) : null;
     if (otw) {
       await dziurkaZywa(otw);
