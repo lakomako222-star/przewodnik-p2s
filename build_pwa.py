@@ -11,6 +11,7 @@ import importlib.util
 import json
 import re
 import shutil
+import subprocess
 from pathlib import Path
 
 ROOT = Path(r"C:\Users\Domek\Desktop\przewodnik")
@@ -667,6 +668,30 @@ def verify_sidecar_wektorow() -> None:
     if root_side.is_file() and root_side.read_bytes() != pwa_side.read_bytes():
         raise SystemExit("wektory-przewodnik.json korzeń ≠ PWA")
     print("sidecar wektory OK", n, "<=", max_b)
+    ostrzez_sidecar_niezacommitowany()
+
+
+def ostrzez_sidecar_niezacommitowany() -> None:
+    """Ostrzeżenie (nie STOP): sidecar w PWA różni się od HEAD repo PWA.
+
+    6.09.2026: Pages przez 6 publikacji (4.2.66–4.2.71) serwowało wektory z 4.2.65,
+    bo zbudowany plik szedł do `git stash` przy merge. Sidecar wchodzi do stempla,
+    więc musi iść do commita razem z index.html. Build roboczy nie ma się zatrzymać.
+    """
+    try:
+        r = subprocess.run(
+            ["git", "-C", str(PWA), "diff", "--quiet", "HEAD", "--", "wektory-przewodnik.json"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except OSError:
+        return
+    if r.returncode == 1:
+        print(
+            "UWAGA: wektory-przewodnik.json w PWA różni się od HEAD — "
+            "commit razem z index.html przed merge do main (nie stash)."
+        )
 
 
 def verify_index_size(n: int) -> None:

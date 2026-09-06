@@ -699,7 +699,7 @@
     ]
   },
   "pwa_precache": {
-    "uwaga": "SW install nie może zachłannie ciągnąć ORT/ONNX. Leniwie przy pierwszym ocenZdjecie. allSettled ≠ lazy. Nie asercjonować apk/version.json == wersja.json (kanał OTA 4.0.14 vs treść). 4.2.71: rdzeń 8,02 MB (P2S:spec + gabaryt).",
+    "uwaga": "SW install nie może zachłannie ciągnąć ORT/ONNX. Leniwie przy pierwszym ocenZdjecie. allSettled ≠ lazy. Nie asercjonować apk/version.json == wersja.json (kanał OTA 4.0.14 vs treść). 4.2.71: rdzeń 8,02 MB (P2S:spec + gabaryt). 4.2.72: limit 9,0 MB (zapas był 12,5 KB). Nie wyrzucać nauka-pack.json z pliki.json: TrescUpdater pobiera do biezaca/ tylko listy z pliki.json, a projekt-ui woła ladujPackNauki przy każdym zrob() — lazy wymaga trzeciej listy (leniwe) w pliki.json i w TrescUpdater (kanał Gradle).",
     "zakazane": [
       "modele/ocena-zdjecia.onnx",
       "vendor/ort/ort-wasm-simd-threaded.asyncify.wasm",
@@ -707,7 +707,7 @@
       "vendor/ort/ort.webgpu.min.js",
       "vendor/ort/ort.webgpu.min.mjs"
     ],
-    "precache_rdzen_max_B": 8020000
+    "precache_rdzen_max_B": 9000000
   },
   "rura_modele": {
     "id": "T-00",
