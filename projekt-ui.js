@@ -9,7 +9,7 @@ import { wyciagnijSzukaj, szukajSieci, hostDozwolony, tekstWynikowSzukania } fro
 import { ladujPackNauki, szukajNauki, tekstKontekstuNauki, tagiZQuery } from './nauka-rag.js';
 import { dopasujSzablony, tekstSzablonow, SZABLONY } from './nauka-szablony.js';
 import { ladujRejestr, ladujProgi, tekstArchetypow, build as buildArchetyp, getArchetyp, zastosujMatch } from './archetypy.js';
-import { pomiarZwrotny, paryAxB } from './wymiary-zdanie.js';
+import { pomiarZwrotny, paryAxB, wymiaryZeZdania } from './wymiary-zdanie.js';
 import { cechyJakosciowe, matchLokalny } from './rozmiar-slowny.js';
 import {
   nowyProjectId, modelCzytaObraz, uzyjFlashDoOpisu, hintWizji, mockOpisZdjecia,
@@ -2102,35 +2102,55 @@ async function pjObsluzMatchBuild(klasa, parametry, zdanie, kl) {
   return 'dalej';
 }
 
+function pjWymiaryZeZdania(text) {
+  const fn = (typeof wymiaryZeZdania === 'function')
+    ? wymiaryZeZdania
+    : (window.P2S && window.P2S.wymiaryZeZdania);
+  return typeof fn === 'function' ? fn(text) : null;
+}
+
+function pjDolaczWymiary(parametry, text) {
+  const wym = pjWymiaryZeZdania(text);
+  if (!wym) return false;
+  let n = 0;
+  const pola = Object.keys(wym);
+  for (let i = 0; i < pola.length; i++) {
+    const arr = wym[pola[i]];
+    if (!arr || !arr.length) continue;
+    const uniq = [];
+    for (let j = 0; j < arr.length; j++) {
+      if (uniq.indexOf(arr[j]) < 0) uniq.push(arr[j]);
+    }
+    if (uniq.length === 1) {
+      parametry[pola[i]] = uniq[0];
+      n += 1;
+    }
+  }
+  return n > 0;
+}
+
 /** @returns {Promise<'stop'|'dalej'>} */
 async function pjDomknijOczekujacyMatch(text0) {
   const st = pjOczekujacyMatch;
   if (!st) return 'dalej';
-  const cechy = pjCechyZdania(text0);
-  if (cechy.rozmiar || cechy.mocny) {
-    const zdanie = (st.zdanie || '') + ' | ' + text0;
-    const kl = Object.assign({}, st.kl || {}, {
-      decyzja: 'MATCH', klasa: st.klasa, parametry: st.parametry || {}
-    });
-    return pjObsluzMatchBuild(st.klasa, st.parametry || {}, zdanie, kl);
-  }
-  const num = pjLiczbaZTekstu(text0);
-  if (num == null) {
-    pjOczekujacyMatch = null;
-    return 'dalej';
-  }
-  const pole = (st.brakujace_pola || [])[0];
-  if (!pole) {
-    pjOczekujacyMatch = null;
-    return 'dalej';
-  }
   const parametry = Object.assign({}, st.parametry || {});
-  parametry[pole] = num;
-  const zdanie = (st.zdanie || '') + ' | ' + text0;
-  const kl = Object.assign({}, st.kl || {}, {
-    decyzja: 'MATCH', klasa: st.klasa, parametry: parametry
-  });
-  return pjObsluzMatchBuild(st.klasa, parametry, zdanie, kl);
+  const labeled = pjDolaczWymiary(parametry, text0);
+  const pole = (st.brakujace_pola || [])[0];
+  if (pole && (parametry[pole] == null || parametry[pole] === '')) {
+    const num = pjLiczbaZTekstu(text0);
+    if (num != null) parametry[pole] = num;
+  }
+  const cechy = pjCechyZdania(text0);
+  const maBrak = pole && parametry[pole] != null && parametry[pole] !== '';
+  const zdanieWym = labeled ? text0 : ((st.zdanie || '') + ' | ' + text0);
+  if (cechy.rozmiar || cechy.mocny || maBrak || labeled) {
+    const kl = Object.assign({}, st.kl || {}, {
+      decyzja: 'MATCH', klasa: st.klasa, parametry: parametry
+    });
+    return pjObsluzMatchBuild(st.klasa, parametry, zdanieWym, kl);
+  }
+  pjOczekujacyMatch = null;
+  return 'dalej';
 }
 
 async function zrob() {
