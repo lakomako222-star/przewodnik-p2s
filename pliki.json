@@ -1,6 +1,6 @@
 {
-  "wersja": "4.2.72",
-  "stempel": "2e1b0ed8",
+  "wersja": "4.2.73",
+  "stempel": "7f1e0206",
   "krytyczne": [
     "index.html",
     "engine/manifold.js",
@@ -62,6 +62,7 @@
     "drukarka-status.js",
     "wizja-projekt.js",
     "brep-cechy.js",
+    "desktop.js",
     "modele/LICENSE-ocena-zdjecia.txt",
     "wersja.json",
     "pliki.json",
