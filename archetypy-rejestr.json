@@ -23968,8 +23968,54 @@
       },
       "szablon_id": "zaczepMultiboard",
       "n_wierszy_zakresow": 0
+    },
+    {
+      "id": "polka-scienna",
+      "klasa": "półka ścienna",
+      "opis": "Półka z blatem, wargą i uchwytami L do ściany. Osobna od wspornika półki (sam L) i półki modułowej (system).",
+      "synonimy": [
+        "wall shelf",
+        "floating shelf",
+        "półka na ścianę",
+        "półka wisząca",
+        "półka z wargą"
+      ],
+      "geometryczny": true,
+      "n_modeli": 0,
+      "zrodla_etykiet": {
+        "wlasciciel": 1
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [],
+      "zakresy": {},
+      "zakresy_n": {},
+      "statystyki": {},
+      "zakresy_zrodlo": "ZAŁOŻENIE",
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "w": {
+            "type": "number"
+          },
+          "d": {
+            "type": "number"
+          },
+          "hFront": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "w",
+          "d",
+          "hFront"
+        ]
+      },
+      "szablon_id": "polkaScienna",
+      "n_wierszy_zakresow": 0
     }
   ],
-  "n": 173,
+  "n": 174,
   "notatka": "Klasy z nazw (etykiety-z-nazw.py) + korekta właściciela nadrzędna. Archetyp: ≥8 modeli albo nazwana wprost. szablon_id z mapy klas na nauka-szablony.js + szablony-obrotowe.js; brak → brak_buildera (MATCH→NEW). geometryczny:false = bez schematu parametrów. Zakresy wyłącznie z liczb indeksu. + wpisy z archetypy-wlasne.json (zakresy_zrodlo=ZAŁOŻENIE)."
 }

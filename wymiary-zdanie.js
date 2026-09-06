@@ -9,7 +9,7 @@ import { normalizujJednostki } from './builder.js';
 const WZ_POLA = ['fi', 'kat', 'dl', 'h', 'w', 'grub', 'fiZ', 'fiDol', 'fi1', 'fi2', 'x', 'y', 'z', 'n',
   'fiGniazda', 'fiOtw', 'fiTrzpienia', 'podstawa', 'szpikulec',
   'gl', 'gniazdo', 'otwor', 'szczelina', 'nx', 'ny', 'hU',
-  'otwory', 'ml', 'rozstaw', 'fiOsi'];
+  'otwory', 'ml', 'rozstaw', 'fiOsi', 'd', 'hFront'];
 const WZ_TOL = 0.05;
 
 const WZ_WZORCE = [
@@ -64,6 +64,8 @@ const WZ_WZORCE = [
   { pole: 'fiOsi', re: /\bfi\s*osi\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'fiOsi', re: /\bosi\s+(?:fi\s+)?(\d+(?:[.,]\d+)?)/g },
   { pole: 'n', re: /(\d+)\s*(?:bit\w*|dysz\w*|wkretak\w*|kredk\w*|butel\w*|kartek|\bkart\b)/g },
+  { pole: 'hFront', re: /\bfront(?:u|em)?\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'hFront', re: /\bwarg\w*\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'z', re: /\bz\s+(\d+(?:[.,]\d+)?)/g }
 ];
 

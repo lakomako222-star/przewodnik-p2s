@@ -1877,11 +1877,12 @@ function pjLiczbaZTekstu(text) {
 }
 
 function pjSpecZMatch(b) {
+  const maCzesci = Array.isArray(b.spec.czesci) && b.spec.czesci.length;
   return {
-    spec_version: '1.0',
+    spec_version: maCzesci ? '1.1' : '1.0',
     nazwa: b.spec.nazwa,
     material: b.spec.material || 'PETG',
-    bryly: b.spec.bryly,
+    bryly: Array.isArray(b.spec.bryly) ? b.spec.bryly : [],
     cechy: b.spec.cechy || [],
     czesci: b.spec.czesci,
     pytania: [],
