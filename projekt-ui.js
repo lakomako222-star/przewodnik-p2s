@@ -8,8 +8,9 @@ import { WIDOKI, rzutuj, rysuj, etykietaGabarytu } from './preview.js';
 import { wyciagnijSzukaj, szukajSieci, hostDozwolony, tekstWynikowSzukania } from './szukaj.js';
 import { ladujPackNauki, szukajNauki, tekstKontekstuNauki, tagiZQuery } from './nauka-rag.js';
 import { dopasujSzablony, tekstSzablonow, SZABLONY } from './nauka-szablony.js';
-import { ladujRejestr, ladujProgi, tekstArchetypow, build as buildArchetyp, getArchetyp } from './archetypy.js';
-import { pomiarZwrotny } from './wymiary-zdanie.js';
+import { ladujRejestr, ladujProgi, tekstArchetypow, build as buildArchetyp, getArchetyp, zastosujMatch } from './archetypy.js';
+import { pomiarZwrotny, paryAxB } from './wymiary-zdanie.js';
+import { cechyJakosciowe, matchLokalny } from './rozmiar-slowny.js';
 import {
   nowyProjectId, modelCzytaObraz, uzyjFlashDoOpisu, hintWizji, mockOpisZdjecia,
   parseScalePercent, zapiszNitke, wczytajNitke, skrotRozmowy, kompresujZdjecie,
@@ -1876,12 +1877,12 @@ function pjLiczbaZTekstu(text) {
   return Number.isFinite(n) ? n : null;
 }
 
-function pjSpecZMatch(b) {
+function pjSpecZMatch(b, kl) {
   const maCzesci = Array.isArray(b.spec.czesci) && b.spec.czesci.length;
   return {
     spec_version: maCzesci ? '1.1' : '1.0',
     nazwa: b.spec.nazwa,
-    material: b.spec.material || 'PETG',
+    material: (kl && kl.material) || b.spec.material || 'PETG',
     bryly: Array.isArray(b.spec.bryly) ? b.spec.bryly : [],
     cechy: b.spec.cechy || [],
     czesci: b.spec.czesci,
@@ -1909,6 +1910,84 @@ function pjFnBuildArchetyp() {
   return window.P2S && window.P2S.archetypy && window.P2S.archetypy.build;
 }
 
+function pjFnZastosujMatch() {
+  if (typeof zastosujMatch === 'function') return zastosujMatch;
+  return window.P2S && window.P2S.archetypy && window.P2S.archetypy.zastosujMatch;
+}
+
+function pjFnGetArchetyp() {
+  if (typeof getArchetyp === 'function') return getArchetyp;
+  if (typeof get === 'function') return get;
+  return window.P2S && window.P2S.archetypy && window.P2S.archetypy.getArchetyp;
+}
+
+function pjPokazChipyRozmiar(klasa) {
+  const getFn = pjFnGetArchetyp();
+  const wpis = typeof getFn === 'function' ? getFn(klasa) : null;
+  const r = wpis && wpis.rozmiary;
+  let el = $('pjRozmiarChipy');
+  if (!r || !r.S) {
+    if (el) el.hidden = true;
+    return;
+  }
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'pjRozmiarChipy';
+    el.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px';
+    const chat = $('pjChat');
+    if (chat && chat.parentNode) chat.parentNode.insertBefore(el, chat.nextSibling);
+    else return;
+  }
+  el.hidden = false;
+  el.innerHTML = '';
+  const etyk = [
+    ['mały', 'S'],
+    ['średni', 'M'],
+    ['duży', 'L'],
+    ['mocniejszy', 'mocny']
+  ];
+  for (let i = 0; i < etyk.length; i++) {
+    if (etyk[i][1] !== 'mocny' && !r[etyk[i][1]]) continue;
+    if (etyk[i][1] === 'mocny' && !r.mocny) continue;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn';
+    btn.textContent = etyk[i][0];
+    btn.setAttribute('data-rozmiar', etyk[i][0]);
+    btn.addEventListener('click', function () {
+      const inp = $('pjIn');
+      if (inp) inp.value = etyk[i][0];
+      zrob();
+    });
+    el.appendChild(btn);
+  }
+}
+
+function pjCechyZdania(text) {
+  const fn = (typeof cechyJakosciowe === 'function')
+    ? cechyJakosciowe
+    : (window.P2S && window.P2S.cechyJakosciowe);
+  return typeof fn === 'function' ? fn(text) : { rozmiar: null, mocny: false, szybki: false, srodowisko: [] };
+}
+
+function pjParyZdania(text) {
+  const fn = (typeof paryAxB === 'function')
+    ? paryAxB
+    : (window.P2S && window.P2S.paryAxB);
+  return typeof fn === 'function' ? fn(text) : [];
+}
+
+function pjFollowupOffline(text0) {
+  const t = String(text0 || '');
+  const cechy = pjCechyZdania(t);
+  const pary = pjParyZdania(t);
+  const fold = t.toLowerCase()
+    .replace(/ą/g, 'a').replace(/ć/g, 'c').replace(/ę/g, 'e').replace(/ł/g, 'l')
+    .replace(/ń/g, 'n').replace(/ó/g, 'o').replace(/ś/g, 's').replace(/ź/g, 'z').replace(/ż/g, 'z');
+  const slowa = /zmien|przerob|na wymiar|w rozmiarze|na wymiary/.test(fold);
+  return !!(cechy.rozmiar || cechy.mocny || pary.length || slowa);
+}
+
 /**
  * MATCH z brakiem pola → pytanie (stan pjOczekujacyMatch). Komplet → zbuduj.
  * @returns {Promise<'stop'|'dalej'>}
@@ -1917,18 +1996,52 @@ async function pjObsluzMatchBuild(klasa, parametry, zdanie, kl) {
   const bFn = pjFnBuildArchetyp();
   if (typeof bFn !== 'function') return 'dalej';
   try { await ladujRejestr(false); } catch (e) { /* ignore */ }
-  const b = bFn(klasa, parametry || {});
+  const zmFn = pjFnZastosujMatch();
+  let kl2 = kl || {};
+  let param = parametry || {};
+  if (typeof zmFn === 'function') {
+    const zm = zmFn({
+      decyzja: 'MATCH',
+      klasa: klasa,
+      parametry: Object.assign({}, param),
+      pytania: (kl && kl.pytania) || [],
+      uzasadnienie: (kl && kl.uzasadnienie) || '',
+      kandydaci: (kl && kl.kandydaci) || [],
+      lokalny: !!(kl && kl.lokalny)
+    }, zdanie);
+    kl2 = Object.assign({}, kl || {}, zm);
+    param = zm.parametry || param;
+    if (zm.decyzja === 'NEW') return 'dalej';
+    if (zm.decyzja === 'REJECT') {
+      const pyt = (zm.pytania || []).filter(Boolean).slice(0, 3);
+      if (pyt.length) pokazPytaniaBramki(pyt);
+      if (zm.uzasadnienie) chatLine('ai', zm.uzasadnienie);
+      return 'stop';
+    }
+    klasa = zm.klasa || klasa;
+  }
+  const b = bFn(klasa, param);
   if (b && b.spec) {
     pjOczekujacyMatch = null;
     pjOstatnieZdanie = zdanie;
-    pjOstatniaKlasyfikacja = Object.assign({}, kl || {}, {
-      decyzja: 'MATCH', klasa: klasa, parametry: parametry || {}
+    pjOstatniaKlasyfikacja = Object.assign({}, kl2, {
+      decyzja: 'MATCH', klasa: klasa, parametry: param
     });
     if (!(await bootEngine())) return 'stop';
     const pk = pjPewnoscKl(pjOstatniaKlasyfikacja);
     chatLine('ai', 'MATCH ' + klasa + (pk != null ? (' (p ' + pk + ')') : '')
-      + (kl && kl.uzasadnienie ? (': ' + kl.uzasadnienie) : ''));
-    await zbuduj(pjSpecZMatch(b), zdanie.slice(0, 40), null, zdanie, {});
+      + (kl2.lokalny ? ' — lokalny (bez chmury)' : '')
+      + (kl2.uzasadnienie ? (': ' + kl2.uzasadnienie) : ''));
+    if (Array.isArray(kl2.zalozenia) && kl2.zalozenia.length) {
+      chatLine('ai', 'Założenia (tabela, nie pomiar): ' + kl2.zalozenia.join('; '));
+    }
+    if (kl2.material) {
+      chatLine('ai', 'Materiał: ' + kl2.material
+        + (kl2.material_powod ? (' — ' + kl2.material_powod) : '')
+        + (kl2.material === 'PETG' ? '. W suchym pokoju wystarczy PLA.' : '.'));
+    }
+    await zbuduj(pjSpecZMatch(b, kl2), zdanie.slice(0, 40), null, zdanie, {});
+    pjPokazChipyRozmiar(klasa);
     return 'stop';
   }
   if (b && b.powod === 'brak_pola') {
@@ -1980,6 +2093,14 @@ async function pjObsluzMatchBuild(klasa, parametry, zdanie, kl) {
 async function pjDomknijOczekujacyMatch(text0) {
   const st = pjOczekujacyMatch;
   if (!st) return 'dalej';
+  const cechy = pjCechyZdania(text0);
+  if (cechy.rozmiar || cechy.mocny) {
+    const zdanie = (st.zdanie || '') + ' | ' + text0;
+    const kl = Object.assign({}, st.kl || {}, {
+      decyzja: 'MATCH', klasa: st.klasa, parametry: st.parametry || {}
+    });
+    return pjObsluzMatchBuild(st.klasa, st.parametry || {}, zdanie, kl);
+  }
   const num = pjLiczbaZTekstu(text0);
   if (num == null) {
     pjOczekujacyMatch = null;
@@ -2018,6 +2139,23 @@ async function zrob() {
   if (pjOczekujacyMatch) {
     const d = await pjDomknijOczekujacyMatch(text0);
     if (d === 'stop') return;
+  } else if (pjOstatniaKlasyfikacja && pjOstatniaKlasyfikacja.decyzja === 'MATCH' && pjFollowupOffline(text0)) {
+    const klasa = pjOstatniaKlasyfikacja.klasa;
+    const zdanie = (pjOstatnieZdanie || '') + ' | ' + text0;
+    const d = await pjObsluzMatchBuild(klasa, pjOstatniaKlasyfikacja.parametry || {}, zdanie, pjOstatniaKlasyfikacja);
+    if (d === 'stop') return;
+  }
+  try { await ladujRejestr(false); } catch (eLok) { /* ignore */ }
+  const lokFn = typeof matchLokalny === 'function'
+    ? matchLokalny
+    : (window.P2S && window.P2S.matchLokalny);
+  const getFn = pjFnGetArchetyp();
+  if (typeof lokFn === 'function' && typeof getFn === 'function') {
+    const lok = lokFn(text0, getFn);
+    if (lok && lok.decyzja === 'MATCH') {
+      const m = await pjObsluzMatchBuild(lok.klasa, lok.parametry || {}, text0, lok);
+      if (m === 'stop') return;
+    }
   }
   const klasFnStart = pjFnKlasyfikuj();
   if (!key() && typeof klasFnStart !== 'function') {

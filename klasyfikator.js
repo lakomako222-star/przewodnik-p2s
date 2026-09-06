@@ -17,7 +17,7 @@ Oddaj JSON według schematu. decyzja:
 
 klasa: krótki identyfikator (np. haczyk, tuleja, ociekacz) albo pusty string.
 kandydaci: max 3 {klasa, p} z p w 0..1.
-parametry: znane mm — srednica_mm (wewnętrzna/nominalna), srednica_zewn_mm, dlugosc_mm, wysokosc_mm, szerokosc_mm, grubosc_mm; x/y/z_mm tylko dla pudełek/płyt. kat — kąt gięcia w stopniach (kolanko, stojak); fi1/fi2 — średnica wejścia/wyjścia (redukcja); fiDol — średnica dolna/rurki (lejek, doniczka stożek); n — liczba haków/przegród/otworów (liczba całkowita); fiGniazda — gniazdo świecy; fiOtw — otwór w tarczy/kole; fiTrzpienia + podstawa — uchwyt szpuli; szpikulec — etykieta roślin. srednica_zewn_mm tylko gdy zdanie mówi wprost „zewnętrzna”.
+parametry: znane mm — srednica_mm (wewnętrzna/nominalna), srednica_zewn_mm, dlugosc_mm, wysokosc_mm, szerokosc_mm, grubosc_mm; x/y/z_mm tylko dla pudełek/płyt. kat — kąt gięcia w stopniach (kolanko, stojak); fi1/fi2 — średnica wejścia/wyjścia (redukcja); fiDol — średnica dolna/rurki (lejek, doniczka stożek); n — liczba haków/przegród/otworów (liczba całkowita); fiGniazda — gniazdo świecy; fiOtw — otwór w tarczy/kole; fiTrzpienia + podstawa — uchwyt szpuli; szpikulec — etykieta roślin. srednica_zewn_mm tylko gdy zdanie mówi wprost „zewnętrzna”. Słowa «mały/duży/mocny/kompaktowy» nie zamieniaj na mm — zostaw parametry puste; warstwa lokalna ma tabelę.
 pytania: max 3, tylko przy REJECT.
 uzasadnienie: jedno–dwa zdania.`;
 

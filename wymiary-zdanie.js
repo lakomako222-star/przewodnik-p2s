@@ -290,6 +290,27 @@ export function pomiarZwrotny(opts) {
   };
 }
 
+/**
+ * Surowe pary A×B / A x B / A×B×C. Nie wpisuje pól wymiaryZeZdania
+ * („20x5” zostaje {} — kolejność per klasa jest w zastosujMatch).
+ * @returns {number[][]}
+ */
+export function paryAxB(zdanie) {
+  const t = wz_bezOgonkow(zdanie);
+  const re = /(\d+(?:[.,]\d+)?)\s*[x×]\s*(\d+(?:[.,]\d+)?)(?:\s*[x×]\s*(\d+(?:[.,]\d+)?))?/g;
+  const out = [];
+  let m;
+  while ((m = re.exec(t))) {
+    const a = wz_liczba(m[1]);
+    const b = wz_liczba(m[2]);
+    const c = m[3] != null ? wz_liczba(m[3]) : null;
+    if (a == null || b == null) continue;
+    const para = c == null ? [a, b] : [a, b, c];
+    out.push(para);
+  }
+  return out;
+}
+
 function wz_eksportP2S() {
   if (typeof window === 'undefined') return;
   window.P2S = window.P2S || {};
@@ -298,5 +319,6 @@ function wz_eksportP2S() {
   window.P2S.rozbieznePola = rozbieznePola;
   window.P2S.ocenGabarytVsZdanie = ocenGabarytVsZdanie;
   window.P2S.pomiarZwrotny = pomiarZwrotny;
+  window.P2S.paryAxB = paryAxB;
 }
 wz_eksportP2S();
