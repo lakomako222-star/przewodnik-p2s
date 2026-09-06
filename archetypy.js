@@ -37,7 +37,7 @@ import {
   doniczkaFalista, doniczkaAzurowa, klamraRurowa, obejma, uchwytSluchawkiPrysznicowej,
   napisTopper, deszczownica, zaczepSkadis, zaczepPegboard, zaczepMultiboard, polkaScienna, SZABLONY_12E
 } from './szablony-12e.js';
-import { wymiaryZeZdania, sprzecznePola, rozbieznePola, paryAxB } from './wymiary-zdanie.js';
+import { wymiaryZeZdania, sprzecznePola, rozbieznePola, paryAxB, etykietaPola } from './wymiary-zdanie.js';
 import {
   cechyJakosciowe, doradzMaterial, zdanieMaLiczbe, pytaniaRozmiarow, uzupelnijZTabeli
 } from './rozmiar-slowny.js';
@@ -250,6 +250,7 @@ let _rejestr = { when: null, wpisy: [], n: 0, _powod: 'brak', _zaladowany: false
 let _archLaduje = null;
 let _progi = { prog_pewnosci_klasy: null, prog_dystansu_do_wszystkich: null, _zaladowany: false };
 let _ladujeProgi = null;
+let _mapaOdmian = Object.create(null);
 
 function urlRejestr() {
   try {
@@ -343,6 +344,7 @@ function ustawWewn(obj) {
     _powod: wpisy.length ? 'ok' : 'pusty',
     _zaladowany: true
   };
+  archZbudujMapeOdmian(wpisy);
   return _rejestr;
 }
 
@@ -389,22 +391,148 @@ function norm(s) {
     .replace(/ó/g, 'o').replace(/ś/g, 's').replace(/ź/g, 'z').replace(/ż/g, 'z');
 }
 
-export function getArchetyp(id) {
-  if (id == null || id === '') return null;
-  const sid = String(id);
-  const n = norm(sid);
-  const wpisy = _rejestr.wpisy || [];
-  for (const w of wpisy) {
-    if (w.id === sid || norm(w.id) === n) return zamrozWpis(w);
-    if (w.klasa && norm(w.klasa) === n) return zamrozWpis(w);
+function archLooksPolish(raw, t) {
+  if (/[ąćęłńóśźż]/i.test(String(raw || ''))) return true;
+  return /(ek|ka|ak|ik|yk|nik|nica|acz|arz|ec|ko|ina|ica|ura|oga)$/.test(t);
+}
+
+function archOdmiany(t) {
+  const set = {};
+  function add(s) {
+    if (s && s.length >= 3) set[s] = 1;
   }
-  for (const w of wpisy) {
+  add(t);
+  if (!t || /[\s-]/.test(t) || t.length < 3) return Object.keys(set);
+  if (/ek$/.test(t) && t.length >= 4 && !/(ik|yk)$/.test(t)) {
+    const s = t.slice(0, -2) + 'k';
+    ['a', 'iem', 'owi', 'i', 'ow', 'u', 'om', 'ami', 'ach'].forEach(function (x) { add(s + x); });
+  } else if (/(ik|yk)$/.test(t)) {
+    ['a', 'iem', 'owi', 'i', 'ow', 'u', 'om', 'ami', 'ach', 'e'].forEach(function (x) { add(t + x); });
+  } else if (/ka$/.test(t) && t.length >= 4) {
+    const s = t.slice(0, -1);
+    ['a', 'i', 'e', 'om', 'ami', 'ach'].forEach(function (x) { add(s + x); });
+    add(s + 'ce');
+  } else if (/ko$/.test(t) && t.length >= 4) {
+    const s = t.slice(0, -1);
+    ['o', 'a', 'u', 'iem', 'om', 'ami', 'ach'].forEach(function (x) { add(s + x); });
+  } else if (/a$/.test(t) && t.length >= 4) {
+    const s = t.slice(0, -1);
+    ['a', 'y', 'e', 'ze', 'om', 'ami', 'ach'].forEach(function (x) { add(s + x); });
+    if (s.length >= 3) add(s);
+  } else if (/ak$/.test(t)) {
+    ['a', 'iem', 'owi', 'i', 'ow', 'u', 'om', 'ami', 'ach', 'e'].forEach(function (x) { add(t + x); });
+  } else if (/[bcdfghjklmnpqrstvwxyz]$/.test(t)) {
+    ['a', 'em', 'iem', 'owi', 'u', 'i', 'y', 'ow', 'om', 'ami', 'ach'].forEach(function (x) { add(t + x); });
+  }
+  return Object.keys(set);
+}
+
+function archZbudujMapeOdmian(wpisy) {
+  const src = Array.isArray(wpisy) ? wpisy : [];
+  const exact = Object.create(null);
+  function markExact(raw, id) {
+    const t = norm(raw);
+    if (!t) return;
+    const sp = t.replace(/-/g, ' ');
+    if (exact[t] == null) exact[t] = id;
+    else if (exact[t] !== id) exact[t] = '';
+    if (sp !== t) {
+      if (exact[sp] == null) exact[sp] = id;
+      else if (exact[sp] !== id) exact[sp] = '';
+    }
+  }
+  for (let i = 0; i < src.length; i++) {
+    const w = src[i];
+    markExact(w.id, w.id);
+    markExact(w.klasa, w.id);
     const syn = w.synonimy || [];
-    for (let i = 0; i < syn.length; i++) {
-      if (norm(syn[i]) === n) return zamrozWpis(w);
+    for (let j = 0; j < syn.length; j++) markExact(syn[j], w.id);
+  }
+  const mapa = Object.create(null);
+  for (let i = 0; i < src.length; i++) {
+    const w = src[i];
+    const lemmas = [w.id, w.klasa].concat(w.synonimy || []);
+    for (let j = 0; j < lemmas.length; j++) {
+      const raw = lemmas[j];
+      if (raw == null || raw === '') continue;
+      const t0 = norm(raw);
+      if (!t0 || t0.indexOf(' ') >= 0 || t0.indexOf('-') >= 0) continue;
+      const jestId = (norm(w.id) === t0 || (w.klasa && norm(w.klasa) === t0));
+      if (!jestId && !archLooksPolish(raw, t0)) continue;
+      const forms = archOdmiany(t0);
+      for (let k = 0; k < forms.length; k++) {
+        const f = forms[k];
+        if (f === t0) continue;
+        if (exact[f] && exact[f] !== w.id) continue;
+        if (mapa[f] && mapa[f] !== w.id) { mapa[f] = ''; continue; }
+        if (!mapa[f]) mapa[f] = w.id;
+      }
+    }
+  }
+  const clean = Object.create(null);
+  const keys = Object.keys(mapa);
+  for (let i = 0; i < keys.length; i++) {
+    if (mapa[keys[i]]) clean[keys[i]] = mapa[keys[i]];
+  }
+  _mapaOdmian = clean;
+}
+
+function archZnajdzWpis(n) {
+  const wpisy = _rejestr.wpisy || [];
+  const nSp = n.replace(/-/g, ' ');
+  const nHy = n.replace(/\s+/g, '-');
+  for (let i = 0; i < wpisy.length; i++) {
+    const w = wpisy[i];
+    const nid = norm(w.id);
+    if (nid === n || nid === nSp || nid === nHy) return w;
+    if (w.klasa) {
+      const nk = norm(w.klasa);
+      if (nk === n || nk === nSp || nk === nHy) return w;
+    }
+  }
+  for (let i = 0; i < wpisy.length; i++) {
+    const syn = wpisy[i].synonimy || [];
+    for (let j = 0; j < syn.length; j++) {
+      const ns = norm(syn[j]);
+      if (ns === n || ns.replace(/-/g, ' ') === n || ns.replace(/\s+/g, '-') === n) return wpisy[i];
+    }
+  }
+  const oid = _mapaOdmian[n] || _mapaOdmian[nSp];
+  if (oid) {
+    for (let i = 0; i < wpisy.length; i++) {
+      if (wpisy[i].id === oid) return wpisy[i];
     }
   }
   return null;
+}
+
+export function getArchetyp(id) {
+  if (id == null || id === '') return null;
+  const w = archZnajdzWpis(norm(String(id)));
+  return w ? zamrozWpis(w) : null;
+}
+
+/**
+ * Jak człowiek nazwał klasę w tym zdaniu (szklanka), albo pusty string gdy to id.
+ */
+export function formaNazwyZeZdania(zdanie, klasaId) {
+  const wpis = getArchetyp(klasaId);
+  if (!wpis) return '';
+  const t = norm(zdanie).replace(/[^a-z0-9 ]+/g, ' ');
+  const words = t.split(/\s+/).filter(Boolean);
+  let best = '';
+  const maxN = Math.min(4, words.length);
+  for (let n = maxN; n >= 1; n--) {
+    for (let i = 0; i + n <= words.length; i++) {
+      const phrase = words.slice(i, i + n).join(' ');
+      const w = archZnajdzWpis(phrase);
+      if (w && w.id === wpis.id && phrase.length >= best.length) best = phrase;
+    }
+  }
+  if (!best) return '';
+  if (norm(best) === norm(wpis.id)) return '';
+  if (wpis.klasa && norm(best) === norm(wpis.klasa)) return '';
+  return best;
 }
 
 /** Alias ESM. W PWA nazwa `get` koliduje z localStorage — wołaj getArchetyp. */
@@ -625,10 +753,12 @@ export function dopiszDoRejestru() {
 }
 
 function pytanieOPole(pole, klasa) {
-  if (pole === 'kat') return 'Podaj kąt gięcia [stopnie] dla klasy ' + (klasa || '') + '.';
-  if (pole === 'hFront') return 'Podaj wysokość frontu (wargi) [mm] dla klasy ' + (klasa || '') + '.';
-  if (pole === 'd') return 'Podaj głębokość blatu [mm] dla klasy ' + (klasa || '') + '.';
-  return 'Podaj ' + pole + ' [mm] dla klasy ' + (klasa || '') + '.';
+  if (pole === 'kat') return 'Podaj kąt gięcia (kat) [stopnie] dla klasy ' + (klasa || '') + '.';
+  if (pole === 'hFront') return 'Podaj wysokość frontu (wargi) (hFront) [mm] dla klasy ' + (klasa || '') + '.';
+  if (pole === 'd') return 'Podaj głębokość blatu (d) [mm] dla klasy ' + (klasa || '') + '.';
+  const et = (typeof etykietaPola === 'function') ? etykietaPola(pole) : pole;
+  const kod = (et && et !== pole) ? (et + ' (' + pole + ')') : String(pole || '');
+  return 'Podaj ' + kod + ' [mm] dla klasy ' + (klasa || '') + '.';
 }
 
 function maLiczbe(params) {
@@ -826,7 +956,7 @@ function eksportP2S() {
   if (typeof window === 'undefined') return;
   window.P2S = window.P2S || {};
   window.P2S.archetypy = {
-    ladujRejestr, lista, get: getArchetyp, getArchetyp, walidujParametry, build, zastosujMatch,
+    ladujRejestr, lista, get: getArchetyp, getArchetyp, formaNazwyZeZdania, walidujParametry, build, zastosujMatch,
     ustawRejestr, dopiszDoRejestru, MATCH_NIE_PISZE_DO_REJESTRU,
     tekstArchetypow, czyRejestrGotowy, MAX_PYTAN_MATCH,
     ustawProgi, ladujProgi, progiAktualne

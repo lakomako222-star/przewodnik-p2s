@@ -8,8 +8,8 @@ import { WIDOKI, rzutuj, rysuj, etykietaGabarytu } from './preview.js';
 import { wyciagnijSzukaj, szukajSieci, hostDozwolony, tekstWynikowSzukania } from './szukaj.js';
 import { ladujPackNauki, szukajNauki, tekstKontekstuNauki, tagiZQuery } from './nauka-rag.js';
 import { dopasujSzablony, tekstSzablonow, SZABLONY } from './nauka-szablony.js';
-import { ladujRejestr, ladujProgi, tekstArchetypow, build as buildArchetyp, getArchetyp, zastosujMatch } from './archetypy.js';
-import { pomiarZwrotny, paryAxB, wymiaryZeZdania } from './wymiary-zdanie.js';
+import { ladujRejestr, ladujProgi, tekstArchetypow, build as buildArchetyp, getArchetyp, zastosujMatch, formaNazwyZeZdania } from './archetypy.js';
+import { pomiarZwrotny, paryAxB, wymiaryZeZdania, etykietaPola } from './wymiary-zdanie.js';
 import { cechyJakosciowe, matchLokalny } from './rozmiar-slowny.js';
 import {
   nowyProjectId, modelCzytaObraz, uzyjFlashDoOpisu, hintWizji, mockOpisZdjecia,
@@ -2033,7 +2033,7 @@ async function pjObsluzMatchBuild(klasa, parametry, zdanie, kl) {
     });
     if (!(await bootEngine())) return 'stop';
     const pk = pjPewnoscKl(pjOstatniaKlasyfikacja);
-    chatLine('ai', 'MATCH ' + klasa + (pk != null ? (' (p ' + pk + ')') : '')
+    chatLine('ai', 'MATCH ' + pjEtykietaKlasy(klasa, zdanie) + (pk != null ? (' (p ' + pk + ')') : '')
       + (kl2.lokalny ? ' — lokalny (bez chmury)' : '')
       + (kl2.uzasadnienie ? (': ' + kl2.uzasadnienie) : ''));
     const stareP = (kl && kl.parametry) || {};
@@ -2066,10 +2066,10 @@ async function pjObsluzMatchBuild(klasa, parametry, zdanie, kl) {
     const pole = b.pole;
     const pyt = (kl && Array.isArray(kl.pytania) && kl.pytania.length)
       ? kl.pytania
-      : ['Podaj ' + pole + ' [mm] dla klasy ' + klasa + '.'];
+      : ['Podaj ' + pjEtykietaPola(pole) + ' [mm] dla klasy ' + klasa + '.'];
     const pk = pjPewnoscKl(kl);
-    chatLine('ai', 'MATCH ' + klasa + (pk != null ? (' (p ' + pk + ')') : '')
-      + '. Brakuje ' + pole + ' — podaj w mm.');
+    chatLine('ai', 'MATCH ' + pjEtykietaKlasy(klasa, zdanie) + (pk != null ? (' (p ' + pk + ')') : '')
+      + '. Brakuje ' + pjEtykietaPola(pole) + ' — podaj w mm.');
     pokazPytaniaBramki(pyt);
     pjOczekujacyMatch = {
       klasa: klasa,
@@ -2100,6 +2100,26 @@ async function pjObsluzMatchBuild(klasa, parametry, zdanie, kl) {
   }
   pjOczekujacyMatch = null;
   return 'dalej';
+}
+
+function pjEtykietaPola(pole) {
+  const fn = typeof etykietaPola === 'function'
+    ? etykietaPola
+    : (window.P2S && window.P2S.etykietaPola);
+  if (typeof fn === 'function') {
+    const et = fn(pole);
+    if (et) return et;
+  }
+  return String(pole || '');
+}
+
+function pjEtykietaKlasy(klasa, zdanie) {
+  const fn = typeof formaNazwyZeZdania === 'function'
+    ? formaNazwyZeZdania
+    : (window.P2S && window.P2S.archetypy && window.P2S.archetypy.formaNazwyZeZdania);
+  const alias = (typeof fn === 'function') ? fn(zdanie, klasa) : '';
+  if (alias) return klasa + ' (' + alias + ')';
+  return klasa;
 }
 
 function pjWymiaryZeZdania(text) {
