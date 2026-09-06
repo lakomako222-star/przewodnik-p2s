@@ -211,6 +211,72 @@ export function parseSkalaXyz(text) {
   return null;
 }
 
+/**
+ * „na wymiary 360 x 150”, „do 360×150 mm”, „gabaryt 360 na 150”,
+ * „proporcjonalnie do 360”. Nie zamienia „20x5” ani „×1,2” na gabaryt.
+ */
+export function parseDoGabarytu(text) {
+  const t = _stripPl(text);
+  if (!t.trim()) return null;
+  const prop = /proporcjon/.test(t);
+  let m = t.match(/proporcjon\w*(?:\s+\w+){0,4}\s+do\s+(\d+(?:[.,]\d+)?)/);
+  if (m) {
+    const after = t.slice(m.index + m[0].length, m.index + m[0].length + 24);
+    if (!/[x×]/.test(after) && !/\s+na\s+\d/.test(after)) {
+      const x = parseFloat(m[1].replace(',', '.'));
+      if (x > 0) return { x: x, tryb: 'proporcjonalnie' };
+    }
+  }
+  const keyed = /na wymiary|do wymiarow|do gabarytu|gabaryt|na wymiar/.test(t)
+    || /do\s+\d+(?:[.,]\d+)?\s*(?:mm)?\s*[x×]/.test(t)
+    || (prop && /[x×]|\s+na\s+\d/.test(t));
+  if (!keyed) return null;
+  m = t.match(/(\d+(?:[.,]\d+)?)\s*(?:mm)?\s*[x×]\s*(\d+(?:[.,]\d+)?)(?:\s*(?:mm)?\s*[x×]\s*(\d+(?:[.,]\d+)?))?/);
+  if (!m) {
+    m = t.match(/(\d+(?:[.,]\d+)?)\s*(?:mm)?\s+na\s+(\d+(?:[.,]\d+)?)(?:\s*(?:mm)?\s+na\s+(\d+(?:[.,]\d+)?))?/);
+  }
+  if (!m) return null;
+  const x = parseFloat(m[1].replace(',', '.'));
+  const y = parseFloat(m[2].replace(',', '.'));
+  const z = m[3] != null ? parseFloat(m[3].replace(',', '.')) : undefined;
+  if (!(x > 0) || !(y > 0)) return null;
+  const out = { x: x, y: y, tryb: prop ? 'proporcjonalnie' : 'osie' };
+  if (z > 0) out.z = z;
+  return out;
+}
+
+/** bb i cel w mm → czynniki skali. Rozrzut > 2 % = nierównomiernie. */
+export function czynnikiDoGabarytu(bb, cel) {
+  if (!bb || !cel) return null;
+  const bx = Number(bb.x), by = Number(bb.y), bz = Number(bb.z);
+  if (!(bx > 0) || !(by > 0) || !(bz > 0)) return null;
+  let sx, sy, sz;
+  if (cel.tryb === 'proporcjonalnie') {
+    if (cel.y == null) {
+      const s = cel.x / Math.max(bx, by, bz);
+      sx = sy = sz = s;
+    } else {
+      const s = Math.min(cel.x / bx, cel.y / by, cel.z != null ? cel.z / bz : Infinity);
+      sx = sy = sz = s;
+    }
+  } else {
+    sx = cel.x / bx;
+    sy = cel.y / by;
+    sz = cel.z != null ? cel.z / bz : 1;
+  }
+  if (!(sx > 0) || !(sy > 0) || !(sz > 0) || !isFinite(sx) || !isFinite(sy) || !isFinite(sz)) {
+    return null;
+  }
+  const mn = Math.min(sx, sy, sz);
+  const mx = Math.max(sx, sy, sz);
+  const rozrzut = mn > 0 ? (mx / mn - 1) : 0;
+  return {
+    sx: sx, sy: sy, sz: sz,
+    nierownomiernie: rozrzut > 0.02,
+    rozrzut: rozrzut
+  };
+}
+
 export function u8ToB64(u8) {
   const bytes = u8 instanceof Uint8Array ? u8 : new Uint8Array(u8);
   if (typeof Buffer !== 'undefined') return Buffer.from(bytes).toString('base64');
@@ -413,6 +479,7 @@ if (typeof window !== 'undefined') {
   Object.assign(window.P2S, {
     nowyProjectId, modelCzytaObraz, uzyjFlashDoOpisu, hintWizji, mockOpisZdjecia,
     parseScalePercent, parseObwodRamiona, parseOtworBrelok, parseWydluz, parseSkalaXyz,
+    parseDoGabarytu, czynnikiDoGabarytu,
     zapiszNitke, wczytajNitke,
     aktywnaNitkaId, skrotRozmowy, kompresujZdjecie, trescZZdjeciami, promptOpisuZdjecia,
     VISION_FLASH, HINT_BEZ_WIZJI, TINY_PNG_DATA_URL, MAX_KRAWEDZ_ZDJ

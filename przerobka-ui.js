@@ -1052,6 +1052,36 @@
     prThumbs();
     if ($('prVisionHint')) $('prVisionHint').hidden = true;
     if (raw || imgs.length) prChat('me', (raw || 'zdjęcie') + (imgs.length ? ' [zdjęcie]' : ''));
+    var gab = window.P2S && window.P2S.parseDoGabarytu ? window.P2S.parseDoGabarytu(raw) : null;
+    if (gab) {
+      var bbG = bboxZBiez();
+      if (!bbG) {
+        prChat('ai', 'Najpierw wczytaj STL/3MF albo wróć z Projektu przyciskiem „Przerób to”.');
+        return;
+      }
+      var czG = window.P2S.czynnikiDoGabarytu ? window.P2S.czynnikiDoGabarytu(bbG, gab) : null;
+      if (!czG) {
+        prChat('ai', 'Nie da się policzyć skali do tego gabarytu.');
+        return;
+      }
+      var celTxt = fmt(gab.x) + (gab.y != null ? ('×' + fmt(gab.y)) : '')
+        + (gab.z != null ? ('×' + fmt(gab.z)) : '');
+      var msgG = 'teraz ' + fmt(bbG.x) + '×' + fmt(bbG.y) + '×' + fmt(bbG.z)
+        + ' → ' + celTxt + ': X ' + fmt(czG.sx) + ', Y ' + fmt(czG.sy) + ', Z ' + fmt(czG.sz);
+      if (czG.nierownomiernie) {
+        msgG += ' — nierównomiernie: grubości ścianek i średnice otworów się zmienią, nie do części pasowanych';
+        if ($('prWynik')) {
+          var dG = el('div', 'pr-ostrz');
+          dG.appendChild(el('b', null, 'SKALA_OSIE '));
+          dG.appendChild(el('span', null, 'Rozrzut czynników skali '
+            + (czG.rozrzut * 100).toFixed(1) + '% (>2%). Grubości i otwory się zmienią.'));
+          $('prWynik').appendChild(dG);
+        }
+      }
+      prChat('ai', msgG);
+      await skalaZywa([czG.sx, czG.sy, czG.sz]);
+      return;
+    }
     var otw = window.P2S && window.P2S.parseOtworBrelok ? window.P2S.parseOtworBrelok(raw) : null;
     if (otw) {
       await dziurkaZywa(otw);
