@@ -535,7 +535,7 @@ export function walidujParametry(id, params) {
 }
 
 /**
- * @returns {{ spec: object|null, powod: string|null, pole?: string }}
+ * @returns {{ spec: object|null, powod: string|null, pole?: string, komunikat?: string }}
  */
 export function build(id, params) {
   const wpis = getArchetyp(id);
@@ -562,7 +562,7 @@ export function build(id, params) {
     if (Array.isArray(spec.czesci) && spec.czesci.length) out.czesci = spec.czesci;
     return { spec: out, powod: null };
   } catch (e) {
-    return { spec: null, powod: 'brak_buildera' };
+    return { spec: null, powod: 'blad_buildera', komunikat: String((e && e.message) || e) };
   }
 }
 

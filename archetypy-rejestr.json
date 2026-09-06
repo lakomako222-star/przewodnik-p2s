@@ -23997,13 +23997,19 @@
         "additionalProperties": true,
         "properties": {
           "w": {
-            "type": "number"
+            "type": "number",
+            "minimum": 80,
+            "maximum": 482
           },
           "d": {
-            "type": "number"
+            "type": "number",
+            "minimum": 40,
+            "maximum": 250
           },
           "hFront": {
-            "type": "number"
+            "type": "number",
+            "minimum": 20,
+            "maximum": 80
           }
         },
         "required": [

@@ -1955,6 +1955,18 @@ async function pjObsluzMatchBuild(klasa, parametry, zdanie, kl) {
     };
     return 'stop';
   }
+  if (b && b.powod === 'blad_buildera') {
+    pjOczekujacyMatch = null;
+    chatLine('ai', String(b.komunikat || 'Builder nie zbudował modelu.')
+      + ' Popraw wymiar — nie zgaduję geometrii.');
+    return 'stop';
+  }
+  if (b && (b.powod === 'powyzej_maximum' || b.powod === 'ponizej_minimum')) {
+    pjOczekujacyMatch = null;
+    chatLine('ai', 'Parametr ' + (b.pole || '?') + ' poza zakresem (' + b.powod
+      + '). Popraw wymiar — nie zgaduję geometrii.');
+    return 'stop';
+  }
   if (b && b.powod === 'brak_buildera') {
     pjOczekujacyMatch = null;
     chatLine('ai', 'Klasa w rejestrze, ale brak buildera — ścieżka NEW (nie zgaduję geometrii).');

@@ -738,6 +738,13 @@ function napisMesh(k, keep, ctx) {
     literyCS.delete();
     literyCS = gruby;
   }
+  // Kropki i/j (i ogonki) są osobnymi konturami — BRYLY>1. Fuse do trzonu litery.
+  const fuseKropek = Math.max(2.8, h * 0.09);
+  const expanded = literyCS.offset(fuseKropek, 'Round', 2, 16);
+  literyCS.delete();
+  const fused = expanded.offset(-fuseKropek, 'Round', 2, 16);
+  expanded.delete();
+  literyCS = fused;
 
   const innerHalf = W / 2 + margines;
   const mostki = [];
@@ -745,11 +752,6 @@ function napisMesh(k, keep, ctx) {
     const yBase = yStart + mostek + (n - 1 - i) * lh;
     const hw = l.szerokosc / 2;
     mostki.push(csProstokat(-hw, yBase - mostek, hw, yBase + zaklad));
-    if (innerHalf > hw + 1) {
-      const tBar = Math.min(mostek, 2.5);
-      mostki.push(csProstokat(-innerHalf, yBase - mostek, -hw, yBase - mostek + tBar));
-      mostki.push(csProstokat(hw, yBase - mostek, innerHalf, yBase - mostek + tBar));
-    }
   });
 
   const szkielet = mostki.slice();
@@ -769,7 +771,37 @@ function napisMesh(k, keep, ctx) {
       y1 += extra * 0.5;
     }
     const rNaroza = 0.48 * Math.min(x1 - x0, y1 - y0);
-    szkielet.push(csPierscienRamki(x0, y0, x1, y1, ramka, rNaroza));
+    const prostZ = csProstokat(x0, y0, x1, y1);
+    const zewnRamki = csZaokraglony(prostZ, rNaroza);
+    if (zewnRamki !== prostZ) prostZ.delete();
+    gotowe.forEach((l, i) => {
+      const yBase = yStart + mostek + (n - 1 - i) * lh;
+      const hw = l.szerokosc / 2;
+      if (innerHalf > hw + 1) {
+        const tBar = Math.min(mostek, 2.5);
+        const pasek = csProstokat(x0, yBase - mostek, x1, yBase - mostek + tBar);
+        const clipped = pasek.intersect(zewnRamki);
+        pasek.delete();
+        szkielet.push(clipped);
+      }
+    });
+    const prostW = csProstokat(x0 + ramka, y0 + ramka, x1 - ramka, y1 - ramka);
+    const wew = csZaokraglony(prostW, Math.max(0.5, rNaroza - ramka));
+    if (wew !== prostW) prostW.delete();
+    const ring = zewnRamki.subtract(wew);
+    wew.delete();
+    zewnRamki.delete();
+    szkielet.push(ring);
+  } else {
+    gotowe.forEach((l, i) => {
+      const yBase = yStart + mostek + (n - 1 - i) * lh;
+      const hw = l.szerokosc / 2;
+      if (innerHalf > hw + 1) {
+        const tBar = Math.min(mostek, 2.5);
+        szkielet.push(csProstokat(-innerHalf, yBase - mostek, -hw, yBase - mostek + tBar));
+        szkielet.push(csProstokat(hw, yBase - mostek, innerHalf, yBase - mostek + tBar));
+      }
+    });
   }
   const yDol = y0;
   if (nogi > 0) {
