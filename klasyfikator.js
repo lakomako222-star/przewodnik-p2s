@@ -4,7 +4,7 @@
  * MATCH nigdy nie dopisuje do rejestru (archetypy.dopiszDoRejestru rzuca).
  */
 import { szukajInstancji } from './instancje.js';
-import { ladujRejestr, ladujProgi, lista, zastosujMatch, tekstArchetypow } from './archetypy.js';
+import { ladujRejestr, ladujProgi, zastosujMatch, tekstArchetypow } from './archetypy.js';
 
 export const SYS_KLAS = `Jesteś klasyfikatorem zleceń druku 3D na Bambu Lab P2S. Tylko polski. Nie piszesz kodu ani SPEC.
 
@@ -120,7 +120,9 @@ function fewShotTekst(instancje, archetypy) {
     linie.push('- archetyp klasa=' + (a.klasa || a.id || '?') + ' '
       + String(a.opis || a.uzasadnienie || '').slice(0, 160));
   }
-  return linie.length ? ('Kontekst (few-shot):\n' + linie.join('\n')) : 'Kontekst: brak instancji i archetypów.';
+  return linie.length
+    ? ('Kontekst (few-shot):\n' + linie.join('\n'))
+    : 'Kontekst: brak few-shot (lista archetypów w bloku system).';
 }
 
 function aliasParametry(p) {
@@ -181,16 +183,24 @@ export async function klasyfikujZdanie(zdanie, opts) {
   }
   try { await ladujRejestr(false); } catch (e2) { /* fetch 404 = rejestr pusty */ }
   try { await ladujProgi(false); } catch (eP) { /* brak progu = bez MATCH→NEW */ }
-  const arch = opts.archetypy || lista();
-  const user = 'Zdanie:\n' + String(zdanie || '') + '\n\n'
-    + fewShotTekst(inst, arch) + '\n\n' + tekstArchetypow();
+  /* Rejestr jest stały między zdaniami — w bloku system z cache_control (OpenRouter:
+     Anthropic/Gemini/Qwen, ephemeral). Zdanie i few-shot na końcu, inaczej prefiks
+     cache nie trafia. Few-shot bez listy archetypów: ta jest w system. */
+  const user = fewShotTekst(inst, []) + '\n\nZdanie:\n' + String(zdanie || '');
   const body = {
     model: opts.model || (typeof pjModelRoli === 'function' ? pjModelRoli('talk') : undefined),
     messages: [
-      { role: 'system', content: SYS_KLAS },
+      {
+        role: 'system',
+        content: [
+          { type: 'text', text: SYS_KLAS },
+          { type: 'text', text: tekstArchetypow(), cache_control: { type: 'ephemeral' } }
+        ]
+      },
       { role: 'user', content: user }
     ],
-    max_tokens: opts.max_tokens || 1200,
+    usage: { include: true },
+    max_tokens: opts.max_tokens || 2000,
     response_format: {
       type: 'json_schema',
       json_schema: { name: 'klasyfikator_v1', strict: true, schema: SCHEMAT_KLASYFIKATORA }
