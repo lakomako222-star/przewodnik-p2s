@@ -497,6 +497,9 @@ export async function mesh3MFWiele(czesci, opcje = {}) {
   const ODSTEP = opcje.odstep_mm ?? 8;
   const zachowaj = opcje.zachowajPolozenie === true;
 
+  let rzadY0 = 0;
+  let rzadTop = 0;
+  const PLYTA = opcje.plyta_mm ?? 256;
   czesci.forEach((cz, i) => {
     const id = i + 1;
     const src = cz.mesh || cz;
@@ -519,9 +522,19 @@ export async function mesh3MFWiele(czesci, opcje = {}) {
     const b = cz.bbox || m.bbox;
     const min0 = Array.isArray(b.min) ? b.min[0] : 0;
     const max0 = Array.isArray(b.max) ? b.max[0] : (b.x || 0);
+    const min1 = Array.isArray(b.min) ? b.min[1] : 0;
+    const max1 = Array.isArray(b.max) ? b.max[1] : (b.y || 0);
+    const sx = max0 - min0;
+    if (kursorX > 0 && kursorX + sx > PLYTA) {
+      rzadY0 = rzadTop + ODSTEP;
+      kursorX = 0;
+    }
     const dx = kursorX - min0;
-    kursorX += (max0 - min0) + ODSTEP;
-    itemy.push(`<item objectid="${id}" transform="1 0 0 0 1 0 0 0 1 ${r3(dx)} 0 0" printable="1"/>`);
+    const dy = rzadY0 === 0 ? 0 : (rzadY0 - min1);
+    kursorX += sx + ODSTEP;
+    const worldMaxY = max1 + dy;
+    if (worldMaxY > rzadTop) rzadTop = worldMaxY;
+    itemy.push(`<item objectid="${id}" transform="1 0 0 0 1 0 0 0 1 ${r3(dx)} ${r3(dy)} 0" printable="1"/>`);
   });
 
   const model =

@@ -2707,6 +2707,7 @@ h3[data-sprawdzono="2026-08-23"]::after{
 <div class="tw"><table><colgroup><col style="width:34.0%"><col style="width:66.0%"></colgroup><thead><tr><th>Kategoria</th><th>Co z niej pochodzi</th></tr></thead><tbody><tr><td data-l="Kategoria">Arkusz specyfikacji i blog Bambu Lab</td><td data-l="Co z niej pochodzi">Parametry P2S, obszar roboczy, temperatury graniczne, wyposażenie</td></tr><tr><td data-l="Kategoria">Bambu Lab Wiki</td><td data-l="Co z niej pochodzi">Procedury obsługi, konserwacji, kalibracji, suszenia i druku TPU</td></tr><tr><td data-l="Kategoria">Karty TDS Bambu Lab</td><td data-l="Co z niej pochodzi">Temperatury i suszenie TPU 95A HF oraz TPU for AMS</td></tr><tr><td data-l="Kategoria">Profile w repozytorium Bambu Studio</td><td data-l="Co z niej pochodzi">Nazwy płyt, limity przepływu, temperatury profilu P2S</td></tr><tr><td data-l="Kategoria">Strony produktowe SUNLU</td><td data-l="Co z niej pochodzi">Zakresy temperatur i prędkości dla PLA, PETG i TPU</td></tr><tr><td data-l="Kategoria">Poradniki SUNLU</td><td data-l="Co z niej pochodzi">Parametry i czasy suszenia</td></tr><tr><td data-l="Kategoria">Materiały BIQU i sprzedawców</td><td data-l="Co z niej pochodzi">Specyfikacja, temperatury i czyszczenie CryoGrip Pro Frostbite oraz Glacier</td></tr><tr><td data-l="Kategoria">Forum Bambu Lab i społeczność</td><td data-l="Co z niej pochodzi">Rozdział 26 - znane pułapki, słabe punkty, praktyka użytkowników</td></tr><tr><td data-l="Kategoria">MakerWorld i Printables</td><td data-l="Co z niej pochodzi">Rozdział 27 - modele akcesoriów i doświadczenia z doborem materiału</td></tr><tr><td data-l="Kategoria">Karta techniczna desykantu</td><td data-l="Co z niej pochodzi">Temperatura i czas regeneracji żelu krzemionkowego</td></tr></tbody></table></div>
 <h2 id="r-33-zrodla-wersja-i-zastrzezenia-33-3a-zrodla-pierwotne">Źródła pierwotne sprawdzone 21.08.2026</h2>
 <ul><li><a href="https://csm.bblcdn.com/hub/011651bed7b4405cb2c57da72ca8300c.pdf" target="_blank" rel="noopener noreferrer">Bambu Lab P2S — specyfikacja PDF</a></li><li><a href="https://us.store.bambulab.com/products/ams-2-pro?from=home_web" target="_blank" rel="noopener noreferrer">Bambu Lab AMS 2 Pro — zgodność materiałów i suszenie</a></li><li><a href="https://jp.store.bambulab.com/en/products/bambu-high-flow-hotend-h2d" target="_blank" rel="noopener noreferrer">Bambu High Flow Hotend — tabela H2/P2S</a></li><li><a href="https://github.com/bambulab/BambuStudio/releases/tag/v02.08.02.61" target="_blank" rel="noopener noreferrer">Bambu Studio 2.8.2 v02.08.02.61</a></li><li><a href="https://uk.store.bambulab.com/products/tpu-95a-hf?modelId=661571&amp;skr=yes" target="_blank" rel="noopener noreferrer">Bambu TPU 95A HF</a></li><li><a href="https://us.store.bambulab.com/products/tpu-for-ams" target="_blank" rel="noopener noreferrer">Bambu TPU for AMS</a></li><li><a href="https://www.sunlu.com/products/petg-3d-printing-filament" target="_blank" rel="noopener noreferrer">SUNLU PETG</a></li><li><a href="https://www.sunlu.com/products/tpu-95a-flexible-filament" target="_blank" rel="noopener noreferrer">SUNLU TPU 95A</a></li><li><a href="https://www.sunlu.com/wiki/filament-usage-guide" target="_blank" rel="noopener noreferrer">SUNLU Filament Usage Guide</a></li><li><a href="https://www.sunlu.com/de/wiki/fdm-performance-comparison" target="_blank" rel="noopener noreferrer">SUNLU FDM performance comparison — źródło rozbieżności High Speed Matte PETG</a></li><li><a href="https://biqu.equipment/products/biqu-panda-buildplate-cryogrip-pro?variant=42456105123938" target="_blank" rel="noopener noreferrer">BIQU Panda CryoGrip Pro</a></li></ul>
+<div class="box info"><div class="box-t">Treść 4.2.69</div><p>06.09.2026. Półka ścienna: czopy, nadlewy i ramię L liczone od głębokości i frontu (nie wystają poza blat), W≤482 mm, błąd buildera z komunikatem zamiast „brak buildera”. Eksport wielu części: nowy rząd gdy X przekroczy 256 mm. Napis: kropki i/j wkorpusowane (T-35 PASS), mostki w ścianę pierścienia. T-08: trzy części półki SHA identyczne z 4.2.68 (Studio 195×150×64 / 180×150×64 / 15×56×55 mm); nowy <code>napisChrzestAni.3mf</code> Studio 226.717×246.5×3 mm 1:1; <code>polkaKomplet.3mf</code> 4 obiekty, blat prawy poza płytą w Y (150+8+150&gt;256). <code>apk/version.json</code> nietknięty. Wersja treści przewodnika 3.3.</p></div>
 <div class="box info"><div class="box-t">Treść 4.2.68</div><p>06.09.2026. Builder <code>polkaScienna</code>: półka ścienna (blat + warga + 2× uchwyt L). W&gt;250 → podział, czopy w blacie i we froncie. Nadlew gdy materiał nad kieszenią &lt;2 mm. Fillet R2 czystym CSG (klocek minus walec), nie B-Rep. Klasa nowa — nie nadpisuje wspornika półki ani półki modułowej. T-08 3/3 w Studio (mm, 1:1): 195×150×64 / 180×150×64 / 15×56×55 — <code>e2e-projekt/T08-etap12e-polka/CZYTAJ.txt</code>. Rejestr 174 klas. <code>apk/version.json</code> nietknięty. Wersja treści przewodnika 3.3.</p></div>
 <div class="box info"><div class="box-t">Treść 4.2.67</div><p>06.09.2026. Szablony 12E: doniczka falista/ażurowa, klamra rurowa, obejma, uchwyt słuchawki prysznicowej, napis wielolinijkowy, deszczownica, zaczep Skadis/Pegboard/Multiboard. T-08 10/10 w Bambu Studio (mm, 1:1, bez ×25,4) — <code>e2e-projekt/T08-etap12e/CZYTAJ.txt</code>. Rejestr 173 klas (6 z <code>archetypy-wlasne.json</code>, zakresy [ZAŁOŻENIE]). Złącze toru BRIO pominięte. Sufit <code>index.html</code> 3,6 MB. <code>apk/version.json</code> nietknięty. Wersja treści przewodnika 3.3.</p></div>
 <div class="box info"><div class="box-t">Treść 4.2.66</div><p>06.09.2026. Hotfix Projektu: klasyfikator dostaje całe zlecenie (tury sklejone „ | ”), nie samo ostatnie zdanie — odpowiedź na pytanie nie jest już nowym, urwanym zleceniem; po dwóch rundach pytań rozmowa idzie dalej zamiast trzeciej serii. Naprawa <code>fillWersjaChip</code> (IIFE): od 4.2.45 listener <code>load</code> padał na pierwszej linii i PWA na Pages nie rejestrowała Service Workera. Nowy 3MF: brak — bez T-08. <code>apk/version.json</code> nietknięty. Wersja treści przewodnika 3.3.</p></div>
@@ -2785,7 +2786,7 @@ h3[data-sprawdzono="2026-08-23"]::after{
 <ul class="check"><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-0-nazwe-i-liste-profili-pl"><span>Nazwę i listę profili płyt</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-1-temperatury-w-profilach"><span>Temperatury w profilach filamentów dla P2S</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-2-nazwy-i-lokalizacje-kali"><span>Nazwy i lokalizację kalibracji w menu</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-3-sposob-mapowania-i-synch"><span>Sposób mapowania i synchronizacji AMS</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-4-funkcje-i-limity-suszeni"><span>Funkcje i limity suszenia w AMS 2 Pro</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-5-procedure-kalibracji-pie"><span>Procedurę kalibracji pierwszej warstwy na ekranie</span></label></li><li><label><input type="checkbox" data-ck="r-33-zrodla-wersja-i-zastrzezenia-33-5-aktualizacja-przewodnika-6-harmonogram-i-procedury"><span>Harmonogram i procedury konserwacji</span></label></li></ul>
 <p>Nie przenoś starych, niestandardowych presetów bez porównania z nowym profilem bazowym P2S. Zapisz stary profil pod inną nazwą, zamiast go nadpisywać.</p>
 <div class="box tip"><div class="box-t">Jak utrzymać ten dokument żywy</div><p>Trzymaj dziennik z rozdziału 29 razem z wydrukowanym przewodnikiem. Za każdym razem, gdy tabela w przewodniku okaże się nieaktualna, dopisz poprawkę na marginesie i datę. Po roku będziesz mieć wersję dopasowaną do własnego sprzętu i własnych materiałów.</p></div></section>
-  <div class="foot">Przewodnik 3.3 · treść 4.2.68 · stan na 31.08.2026<br>Etykieta szpuli i komunikat na ekranie drukarki mają pierwszeństwo przed tym przewodnikiem.</div>
+  <div class="foot">Przewodnik 3.3 · treść 4.2.69 · stan na 31.08.2026<br>Etykieta szpuli i komunikat na ekranie drukarki mają pierwszeństwo przed tym przewodnikiem.</div>
 </main>
 
 <!-- ===== DORADCA + NARZĘDZIA: wstrzykiwane przez build-html.js ===== -->
@@ -3292,6 +3293,7 @@ h3[data-sprawdzono="2026-08-23"]::after{
     <button type="button" data-sync="tresc">Treść</button>
   </nav>
   <div id="syncTrescBox" hidden>
+    <div class="box info"><div class="box-t">Treść 4.2.69</div><p>06.09.2026. Półka: czopy/nadlewy od D i hFront, W≤482, komunikat buildera. 3MF wiele: zawijanie rzędów 256 mm. Napis: fuse i/j, T-35 PASS. T-08: półka SHA=4.2.68; napisChrzestAni 226.717×246.5×3 mm; komplet 4 obiekty, Y poza płytą. Paczka GitHub zostaje 4.0.14.</p></div>
     <div class="box info"><div class="box-t">Treść 4.2.68</div><p>06.09.2026. Builder półki ściennej (<code>polkaScienna</code>). T-08 3/3 w Studio (mm, 1:1): 195×150×64 / 180×150×64 / 15×56×55. Rejestr 174. Paczka GitHub zostaje 4.0.14.</p></div>
     <div class="box info"><div class="box-t">Treść 4.2.67</div><p>06.09.2026. Szablony 12E (10 builderów). T-08 10/10 w Studio (mm, 1:1). Rejestr 173. Złącze toru BRIO pominięte. Sufit index 3,6 MB. Paczka GitHub zostaje 4.0.14.</p></div>
     <div class="box info"><div class="box-t">Treść 4.2.66</div><p>06.09.2026. Hotfix: klasyfikator widzi całe zlecenie (tury „ | ”), max 2 rundy pytań; <code>fillWersjaChip</code> nie blokuje już rejestracji SW na Pages. Nowy 3MF: brak — bez T-08. Paczka GitHub zostaje 4.0.14.</p></div>
@@ -7801,9 +7803,9 @@ if ('serviceWorker' in navigator) {
 
 </script>
 <script>
-window.P2S_VER_NAME='4.2.68';
+window.P2S_VER_NAME='4.2.69';
 window.P2S_SHELL_NAME='4.2.42';
-window.__P2S_META={wersja:'4.2.68',talk_ms:300000,spec_ms:600000,shell:'4.2.42'};
+window.__P2S_META={wersja:'4.2.69',talk_ms:300000,spec_ms:600000,shell:'4.2.42'};
 window.__P2S_DECISION="DECYZJA 4.2.22: bramka SCIENKA_OTWOR na kawałku SPEC po schemacie i próbnym buildzie geometrii, przed sklejeniem; 1 lokalna naprawa tylko wadliwego shardu, bez retry całego T5 i bez monolitu. DECYZJA 4.2.21: topper z napisem to jeden płaski wykrój 2D wyciągnięty na grubość — litery spina mostek 3 mm pod linią bazową i ramka 4,2 mm po obrysie (liczby z pomiaru wzorcowego toppera 142×153×2,8 mm), nóżki to płaskie trapezy 9,5→5,0 mm zamiast walców położonych na boku (te robiły z napisu 3 mm gabaryt 4,2 mm), font liczy szerokość znaku po zapalonych kolumnach, a poprzeczki w połowie liter zniknęły; nowe bramki NAPIS_BELKA / NAPIS_POZA_OBRYSEM (dołożona bryła przecina litery albo wychodzi >2 mm poza obrys), TACA_BEZ_RANTU (przekrój w 60% wysokości bez zamkniętej dziury ≥35% obrysu = płyta, nie wanienka) i STOJAK_BEZ_ZEBER (<6 żeber przy nazwie obiecującej żebrowanie) wracają do mózgu istniejącą ścieżką SPEC_GEOMETRIA; SYS_SPEC zakazuje dokładania własnych belek do napisu i podaje przepis na tacę-wanienkę oraz konstrukcję wzorca Towel_Holder_Ribbed. DECYZJA 4.2.20: strumień SSE dla każdego shardu SPEC — bufor do końca, potem schema (talk/plan/monolit bez zmian); max_tokens 26000 (powtórka 40000) + jawne reasoning.max_tokens 10000 zamiast effort:max, bo effort u Anthropica to część max_tokens; telemetria liczy tokeny myślenia i wyjścia; kawałek po schemacie przechodzi próbny build (SPEC_GEOMETRIA wraca do mózgu); finish_reason=length lub urwany JSON = SHARD_TRUNCATED + jedna powtórka; OR_BUSY dopisuje powód. DECYZJA 4.2.19: spec-sharding T5/T6 (N× SPEC 1.0 → czesci 1.1); plan json_object 120s; niepełny shard = nie PASS; schema PL bez shards[]. DECYZJA 4.2.18: wersja.json + SW hash; talk 300s / SPEC 600s; 408/429 backoff; Grok tylko profil eksperymentalny; SPEC schema przed 3MF; derivedFrom estimated. DECYZJA 4.2.17: timeout talk 300s / SPEC 600s; retry Opus; SPEC mm 1:1; zakaz pustych brył po RYSUJ; napis bbox. DECYZJA 4.2.16: mózg Claude Opus 5 max; zapas Grok 4.6 xhigh / Sol Pro / DeepSeek V4 Pro; pinnedId puszcza Anthropic; [[SZUKAJ]] wymuszone przy marce. DECYZJA 4.2.15: napis FDM+traktor; dziurka breloka uszkiem; spaw 0,05; skala XYZ; wydłuż uchwyty; 8 części i podział P2S; bez publikacji. DECYZJA 4.2.14: figurka CSG nie pudełko; brief z mm → RYSUJ; drop bez SPEC; alias otworu; retry bramki SCIENKA_OTWOR; bez publikacji. DECYZJA 4.2.13: Przerób — obwód obręczy ΔC (5 cm=50 mm) przesunięciem promieniowym + ramiona, nie skala całego bbox; bez publikacji. DECYZJA 4.2.12: nitka Projekt→Przerób (SPEC+siatka+checklista, localStorage); zdjęcie Flash-gdy-brak-wizji; scaleLiveMesh % na żywym modelu; bez publikacji. DECYZJA 4.2.11: picker Sol/Grok/Flash/Luna w Projekcie (lista OpenRouter); 3MF hint bez project_settings + Kopiuj do Studio; strona Sufit produktu; bez publikacji. DECYZJA 4.2.10: Projekt — [[SZUKAJ]] Wikipedia/DuckDuckGo bez klucza, dopytaj mm przed RYSUJ, po 3MF poprawki+checklista Studio; Asystent punkt 12; ściągi 5.17/5.18/6.8/5.15; bez publikacji. DECYZJA 4.2.9: Projekt — orientacja/podpory/brim w rozmowie i SPEC, checklista po 3MF (geometria bez project_settings); bramka 4.2.7 bez podpór zostaje; bez publikacji. DECYZJA 4.2.8: 5.17 nowa szpula (KALIBROWANE / nowe / Classic = Słoneczny); 5.18 proces 0.20 Standard na co dzień, 0.16 HQ, 0.24 test; bez publikacji. DECYZJA 4.2.7: plik bez podpór musi mieć fizycznie zapisaną orientację, stabilny styk i zero krytycznego nawisu w cechach mierzonych; stary 3MF FAIL, nowy PASS lokalnego gate; potwierdzenie ostrzeżenia Bambu i pomiar fizyczny pozostają otwarte; bez publikacji. DECYZJA 4.2.6: sufit programowy lokalnie; Projekt N=96, Przerób N=192 z r/cos(pi/N); N-14 z siatki 69,79–75; pełny sufit dopiero po wydruku i suwmiarce; bez publikacji. DECYZJA 4.2.5: 5.13 pułapka JSON \"nil\" (BambuStudio #10583); 3MF e2e przywrócony lokalnie; Pages zostaje 4.2.1 do słowa publikuj. DECYZJA 4.2.4: zakładka Projekt — wynalazca: dopytaj (wanna/rant), 2–3 sposoby, poleć jeden, extras jako propozycje, „lepiej nie” przy słabym briefie; SPEC JSON po wyborze; paste-SPEC zostaje. DECYZJA 4.2.3: zakładka Projekt — dopytaj rant/kształt, zaproponuj przyssawki z nazwą kubka (Qinuo QNSC-M40), searchPlan+OpenRouter web, potem SPEC; paste-SPEC zostaje. DECYZJA 4.2.2: N-12 kompensacja apotemy z N silnika (nie 96) i bez +0,02; N-13 zakres world-Y w rekordzie cechy; N-14 krótki współosiowy Ø56, zakres z siatki (nie 68–73); N-15 profil y→Ø(y) krok 0,2 maxDev 0,010; asercja N przy budowie walca. DECYZJA 4.2.1: zakładka Przerób/Przeróbka w UI, ten sam potok co Node 4.2 (bez przepisywania detektora/operacji/bramki). Silnik na wątku głównym z wklejonym Manifold (file://, jak Projekt). Pole aDens type=text inputmode=decimal. DECYZJA 4.2.0: modele P0 wg WYTYCZNE 4.2 (luna / gemini-3.7-flash / terra-pro). Detektor przeróbki w Node. Silnik Manifold wklejony jako base64 + UI jako zwykły skrypt (decyzja 4.1.1 zostaje). DECYZJA 4.1.1: silnik Manifold wklejony jako base64 + UI jako zwykły skrypt, nie jako pliki boczne. Powód: przewodnik jest jednym plikiem otwieranym z dysku; moduły ES i fetch .wasm są zablokowane przy file://. Pliki engine/ zostają obok dla PWA (cache SW) i testów Node.";
 
 window.__P2S_SILNIK='base64';
@@ -9407,6 +9409,13 @@ function napisMesh(k, keep, ctx) {
     literyCS.delete();
     literyCS = gruby;
   }
+  // Kropki i/j (i ogonki) są osobnymi konturami — BRYLY>1. Fuse do trzonu litery.
+  const fuseKropek = Math.max(2.8, h * 0.09);
+  const expanded = literyCS.offset(fuseKropek, 'Round', 2, 16);
+  literyCS.delete();
+  const fused = expanded.offset(-fuseKropek, 'Round', 2, 16);
+  expanded.delete();
+  literyCS = fused;
 
   const innerHalf = W / 2 + margines;
   const mostki = [];
@@ -9414,11 +9423,6 @@ function napisMesh(k, keep, ctx) {
     const yBase = yStart + mostek + (n - 1 - i) * lh;
     const hw = l.szerokosc / 2;
     mostki.push(csProstokat(-hw, yBase - mostek, hw, yBase + zaklad));
-    if (innerHalf > hw + 1) {
-      const tBar = Math.min(mostek, 2.5);
-      mostki.push(csProstokat(-innerHalf, yBase - mostek, -hw, yBase - mostek + tBar));
-      mostki.push(csProstokat(hw, yBase - mostek, innerHalf, yBase - mostek + tBar));
-    }
   });
 
   const szkielet = mostki.slice();
@@ -9438,7 +9442,37 @@ function napisMesh(k, keep, ctx) {
       y1 += extra * 0.5;
     }
     const rNaroza = 0.48 * Math.min(x1 - x0, y1 - y0);
-    szkielet.push(csPierscienRamki(x0, y0, x1, y1, ramka, rNaroza));
+    const prostZ = csProstokat(x0, y0, x1, y1);
+    const zewnRamki = csZaokraglony(prostZ, rNaroza);
+    if (zewnRamki !== prostZ) prostZ.delete();
+    gotowe.forEach((l, i) => {
+      const yBase = yStart + mostek + (n - 1 - i) * lh;
+      const hw = l.szerokosc / 2;
+      if (innerHalf > hw + 1) {
+        const tBar = Math.min(mostek, 2.5);
+        const pasek = csProstokat(x0, yBase - mostek, x1, yBase - mostek + tBar);
+        const clipped = pasek.intersect(zewnRamki);
+        pasek.delete();
+        szkielet.push(clipped);
+      }
+    });
+    const prostW = csProstokat(x0 + ramka, y0 + ramka, x1 - ramka, y1 - ramka);
+    const wew = csZaokraglony(prostW, Math.max(0.5, rNaroza - ramka));
+    if (wew !== prostW) prostW.delete();
+    const ring = zewnRamki.subtract(wew);
+    wew.delete();
+    zewnRamki.delete();
+    szkielet.push(ring);
+  } else {
+    gotowe.forEach((l, i) => {
+      const yBase = yStart + mostek + (n - 1 - i) * lh;
+      const hw = l.szerokosc / 2;
+      if (innerHalf > hw + 1) {
+        const tBar = Math.min(mostek, 2.5);
+        szkielet.push(csProstokat(-innerHalf, yBase - mostek, -hw, yBase - mostek + tBar));
+        szkielet.push(csProstokat(hw, yBase - mostek, innerHalf, yBase - mostek + tBar));
+      }
+    });
   }
   const yDol = y0;
   if (nogi > 0) {
@@ -10705,6 +10739,9 @@ async function mesh3MFWiele(czesci, opcje = {}) {
   const ODSTEP = opcje.odstep_mm ?? 8;
   const zachowaj = opcje.zachowajPolozenie === true;
 
+  let rzadY0 = 0;
+  let rzadTop = 0;
+  const PLYTA = opcje.plyta_mm ?? 256;
   czesci.forEach((cz, i) => {
     const id = i + 1;
     const src = cz.mesh || cz;
@@ -10727,9 +10764,19 @@ async function mesh3MFWiele(czesci, opcje = {}) {
     const b = cz.bbox || m.bbox;
     const min0 = Array.isArray(b.min) ? b.min[0] : 0;
     const max0 = Array.isArray(b.max) ? b.max[0] : (b.x || 0);
+    const min1 = Array.isArray(b.min) ? b.min[1] : 0;
+    const max1 = Array.isArray(b.max) ? b.max[1] : (b.y || 0);
+    const sx = max0 - min0;
+    if (kursorX > 0 && kursorX + sx > PLYTA) {
+      rzadY0 = rzadTop + ODSTEP;
+      kursorX = 0;
+    }
     const dx = kursorX - min0;
-    kursorX += (max0 - min0) + ODSTEP;
-    itemy.push(`<item objectid="${id}" transform="1 0 0 0 1 0 0 0 1 ${r3(dx)} 0 0" printable="1"/>`);
+    const dy = rzadY0 === 0 ? 0 : (rzadY0 - min1);
+    kursorX += sx + ODSTEP;
+    const worldMaxY = max1 + dy;
+    if (worldMaxY > rzadTop) rzadTop = worldMaxY;
+    itemy.push(`<item objectid="${id}" transform="1 0 0 0 1 0 0 0 1 ${r3(dx)} ${r3(dy)} 0" printable="1"/>`);
   });
 
   const model =
@@ -15223,7 +15270,7 @@ function polkaScienna(w, d, hFront) {
   const W = Number(w);
   const D = Number(d);
   const H_FRONT = num(hFront, 48);
-  if (!(W >= 80 && W <= 500)) throw new Error('polkaScienna: w poza 80–500 mm');
+  if (!(W >= 80 && W <= 482)) throw new Error('polkaScienna: w poza 80–482 mm');
   if (!(D >= 40 && D <= 250)) throw new Error('polkaScienna: d poza 40–250 mm');
   if (!(H_FRONT >= 20 && H_FRONT <= 80)) throw new Error('polkaScienna: hFront poza 20–80 mm');
 
@@ -15232,14 +15279,14 @@ function polkaScienna(w, d, hFront) {
   const FILLET_R = 2;
   const ARM_W = 15;
   const ARM_T = 5;
-  const ARM_REACH = 50;
   const WALL_H = 55;
   const WALL_T = 6;
   const HOLE_D = 4.5;
   const HOLE_DZ = 28;
   const CLEAR = 0.4;
   const BOSS_W = 23;
-  const BOSS_D = 56;
+  const BOSS_D = Math.min(56, D);
+  const ARM_REACH = Math.min(50, Math.max(8, BOSS_D - 6));
   const PLYTA = 256;
   const TEN_LEN = 15;
   const TEN_CLEAR = 0.3;
@@ -15248,6 +15295,12 @@ function polkaScienna(w, d, hFront) {
   const BOSS_H = (T_BLAT < st + MIN_NAD_KIESZENIA)
     ? Math.max(9, st + MIN_NAD_KIESZENIA + 1)
     : 0;
+  const czopBlatY0 = Math.min(40, Math.max(4, D * (40 / 150)));
+  const czopBlatY1 = Math.min(czopBlatY0 + 30, D - T_FRONT - FILLET_R - 2);
+  const czopBlatOk = (czopBlatY1 - czopBlatY0) >= 6;
+  const czopFrontZ0 = T_BLAT + 8;
+  const czopFrontZ1 = Math.min(40, T_BLAT + H_FRONT - 2);
+  const czopFrontOk = (czopFrontZ1 - czopFrontZ0) >= 6;
 
   const BR_SPACING = Math.min(220, Math.max(40, W - BOSS_W - 8));
   const br = [(W - BR_SPACING) / 2, (W + BR_SPACING) / 2];
@@ -15292,20 +15345,31 @@ function polkaScienna(w, d, hFront) {
   }
 
   function czopy() {
-    return [
-      boxMM('czopBlat', 'dodaj', splitX, splitX + TEN_LEN, 40, 70, 1.5, 5.5),
-      boxMM('czopFront', 'dodaj', splitX, splitX + TEN_LEN,
-        D - T_FRONT + 0.5, D - 0.5, 15, 40)
-    ];
+    const out = [];
+    if (czopBlatOk) {
+      out.push(boxMM('czopBlat', 'dodaj', splitX, splitX + TEN_LEN,
+        czopBlatY0, czopBlatY1, 1.5, 5.5));
+    }
+    if (czopFrontOk) {
+      out.push(boxMM('czopFront', 'dodaj', splitX, splitX + TEN_LEN,
+        D - T_FRONT + 0.5, D - 0.5, czopFrontZ0, czopFrontZ1));
+    }
+    return out;
   }
 
   function gniazda() {
-    return [
-      boxMM('gniazdoBlat', 'odejmij', splitX - 1, splitX + TEN_LEN + TEN_CLEAR,
-        40 - TEN_CLEAR, 70 + TEN_CLEAR, 1.5 - TEN_CLEAR, 5.5 + TEN_CLEAR),
-      boxMM('gniazdoFront', 'odejmij', splitX - 1, splitX + TEN_LEN + TEN_CLEAR,
-        D - T_FRONT + 0.5 - TEN_CLEAR, D - 0.5 + TEN_CLEAR, 15 - TEN_CLEAR, 40 + TEN_CLEAR)
-    ];
+    const out = [];
+    if (czopBlatOk) {
+      out.push(boxMM('gniazdoBlat', 'odejmij', splitX - 1, splitX + TEN_LEN + TEN_CLEAR,
+        czopBlatY0 - TEN_CLEAR, czopBlatY1 + TEN_CLEAR,
+        1.5 - TEN_CLEAR, 5.5 + TEN_CLEAR));
+    }
+    if (czopFrontOk) {
+      out.push(boxMM('gniazdoFront', 'odejmij', splitX - 1, splitX + TEN_LEN + TEN_CLEAR,
+        D - T_FRONT + 0.5 - TEN_CLEAR, D - 0.5 + TEN_CLEAR,
+        czopFrontZ0 - TEN_CLEAR, czopFrontZ1 + TEN_CLEAR));
+    }
+    return out;
   }
 
   const zebroY = Math.max(8, ARM_REACH - 8);
@@ -15330,7 +15394,7 @@ function polkaScienna(w, d, hFront) {
   uchwytBryly.push(walecY('otwor1', 'odejmij', HOLE_D, -WALL_T - 2, 2, ARM_W / 2, z0otw + HOLE_DZ));
 
   const uwagiUchwyt = 'Uchwyt L: ramię poziome na stole. Drukuj 2 sztuki. Otwory Ø4,5 pod wkręt do kołka.';
-  const uwagiBlat = 'Blat: górna powierzchnia na stole (obrót 180° wokół X w slicerze) — naddlewy i front w +Z, bez podpór. Nie skalować w slicerze.';
+  const uwagiBlat = 'Blat: górna powierzchnia na stole (obrót 180° wokół X w slicerze) — nadlewy i front w +Z, bez podpór. Nie skalować w slicerze.';
   const czUchwyt = Object.assign({
     nazwa: 'Uchwyt L',
     material: 'PETG',
@@ -16198,7 +16262,7 @@ function walidujParametry(id, params) {
 }
 
 /**
- * @returns {{ spec: object|null, powod: string|null, pole?: string }}
+ * @returns {{ spec: object|null, powod: string|null, pole?: string, komunikat?: string }}
  */
 function build(id, params) {
   const wpis = getArchetyp(id);
@@ -16225,7 +16289,7 @@ function build(id, params) {
     if (Array.isArray(spec.czesci) && spec.czesci.length) out.czesci = spec.czesci;
     return { spec: out, powod: null };
   } catch (e) {
-    return { spec: null, powod: 'brak_buildera' };
+    return { spec: null, powod: 'blad_buildera', komunikat: String((e && e.message) || e) };
   }
 }
 
@@ -19605,6 +19669,18 @@ async function pjObsluzMatchBuild(klasa, parametry, zdanie, kl) {
       nPytan: n + 1,
       kl: kl || {}
     };
+    return 'stop';
+  }
+  if (b && b.powod === 'blad_buildera') {
+    pjOczekujacyMatch = null;
+    chatLine('ai', String(b.komunikat || 'Builder nie zbudował modelu.')
+      + ' Popraw wymiar — nie zgaduję geometrii.');
+    return 'stop';
+  }
+  if (b && (b.powod === 'powyzej_maximum' || b.powod === 'ponizej_minimum')) {
+    pjOczekujacyMatch = null;
+    chatLine('ai', 'Parametr ' + (b.pole || '?') + ' poza zakresem (' + b.powod
+      + '). Popraw wymiar — nie zgaduję geometrii.');
     return 'stop';
   }
   if (b && b.powod === 'brak_buildera') {

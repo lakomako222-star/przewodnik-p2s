@@ -391,7 +391,7 @@ export function polkaScienna(w, d, hFront) {
   const W = Number(w);
   const D = Number(d);
   const H_FRONT = num(hFront, 48);
-  if (!(W >= 80 && W <= 500)) throw new Error('polkaScienna: w poza 80–500 mm');
+  if (!(W >= 80 && W <= 482)) throw new Error('polkaScienna: w poza 80–482 mm');
   if (!(D >= 40 && D <= 250)) throw new Error('polkaScienna: d poza 40–250 mm');
   if (!(H_FRONT >= 20 && H_FRONT <= 80)) throw new Error('polkaScienna: hFront poza 20–80 mm');
 
@@ -400,14 +400,14 @@ export function polkaScienna(w, d, hFront) {
   const FILLET_R = 2;
   const ARM_W = 15;
   const ARM_T = 5;
-  const ARM_REACH = 50;
   const WALL_H = 55;
   const WALL_T = 6;
   const HOLE_D = 4.5;
   const HOLE_DZ = 28;
   const CLEAR = 0.4;
   const BOSS_W = 23;
-  const BOSS_D = 56;
+  const BOSS_D = Math.min(56, D);
+  const ARM_REACH = Math.min(50, Math.max(8, BOSS_D - 6));
   const PLYTA = 256;
   const TEN_LEN = 15;
   const TEN_CLEAR = 0.3;
@@ -416,6 +416,12 @@ export function polkaScienna(w, d, hFront) {
   const BOSS_H = (T_BLAT < st + MIN_NAD_KIESZENIA)
     ? Math.max(9, st + MIN_NAD_KIESZENIA + 1)
     : 0;
+  const czopBlatY0 = Math.min(40, Math.max(4, D * (40 / 150)));
+  const czopBlatY1 = Math.min(czopBlatY0 + 30, D - T_FRONT - FILLET_R - 2);
+  const czopBlatOk = (czopBlatY1 - czopBlatY0) >= 6;
+  const czopFrontZ0 = T_BLAT + 8;
+  const czopFrontZ1 = Math.min(40, T_BLAT + H_FRONT - 2);
+  const czopFrontOk = (czopFrontZ1 - czopFrontZ0) >= 6;
 
   const BR_SPACING = Math.min(220, Math.max(40, W - BOSS_W - 8));
   const br = [(W - BR_SPACING) / 2, (W + BR_SPACING) / 2];
@@ -460,20 +466,31 @@ export function polkaScienna(w, d, hFront) {
   }
 
   function czopy() {
-    return [
-      boxMM('czopBlat', 'dodaj', splitX, splitX + TEN_LEN, 40, 70, 1.5, 5.5),
-      boxMM('czopFront', 'dodaj', splitX, splitX + TEN_LEN,
-        D - T_FRONT + 0.5, D - 0.5, 15, 40)
-    ];
+    const out = [];
+    if (czopBlatOk) {
+      out.push(boxMM('czopBlat', 'dodaj', splitX, splitX + TEN_LEN,
+        czopBlatY0, czopBlatY1, 1.5, 5.5));
+    }
+    if (czopFrontOk) {
+      out.push(boxMM('czopFront', 'dodaj', splitX, splitX + TEN_LEN,
+        D - T_FRONT + 0.5, D - 0.5, czopFrontZ0, czopFrontZ1));
+    }
+    return out;
   }
 
   function gniazda() {
-    return [
-      boxMM('gniazdoBlat', 'odejmij', splitX - 1, splitX + TEN_LEN + TEN_CLEAR,
-        40 - TEN_CLEAR, 70 + TEN_CLEAR, 1.5 - TEN_CLEAR, 5.5 + TEN_CLEAR),
-      boxMM('gniazdoFront', 'odejmij', splitX - 1, splitX + TEN_LEN + TEN_CLEAR,
-        D - T_FRONT + 0.5 - TEN_CLEAR, D - 0.5 + TEN_CLEAR, 15 - TEN_CLEAR, 40 + TEN_CLEAR)
-    ];
+    const out = [];
+    if (czopBlatOk) {
+      out.push(boxMM('gniazdoBlat', 'odejmij', splitX - 1, splitX + TEN_LEN + TEN_CLEAR,
+        czopBlatY0 - TEN_CLEAR, czopBlatY1 + TEN_CLEAR,
+        1.5 - TEN_CLEAR, 5.5 + TEN_CLEAR));
+    }
+    if (czopFrontOk) {
+      out.push(boxMM('gniazdoFront', 'odejmij', splitX - 1, splitX + TEN_LEN + TEN_CLEAR,
+        D - T_FRONT + 0.5 - TEN_CLEAR, D - 0.5 + TEN_CLEAR,
+        czopFrontZ0 - TEN_CLEAR, czopFrontZ1 + TEN_CLEAR));
+    }
+    return out;
   }
 
   const zebroY = Math.max(8, ARM_REACH - 8);
@@ -498,7 +515,7 @@ export function polkaScienna(w, d, hFront) {
   uchwytBryly.push(walecY('otwor1', 'odejmij', HOLE_D, -WALL_T - 2, 2, ARM_W / 2, z0otw + HOLE_DZ));
 
   const uwagiUchwyt = 'Uchwyt L: ramię poziome na stole. Drukuj 2 sztuki. Otwory Ø4,5 pod wkręt do kołka.';
-  const uwagiBlat = 'Blat: górna powierzchnia na stole (obrót 180° wokół X w slicerze) — naddlewy i front w +Z, bez podpór. Nie skalować w slicerze.';
+  const uwagiBlat = 'Blat: górna powierzchnia na stole (obrót 180° wokół X w slicerze) — nadlewy i front w +Z, bez podpór. Nie skalować w slicerze.';
   const czUchwyt = Object.assign({
     nazwa: 'Uchwyt L',
     material: 'PETG',
