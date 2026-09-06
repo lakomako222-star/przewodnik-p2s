@@ -310,6 +310,41 @@ export function skrotRozmowy(blob, maxLen) {
   return s.length <= n ? s : s.slice(-n);
 }
 
+/** Separator tur jednego zlecenia — ten sam, którego używa domknięcie MATCH. */
+export const SEPARATOR_TUR = ' | ';
+
+/**
+ * Tury jednego zlecenia sklejone w jedno zdanie: klasyfikator i talk widzą całość,
+ * nie samo ostatnie zdanie (4.2.65 na telefonie: każda odpowiedź na pytanie
+ * klasyfikowana osobno → REJECT w kółko). Ostatnia tura nie dubluje się;
+ * najstarsze wypadają po maxTur / maxZnakow.
+ */
+export function sklejTury(poprzednie, nowe, opts) {
+  const o = opts || {};
+  const maxTur = o.maxTur || 8;
+  const maxZnakow = o.maxZnakow || 1200;
+  const n = String(nowe || '').trim();
+  const p = String(poprzednie || '').trim();
+  if (!n) return p;
+  if (!p) return n;
+  const tury = p.split(SEPARATOR_TUR).map((s) => s.trim()).filter(Boolean);
+  if (tury[tury.length - 1] === n) return tury.join(SEPARATOR_TUR);
+  tury.push(n);
+  while (tury.length > maxTur) tury.shift();
+  let s = tury.join(SEPARATOR_TUR);
+  while (tury.length > 1 && s.length > maxZnakow) {
+    tury.shift();
+    s = tury.join(SEPARATOR_TUR);
+  }
+  return s;
+}
+
+/** REJECT pyta najwyżej `max` razy w jednym zleceniu; potem ścieżka NEW z tym, co jest. */
+export function czyPytacDalej(decyzja, rundy, max) {
+  const m = max == null ? 2 : max;
+  return String(decyzja || '').toUpperCase() === 'REJECT' && (Number(rundy) || 0) < m;
+}
+
 function przeczytajJakoDataUrl(file) {
   return new Promise((resolve, reject) => {
     if (typeof file === 'string' && /^data:image\//i.test(file)) {

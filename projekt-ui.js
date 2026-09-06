@@ -13,7 +13,8 @@ import { pomiarZwrotny } from './wymiary-zdanie.js';
 import {
   nowyProjectId, modelCzytaObraz, uzyjFlashDoOpisu, hintWizji, mockOpisZdjecia,
   parseScalePercent, zapiszNitke, wczytajNitke, skrotRozmowy, kompresujZdjecie,
-  trescZZdjeciami, promptOpisuZdjecia, VISION_FLASH, HINT_BEZ_WIZJI, TINY_PNG_DATA_URL
+  trescZZdjeciami, promptOpisuZdjecia, VISION_FLASH, HINT_BEZ_WIZJI, TINY_PNG_DATA_URL,
+  sklejTury, czyPytacDalej
 } from './nitka.js';
 import {
   bledySpecSchema, walidujSpecAlboRzuc, orHttpRetryowalny, orTimeoutLubPusty,
@@ -277,6 +278,8 @@ let schema = null;
 let last = null;
 let lastIdx = 0;
 let pytanieRundy = 0;
+/* Tury bieżącego zlecenia sklejone „ | ” (sklejTury) — kasowane po udanym buildzie w zbuduj(). */
+let pjZdanieZbiorcze = '';
 let engineOk = false;
 let engineTried = false;
 let enginePromise = null;
@@ -1748,6 +1751,9 @@ async function zbuduj(spec, note, prev, context, opts) {
     }
   }
   $('pjPytanieWrap').hidden = true;
+  /* Udany build zamyka zlecenie: kolejne zdanie to nowe zlecenie albo poprawka prev. */
+  pjZdanieZbiorcze = '';
+  pytanieRundy = 0;
   last = r;
   lastIdx = 0;
   last.iteracje = petla.iteracje;
@@ -2012,7 +2018,11 @@ async function zrob() {
       + ' min · ' + meta.wersja + (meta.stamp ? (' · ' + meta.stamp) : '') + '.');
   }
   try {
-    let text = text0;
+    /* Całe zlecenie, nie ostatnie zdanie: odpowiedź na pytanie klasyfikatora
+       dokleja się do poprzednich tur (jak pjDomknijOczekujacyMatch). */
+    pjZdanieZbiorcze = sklejTury(pjZdanieZbiorcze, text0);
+    const zlecenie = pjZdanieZbiorcze;
+    let text = zlecenie;
     if (imgs.length) {
       const talkId = pjModelRoli('talk');
       if (uzyjFlashDoOpisu(talkId)) {
@@ -2029,7 +2039,7 @@ async function zrob() {
         }
       }
     }
-    pjOstatnieZdanie = text0;
+    pjOstatnieZdanie = zlecenie;
     try {
       const klasFn = pjFnKlasyfikuj();
       if (typeof klasFn === 'function') {
@@ -2037,14 +2047,22 @@ async function zrob() {
           orCall: orCall,
           model: pjModelRoli('talk'),
           timeoutMs: 60000,
-          zdanieWymiary: text0
+          zdanieWymiary: zlecenie
         });
         pjOstatniaKlasyfikacja = kl;
         if (kl && kl.decyzja === 'REJECT') {
-          const pyt = (kl.pytania || []).filter(Boolean).slice(0, 3);
-          pokazPytaniaBramki(pyt.length ? pyt : ['Doprecyzuj zlecenie (max 3 pytania).']);
-          if (kl.uzasadnienie) chatLine('ai', kl.uzasadnienie);
-          return;
+          if (czyPytacDalej(kl.decyzja, pytanieRundy)) {
+            pytanieRundy += 1;
+            const pyt = (kl.pytania || []).filter(Boolean).slice(0, 3);
+            pokazPytaniaBramki(pyt.length ? pyt : ['Doprecyzuj zlecenie (max 3 pytania).']);
+            if (kl.uzasadnienie) chatLine('ai', kl.uzasadnienie);
+            return;
+          }
+          /* Dwie rundy REJECT za nami — dalej rozmowa projektowa (NEW) z całym zleceniem,
+             nie trzecia seria pytań. */
+          const wrapPyt = $('pjPytanieWrap');
+          if (wrapPyt) wrapPyt.hidden = true;
+          chatLine('ai', 'Dwie rundy pytań za mną — przechodzę do rozmowy projektowej z tym, co mam.');
         }
         if (kl && kl.decyzja === 'REMIX') {
           chatLine('ai', (kl.uzasadnienie ? (kl.uzasadnienie + ' ') : '')
@@ -2466,9 +2484,8 @@ function bind() {
   if (py) py.addEventListener('click', async () => {
     const ans = ($('pjPytanieIn').value || '').trim();
     if (!ans) return;
-    pytanieRundy += 1;
+    /* Rundy liczy zrob() przy REJECT (czyPytacDalej) — tu tylko przekazanie odpowiedzi. */
     $('pjIn').value = ans;
-    if (pytanieRundy >= 2) chatLine('ai', 'Przyjmuję wartości domyślne po dwóch rundach pytań.');
     zrob();
   });
   const wmin = $('pjWmin');
