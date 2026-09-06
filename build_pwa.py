@@ -50,6 +50,22 @@ OPCJONALNE = [
     "modele_guard.js",
     "modele-rura.js",
     "szukaj.js",
+    "nauka-rag.js",
+    "nauka-szablony.js",
+    "nauka-pack.json",
+    "szablony-obrotowe.js",
+    "szablony-home.js",
+    "szablony-12b.js",
+    "szablony-12c.js",
+    "szablony-12d.js",
+    "szablony-12e.js",
+    "wymiary-zdanie.js",
+    "archetypy.js",
+    "archetypy-rejestr.json",
+    "instancje.js",
+    "klasyfikator.js",
+    "progi-klasyfikatora.json",
+    "nauka-ocena.js",
     "nitka.js",
     "spec-validate.js",
     "font-skrypt.js",
@@ -103,6 +119,21 @@ def hashed_bytes() -> bytes:
         "preview.js",
         "projekt-ui.js",
         "szukaj.js",
+        "nauka-rag.js",
+        "nauka-szablony.js",
+        "nauka-pack.json",
+        "szablony-obrotowe.js",
+        "szablony-home.js",
+        "szablony-12b.js",
+        "szablony-12c.js",
+        "szablony-12d.js",
+        "szablony-12e.js",
+        "wymiary-zdanie.js",
+        "archetypy.js",
+        "archetypy-rejestr.json",
+        "instancje.js",
+        "klasyfikator.js",
+        "progi-klasyfikatora.json",
         "nitka.js",
         "przerobka-web.js",
         "przerobka-ui.js",
@@ -234,7 +265,11 @@ def copy_assets() -> None:
             shutil.copyfile(src, eng / name)
     for name in (
         "builder.js", "gate.js", "export3mf.js", "preview.js", "projekt-ui.js",
-        "szukaj.js", "nitka.js", "przerobka-web.js", "przerobka-ui.js", "intent.js",
+        "szukaj.js", "nauka-rag.js", "nauka-szablony.js", "szablony-obrotowe.js", "szablony-home.js",
+        "szablony-12b.js", "szablony-12c.js", "szablony-12d.js", "szablony-12e.js", "wymiary-zdanie.js", "nauka-pack.json",
+        "archetypy.js", "archetypy-rejestr.json",
+        "instancje.js", "klasyfikator.js", "progi-klasyfikatora.json",
+        "nitka.js", "przerobka-web.js", "przerobka-ui.js", "intent.js",
         "modele_guard.js", "modele-rura.js",
         "spec-v1.schema.json", "spec-validate.js", "font-skrypt.js",
         "studio.css", "studio.js", "t0-checklista.js",
@@ -245,6 +280,7 @@ def copy_assets() -> None:
         "drukarka-status.js",
         "wizja-projekt.js",
         "brep-cechy.js",
+        "nauka-ocena.js",
         "wersja.json", "pliki.json",
         "manifest.webmanifest",
     ):
@@ -296,26 +332,19 @@ def _strip_esm_projekt(src: str) -> str:
     return text
 
 
+def _load_sync_projekt():
+    path = ROOT / "_sync_inlined_projekt_ui.py"
+    spec = importlib.util.spec_from_file_location("_sync_inlined_projekt_ui", path)
+    if spec is None or spec.loader is None:
+        raise SystemExit("nie wczytano _sync_inlined_projekt_ui.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def _expected_projekt_ui_block() -> str:
-    # Ta sama kolejność co _sync_inlined_projekt_ui.py (nitka+szukaj+nauka-rag+validate+body).
-    src = (ROOT / "projekt-ui.js").read_text(encoding="utf-8")
-    szukaj = _strip_esm_projekt((ROOT / "szukaj.js").read_text(encoding="utf-8"))
-    nauka = _strip_esm_projekt((ROOT / "nauka-rag.js").read_text(encoding="utf-8"))
-    nitka = _strip_esm_projekt((ROOT / "nitka.js").read_text(encoding="utf-8"))
-    validate = _strip_esm_projekt((ROOT / "spec-validate.js").read_text(encoding="utf-8"))
-    body = _strip_esm_projekt(src)
-    header = (
-        "(function(){\n"
-        "window.P2S = window.P2S || {};\n"
-        "const { initEngine, buildAndGate, specDiff, meshToVF, normalizujJednostki, walidujPlanDruku, "
-        "scaleLiveMesh, scaleSpecNumeric, ocenBrimPoSkali, "
-        "mesh3MF, mesh3MFWiele, tekstDeklaracji, nazwa3mf, checklistaDruku, WIDOKI, rzutuj, rysuj, etykietaGabarytu, "
-        "ocenScienkeOtwor, ocenOrientacjeNaSztorc } = window.P2S;\n"
-    )
-    wrapped = (
-        header + nitka + "\n" + szukaj + "\n" + nauka + "\n" + validate + "\n" + body + "})();\n"
-    )
-    return "/* inlined projekt-ui.js */\n" + wrapped + "</script>\n\n<script>\n"
+    mod = _load_sync_projekt()
+    return "/* inlined projekt-ui.js */\n" + mod.build_wrapped() + "</script>\n\n<script>\n"
 
 
 def _slice_until_next(html: str, name: str, next_name: str) -> str | None:
@@ -423,8 +452,10 @@ def verify_inlined_matches_source(html: str) -> None:
     print("inlined OK", ", ".join(found))
 
 
-# Sufit zmierzony 30.08.2026: index.html ~3,11 MB. Zapas, nie cięcie funkcji.
-INDEX_HTML_MAX_BYTES = 3_400_000
+# Sufit: 30.08.2026 index ~3,11 MB → 3,40 MB. 6.09.2026 po 4.2.65 = 3 361 872 B
+# (zostało 38 kB). 12e ~25–30 kB + druga czcionka ~80 kB nie mieszczą się w 3,40 MB.
+# C0: 3,60 MB, decyzja właściciela 6.09.2026 (pomiar, nie zgadywanie).
+INDEX_HTML_MAX_BYTES = 3_600_000
 TRESC_BOX_RE = re.compile(r'<div class="box-t">Treść\s+([0-9]+(?:\.[0-9]+)+)</div>')
 
 
@@ -656,7 +687,9 @@ def read_shell_name() -> str:
 
 
 def chip_text(tresc: str, shell: str) -> str:
-    return f"treść {tresc} · shell APK {shell}"
+    # Stopka: treść bez kłamliwego "shell APK" (PWA/file nie jest APK).
+    # #sheetVer: neutralny fallback; p2sChipText() nadpisuje po starcie.
+    return f"treść {tresc}"
 
 
 FOOT_STAMP_RE = re.compile(
@@ -681,6 +714,7 @@ def stamp_index_meta(html: str, version: str, shell: str | None = None) -> str:
     if "window.__P2S_DECISION=" in html:
         html = html.replace("window.__P2S_DECISION=", inject + "window.__P2S_DECISION=", 1)
     chip = chip_text(version, shell)
+    sheet_fallback = "treść —"
 
     def foot_sub(m: re.Match[str]) -> str:
         return f"{m.group(1)}Przewodnik 3.3 · {chip} · stan na {m.group(2)}"
@@ -688,7 +722,7 @@ def stamp_index_meta(html: str, version: str, shell: str | None = None) -> str:
     html, nfoot = FOOT_STAMP_RE.subn(foot_sub, html, count=1)
     if nfoot != 1:
         raise SystemExit(f"stopka: oczekiwano 1, jest {nfoot}")
-    sheet_new = f'<span id="sheetVer" style="opacity:.8">{chip}</span>'
+    sheet_new = f'<span id="sheetVer" style="opacity:.8">{sheet_fallback}</span>'
     html, nsheet = SHEET_VER_RE.subn(sheet_new, html, count=1)
     if nsheet != 1:
         raise SystemExit(f"sheetVer: oczekiwano 1, jest {nsheet}")

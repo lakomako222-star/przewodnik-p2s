@@ -791,6 +791,21 @@ export function sprawdzBramke(part, dekl, spec, opts = {}) {
       }
     }
   }
+  const brylySpec = (spec && spec.bryly) || [];
+  for (let i = 0; i < brylySpec.length; i++) {
+    const b = brylySpec[i];
+    if (!b || b.operacja !== 'odejmij' || !b.ksztalt || b.ksztalt.typ !== 'walec') continue;
+    if (!/^dysza/i.test(String(b.id || ''))) continue;
+    const d0 = Number(b.ksztalt.srednica_dolna_mm);
+    const d1 = Number(b.ksztalt.srednica_gorna_mm);
+    const d = Math.min(d0, d1);
+    if (Number.isFinite(d) && d < 2.0) {
+      ostrz('DYSZA_MALA',
+        'Dysza Ø' + d.toFixed(2) + ' mm jako odejmij walec (cecha otwor by dała OTWOR_MALY). ' +
+        'To ostrzeżenie, nie błąd — wydruk kuponu przed montażem.',
+        d);
+    }
+  }
   const sci = ocenScienkeOtwor(g, spec);
   if (!sci.ok) {
     blad(sci.code || 'SCIENKA_OTWOR', sci.details.localReason, sci.details.wallMm);
