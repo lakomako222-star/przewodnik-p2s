@@ -1,6 +1,7 @@
 /**
- * C1 desktop PWA — File System Access + instalacja.
- * Na appassets / bez API: no-op; pobierzPlik spada na <a download>.
+ * C1: File System Access + instalacja PWA.
+ * C2: Tauri — zapisz_i_otworz (Documents\projekty do druku + Bambu Studio).
+ * appassets / bez API: no-op; pobierzPlik spada na <a download>.
  */
 (function (global) {
   'use strict';
@@ -21,6 +22,19 @@
     }
   }
 
+  function tauriInvoke() {
+    try {
+      if (global.__TAURI__ && global.__TAURI__.core && typeof global.__TAURI__.core.invoke === 'function') {
+        return global.__TAURI__.core.invoke;
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  function jestTauri() {
+    return !!tauriInvoke();
+  }
+
   function maPicker() {
     return typeof global.showDirectoryPicker === 'function';
   }
@@ -33,11 +47,62 @@
     return 'application/octet-stream';
   }
 
+  function bezpiecznaNazwa(raw) {
+    var s = String(raw || '').replace(/\\/g, '/');
+    var slash = s.lastIndexOf('/');
+    if (slash >= 0) s = s.slice(slash + 1);
+    s = s.trim();
+    var ext = '.3mf';
+    var low = s.toLowerCase();
+    if (low.endsWith('.3mf')) ext = '.3mf';
+    else if (low.endsWith('.txt')) ext = '.txt';
+    else if (low.endsWith('.json')) ext = '.json';
+    var stem = s.slice(0, Math.max(0, s.length - ext.length));
+    if (!low.endsWith(ext)) stem = s;
+    stem = stem.replace(/[^A-Za-z0-9._-]+/g, '_').replace(/_+/g, '_');
+    stem = stem.replace(/^[._-]+/, '').replace(/[._-]+$/, '');
+    if (!stem) stem = 'pobrany';
+    if (stem.length > 100) stem = stem.slice(0, 100);
+    return stem + ext;
+  }
+
   function jestStandalone() {
     try {
       if (global.matchMedia && global.matchMedia('(display-mode: standalone)').matches) return true;
     } catch (e) {}
     return false;
+  }
+
+  function blobNaB64(blob) {
+    return blob.arrayBuffer().then(function (buf) {
+      var u8 = new Uint8Array(buf);
+      var s = '', i = 0, n = u8.length;
+      while (i < n) {
+        var e = Math.min(i + 0x8000, n);
+        s += String.fromCharCode.apply(null, u8.subarray(i, e));
+        i = e;
+      }
+      return btoa(s);
+    });
+  }
+
+  function pobierzPrzezTauri(blob, nazwa, otworzStudio) {
+    var inv = tauriInvoke();
+    if (!inv || !blob) return Promise.resolve(false);
+    lastErr = '';
+    return blobNaB64(blob).then(function (b64) {
+      return inv('zapisz_i_otworz', {
+        nazwa: bezpiecznaNazwa(nazwa),
+        b64: b64,
+        otworzStudio: !!otworzStudio
+      });
+    }).then(function (sciezka) {
+      ustawStat('Zapisano: ' + sciezka);
+      return true;
+    }).catch(function (e) {
+      lastErr = String((e && e.message) || e || 'tauri');
+      return false;
+    });
   }
 
   function idb() {
@@ -98,7 +163,7 @@
   }
 
   function wybierzFolder() {
-    if (!maPicker() || jestAppassets()) return Promise.resolve(null);
+    if (!maPicker() || jestAppassets() || jestTauri()) return Promise.resolve(null);
     return Promise.resolve(global.showDirectoryPicker({ id: 'p2s-export', mode: 'readwrite' })).then(function (h) {
       handle = h;
       return zapiszHandle(h).then(function () { return h; });
@@ -123,7 +188,9 @@
 
   function pobierzDoFolderu(blob, nazwa) {
     lastErr = '';
-    if (!blob || jestAppassets() || !maPicker()) return Promise.resolve(false);
+    if (!blob || jestAppassets()) return Promise.resolve(false);
+    if (jestTauri()) return pobierzPrzezTauri(blob, nazwa, false);
+    if (!maPicker()) return Promise.resolve(false);
     function pisz(h) {
       if (!h) return Promise.resolve(false);
       var n = String(nazwa || 'pobrany.bin');
@@ -142,14 +209,26 @@
     });
   }
 
+  function otworzWStudio(blob, nazwa) {
+    if (!jestTauri()) return Promise.resolve(false);
+    return pobierzPrzezTauri(blob, nazwa, true);
+  }
+
   function ustawStat(txt) {
     var st = global.document && global.document.getElementById('deskFolderStat');
     if (st) st.textContent = txt;
   }
 
+  function pokazStudioBtn() {
+    ['pjStudio', 'prStudio'].forEach(function (id) {
+      var b = global.document && global.document.getElementById(id);
+      if (b) b.hidden = false;
+    });
+  }
+
   function podlaczInstall(btn) {
     if (!btn) return;
-    if (jestAppassets() || jestStandalone()) {
+    if (jestAppassets() || jestStandalone() || jestTauri()) {
       btn.hidden = true;
       return;
     }
@@ -186,6 +265,13 @@
       return;
     }
     podlaczInstall(global.document && global.document.getElementById('deskInstallBtn'));
+    if (jestTauri()) {
+      pokazStudioBtn();
+      var wybT = global.document && global.document.getElementById('deskFolderBtn');
+      if (wybT) wybT.hidden = true;
+      ustawStat('Powłoka Windows: zapis do Dokumenty\\projekty do druku. „Otwórz w Studio” w Projekcie i Przerób.');
+      return;
+    }
     var wyb = global.document && global.document.getElementById('deskFolderBtn');
     if (wyb) {
       wyb.hidden = !maPicker();
@@ -206,11 +292,14 @@
   }
 
   P2S.pobierzDoFolderu = pobierzDoFolderu;
+  P2S.otworzWStudio = otworzWStudio;
   P2S.inicjujDesktop = inicjujDesktop;
   P2S._desktop = {
     maPicker: maPicker,
     jestAppassets: jestAppassets,
+    jestTauri: jestTauri,
     mimeZNazwy: mimeZNazwy,
+    bezpiecznaNazwa: bezpiecznaNazwa,
     lastErr: function () { return lastErr; },
     setHandle: function (h) { handle = h; },
     getHandle: function () { return handle; },

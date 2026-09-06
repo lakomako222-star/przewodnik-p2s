@@ -1093,6 +1093,7 @@ function pokazDecl(dekl, mesh) {
 function syncExport(werdykt) {
   const btn = $('pjDl3mf'), anal = $('pjAnal'), mimo = $('pjMimo');
   const akc = $('pjAkceptuj');
+  const st = $('pjStudio');
   const eksper = last && (last.eksperymentalny || werdyktEksperymentalny(last.spec));
   const ok = werdykt && werdykt.eksportOk && !eksper;
   const force = mimo && mimo.checked;
@@ -1106,6 +1107,7 @@ function syncExport(werdykt) {
     } else if (btn) {
       btn.textContent = 'Pobierz 3MF';
     }
+    if (st) st.disabled = btn.disabled;
   }
   if (anal) anal.disabled = !(last && last.mesh);
 }
@@ -2633,8 +2635,7 @@ function bind() {
   });
   const akc = $('pjAkceptuj');
   if (akc) akc.addEventListener('click', onPjAkceptuj);
-  const dl = $('pjDl3mf');
-  if (dl) dl.addEventListener('click', async () => {
+  async function eksportPj3mf(otworzStudio) {
     if (!last || !last.mesh) return;
     if (!last.akceptacja) return;
     const eksper = last.eksperymentalny || werdyktEksperymentalny(last.spec);
@@ -2655,6 +2656,11 @@ function bind() {
       : await mesh3MF(last.mesh, { nazwa: last.spec.nazwa, spec: last.spec });
     const blob3 = new Blob([buf], { type: 'model/3mf' });
     const n3 = nazwa3mf(last.spec, n);
+    if (otworzStudio && window.P2S && typeof window.P2S.otworzWStudio === 'function') {
+      const ok = await window.P2S.otworzWStudio(blob3, n3);
+      if (!ok) window.alert('Nie udało się otworzyć w Bambu Studio.');
+      return;
+    }
     if (window.P2S && typeof window.P2S.pobierzPlik === 'function') {
       await window.P2S.pobierzPlik(blob3, n3);
     } else {
@@ -2674,7 +2680,11 @@ function bind() {
       b.download = nTxt;
       b.click();
     }
-  });
+  }
+  const dl = $('pjDl3mf');
+  if (dl) dl.addEventListener('click', () => eksportPj3mf(false));
+  const pjSt = $('pjStudio');
+  if (pjSt) pjSt.addEventListener('click', () => eksportPj3mf(true));
   function toAnal() {
     if (!last || !last.mesh || typeof window.__p2sAnalLoadMesh !== 'function') {
       const pick = document.getElementById('aPick');
