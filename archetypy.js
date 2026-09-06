@@ -37,7 +37,10 @@ import {
   doniczkaFalista, doniczkaAzurowa, klamraRurowa, obejma, uchwytSluchawkiPrysznicowej,
   napisTopper, deszczownica, zaczepSkadis, zaczepPegboard, zaczepMultiboard, polkaScienna, SZABLONY_12E
 } from './szablony-12e.js';
-import { wymiaryZeZdania, sprzecznePola, rozbieznePola } from './wymiary-zdanie.js';
+import { wymiaryZeZdania, sprzecznePola, rozbieznePola, paryAxB } from './wymiary-zdanie.js';
+import {
+  cechyJakosciowe, doradzMaterial, zdanieMaLiczbe, pytaniaRozmiarow, uzupelnijZTabeli
+} from './rozmiar-slowny.js';
 
 export const MATCH_NIE_PISZE_DO_REJESTRU = true;
 export const MAX_PYTAN_MATCH = 3;
@@ -492,6 +495,57 @@ function archBrakSzablonu(wpis) {
   return !id || id === 'brak_buildera';
 }
 
+function archUsunMmBezPokrycia(p, zdanie, out) {
+  if (zdanie == null || zdanie === '') return;
+  const ma = typeof zdanieMaLiczbe === 'function'
+    ? zdanieMaLiczbe(zdanie)
+    : /\d/.test(String(zdanie || ''));
+  if (ma) return;
+  const keys = Object.keys(p);
+  let n = 0;
+  for (let i = 0; i < keys.length; i++) {
+    const v = p[keys[i]];
+    if (typeof v === 'number' && Number.isFinite(v)) {
+      delete p[keys[i]];
+      n += 1;
+    }
+  }
+  if (n) out.uzasadnienie = String(out.uzasadnienie || '') + ' [USUNIETO: mm bez pokrycia w zdaniu]';
+}
+
+function archDolaczParyAxB(p, wpis, zdanie, out) {
+  if (typeof paryAxB !== 'function') return;
+  const kol = wpis && Array.isArray(wpis.kolejnosc_wymiarow) ? wpis.kolejnosc_wymiarow : [];
+  if (kol.length < 2) return;
+  const pary = paryAxB(zdanie);
+  if (!pary.length) return;
+  const para = pary[0];
+  const n = Math.min(para.length, kol.length);
+  if (n < 2) return;
+  const bits = [];
+  for (let i = 0; i < n; i++) {
+    if (brakuje(p, kol[i])) p[kol[i]] = para[i];
+    bits.push(kol[i]);
+  }
+  const nazwa = (wpis && (wpis.klasa || wpis.id)) || '';
+  const zalo = para.slice(0, n).join('x') + ' = ' + bits.join('x') + ' (kolejnosc klasy ' + nazwa + ')';
+  out.zalozenia = (out.zalozenia || []).concat([zalo]);
+}
+
+function archTabelaIMaterial(p, wpis, zdanie, out) {
+  const cechy = typeof cechyJakosciowe === 'function' ? cechyJakosciowe(zdanie) : {};
+  if (typeof uzupelnijZTabeli === 'function') {
+    const z = uzupelnijZTabeli(p, wpis, cechy);
+    if (z.length) out.zalozenia = (out.zalozenia || []).concat(z);
+  }
+  if (typeof doradzMaterial === 'function') {
+    const mat = doradzMaterial(cechy);
+    out.material = mat.material;
+    out.material_powod = mat.powod;
+  }
+  return cechy;
+}
+
 /**
  * @returns {{ ok: boolean, powod: string|null, pole?: string, brakujace_pole?: string }}
  */
@@ -675,7 +729,10 @@ export function zastosujMatch(wynik, zdanie) {
   }
 
   const p = aliasujParametrySzablonu(wpis.szablon_id, out.parametry || {});
+  archUsunMmBezPokrycia(p, zdanie, out);
   archDolaczWymiaryZdania(p, zdanie);
+  archDolaczParyAxB(p, wpis, zdanie, out);
+  archTabelaIMaterial(p, wpis, zdanie, out);
   const p2 = aliasujParametrySzablonu(wpis.szablon_id, p);
   Object.assign(p, p2);
   out.parametry = p;
@@ -697,6 +754,20 @@ export function zastosujMatch(wynik, zdanie) {
   const wal = walidujParametry(wpis.id, p);
   if (!wal.ok) {
     const pole = wal.brakujace_pole || wal.pole;
+    const bezLiczbyZdania = typeof zdanieMaLiczbe === 'function'
+      ? !zdanieMaLiczbe(zdanie)
+      : !maLiczbe(p);
+    if (wal.powod === 'brak_pola' && bezLiczbyZdania && wpis.rozmiary && wpis.rozmiary.S
+        && typeof pytaniaRozmiarow === 'function') {
+      const pytR = pytaniaRozmiarow(wpis);
+      for (let i = 0; i < pytR.length; i++) archDodajPytanie(pytania, pytR[i], 'rozmiar-' + i);
+      if (pole && (!out.brakujace_pola || !out.brakujace_pola.length)) out.brakujace_pola = [pole];
+      out.decyzja = 'MATCH';
+      out.klasa = wpis.id;
+      out.pytania = pytania.slice(0, MAX_PYTAN_MATCH);
+      out.uzasadnienie = String(out.uzasadnienie || '') + ' [MATCH: wybierz rozmiar S/M/L albo podaj mm]';
+      return out;
+    }
     if (wal.powod === 'brak_pola' && !maLiczbe(p) && !bylaSprzeczka) {
       out.decyzja = 'REJECT';
       out.pytania = pytania.slice(0, MAX_PYTAN_MATCH);

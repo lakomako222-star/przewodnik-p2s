@@ -411,7 +411,12 @@
       },
       "szablon_id": "organizerPrzegrody",
       "n_wierszy_zakresow": 149,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "synonimy_model": "openai/gpt-5.6-luna",
+      "kolejnosc_wymiarow": [
+        "x",
+        "y",
+        "z"
+      ]
     },
     {
       "id": "lozysko",
@@ -919,7 +924,12 @@
       },
       "szablon_id": "pudelko",
       "n_wierszy_zakresow": 98,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "synonimy_model": "openai/gpt-5.6-luna",
+      "kolejnosc_wymiarow": [
+        "x",
+        "y",
+        "z"
+      ]
     },
     {
       "id": "uchwyt",
@@ -1926,7 +1936,33 @@
       },
       "szablon_id": "wieszakListwa",
       "n_wierszy_zakresow": 30,
-      "synonimy_model": "openai/gpt-5.6-luna"
+      "synonimy_model": "openai/gpt-5.6-luna",
+      "rozmiary": {
+        "S": {
+          "h": 50,
+          "dl": 30,
+          "n": 2
+        },
+        "M": {
+          "h": 80,
+          "dl": 40,
+          "n": 3
+        },
+        "L": {
+          "h": 110,
+          "dl": 55,
+          "n": 4
+        },
+        "mocny": {
+          "grub": 5,
+          "w": 18
+        },
+        "zrodlo": "tabela właściciela 6.09.2026; analogia do haczyka / przykład szablonu [ZAŁOŻENIE]"
+      },
+      "kolejnosc_wymiarow": [
+        "h",
+        "dl"
+      ]
     },
     {
       "id": "tacka",
@@ -9818,7 +9854,30 @@
         ]
       },
       "szablon_id": "haczyk",
-      "n_wierszy_zakresow": 14
+      "n_wierszy_zakresow": 14,
+      "rozmiary": {
+        "S": {
+          "h": 50,
+          "dl": 30
+        },
+        "M": {
+          "h": 80,
+          "dl": 40
+        },
+        "L": {
+          "h": 110,
+          "dl": 55
+        },
+        "mocny": {
+          "grub": 5,
+          "w": 18
+        },
+        "zrodlo": "tabela właściciela 6.09.2026; M = plik T-08 etap 8"
+      },
+      "kolejnosc_wymiarow": [
+        "h",
+        "dl"
+      ]
     },
     {
       "id": "slizgacz-meblowy",
@@ -11113,7 +11172,29 @@
         ]
       },
       "szablon_id": "uchwytRecznika",
-      "n_wierszy_zakresow": 14
+      "n_wierszy_zakresow": 14,
+      "rozmiary": {
+        "S": {
+          "dl": 180,
+          "fi": 14
+        },
+        "M": {
+          "dl": 250,
+          "fi": 16
+        },
+        "L": {
+          "dl": 350,
+          "fi": 20
+        },
+        "mocny": {
+          "fi": 20
+        },
+        "zrodlo": "tabela właściciela 6.09.2026; analogia do haczyka / przykład szablonu [ZAŁOŻENIE]"
+      },
+      "kolejnosc_wymiarow": [
+        "dl",
+        "fi"
+      ]
     },
     {
       "id": "uchwyt-szpuli",
@@ -24019,7 +24100,11 @@
         ]
       },
       "szablon_id": "polkaScienna",
-      "n_wierszy_zakresow": 0
+      "n_wierszy_zakresow": 0,
+      "kolejnosc_wymiarow": [
+        "w",
+        "d"
+      ]
     }
   ],
   "n": 174,
