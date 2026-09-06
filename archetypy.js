@@ -33,6 +33,10 @@ import {
   zawiasProsty, klipsTorebki, stojakKredek, zaslepkaGniazdka, ochraniaczNaroznika,
   uchwytKart, wieszakPada, uchwytButelek, SZABLONY_12D
 } from './szablony-12d.js';
+import {
+  doniczkaFalista, doniczkaAzurowa, klamraRurowa, obejma, uchwytSluchawkiPrysznicowej,
+  napisTopper, deszczownica, zaczepSkadis, zaczepPegboard, zaczepMultiboard, SZABLONY_12E
+} from './szablony-12e.js';
 import { wymiaryZeZdania, sprzecznePola, rozbieznePola } from './wymiary-zdanie.js';
 
 export const MATCH_NIE_PISZE_DO_REJESTRU = true;
@@ -53,7 +57,9 @@ const FN = {
   organizerKabli, uchwytBitow, uchwytSciennyTabletu, przepustKablowy, klipsFilamentu,
   stojakDysz, pojemnikDesykantu, stojakWkretakow,
   zawiasProsty, klipsTorebki, stojakKredek, zaslepkaGniazdka, ochraniaczNaroznika,
-  uchwytKart, wieszakPada, uchwytButelek
+  uchwytKart, wieszakPada, uchwytButelek,
+  doniczkaFalista, doniczkaAzurowa, klamraRurowa, obejma, uchwytSluchawkiPrysznicowej,
+  napisTopper, deszczownica, zaczepSkadis, zaczepPegboard, zaczepMultiboard
 };
 
 const SZABLON_WYMAGANE = {
@@ -132,7 +138,17 @@ const SZABLON_WYMAGANE = {
   ochraniaczNaroznika: ['a', 'h', 'grub'],
   uchwytKart: ['n', 'szczelina'],
   wieszakPada: ['w', 'h'],
-  uchwytButelek: ['fi', 'n']
+  uchwytButelek: ['fi', 'n'],
+  doniczkaFalista: ['fi', 'h'],
+  doniczkaAzurowa: ['fi', 'h'],
+  klamraRurowa: ['fi', 'dl'],
+  obejma: ['fi', 'dl'],
+  uchwytSluchawkiPrysznicowej: ['fiRury', 'fiSluchawki'],
+  napisTopper: ['linie', 'h'],
+  deszczownica: ['fi', 'nDysz'],
+  zaczepSkadis: ['h'],
+  zaczepPegboard: ['h'],
+  zaczepMultiboard: ['h']
 };
 
 /** Źródła w kolejności; cel ustawiany tylko gdy pusty. Zero imputacji (brak źródła = brak pola). */
@@ -212,7 +228,17 @@ const SZABLON_ALIASY = {
   ochraniaczNaroznika: { a: ['dl', 'x'] },
   uchwytKart: { szczelina: ['w', 'grub'] },
   wieszakPada: { w: ['x'], h: ['z'] },
-  uchwytButelek: {}
+  uchwytButelek: {},
+  doniczkaFalista: { h: ['z'] },
+  doniczkaAzurowa: { h: ['z'], n_listew: ['n'] },
+  klamraRurowa: { dl: ['h', 'z'] },
+  obejma: { dl: ['h', 'z'] },
+  uchwytSluchawkiPrysznicowej: { fiRury: ['fi'], fiSluchawki: ['fi2'] },
+  napisTopper: {},
+  deszczownica: { nDysz: ['n'] },
+  zaczepSkadis: { h: ['z'] },
+  zaczepPegboard: { h: ['z'] },
+  zaczepMultiboard: { h: ['z'] }
 };
 
 let _rejestr = { when: null, wpisy: [], n: 0, _powod: 'brak', _zaladowany: false };
@@ -400,7 +426,9 @@ function znajdzSzablon(id) {
   if (sz) return sz;
   sz = SZABLONY_12C.find(s => s.id === id);
   if (sz) return sz;
-  return SZABLONY_12D.find(s => s.id === id) || null;
+  sz = SZABLONY_12D.find(s => s.id === id);
+  if (sz) return sz;
+  return SZABLONY_12E.find(s => s.id === id) || null;
 }
 
 /**

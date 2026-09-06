@@ -202,7 +202,8 @@ export function rozbieznePola(wym, parametryLLM) {
 
 const WZ_FI_GABARYT_XY = {
   kubek: 1, pokrywka: 1, lejek: 1, podstawka: 1, galka: 1, stopka: 1,
-  doniczka: 1, zaslepka: 1, wazon: 1, swiecznik: 1, walek: 1, kolo: 1
+  doniczka: 1, zaslepka: 1, wazon: 1, swiecznik: 1, walek: 1, kolo: 1,
+  doniczkaFalista: 1, doniczkaAzurowa: 1, deszczownica: 1
 };
 
 function wz_liczbaPola(p, pole) {

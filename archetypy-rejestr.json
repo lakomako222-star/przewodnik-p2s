@@ -3609,7 +3609,7 @@
         },
         "required": []
       },
-      "szablon_id": null,
+      "szablon_id": "obejma",
       "n_wierszy_zakresow": 19,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -6541,7 +6541,7 @@
         },
         "required": []
       },
-      "szablon_id": null,
+      "szablon_id": "napisTopper",
       "n_wierszy_zakresow": 17,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -7820,7 +7820,7 @@
         },
         "required": []
       },
-      "szablon_id": null,
+      "szablon_id": "klamraRurowa",
       "n_wierszy_zakresow": 17,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -12365,7 +12365,7 @@
         },
         "required": []
       },
-      "szablon_id": null,
+      "szablon_id": "deszczownica",
       "n_wierszy_zakresow": 13,
       "synonimy_model": "openai/gpt-5.6-luna"
     },
@@ -23736,8 +23736,240 @@
       "szablon_id": null,
       "n_wierszy_zakresow": 7,
       "synonimy_model": "openai/gpt-5.6-luna"
+    },
+    {
+      "id": "doniczka-falista",
+      "klasa": "doniczka falista",
+      "opis": "Osłonka z falistym lub żebrowanym płaszczem (wave/ribbed), osobna od gładkiej doniczki-walca.",
+      "synonimy": [
+        "wavy planter",
+        "ribbed planter",
+        "doniczka żebrowana",
+        "doniczka falowana",
+        "wavy pot"
+      ],
+      "geometryczny": true,
+      "n_modeli": 0,
+      "zrodla_etykiet": {
+        "wlasciciel": 1
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [],
+      "zakresy": {},
+      "zakresy_n": {},
+      "statystyki": {},
+      "zakresy_zrodlo": "ZAŁOŻENIE",
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "fi": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "fi",
+          "h"
+        ]
+      },
+      "szablon_id": "doniczkaFalista",
+      "n_wierszy_zakresow": 0
+    },
+    {
+      "id": "doniczka-azurowa",
+      "klasa": "doniczka ażurowa",
+      "opis": "Osłonka z listwami / ażurem (lattice), osobna od gładkiej doniczki-walca.",
+      "synonimy": [
+        "lattice planter",
+        "orchid lattice",
+        "doniczka siatkowa",
+        "doniczka listwowa"
+      ],
+      "geometryczny": true,
+      "n_modeli": 0,
+      "zrodla_etykiet": {
+        "wlasciciel": 1
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [],
+      "zakresy": {},
+      "zakresy_n": {},
+      "statystyki": {},
+      "zakresy_zrodlo": "ZAŁOŻENIE",
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "fi": {
+            "type": "number"
+          },
+          "h": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "fi",
+          "h"
+        ]
+      },
+      "szablon_id": "doniczkaAzurowa",
+      "n_wierszy_zakresow": 0
+    },
+    {
+      "id": "uchwyt-sluchawki-prysznicowej",
+      "klasa": "uchwyt słuchawki prysznicowej",
+      "opis": "Klamra na rurę plus pierścień na słuchawkę. Osobna od uchwytu prysznicowego (płytka + pierścień, 12D).",
+      "synonimy": [
+        "klamra słuchawki",
+        "uchwyt słuchawki na rurę",
+        "klamra prysznic na rurę"
+      ],
+      "geometryczny": true,
+      "n_modeli": 0,
+      "zrodla_etykiet": {
+        "wlasciciel": 1
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [],
+      "zakresy": {},
+      "zakresy_n": {},
+      "statystyki": {},
+      "zakresy_zrodlo": "ZAŁOŻENIE",
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "fiRury": {
+            "type": "number"
+          },
+          "fiSluchawki": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "fiRury",
+          "fiSluchawki"
+        ]
+      },
+      "szablon_id": "uchwytSluchawkiPrysznicowej",
+      "n_wierszy_zakresow": 0
+    },
+    {
+      "id": "zaczep-skadis",
+      "klasa": "zaczep skadis",
+      "opis": "Zaczep na tablicę IKEA SKÅDIS (kołki w siatce 40 mm). Osobny od ogólnego zaczepu bez buildera.",
+      "synonimy": [
+        "skadis hook",
+        "ikea skadis",
+        "kołek skadis",
+        "hak skadis"
+      ],
+      "geometryczny": true,
+      "n_modeli": 0,
+      "zrodla_etykiet": {
+        "wlasciciel": 1
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [],
+      "zakresy": {},
+      "zakresy_n": {},
+      "statystyki": {},
+      "zakresy_zrodlo": "ZAŁOŻENIE",
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "h": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "h"
+        ]
+      },
+      "szablon_id": "zaczepSkadis",
+      "n_wierszy_zakresow": 0
+    },
+    {
+      "id": "zaczep-pegboard",
+      "klasa": "zaczep pegboard",
+      "opis": "Zaczep na płytę pegboard 1/4″ / 1″. Osobny od ogólnego zaczepu bez buildera.",
+      "synonimy": [
+        "pegboard hook",
+        "kołek pegboard",
+        "hak pegboard"
+      ],
+      "geometryczny": true,
+      "n_modeli": 0,
+      "zrodla_etykiet": {
+        "wlasciciel": 1
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [],
+      "zakresy": {},
+      "zakresy_n": {},
+      "statystyki": {},
+      "zakresy_zrodlo": "ZAŁOŻENIE",
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "h": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "h"
+        ]
+      },
+      "szablon_id": "zaczepPegboard",
+      "n_wierszy_zakresow": 0
+    },
+    {
+      "id": "zaczep-multiboard",
+      "klasa": "zaczep multiboard",
+      "opis": "Zaczep na Multiboard (siatka 25 mm). Osobny od ogólnego zaczepu bez buildera.",
+      "synonimy": [
+        "multiboard hook",
+        "kołek multiboard",
+        "hak multiboard"
+      ],
+      "geometryczny": true,
+      "n_modeli": 0,
+      "zrodla_etykiet": {
+        "wlasciciel": 1
+      },
+      "nazwana_wprost": true,
+      "cluster_id": null,
+      "przyklady_model_id": [],
+      "zakresy": {},
+      "zakresy_n": {},
+      "statystyki": {},
+      "zakresy_zrodlo": "ZAŁOŻENIE",
+      "schemat_parametrow": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "h": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "h"
+        ]
+      },
+      "szablon_id": "zaczepMultiboard",
+      "n_wierszy_zakresow": 0
     }
   ],
-  "n": 167,
-  "notatka": "Klasy z nazw (etykiety-z-nazw.py) + korekta właściciela nadrzędna. Archetyp: ≥8 modeli albo nazwana wprost. szablon_id z mapy klas na nauka-szablony.js + szablony-obrotowe.js; brak → brak_buildera (MATCH→NEW). geometryczny:false = bez schematu parametrów. Zakresy wyłącznie z liczb indeksu."
+  "n": 173,
+  "notatka": "Klasy z nazw (etykiety-z-nazw.py) + korekta właściciela nadrzędna. Archetyp: ≥8 modeli albo nazwana wprost. szablon_id z mapy klas na nauka-szablony.js + szablony-obrotowe.js; brak → brak_buildera (MATCH→NEW). geometryczny:false = bez schematu parametrów. Zakresy wyłącznie z liczb indeksu. + wpisy z archetypy-wlasne.json (zakresy_zrodlo=ZAŁOŻENIE)."
 }

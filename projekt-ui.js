@@ -1883,6 +1883,7 @@ function pjSpecZMatch(b) {
     material: b.spec.material || 'PETG',
     bryly: b.spec.bryly,
     cechy: b.spec.cechy || [],
+    czesci: b.spec.czesci,
     pytania: [],
     uwagi_do_druku: b.spec.uwagi_do_druku || '',
     orientacja_druku: {
