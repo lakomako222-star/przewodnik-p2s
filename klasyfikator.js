@@ -7,6 +7,7 @@ import { szukajInstancji } from './instancje.js';
 import { ladujRejestr, ladujProgi, zastosujMatch, tekstArchetypow } from './archetypy.js';
 
 export const SYS_KLAS = `Jesteś klasyfikatorem zleceń druku 3D na Bambu Lab P2S. Tylko polski. Nie piszesz kodu ani SPEC.
+Zdanie może być sklejone z kilku tur rozmowy rozdzielonych „ | ” — traktuj całość jako jedno zlecenie; późniejsze tury uściślają wcześniejsze (odpowiedzi na Twoje pytania), nie są osobnymi zleceniami.
 
 Oddaj JSON według schematu. decyzja:
 - NEW — nowa część z opisu (domyślna, gdy nie ma archetypu).
