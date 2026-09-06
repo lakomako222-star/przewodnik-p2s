@@ -30,6 +30,7 @@ const WZ_WZORCE = [
   { pole: 'fi', re: /\bsrednic\w*\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'fi', re: /(\d+(?:[.,]\d+)?)\s*(?:mm\s+)?srednic\w*/g, po: 1 },
   { pole: 'kat', re: /\bkat\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'kat', re: /(\d+(?:[.,]\d+)?)\s*(?:stopni|deg|°)/g, po: 1 },
   { pole: 'dl', re: /\bdlugosc\w*\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'dl', re: /\bdlug\w*\s+(?:na\s+)?(\d+(?:[.,]\d+)?)/g },
   { pole: 'dl', re: /(\d+(?:[.,]\d+)?)\s*(?:mm\s+)?dlug\w*/g, po: 1 },
@@ -94,7 +95,7 @@ function wz_bezOgonkow(s) {
     .replace(/ó/g, 'o').replace(/ś/g, 's').replace(/ź/g, 'z').replace(/ż/g, 'z');
 }
 
-/** Ø, wys., szer. — te same określenia co „fi” / „wysokość”. */
+/** Ø, wys., szer., ścianka, dziura — te same określenia co pola silnika. */
 function wz_kanonOkreslenia(t) {
   return String(t || '')
     .replace(/[ø⌀∅]/g, 'fi ')
@@ -103,7 +104,31 @@ function wz_kanonOkreslenia(t) {
     .replace(/\bwys\.\s*/g, 'wysokosc ')
     .replace(/\bszer\.\s*/g, 'szerokosc ')
     .replace(/\bdl\.\s*/g, 'dlugosc ')
-    .replace(/\bgrub\.\s*/g, 'grubosc ');
+    .replace(/\bgrub\.\s*/g, 'grubosc ')
+    .replace(/\bsredn\.\s*/g, 'srednica ')
+    .replace(/\b(wysok\w*|srednic\w*|szerok\w*|dlug\w*|grub\w*|glebok\w*|sciank\w*|fi|wys|szer|dl|h|w|gl|kat)\s*[:=]\s*(?=\d)/g, '$1 ')
+    .replace(/\bzewn\.?\s+/g, 'zewnetrzne ')
+    .replace(/\bwew\.?\s+/g, 'wewnetrzne ')
+    .replace(/\bsciank\w*/g, 'grubosc')
+    .replace(/\bdziur\w*/g, 'otwor')
+    .replace(/\bos\s+(?=\d)/g, 'osi ');
+}
+
+const WZ_ETYKIETY = {
+  fi: 'średnica', fiZ: 'średnica zewnętrzna', fiDol: 'średnica dolna',
+  fi1: 'średnica 1', fi2: 'średnica 2',
+  kat: 'kąt', dl: 'długość', h: 'wysokość', w: 'szerokość', grub: 'grubość',
+  x: 'x', y: 'y', z: 'z', n: 'liczba',
+  fiGniazda: 'średnica gniazda', fiOtw: 'średnica otworu', fiTrzpienia: 'średnica trzpienia',
+  podstawa: 'podstawa', szpikulec: 'szpikulec',
+  gl: 'głębokość', gniazdo: 'gniazdo', otwor: 'otwór', szczelina: 'szczelina',
+  nx: 'nx', ny: 'ny', hU: 'wysokość U', otwory: 'otwory', ml: 'pojemność',
+  rozstaw: 'rozstaw', fiOsi: 'średnica osi', d: 'głębokość blatu', hFront: 'wysokość frontu (wargi)'
+};
+
+export function etykietaPola(pole) {
+  const k = String(pole || '');
+  return WZ_ETYKIETY[k] || k;
 }
 
 function wz_liczba(s) {
@@ -337,6 +362,7 @@ function wz_eksportP2S() {
   if (typeof window === 'undefined') return;
   window.P2S = window.P2S || {};
   window.P2S.wymiaryZeZdania = wymiaryZeZdania;
+  window.P2S.etykietaPola = etykietaPola;
   window.P2S.sprzecznePola = sprzecznePola;
   window.P2S.rozbieznePola = rozbieznePola;
   window.P2S.ocenGabarytVsZdanie = ocenGabarytVsZdanie;
