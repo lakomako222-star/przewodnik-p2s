@@ -1,5 +1,5 @@
 /**
- * Jawne wymiary ze zdania (słowo + liczba). Zero imputacji: „170 na 19” bez słowa = nic.
+ * Jawne wymiary ze zdania (słowo+liczba albo liczba+słowo). Zero imputacji: „170 na 19” bez słowa = nic.
  * Prefiks wz_ — po inline do IIFE nie kolidować z archetypy/nauka-rag.
  */
 'use strict';
@@ -28,18 +28,21 @@ const WZ_WZORCE = [
   { pole: 'fi', re: /\bwewnetrz\w*\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'fi', re: /\bfi\s*(\d+(?:[.,]\d+)?)/g },
   { pole: 'fi', re: /\bsrednic\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'fi', re: /(\d+(?:[.,]\d+)?)\s*(?:mm\s+)?srednic\w*/g, po: 1 },
   { pole: 'kat', re: /\bkat\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'dl', re: /\bdlugosc\w*\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'dl', re: /\bdlug\w*\s+(?:na\s+)?(\d+(?:[.,]\d+)?)/g },
+  { pole: 'dl', re: /(\d+(?:[.,]\d+)?)\s*(?:mm\s+)?dlug\w*/g, po: 1 },
   { pole: 'dl', re: /\bdl\s+(\d+(?:[.,]\d+)?)/g },
-  { pole: 'h', re: /\bwysokosc\w*\s+(\d+(?:[.,]\d+)?)/g },
-  { pole: 'h', re: /\bwysokie\s+(?:na\s+)?(\d+(?:[.,]\d+)?)/g },
-  { pole: 'h', re: /\bwysok(?:i|a|ie|iej|iego)\s+(?:na\s+)?(\d+(?:[.,]\d+)?)/g },
+  { pole: 'h', re: /\bwysok\w*\s+(?:na\s+)?(\d+(?:[.,]\d+)?)/g },
+  { pole: 'h', re: /(\d+(?:[.,]\d+)?)\s*(?:mm\s+)?wysok\w*/g, po: 1 },
+  { pole: 'h', re: /\bwys\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'h', re: /\bh\s+(\d+(?:[.,]\d+)?)/g },
-  { pole: 'w', re: /\bszerokosc\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'w', re: /\bszerok\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'w', re: /(\d+(?:[.,]\d+)?)\s*(?:mm\s+)?szerok\w*/g, po: 1 },
   { pole: 'w', re: /\bw\s+(\d+(?:[.,]\d+)?)/g },
-  { pole: 'grub', re: /\bgrubosc\w*\s+(\d+(?:[.,]\d+)?)/g },
-  { pole: 'grub', re: /\bgrub\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'grub', re: /\bgrub\w*\s+(?:na\s+)?(\d+(?:[.,]\d+)?)/g },
+  { pole: 'grub', re: /(\d+(?:[.,]\d+)?)\s*(?:mm\s+)?grub\w*/g, po: 1 },
   { pole: 'x', re: /\bx\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'y', re: /\by\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'n', re: /(\d+)\s*(?:przegrod\w*|hakow|haki|otwor\w*)/g },
@@ -52,7 +55,8 @@ const WZ_WZORCE = [
   { pole: 'podstawa', re: /\bpodstaw\w*\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'szpikulec', re: /\bszpikul\w*\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'gl', re: /\bgl\s+(\d+(?:[.,]\d+)?)/g },
-  { pole: 'gl', re: /\bglebokosc\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'gl', re: /\bglebok\w*\s+(\d+(?:[.,]\d+)?)/g },
+  { pole: 'gl', re: /(\d+(?:[.,]\d+)?)\s*(?:mm\s+)?glebok\w*/g, po: 1 },
   { pole: 'gniazdo', re: /\bgniazd\w*\s+(\d+(?:[.,]\d+)?)/g },
   { pole: 'otwor', re: /\botwor(?:u|em)?\s+(?:fi\s+)?(\d+(?:[.,]\d+)?)/g },
   { pole: 'szczelina', re: /\bszczelin\w*\s+(\d+(?:[.,]\d+)?)/g },
@@ -88,6 +92,18 @@ function wz_bezOgonkow(s) {
   return String(s == null ? '' : s).toLowerCase()
     .replace(/ą/g, 'a').replace(/ć/g, 'c').replace(/ę/g, 'e').replace(/ł/g, 'l').replace(/ń/g, 'n')
     .replace(/ó/g, 'o').replace(/ś/g, 's').replace(/ź/g, 'z').replace(/ż/g, 'z');
+}
+
+/** Ø, wys., szer. — te same określenia co „fi” / „wysokość”. */
+function wz_kanonOkreslenia(t) {
+  return String(t || '')
+    .replace(/[ø⌀∅]/g, 'fi ')
+    .replace(/\bphi\b/g, 'fi')
+    .replace(/\bfi\s*\.\s*/g, 'fi ')
+    .replace(/\bwys\.\s*/g, 'wysokosc ')
+    .replace(/\bszer\.\s*/g, 'szerokosc ')
+    .replace(/\bdl\.\s*/g, 'dlugosc ')
+    .replace(/\bgrub\.\s*/g, 'grubosc ');
 }
 
 function wz_liczba(s) {
@@ -142,7 +158,7 @@ export function wymiaryZeZdania(zdanie) {
   const raw = String(zdanie || '');
   if (!raw) return wym;
   const poJed = (typeof normalizujJednostki === 'function') ? normalizujJednostki(raw) : raw;
-  const t = wz_bezOgonkow(poJed);
+  const t = wz_kanonOkreslenia(wz_bezOgonkow(poJed));
   const used = [];
   const slRe = /\b(dwa|dwie|dwoma|dwiema|trzy|trzema|cztery|czterema|czterech|piec|piecioma|pieciu|szesc|szescioma|szesciu)\s+(przegrod|hak|otwor)/g;
   let sm;
@@ -152,21 +168,26 @@ export function wymiaryZeZdania(zdanie) {
     used.push({ a: sm.index, b: sm.index + sm[0].length });
     wym.n.push(val);
   }
-  for (let i = 0; i < WZ_WZORCE.length; i++) {
-    const w = WZ_WZORCE[i];
-    const re = w.re;
-    re.lastIndex = 0;
-    let m;
-    while ((m = re.exec(t))) {
-      const numStr = m[1];
-      const numIdx = m.index + m[0].lastIndexOf(numStr);
-      if (!wz_wolny(used, numIdx, numIdx + numStr.length)) continue;
-      const val = wz_liczba(numStr);
-      if (val == null) continue;
-      used.push({ a: numIdx, b: numIdx + numStr.length });
-      wym[w.pole].push(val);
+  function wz_aplikuj(tylkoPo) {
+    for (let i = 0; i < WZ_WZORCE.length; i++) {
+      const w = WZ_WZORCE[i];
+      if (!!w.po !== !!tylkoPo) continue;
+      const re = w.re;
+      re.lastIndex = 0;
+      let m;
+      while ((m = re.exec(t))) {
+        const numStr = m[1];
+        const numIdx = m.index + m[0].lastIndexOf(numStr);
+        if (!wz_wolny(used, numIdx, numIdx + numStr.length)) continue;
+        const val = wz_liczba(numStr);
+        if (val == null) continue;
+        used.push({ a: numIdx, b: numIdx + numStr.length });
+        wym[w.pole].push(val);
+      }
     }
   }
+  wz_aplikuj(false);
+  wz_aplikuj(true);
   wz_scalFiRodzina(wym, t);
   return wym;
 }
