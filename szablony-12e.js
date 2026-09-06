@@ -1,7 +1,11 @@
 /**
- * Szablony 12E — donice faliste/ażurowe, klamra/obejma, napis, deszczownica, zaczepy tablic.
- * Kontrakt jak 12d: fragment SPEC { nazwa, material, bryly, cechy, uwagi_do_druku }.
+ * Szablony 12E — donice faliste/ażurowe, klamra/obejma, napis, deszczownica, zaczepy tablic,
+ * półka ścienna (polkaScienna).
+ * Kontrakt jak 12d: fragment SPEC { nazwa, material, bryly|czesci, cechy, uwagi_do_druku }.
  * Zasada BRYLY=1: mostki (nakładające się dodaj). Szyk = pętla JS (brak array w silniku).
+ *
+ * Fillet na prostej krawędzi = CSG (klocek minus walec), nie B-Rep. Ogólne zaokrąglanie
+ * dowolnych krawędzi to inny, rzadszy przypadek — ten builder go nie udaje.
  */
 'use strict';
 
@@ -347,6 +351,203 @@ export function zaczepMultiboard(h, w) {
   };
 }
 
+function boxMM(id, op, x0, x1, y0, y1, z0, z1) {
+  return box(id, op, x1 - x0, y1 - y0, z1 - z0, [x0, y0, z0]);
+}
+
+function walecX(id, op, fi, x0, x1, y, z) {
+  return walec(id, op, fi, x1 - x0, [x0, y, z], [0, 90, 0]);
+}
+
+function walecY(id, op, fi, y0, y1, x, z) {
+  return walec(id, op, fi, y1 - y0, [x, y0, z], [-90, 0, 0]);
+}
+
+function planDrukuPolki(tekst) {
+  return {
+    orientacja_druku: {
+      obrot_xyz_deg: [0, 0, 0],
+      sciana_na_plycie: 'spód',
+      uzasadnienie: tekst
+    },
+    podpory: { wymagane: false, uzasadnienie: tekst, typ: 'brak' },
+    brim: { wymagany: false, uzasadnienie: tekst }
+  };
+}
+
+/**
+ * Półka ścienna: blat + warga + 2 uchwyty L. Parametry zweryfikowane w polka_gen.py
+ * (360×150, T-08 Studio osobno). Stałe inżynierskie wpisane tu — model ich nie zgaduje.
+ *
+ * W>250 → podział w połowie + czopy w blacie i we froncie (styk w max. momencie gnącym).
+ * Slot w blacie 7 mm zostawiłby <2 mm — nadlew od spodu (reguła: materiał nad kieszenią ≥2 mm).
+ * Fillet R2 blat↔front: klocek 2×2 minus walec R2 (oś X).
+ *
+ * @param {number} w szerokość blatu mm
+ * @param {number} d głębokość blatu mm
+ * @param {number} [hFront] wysokość wargi nad blatem mm (domyślnie 48, zakres 45–50)
+ */
+export function polkaScienna(w, d, hFront) {
+  const W = Number(w);
+  const D = Number(d);
+  const H_FRONT = num(hFront, 48);
+  if (!(W >= 80 && W <= 500)) throw new Error('polkaScienna: w poza 80–500 mm');
+  if (!(D >= 40 && D <= 250)) throw new Error('polkaScienna: d poza 40–250 mm');
+  if (!(H_FRONT >= 20 && H_FRONT <= 80)) throw new Error('polkaScienna: hFront poza 20–80 mm');
+
+  const T_BLAT = 7;
+  const T_FRONT = 3.5;
+  const FILLET_R = 2;
+  const ARM_W = 15;
+  const ARM_T = 5;
+  const ARM_REACH = 50;
+  const WALL_H = 55;
+  const WALL_T = 6;
+  const HOLE_D = 4.5;
+  const HOLE_DZ = 28;
+  const CLEAR = 0.4;
+  const BOSS_W = 23;
+  const BOSS_D = 56;
+  const PLYTA = 256;
+  const TEN_LEN = 15;
+  const TEN_CLEAR = 0.3;
+  const MIN_NAD_KIESZENIA = 2;
+  const st = ARM_T + 2 * CLEAR;
+  const BOSS_H = (T_BLAT < st + MIN_NAD_KIESZENIA)
+    ? Math.max(9, st + MIN_NAD_KIESZENIA + 1)
+    : 0;
+
+  const BR_SPACING = Math.min(220, Math.max(40, W - BOSS_W - 8));
+  const br = [(W - BR_SPACING) / 2, (W + BR_SPACING) / 2];
+  const dziel = W > 250;
+  const splitX = dziel ? W / 2 : W;
+  if (dziel && (splitX + TEN_LEN > PLYTA || W - splitX > PLYTA)) {
+    throw new Error('polkaScienna: po podziale część >256 mm — zmniejsz w');
+  }
+
+  function fillet(pre, x0, x1) {
+    const fy = D - T_FRONT;
+    return [
+      boxMM(pre + 'filletBlok', 'dodaj', x0, x1, fy - FILLET_R, fy, T_BLAT, T_BLAT + FILLET_R),
+      walecX(pre + 'filletWal', 'odejmij', FILLET_R * 2, x0 - 1, x1 + 1, fy - FILLET_R, T_BLAT + FILLET_R)
+    ];
+  }
+
+  function nadlewyISloty(pre, x0, x1) {
+    const out = [];
+    if (BOSS_H <= 0) return out;
+    for (let i = 0; i < br.length; i++) {
+      const cx = br[i];
+      if (cx < x0 || cx > x1) continue;
+      out.push(boxMM(pre + 'boss' + i, 'dodaj',
+        cx - BOSS_W / 2, cx + BOSS_W / 2, 0, BOSS_D, -BOSS_H, 0));
+    }
+    for (let i = 0; i < br.length; i++) {
+      const cx = br[i];
+      if (cx < x0 || cx > x1) continue;
+      const sw = ARM_W + 2 * CLEAR;
+      out.push(boxMM(pre + 'slot' + i, 'odejmij',
+        cx - sw / 2, cx + sw / 2, -1, ARM_REACH, -BOSS_H + 1, -BOSS_H + 1 + st));
+    }
+    return out;
+  }
+
+  function korpusPolowy(pre, x0, x1) {
+    return [
+      boxMM(pre + 'blat', 'dodaj', x0, x1, 0, D, 0, T_BLAT),
+      boxMM(pre + 'front', 'dodaj', x0, x1, D - T_FRONT, D, 0, T_BLAT + H_FRONT)
+    ].concat(fillet(pre, x0, x1), nadlewyISloty(pre, x0, x1));
+  }
+
+  function czopy() {
+    return [
+      boxMM('czopBlat', 'dodaj', splitX, splitX + TEN_LEN, 40, 70, 1.5, 5.5),
+      boxMM('czopFront', 'dodaj', splitX, splitX + TEN_LEN,
+        D - T_FRONT + 0.5, D - 0.5, 15, 40)
+    ];
+  }
+
+  function gniazda() {
+    return [
+      boxMM('gniazdoBlat', 'odejmij', splitX - 1, splitX + TEN_LEN + TEN_CLEAR,
+        40 - TEN_CLEAR, 70 + TEN_CLEAR, 1.5 - TEN_CLEAR, 5.5 + TEN_CLEAR),
+      boxMM('gniazdoFront', 'odejmij', splitX - 1, splitX + TEN_LEN + TEN_CLEAR,
+        D - T_FRONT + 0.5 - TEN_CLEAR, D - 0.5 + TEN_CLEAR, 15 - TEN_CLEAR, 40 + TEN_CLEAR)
+    ];
+  }
+
+  const zebroY = Math.max(8, ARM_REACH - 8);
+  const zebroZ = Math.max(8, WALL_H - 8);
+  const uchwytBryly = [
+    boxMM('ramie', 'dodaj', 0, ARM_W, 0, ARM_REACH, 0, ARM_T),
+    boxMM('slup', 'dodaj', 0, ARM_W, -WALL_T, 0, 0, WALL_H),
+    {
+      id: 'zebro', operacja: 'dodaj',
+      ksztalt: {
+        typ: 'wyciagniecie',
+        kontur: [[0, ARM_T], [zebroY, ARM_T], [0, zebroZ]],
+        wysokosc_mm: ARM_W
+      },
+      pozycja_mm: [0, 0, 0],
+      obrot_deg: [90, 0, 90],
+      srodkowanie: 'brak'
+    }
+  ];
+  const z0otw = WALL_H / 2 - HOLE_DZ / 2;
+  uchwytBryly.push(walecY('otwor0', 'odejmij', HOLE_D, -WALL_T - 2, 2, ARM_W / 2, z0otw));
+  uchwytBryly.push(walecY('otwor1', 'odejmij', HOLE_D, -WALL_T - 2, 2, ARM_W / 2, z0otw + HOLE_DZ));
+
+  const uwagiUchwyt = 'Uchwyt L: ramię poziome na stole. Drukuj 2 sztuki. Otwory Ø4,5 pod wkręt do kołka.';
+  const uwagiBlat = 'Blat: górna powierzchnia na stole (obrót 180° wokół X w slicerze) — naddlewy i front w +Z, bez podpór. Nie skalować w slicerze.';
+  const czUchwyt = Object.assign({
+    nazwa: 'Uchwyt L',
+    material: 'PETG',
+    bryly: uchwytBryly,
+    cechy: [],
+    uwagi_do_druku: uwagiUchwyt
+  }, planDrukuPolki(uwagiUchwyt));
+
+  const czesci = [];
+  if (dziel) {
+    czesci.push(Object.assign({
+      nazwa: 'Blat lewy',
+      material: 'PETG',
+      bryly: korpusPolowy('L_', 0, splitX).concat(czopy()),
+      cechy: [],
+      uwagi_do_druku: uwagiBlat + ' Czop w blacie i we froncie — styk w połowie rozpiętości.'
+    }, planDrukuPolki(uwagiBlat)));
+    czesci.push(Object.assign({
+      nazwa: 'Blat prawy',
+      material: 'PETG',
+      bryly: korpusPolowy('R_', splitX, W).concat(gniazda()),
+      cechy: [],
+      uwagi_do_druku: uwagiBlat + ' Gniazda na czopy (luz 0,3 mm).'
+    }, planDrukuPolki(uwagiBlat)));
+  } else {
+    czesci.push(Object.assign({
+      nazwa: 'Blat',
+      material: 'PETG',
+      bryly: korpusPolowy('', 0, W),
+      cechy: [],
+      uwagi_do_druku: uwagiBlat
+    }, planDrukuPolki(uwagiBlat)));
+  }
+  czesci.push(czUchwyt);
+  czesci.push(Object.assign({}, czUchwyt, { nazwa: 'Uchwyt L (2)' }));
+
+  return {
+    nazwa: 'Polka scienna ' + W + 'x' + D,
+    material: 'PETG',
+    bryly: [],
+    czesci: czesci,
+    cechy: [],
+    uwagi_do_druku: 'PETG. Zestaw: '
+      + (dziel ? 'blat lewy + prawy + 2× uchwyt L. ' : 'blat + 2× uchwyt L. ')
+      + 'Gabaryt ' + W + '×' + D + ' mm, front ' + H_FRONT
+      + ' mm. Rozstaw uchwytów ' + BR_SPACING + ' mm. Nie skalować.'
+  };
+}
+
 export const SZABLONY_12E = [
   { id: 'doniczkaFalista', nazwa: 'Doniczka falista', tagi: ['doniczka'], parametry: 'fi, h, styl, amplituda, n_fal, skret_deg, zwezenie, drenaz', fn: doniczkaFalista, przyklad: 'doniczkaFalista(90, 100, "wave", 2.4, 10, 25, 0.88, 1)', opis: 'Wymagane: fi, h. styl=wave|ribbed.' },
   { id: 'doniczkaAzurowa', nazwa: 'Doniczka ażurowa', tagi: ['doniczka'], parametry: 'fi, h, n_listew, skret_deg', fn: doniczkaAzurowa, przyklad: 'doniczkaAzurowa(90, 110, 16, 40)', opis: 'Wymagane: fi, h.' },
@@ -357,5 +558,6 @@ export const SZABLONY_12E = [
   { id: 'deszczownica', nazwa: 'Deszczownica', tagi: ['prysznic'], parametry: 'fi, nDysz, fiDyszy', fn: deszczownica, przyklad: 'deszczownica(120, 37, 1.4)', opis: 'Wymagane: fi, nDysz.' },
   { id: 'zaczepSkadis', nazwa: 'Zaczep Skadis', tagi: ['zaczep'], parametry: 'h, w', fn: zaczepSkadis, przyklad: 'zaczepSkadis(60, 20)', opis: 'Wymagane: h.' },
   { id: 'zaczepPegboard', nazwa: 'Zaczep Pegboard', tagi: ['zaczep'], parametry: 'h, w', fn: zaczepPegboard, przyklad: 'zaczepPegboard(60, 22)', opis: 'Wymagane: h.' },
-  { id: 'zaczepMultiboard', nazwa: 'Zaczep Multiboard', tagi: ['zaczep'], parametry: 'h, w', fn: zaczepMultiboard, przyklad: 'zaczepMultiboard(60, 24)', opis: 'Wymagane: h.' }
+  { id: 'zaczepMultiboard', nazwa: 'Zaczep Multiboard', tagi: ['zaczep'], parametry: 'h, w', fn: zaczepMultiboard, przyklad: 'zaczepMultiboard(60, 24)', opis: 'Wymagane: h.' },
+  { id: 'polkaScienna', nazwa: 'Półka ścienna', tagi: ['polka'], parametry: 'w, d, hFront', fn: polkaScienna, przyklad: 'polkaScienna(360, 150, 48)', opis: 'Wymagane: w, d, hFront. W>250 → podział + czopy w blacie i froncie. Nadlew gdy blat < slot+2 mm. Fillet CSG R2.' }
 ];

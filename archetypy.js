@@ -35,7 +35,7 @@ import {
 } from './szablony-12d.js';
 import {
   doniczkaFalista, doniczkaAzurowa, klamraRurowa, obejma, uchwytSluchawkiPrysznicowej,
-  napisTopper, deszczownica, zaczepSkadis, zaczepPegboard, zaczepMultiboard, SZABLONY_12E
+  napisTopper, deszczownica, zaczepSkadis, zaczepPegboard, zaczepMultiboard, polkaScienna, SZABLONY_12E
 } from './szablony-12e.js';
 import { wymiaryZeZdania, sprzecznePola, rozbieznePola } from './wymiary-zdanie.js';
 
@@ -59,7 +59,7 @@ const FN = {
   zawiasProsty, klipsTorebki, stojakKredek, zaslepkaGniazdka, ochraniaczNaroznika,
   uchwytKart, wieszakPada, uchwytButelek,
   doniczkaFalista, doniczkaAzurowa, klamraRurowa, obejma, uchwytSluchawkiPrysznicowej,
-  napisTopper, deszczownica, zaczepSkadis, zaczepPegboard, zaczepMultiboard
+  napisTopper, deszczownica, zaczepSkadis, zaczepPegboard, zaczepMultiboard, polkaScienna
 };
 
 const SZABLON_WYMAGANE = {
@@ -148,7 +148,8 @@ const SZABLON_WYMAGANE = {
   deszczownica: ['fi', 'nDysz'],
   zaczepSkadis: ['h'],
   zaczepPegboard: ['h'],
-  zaczepMultiboard: ['h']
+  zaczepMultiboard: ['h'],
+  polkaScienna: ['w', 'd', 'hFront']
 };
 
 /** Źródła w kolejności; cel ustawiany tylko gdy pusty. Zero imputacji (brak źródła = brak pola). */
@@ -238,7 +239,8 @@ const SZABLON_ALIASY = {
   deszczownica: { nDysz: ['n'] },
   zaczepSkadis: { h: ['z'] },
   zaczepPegboard: { h: ['z'] },
-  zaczepMultiboard: { h: ['z'] }
+  zaczepMultiboard: { h: ['z'] },
+  polkaScienna: { w: ['x'], d: ['gl', 'y'], hFront: ['h', 'z'] }
 };
 
 let _rejestr = { when: null, wpisy: [], n: 0, _powod: 'brak', _zaladowany: false };
@@ -550,16 +552,15 @@ export function build(id, params) {
   try {
     const spec = fn.apply(null, args);
     if (!spec || typeof spec !== 'object') return { spec: null, powod: 'brak_buildera' };
-    return {
-      spec: {
-        nazwa: spec.nazwa,
-        material: spec.material,
-        bryly: spec.bryly,
-        cechy: spec.cechy || [],
-        uwagi_do_druku: spec.uwagi_do_druku || ''
-      },
-      powod: null
+    const out = {
+      nazwa: spec.nazwa,
+      material: spec.material,
+      bryly: Array.isArray(spec.bryly) ? spec.bryly : [],
+      cechy: spec.cechy || [],
+      uwagi_do_druku: spec.uwagi_do_druku || ''
     };
+    if (Array.isArray(spec.czesci) && spec.czesci.length) out.czesci = spec.czesci;
+    return { spec: out, powod: null };
   } catch (e) {
     return { spec: null, powod: 'brak_buildera' };
   }
@@ -571,6 +572,8 @@ export function dopiszDoRejestru() {
 
 function pytanieOPole(pole, klasa) {
   if (pole === 'kat') return 'Podaj kąt gięcia [stopnie] dla klasy ' + (klasa || '') + '.';
+  if (pole === 'hFront') return 'Podaj wysokość frontu (wargi) [mm] dla klasy ' + (klasa || '') + '.';
+  if (pole === 'd') return 'Podaj głębokość blatu [mm] dla klasy ' + (klasa || '') + '.';
   return 'Podaj ' + pole + ' [mm] dla klasy ' + (klasa || '') + '.';
 }
 
