@@ -279,6 +279,8 @@
     if (akc) akc.disabled = !prRenderOk;
     var pob = $('prPobierz');
     if (pob) pob.disabled = !(prAkceptacja && (WYNIK || BIEZ));
+    var st = $('prStudio');
+    if (st) st.disabled = !pob || pob.disabled;
   }
   function pokazCechy() {
     var box = $('prCechy');
@@ -560,7 +562,7 @@
     var L = LIC_META && LIC_META.licencja;
     return !!(L && L.przerobic === false && L.potwierdzona);
   }
-  async function pobierz() {
+  async function pobierz(otworzStudio) {
     if (!WYNIK || !window.P2S) return;
     if (!prAkceptacja) {
       prChat('ai', 'Najpierw akceptacja 4 rzutów.');
@@ -586,6 +588,11 @@
     } else return;
     var blob = new Blob([bytes], { type: 'model/3mf' });
     var nazwaPliku = NAZWA + '_zmieniony.3mf';
+    if (otworzStudio && window.P2S && typeof window.P2S.otworzWStudio === 'function') {
+      var okSt = await window.P2S.otworzWStudio(blob, nazwaPliku);
+      if (!okSt) prChat('ai', 'Nie udało się otworzyć w Bambu Studio.');
+      return;
+    }
     if (window.P2S && typeof window.P2S.pobierzPlik === 'function') {
       await window.P2S.pobierzPlik(blob, nazwaPliku);
     } else {
@@ -1225,7 +1232,8 @@
     });
     if ($('prZrob')) $('prZrob').addEventListener('click', przelicz);
     if ($('prAkceptuj')) $('prAkceptuj').addEventListener('click', onPrAkceptuj);
-    if ($('prPobierz')) $('prPobierz').addEventListener('click', pobierz);
+    if ($('prPobierz')) $('prPobierz').addEventListener('click', function () { pobierz(false); });
+    if ($('prStudio')) $('prStudio').addEventListener('click', function () { pobierz(true); });
     if ($('prWyslij')) $('prWyslij').addEventListener('click', prWyslij);
     var prIn = $('prIn');
     if (prIn) prIn.addEventListener('keydown', function (e) {
