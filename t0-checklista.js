@@ -1,7 +1,7 @@
 /**
  * T-38 / T-0 — start wydruku, Frostbite, offline.
  * Zero sieci, zero poleceń Handy/Studio. 8 punktów: localStorage na dzień (Europe/Warsaw).
- * Flow 0,8645 = kanon profilu KALIBROWANE SUNLU PLA+ CUSTOM (skalibrowane). Nie zgaduj 0,98.
+ * Flow 0,8645 = kanon profilu PLA+ SUNLU CUSTOM - BAZA (skalibrowane). Nie zgaduj 0,98.
  */
 (function (global) {
   'use strict';
@@ -13,8 +13,8 @@
   var ITEMS = [
     { id: 'plyta_fizyczna', kind: 'dzien', label: 'Płyta fizyczna: niebieska Frostbite (CryoGrip Pro), nie czapa.', href: 'r-jak-korzystac-z-przewodnika-dzien-dzisiejszy-frostbite', chip: 'dziś' },
     { id: 'plyta_studio', kind: 'dzien', label: 'Studio i ekran P2S: High Temp / Smooth PEI (curr_bed_type 3), nie Textured.', href: 'r-7-biqu-panda-cryogrip-pro-frostbite-7-4-rozpoznawanie-plyty-i-pierwsza-warstwa', chip: '7.4' },
-    { id: 'proces', kind: 'dzien', label: 'Proces: 0.20mm Standard @BBL P2S — bez „czapa”.', href: 'r-5-filament-innej-marki-od-a-do-z-sunlu-5-18-proces-warstwa-osobna-lista', chip: '5.18' },
-    { id: 'filament', kind: 'dzien', label: 'Filament: KALIBROWANE SUNLU PLA+ CUSTOM z dopiskiem Frostbite (nie czapa/ORYGINAL).', href: 'r-5-filament-innej-marki-od-a-do-z-sunlu-5-17-nowa-szpula-ktory-profil', chip: '5.17' },
+    { id: 'proces', kind: 'dzien', label: 'Proces: 0.20mm ZWYKŁY @BBL P2S — bez „czapa”.', href: 'r-5-filament-innej-marki-od-a-do-z-sunlu-5-18-proces-warstwa-osobna-lista', chip: '5.18' },
+    { id: 'filament', kind: 'dzien', label: 'Filament: PLA+ SUNLU CUSTOM - ZWYKŁY (Frostbite, bez czapa).', href: 'r-5-filament-innej-marki-od-a-do-z-sunlu-5-17-nowa-szpula-ktory-profil', chip: '5.17' },
     { id: 'flow', kind: 'dzien', label: 'Flow: zostaw 0,8645 (skalibrowane, nie zgaduj 0,98).', href: 'r-6-kalibracje-krok-po-kroku-6-4-natezenie-przeplywu-etap-1', chip: '6.4' },
     { id: 'detekcja', kind: 'dzien', label: 'Detekcja płyty: Frostbite nie ma QR — ostrzeżenie 0500-8062 jest normalne.', href: 'r-16-komunikaty-hms-i-praca-z-bledami-16-1-jak-pracowac-z-kodem-hms', chip: '16.1' },
     { id: 'sport', kind: 'dzien', label: 'Sport: na ekranie drukarki, nie w procesie.', href: 'r-5-filament-innej-marki-od-a-do-z-sunlu-5-18-proces-warstwa-osobna-lista', chip: '5.18' },
@@ -22,7 +22,7 @@
   ];
 
   var FLOW_PLA_PLUS = '0.8645';
-  var PROCES = '0.20mm Standard @BBL P2S';
+  var PROCES = '0.20mm ZWYKŁY @BBL P2S';
   var CURR_BED = 3;
   var mounted = false;
 
@@ -75,7 +75,7 @@
   function nazwaFilamentuOk(s) {
     var t = String(s || '');
     if (/czapa|oryginal/i.test(t)) return false;
-    return /frostbite/i.test(t) && /kalibrowane/i.test(t);
+    return /PLA\+\s*SUNLU\s*CUSTOM\s*-\s*ZWYKŁY/i.test(t);
   }
 
   function plytaStudioOk(s, curr) {

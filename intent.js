@@ -55,8 +55,8 @@ export function dopasowania(zdanie) {
   if (/\bstart wydruku\b|\bchecklista t-?0\b|\bt-0 start\b/.test(t))
     dodaj(hits, 'tools', 'start wydruku');
 
-  if (/\bszpul(e|a) kalibrowan/.test(t))
-    dodaj(hits, 'tools', 'szpule KALIBROWANE');
+  if (/\bszpul(e|a)\s+(kalibrowan|baza)/.test(t))
+    dodaj(hits, 'tools', 'szpule - BAZA');
 
   if (/\bkalkulator\b|\bile wazy\b|\bluz\b.*pasow/.test(t))
     dodaj(hits, 'tools', 'narzędzie');

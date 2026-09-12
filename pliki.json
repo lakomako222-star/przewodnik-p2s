@@ -1,6 +1,6 @@
 {
-  "wersja": "4.2.78",
-  "stempel": "d47ce61b",
+  "wersja": "4.2.81",
+  "stempel": "46ea1890",
   "krytyczne": [
     "index.html",
     "engine/manifold.js",

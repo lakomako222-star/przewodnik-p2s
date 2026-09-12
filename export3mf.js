@@ -609,17 +609,17 @@ function planZSpec(spec) {
 
 export function nazwaFilamentuKalibrowane(material) {
   const m = String(material || '').toUpperCase();
-  if (m === 'PETG') return 'KALIBROWANE PETG';
-  if (m === 'PLA') return 'KALIBROWANE PLA+ albo KALIBROWANE SUNLU PLA Classic Słoneczny';
-  if (m === 'ABS') return 'KALIBROWANE ABS (albo zapas nowe)';
+  if (m === 'PETG') return 'PETG SUNLU - ZWYKŁY';
+  if (m === 'PLA') return 'PLA+ SUNLU CUSTOM - ZWYKŁY';
+  if (m === 'ABS') return 'ABS (zapas nowe) albo profil - BAZA / - ZWYKŁY';
   if (m === 'TPU') return 'TPU z zewnętrznej szpuli (nie profil AMS 95A HF)';
-  return 'KALIBROWANE (Twój profil w Studio)';
+  return 'Twój profil - BAZA / - ZWYKŁY w Studio';
 }
 
 function opisHintStudio(spec) {
   const fil = nazwaFilamentuKalibrowane(spec && spec.material);
-  return 'Wskazówka, nie ustawienie slicera: proces 0.20 mm Standard @BBL P2S; filament '
-    + fil + '. 3MF to geometria — profil KALIBROWANE wybierasz w Studio. Bez project_settings.';
+  return 'Wskazówka, nie ustawienie slicera: proces 0.20mm ZWYKŁY @BBL P2S; filament '
+    + fil + '. 3MF to geometria — profil - BAZA / - ZWYKŁY wybierasz w Studio. Bez project_settings.';
 }
 
 /** ND potwierdzona: wolno ciąć u siebie, nie publikować. Bramka PRZED eksportem. */
@@ -690,7 +690,7 @@ export function checklistaDruku(spec, werdykt) {
   const nw = werdykt && werdykt.nawisy;
   const linie = [];
   linie.push('WYŚLIJ DO STUDIO — skopiuj i odhacz przy cięciu');
-  linie.push('3MF to geometria. Studio NIE wczyta stąd procesu ani filamentu (celowo: Twój profil KALIBROWANE zostaje).');
+  linie.push('3MF to geometria. Studio NIE wczyta stąd procesu ani filamentu (celowo: Twój profil - BAZA / - ZWYKŁY zostaje).');
   linie.push('Filament: ' + nazwaFilamentuKalibrowane(spec && spec.material) + '.');
   linie.push('');
   linie.push('Gotowe do druku — sprawdź w Studio przed cięciem:');
@@ -725,7 +725,7 @@ export function checklistaDruku(spec, werdykt) {
   linie.push('');
   linie.push('Checklista w Studio (3MF to sama geometria):');
   linie.push('1. Podgląd cięcia: styk z płytą, podpory, brim, pierwsza warstwa.');
-  linie.push('2. Proces: 0.20 mm Standard @BBL P2S (rozdział 5.18). Detal 0.16 HQ, test 0.24.');
+  linie.push('2. Proces: 0.20mm ZWYKŁY @BBL P2S (rozdział 5.18). Detal 0.16 HQ, test 0.24.');
   linie.push('3. Wysyłka: dynamika przepływu Auto, jeśli szpula już skalibrowana — nie Wł. na co dzień (6.8).');
   const extra = (werdykt && werdykt.wpisy || []).filter(w =>
     w && (w.kod === 'PODPORY' || w.kod === 'NAWIS_SPOJNY' || w.kod === 'STOL' || w.kod === 'ORIENTACJA_DRUKU'));
